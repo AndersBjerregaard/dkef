@@ -1,4 +1,15 @@
 {
+  "tailwindCSS": {
+    "experimental.configFile": "./tailwind.config.js",
+    "files.associations": {
+      "*.html": "tailwindcss",
+      "*.css": "tailwindcss",
+      "*.vue": "tailwindcss"
+    },
+    "editor.quickSuggestions": {
+      "strings": "on"
+    }
+  },
   "recommendations": [
     "Vue.volar",
     "vitest.explorer",

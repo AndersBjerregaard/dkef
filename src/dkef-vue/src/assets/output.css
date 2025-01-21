@@ -1,54 +1,13 @@
 /* color palette from <https://github.com/vuejs/theme> */
 
-/* :root {
-  --vt-c-white: #ffffff;
-  --vt-c-white-soft: #f8f8f8;
-  --vt-c-white-mute: #f2f2f2;
-
-  --vt-c-black: #181818;
-  --vt-c-black-soft: #222222;
-  --vt-c-black-mute: #282828;
-
-  --vt-c-indigo: #2c3e50;
-
-  --vt-c-divider-light-1: rgba(60, 60, 60, 0.29);
-  --vt-c-divider-light-2: rgba(60, 60, 60, 0.12);
-  --vt-c-divider-dark-1: rgba(84, 84, 84, 0.65);
-  --vt-c-divider-dark-2: rgba(84, 84, 84, 0.48);
-
-  --vt-c-text-light-1: var(--vt-c-indigo);
-  --vt-c-text-light-2: rgba(60, 60, 60, 0.66);
-  --vt-c-text-dark-1: var(--vt-c-white);
-  --vt-c-text-dark-2: rgba(235, 235, 235, 0.64);
-}
-
-semantic color variables for this project
 :root {
-  --color-background: var(--vt-c-white);
-  --color-background-soft: var(--vt-c-white-soft);
-  --color-background-mute: var(--vt-c-white-mute);
-
-  --color-border: var(--vt-c-divider-light-2);
-  --color-border-hover: var(--vt-c-divider-light-1);
-
-  --color-heading: var(--vt-c-text-light-1);
-  --color-text: var(--vt-c-text-light-1);
-
-  --section-gap: 160px;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-background: var(--vt-c-black);
-    --color-background-soft: var(--vt-c-black-soft);
-    --color-background-mute: var(--vt-c-black-mute);
-
-    --color-border: var(--vt-c-divider-dark-2);
-    --color-border-hover: var(--vt-c-divider-dark-1);
-
-    --color-heading: var(--vt-c-text-dark-1);
-    --color-text: var(--vt-c-text-dark-2);
-  }
+  --color-background: #181818;
+  --color-background-soft: #222222;
+  --color-background-mute: #282828;
+  --color-border: rgba(235, 235, 235, 0.64);
+  --color-border-hover: #ffffff;
+  --color-heading: #ffffff;
+  --color-text: rgba(235, 235, 235, 0.64);
 }
 
 *,
@@ -60,7 +19,7 @@ semantic color variables for this project
 }
 
 body {
-  min-height: 100vh;
+  /* min-height: 100vh; */
   color: var(--color-text);
   background: var(--color-background);
   transition:
@@ -85,7 +44,6 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
- */
 
 *, ::before, ::after {
   --tw-border-spacing-x: 0;
@@ -649,36 +607,59 @@ video {
   position: relative;
 }
 
-.block {
-  display: block;
-}
-
 .flex {
   display: flex;
 }
 
-.flex-wrap {
-  flex-wrap: wrap;
+.h-12 {
+  height: 3rem;
+}
+
+.w-screen {
+  width: 100vw;
+}
+
+.justify-between {
+  justify-content: space-between;
 }
 
 .border {
   border-width: 1px;
 }
 
-/* #app {
+.bg-pink-500 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(236 72 153 / var(--tw-bg-opacity, 1));
+}
+
+.bg-gray-300 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(209 213 219 / var(--tw-bg-opacity, 1));
+}
+
+.bg-gray-700 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(55 65 81 / var(--tw-bg-opacity, 1));
+}
+
+.p-4 {
+  padding: 1rem;
+}
+
+#app {
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
   font-weight: normal;
 }
 
-a,
+/* a,
 .green {
   text-decoration: none;
   color: hsla(160, 100%, 37%, 1);
   transition: 0.4s;
   padding: 3px;
-}
+} */
 
 @media (hover: hover) {
   a:hover {
@@ -694,7 +675,7 @@ a,
 
   #app {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    /* grid-template-columns: 1fr 1fr; */
     padding: 0 2rem;
   }
-} */
+}

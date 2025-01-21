@@ -5,10 +5,10 @@ import { RouterView } from 'vue-router'
 
 <template>
   <header>
-    <div class="wrapper">
+    <div>
       <!-- HelloWorld msg="You did it!" /> -->
 
-      <nav>
+      <nav class="flex bg-gray-700 justify-between p-4">
         <img width="125" height="125" alt="DKEF logo">
         <button>Medlemsfordele</button>
         <button>Arrangementer og nyheder</button>
