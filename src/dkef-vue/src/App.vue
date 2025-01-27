@@ -8,13 +8,15 @@ import { RouterView } from 'vue-router'
     <div>
       <!-- HelloWorld msg="You did it!" /> -->
 
-      <nav class="flex bg-gray-700 justify-between p-4">
-        <img width="125" height="125" alt="DKEF logo">
-        <button>Medlemsfordele</button>
-        <button>Arrangementer og nyheder</button>
-        <button>Om foreningen</button>
-        <button>Kontakt os</button>
-        <button>Log på</button>
+      <nav class="flex bg-gray-700 p-4">
+        <img width="100" height="100" src="@/assets/dkef-logo.png" alt="DKEF logo">
+        <div class="flex w-full justify-between p-4 items-center">
+          <button class="rounded bg-gray-600 h-12 p-2">Medlemsfordele</button>
+          <button class="rounded bg-gray-600 h-12 p-2">Arrangementer og nyheder</button>
+          <button class="rounded bg-gray-600 h-12 p-2">Om foreningen</button>
+          <button class="rounded bg-gray-600 h-12 p-2">Kontakt os</button>
+          <button class="rounded bg-gray-600 h-12 p-2">Log på</button>
+        </div>
         <!-- <RouterLink to="/">Home</RouterLink>
         <RouterLink to="/about">About</RouterLink> -->
       </nav>
@@ -24,4 +26,5 @@ import { RouterView } from 'vue-router'
   <RouterView />
 </template>
 
-<style scoped></style>
+<style scoped>
+</style>

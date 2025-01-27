@@ -1,19 +1,23 @@
 <script setup lang="ts"></script>
 
 <template>
-  <h1>Dit netværk i elbranchen</h1>
+  <div>
+    <div class="m-12">
+      <h1 class="header1">Dit netværk i elbranchen</h1>
+    </div>
 
-  <h2>Udvid din faglige horisont, blev en del af fællesskabet og modtag sparring fra erfarne hænder.</h2>
+    <h2>Udvid din faglige horisont, blev en del af fællesskabet og modtag sparring fra erfarne hænder.</h2>
 
-  <button>Medlemsfordele</button>
+    <!-- <button>Medlemsfordele</button> -->
 
-  <button>Eksisterende Medlemmer</button>
+    <button>Eksisterende Medlemmer</button>
 
-  <p>
-    4.8/5 stjerner af vores 100+ anmeldelser.
-  </p>
+    <p>
+      4.8/5 stjerner af vores 100+ anmeldelser.
+    </p>
 
-  <img width="500" height="500" alt="An electrical mast">
+    <img width="500" height="500" alt="An electrical mast">
+  </div>
 
   <h1>Vores medlemsvirksomheder</h1>
 
@@ -57,7 +61,8 @@
 
   <h1>Fokus på faglig udvikling</h1>
 
-  <p>Bliv klogere på de nyeste tendenser og andre specialeområder ved at deltage i arrangementer og virksomhedsbesøg.</p>
+  <p>Bliv klogere på de nyeste tendenser og andre specialeområder ved at deltage i arrangementer og virksomhedsbesøg.
+  </p>
 
   <button>Bliv medlem</button>
 
@@ -89,3 +94,9 @@
 
 
 </template>
+
+<style lang="css" scoped>
+.header1 {
+  font-size: 2.25rem;
+}
+</style>
