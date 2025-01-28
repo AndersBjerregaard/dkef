@@ -1,8 +1,8 @@
 <script setup lang="ts"></script>
 
 <template>
-  <div>
-    <div class="m-12">
+  <div class="my-8">
+    <div class="my-4">
       <h1 class="header1">Dit netværk i elbranchen</h1>
     </div>
 
