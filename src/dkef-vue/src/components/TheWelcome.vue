@@ -124,32 +124,52 @@
     </div>
 
     <!-- Reasons to become a member -->
-    <div>
-      <h1>3 gode grunde til at være medlem</h1>
+    <div class="py-16 px-32 flex justify-center">
+      <div class="grid grid-cols-2 gap-10">
+        <div>
+          <h1 class="text-3xl py-8">3 gode grunde til at være medlem</h1>
 
-      <p>
-        Stadig i tvivl? Lad os lige skitsere, hvad du får ud af et medlemskab.
-      </p>
+          <p class="text-lg pb-8">
+            Stadig i tvivl? Lad os lige skitsere, hvad du får ud af et medlemskab.
+          </p>
 
-      <button>Bliv medlem</button>
+          <button class="rounded bg-gray-600 h-12 py-2 px-4 cursor-pointer hover:bg-gray-800 text-lg">Bliv
+            medlem</button>
+        </div>
 
-      <h2>Sparring</h2>
+        <div>
+          <div class="pb-4">
+            <div class="border-gray-500 border-1 rounded-2xl flex justify-center">
+              <div class="py-8">
+                <h2 class="text-2xl pb-4">Sparring</h2>
+                <p class="text-lg">
+                  Diskuter og udveksl ideer med andre
+                </p>
+              </div>
+            </div>
+          </div>
 
-      <p>
-        Diskuter og udveksl ideer med andre
-      </p>
+          <div class="pb-4">
+            <div class="border-gray-500 border-1 rounded-2xl flex justify-center">
+              <div class="py-8">
+                <h2 class="text-2xl pb-4">Netværk</h2>
+                <p class="text-lg">
+                  Få nye forbindelser - og måske venskaber
+                </p>
+              </div>
+            </div>
+          </div>
 
-      <h2>Netværk</h2>
-
-      <p>
-        Få nye forbindelser - og måske venskaber
-      </p>
-
-      <h2>Faglig udvikling</h2>
-
-      <p>
-        Styrk kompetencer og opnå ny viden
-      </p>
+          <div class="border-gray-500 border-1 rounded-2xl flex justify-center">
+            <div class="py-8">
+              <h2 class="text-2xl pb-4">Faglig udvikling</h2>
+              <p class="text-lg">
+                Styrk kompetencer og opnå ny viden
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
