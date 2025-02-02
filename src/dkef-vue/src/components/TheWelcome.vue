@@ -66,23 +66,46 @@
         <div>
           <h2 class="text-3xl">Arrangementer</h2>
 
-          <p>
+          <div class="py-4">
+            <div class="border-1 border-gray-400 rounded-2xl p-4">
+              <h3 class="text-xl pb-4">Arrangement titel</h3>
+              <div class="p-4 items-center flex justify-between bg-gray-700">
+                <span class="text-lg">Dato</span>
+                <span class="text-xl">Sektion</span>
+                <span class="text-xl">Lokation</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="py-4">
+            <div class="border-1 border-gray-400 rounded-2xl p-4">
+              <h3 class="text-xl pb-4">Arrangement titel</h3>
+              <div class="p-4 items-center flex justify-between bg-gray-700">
+                <span class="text-lg">Dato</span>
+                <span class="text-xl">Sektion</span>
+                <span class="text-xl">Lokation</span>
+              </div>
+            </div>
+          </div>
+          <!-- <p>
             Der er ingen planlagte arrangementer foreløbigt.
-          </p>
+          </p> -->
         </div>
 
         <div>
           <h2 class="text-3xl">Generalforsamlinger</h2>
 
-          <p>
-            Der er ingen planlagte generalforsamlinger foreløbigt.
-          </p>
+          <div class="pt-8">
+            <p class="text-xl">
+              Der er ingen planlagte generalforsamlinger foreløbigt.
+            </p>
+          </div>
         </div>
       </div>
     </div>
 
     <!-- Info section 1 -->
-    <div class="py-32 px-32 flex justify-center">
+    <div class="py-32 px-46 flex justify-center">
       <div class="grid grid-cols-2">
         <div>
           <img width="400" src="@/assets/man-studying.png" alt="Man studying">
@@ -127,14 +150,16 @@
     <div class="py-16 px-32 flex justify-center">
       <div class="grid grid-cols-2 gap-10">
         <div>
-          <h1 class="text-3xl py-8">3 gode grunde til at være medlem</h1>
+          <h1 class="text-3xl py-16">3 gode grunde til at være medlem</h1>
 
-          <p class="text-lg pb-8">
+          <p class="text-lg py-12">
             Stadig i tvivl? Lad os lige skitsere, hvad du får ud af et medlemskab.
           </p>
 
-          <button class="rounded bg-gray-600 h-12 py-2 px-4 cursor-pointer hover:bg-gray-800 text-lg">Bliv
-            medlem</button>
+          <div class="pt-8">
+            <button class="rounded bg-gray-600 h-12 py-2 px-4 cursor-pointer hover:bg-gray-800 text-lg">Bliv
+              medlem</button>
+          </div>
         </div>
 
         <div>
@@ -173,6 +198,105 @@
     </div>
   </div>
 
+  <!-- Member plans -->
+  <div class="py-16">
+    <div class="flex justify-center">
+      <h1 class="text-4xl">Vores medlemstyper</h1>
+    </div>
+    <div class="flex justify-center py-16">
+      <div class="p-4 border-1 rounded-2xl border-gray-500">
+        <div class="pb-8">
+          <h2 class="text-2xl">Bliv medlem</h2>
+        </div>
+        <div class="flex">
+          <h1 class="text-4xl">700,-</h1><span class="px-4 self-center">inkl. moms pr. år</span>
+        </div>
+        <p class="pt-8">
+          Giv dig selv de bedste betingelser for et stærkt uddannelsesforløb.
+        </p>
+        <p class="pt-4 pb-8">
+          Deltag i studieture, del ud af din viden og styrk dit arbejdsnetværk.
+        </p>
+        <button
+          class="flex justify-center rounded bg-gray-600 h-12 py-2 w-full cursor-pointer hover:bg-gray-800 text-lg">Bliv
+          medlem</button>
+        <div class="pt-4">
+          <p class="py-4">✅ Faglig udvikling</p>
+          <p class="pb-4">✅ Styrk dit netværk</p>
+          <p class="pb-4">✅ Mentorordning</p>
+          <p class="pb-4">✅ Studieture og arrangementer</p>
+          <p>✅ Modtag EL + Energi bladet</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- News -->
+    <div class="py-16">
+      <div class="flex justify-center">
+        <div>
+          <div class="flex justify-center pb-8">
+            <h1 class="text-4xl">Nyheder og aktiviteter</h1>
+          </div>
+          <h2 class="text-2xl">Følg med i de seneste nyheder og aktiviteter</h2>
+        </div>
+      </div>
+
+      <div class="py-16 px-32 gap-10 grid grid-cols-3">
+        <div class="border-1 border-gray-600 rounded-2xl p-4">
+          <img width="300" src="@/assets/stickman-bowling.jpeg" alt="activity picture">
+          <h1 class="pt-8 pb-4 text-2xl">Arrangement titel</h1>
+          <h2 class="text-xl pb-4">Arrangement undertitel</h2>
+          <p class="text-lg">Dato</p>
+          <span class="text-lg">Lokation</span>
+        </div>
+        <div class="border-1 border-gray-600 rounded-2xl p-4">
+          <img width="300" src="@/assets/stickman-party.jpeg" alt="activity picture">
+          <h1 class="pt-8 pb-4 text-2xl">Arrangement titel</h1>
+          <h2 class="text-xl pb-4">Arrangement undertitel</h2>
+          <p class="text-lg">Dato</p>
+          <span class="text-lg">Lokation</span>
+        </div>
+        <div class="border-1 border-gray-600 rounded-2xl p-4">
+          <img width="300" src="@/assets/stickmen-driving.jpeg" alt="activity picture">
+          <h1 class="pt-8 pb-4 text-2xl">Arrangement titel</h1>
+          <h2 class="text-xl pb-4">Arrangement undertitel</h2>
+          <p class="text-lg">Dato</p>
+          <span class="text-lg">Lokation</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- News letter -->
+  <div class="pb-16">
+    <div class="grid grid-cols-2 justify-center gap-x-8">
+      <!-- Left Column -->
+      <div class="flex flex-col gap-4 items-end">
+        <div class="w-3/6 h-54">
+          <h1 class="text-4xl">Vil du have besked som én af de første når der sker noget nyt?</h1>
+        </div>
+      </div>
+
+      <!-- Right Column -->
+      <div class="flex flex-col gap-4 items-start">
+        <div class="w-3/6 h-54">
+          <div class="py-4">
+            <input id="name_input" name="name_input" placeholder="Navn" class="rounded bg-gray-800 p-2 w-full"
+              type="text">
+          </div>
+          <div>
+            <input id="email_input" name="email_input" placeholder="Email" class="rounded bg-gray-800 p-2 w-full"
+              type="email">
+          </div>
+          <div class="py-4">
+            <input
+              class="flex justify-center rounded bg-gray-600 h-12 py-2 px-8 cursor-pointer hover:bg-gray-800 text-lg"
+              type="submit" value="Timeld">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
 </template>
 
