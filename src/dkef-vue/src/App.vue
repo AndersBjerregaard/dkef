@@ -1,20 +1,21 @@
 <script setup lang="ts">
 import { RouterView, RouterLink } from 'vue-router'
-// import HelloWorld from './components/HelloWorld.vue'
+import { ref } from 'vue'
+
+const isOpen = ref(false);
 </script>
 
 <template>
   <header>
     <div>
-      <!-- HelloWorld msg="You did it!" /> -->
-
       <nav class="flex bg-gray-700 p-4 w-screen">
         <RouterLink to="/">
-          <div class="w-24">
+          <div class="w-20">
             <img width="100" height="100" src="@/assets/dkef-logo.png" alt="DKEF logo">
           </div>
         </RouterLink>
-        <div class="w-full">
+        <!-- Inline buttons (visible on larger screens ) -->
+        <div class="hidden md:flex md:w-full">
           <div class="flex p-4 justify-end items-center">
             <div class="p-3">
               <button class="rounded bg-gray-600 h-12 w-36 p-2 cursor-pointer hover:bg-gray-800">Medlemsfordele</button>
@@ -34,8 +35,14 @@ import { RouterView, RouterLink } from 'vue-router'
             </div>
           </div>
         </div>
-        <!-- <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink> -->
+
+        <!-- Burger menu (visible on small screens) -->
+        <div class="md:hidden flex w-full p-4 justify-end items-center">
+          <button class="rounded bg-gray-600 h-12 w-36 p-2 cursor-pointer hover:bg-gray-800 text-2xl" @click="isOpen = !isOpen">≡</button>
+          <div v-if="isOpen" class="flex items-center justify-center">
+            <p class="cursor-pointer rounded bg-gray-600 h-12 w-36 p-3 hover:bg-gray-800 text-center">Burger button</p>
+          </div>
+        </div>
       </nav>
     </div>
   </header>
