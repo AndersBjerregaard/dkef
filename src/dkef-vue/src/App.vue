@@ -10,25 +10,27 @@ import { RouterView, RouterLink } from 'vue-router'
 
       <nav class="flex bg-gray-700 p-4 w-screen">
         <RouterLink to="/">
-          <img width="100" height="100" src="@/assets/dkef-logo.png" alt="DKEF logo">
+          <div class="w-24">
+            <img width="100" height="100" src="@/assets/dkef-logo.png" alt="DKEF logo">
+          </div>
         </RouterLink>
         <div class="w-full">
           <div class="flex p-4 justify-end items-center">
             <div class="p-3">
-              <button class="rounded bg-gray-600 h-12 p-2 cursor-pointer hover:bg-gray-800">Medlemsfordele</button>
+              <button class="rounded bg-gray-600 h-12 w-36 p-2 cursor-pointer hover:bg-gray-800">Medlemsfordele</button>
             </div>
             <div class="p-3">
-              <button class="rounded bg-gray-600 h-12 p-2 cursor-pointer hover:bg-gray-800">Arrangementer og
+              <button class="rounded bg-gray-600 h-12 w-52 p-2 cursor-pointer hover:bg-gray-800">Arrangementer og
                 nyheder</button>
             </div>
             <div class="p-3">
-              <button class="rounded bg-gray-600 h-12 p-2 cursor-pointer hover:bg-gray-800">Om foreningen</button>
+              <button class="rounded bg-gray-600 h-12 w-32 p-2 cursor-pointer hover:bg-gray-800">Om foreningen</button>
             </div>
             <div class="p-3">
-              <button class="rounded bg-gray-600 h-12 p-2 cursor-pointer hover:bg-gray-800">Kontakt os</button>
+              <button class="rounded bg-gray-600 h-12 w-24 p-2 cursor-pointer hover:bg-gray-800">Kontakt os</button>
             </div>
             <div class="p-3">
-              <button class="rounded bg-gray-600 h-12 p-2 cursor-pointer hover:bg-gray-800">Log på</button>
+              <button class="rounded bg-gray-600 h-12 w-20 p-2 cursor-pointer hover:bg-gray-800">Log på</button>
             </div>
           </div>
         </div>
