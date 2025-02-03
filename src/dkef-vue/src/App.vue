@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { RouterView, RouterLink } from 'vue-router'
 import { ref } from 'vue'
+import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue'
 
 const isOpen = ref(false);
 </script>
@@ -38,10 +39,24 @@ const isOpen = ref(false);
 
         <!-- Burger menu (visible on small screens) -->
         <div class="md:hidden flex w-full p-4 justify-end items-center">
-          <button class="rounded bg-gray-600 h-12 w-36 p-2 cursor-pointer hover:bg-gray-800 text-2xl" @click="isOpen = !isOpen">≡</button>
+          <!-- <button class="rounded bg-gray-600 h-12 w-36 p-2 cursor-pointer hover:bg-gray-800 text-2xl" @click="isOpen = !isOpen">≡</button>
           <div v-if="isOpen" class="flex items-center justify-center">
             <p class="cursor-pointer rounded bg-gray-600 h-12 w-36 p-3 hover:bg-gray-800 text-center">Burger button</p>
-          </div>
+          </div> -->
+          <Menu>
+            <MenuButton>More</MenuButton>
+            <MenuItems>
+              <MenuItem>
+                <span>Burger item 1</span>
+              </MenuItem>
+              <MenuItem>
+                <span>Burger item 2</span>
+              </MenuItem>
+              <MenuItem>
+                <span>Burger item 3</span>
+              </MenuItem>
+            </MenuItems>
+          </Menu>
         </div>
       </nav>
     </div>
