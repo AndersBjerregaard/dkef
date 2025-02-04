@@ -27,27 +27,29 @@
       </div>
 
       <div class="flex justify-between">
-        <div class="flex items-center justify-center">
-          <img width="75" src="@/assets/cubic.png" alt="CUBIC">
+        <div class="flex items-center justify-center w-24 h-24">
+          <img src="@/assets/cubic.png" alt="CUBIC">
         </div>
 
-        <div class="flex items-center justify-center">
-          <img width="200" src="@/assets/ledvance.png" alt="LEDVANCE">
+        <div class="flex items-center justify-center w-24 h-24">
+          <img src="@/assets/ledvance.png" alt="LEDVANCE">
         </div>
 
-        <div class="flex items-center justify-center">
-          <img width="125" src="@/assets/wexoe.svg" alt="WEXOE">
+        <div class="flex items-center justify-center w-24 h-24">
+          <img src="@/assets/wexoe.svg" alt="WEXOE">
         </div>
 
-        <div class="flex items-center justify-center">
-          <img width="200" src="@/assets/schneider.png" alt="Schneider">
+        <div class="flex items-center justify-center w-24 h-24">
+          <img src="@/assets/schneider.png" alt="Schneider">
         </div>
 
-        <div class="flex items-center justify-center">
-          <img width="150" src="@/assets/lauritz.svg" alt="Lauritz Knudsen">
+        <div class="flex items-center justify-center w-24 h-24">
+          <img src="@/assets/lauritz.svg" alt="Lauritz Knudsen">
         </div>
 
-        <img width="100" src="@/assets/solar.png" alt="Solar">
+        <div class="flex items-center justify-center w-24 h-24">
+          <img src="@/assets/solar.png" alt="Solar">
+        </div>
       </div>
     </div>
 

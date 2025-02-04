@@ -39,11 +39,7 @@ const isOpen = ref(false);
 
         <!-- Burger menu (visible on small screens) -->
         <div class="md:hidden flex w-full p-4 justify-end items-center">
-          <!-- <button class="rounded bg-gray-600 h-12 w-36 p-2 cursor-pointer hover:bg-gray-800 text-2xl" @click="isOpen = !isOpen">≡</button>
-          <div v-if="isOpen" class="flex items-center justify-center">
-            <p class="cursor-pointer rounded bg-gray-600 h-12 w-36 p-3 hover:bg-gray-800 text-center">Burger button</p>
-          </div> -->
-          <div class="fixed text-right">
+          <div class="text-right">
             <Menu>
               <MenuButton
                 class="text-2xl rounded bg-gray-600 h-12 w-20 p-2 cursor-pointer hover:bg-gray-800">
@@ -55,7 +51,7 @@ const isOpen = ref(false);
                 leave-active-class="transition duration-75 ease-in"
                 leave-from-class="transform scale-100 opacity-100"
                 leave-to-class="transform scale-95 opacity-0">
-                <MenuItems class="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-600 rounded-md bg-gray-700 shadow-lg ring-1 ring-black/5 focus:outline-none">
+                <MenuItems class="absolute right-8 mt-2 w-56 origin-top-right divide-y divide-gray-600 rounded-md bg-gray-700 shadow-lg ring-1 ring-black/5 focus:outline-none">
                   <div class="px-1 py-1">
                     <MenuItem v-slot="{ active }">
                       <button :class="[active ? 'bg-gray-800' : 'bg-gray-600', 'group flex w-full items-center rounded-md px-2 py-2 text-sm cursor-pointer']">
