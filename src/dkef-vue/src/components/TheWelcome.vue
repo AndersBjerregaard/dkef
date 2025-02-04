@@ -2,28 +2,22 @@
 
 <template>
   <div>
-    <div class="py-8 px-8 grid grid-cols-2">
-      <div>
-        <div class="pb-20">
-          <h1 class="header1">Dit netværk i elbranchen</h1>
+    <div class="grid grid-cols-2 justify-center gap-x-8">
+      <!-- Left Column -->
+      <div class="flex flex-col gap-4 items-end">
+        <div class="w-5/6">
+          <h1 class="text-4xl py-12">Dit netværk i elbranchen</h1>
+
+          <h2 class="text-xl py-12">Udvid din faglige horisont, bliv en del af fællesskabet og modtaging sparring fra erfarne hænder.</h2>
+
+          <h2 class="text-xl py-12">⭐ 4.8/5 stjerner af vores 100+ anmeldelser.</h2>
         </div>
-
-        <h2 class="text-xl pt-16 pb-16">Udvid din faglige horisont, blev en del af fællesskabet og modtag sparring fra
-          erfarne
-          hænder.
-        </h2>
-
-        <!-- <button>Medlemsfordele</button> -->
-
-        <!-- <button>Eksisterende Medlemmer</button> -->
-
-        <p class="pt-16 bold">
-          ⭐ 4.8/5 stjerner af vores 100+ anmeldelser.
-        </p>
       </div>
-
-      <div class="pl-12">
-        <img width="400" src="@/assets/el-mast.jpeg" alt="An electrical mast">
+      <!--Right Column -->
+      <div class="flex flex-col gap-4 items-start">
+        <div class="w-5/6">
+          <img src="@/assets/el-mast.jpeg" alt="An electrical mast">
+        </div>
       </div>
     </div>
 
