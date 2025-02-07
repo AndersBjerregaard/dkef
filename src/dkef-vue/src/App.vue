@@ -9,12 +9,13 @@ const isOpen = ref(false);
 <template>
   <header>
     <div>
-      <nav class="flex bg-gray-700 p-4 w-screen">
+      <nav class="flex bg-gray-700 p-1 sm:p-4 w-screen">
         <RouterLink to="/">
-          <div class="w-20">
-            <img width="100" height="100" src="@/assets/dkef-logo.png" alt="DKEF logo">
+          <div class="w-10 sm:w-20">
+            <img src="@/assets/dkef-logo.png" alt="DKEF logo">
           </div>
         </RouterLink>
+
         <!-- Inline buttons (visible on larger screens ) -->
         <div class="hidden md:flex md:w-full">
           <div class="flex p-4 w-full justify-end items-center">
@@ -40,11 +41,11 @@ const isOpen = ref(false);
         </div>
 
         <!-- Burger menu (visible on small screens) -->
-        <div class="md:hidden flex w-full p-4 justify-end items-center">
+        <div class="md:hidden flex w-full sm:p-4 justify-end items-center">
           <div class="text-right">
             <Menu>
               <MenuButton
-                class="text-2xl rounded bg-gray-600 h-12 w-20 p-2 cursor-pointer hover:bg-gray-800">
+                class="text-lg sm:text-2xl rounded bg-gray-600 h-8 sm:h-12 w-10 sm:w-20 sm:p-2 cursor-pointer hover:bg-gray-800">
                   ≡</MenuButton>
               <transition
                 enter-active-class="transition duration-100 ease-out"
