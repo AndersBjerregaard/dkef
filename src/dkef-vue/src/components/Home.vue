@@ -134,7 +134,7 @@
       </div>
 
       <div class="flex flex-col gap-4 items-start">
-        <img width="400" src="@/assets/corporate-woman.png" alt="Corporate woman">
+        <img src="@/assets/corporate-woman.png" alt="Corporate woman">
       </div>
     </div>
 
