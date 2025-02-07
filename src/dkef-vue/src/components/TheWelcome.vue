@@ -27,27 +27,27 @@
       </div>
 
       <div class="flex justify-between">
-        <div class="flex items-center justify-center w-24 h-24">
+        <div class="flex items-center justify-center w-24 h-24 lg:w-32 lg:h-32">
           <img src="@/assets/cubic.png" alt="CUBIC">
         </div>
 
-        <div class="flex items-center justify-center w-24 h-24">
+        <div class="flex items-center justify-center w-24 h-24 lg:w-32 lg:h-32">
           <img src="@/assets/ledvance.png" alt="LEDVANCE">
         </div>
 
-        <div class="flex items-center justify-center w-24 h-24">
+        <div class="flex items-center justify-center w-24 h-24 lg:w-32 lg:h-32">
           <img src="@/assets/wexoe.svg" alt="WEXOE">
         </div>
 
-        <div class="flex items-center justify-center w-24 h-24">
+        <div class="flex items-center justify-center w-24 h-24 lg:w-32 lg:h-32">
           <img src="@/assets/schneider.png" alt="Schneider">
         </div>
 
-        <div class="flex items-center justify-center w-24 h-24">
+        <div class="flex items-center justify-center w-24 h-24 lg:w-32 lg:h-32">
           <img src="@/assets/lauritz.svg" alt="Lauritz Knudsen">
         </div>
 
-        <div class="flex items-center justify-center w-24 h-24">
+        <div class="flex items-center justify-center w-24 h-24 lg:w-32 lg:h-32">
           <img src="@/assets/solar.png" alt="Solar">
         </div>
       </div>
@@ -65,10 +65,10 @@
           <div class="py-4">
             <div class="border-1 border-gray-400 rounded-2xl p-4">
               <h3 class="text-xl pb-4">Arrangement titel</h3>
-              <div class="p-4 items-center flex justify-between bg-gray-700">
-                <span class="text-lg">Dato</span>
-                <span class="text-xl">Sektion</span>
-                <span class="text-xl">Lokation</span>
+              <div class="p-4 items-center flex justify-between bg-gray-700 text-sm md:text-base lg:text-lg">
+                <span>Dato</span>
+                <span>Sektion</span>
+                <span>Lokation</span>
               </div>
             </div>
           </div>
@@ -76,10 +76,10 @@
           <div class="py-4">
             <div class="border-1 border-gray-400 rounded-2xl p-4">
               <h3 class="text-xl pb-4">Arrangement titel</h3>
-              <div class="p-4 items-center flex justify-between bg-gray-700">
-                <span class="text-lg">Dato</span>
-                <span class="text-xl">Sektion</span>
-                <span class="text-xl">Lokation</span>
+              <div class="p-4 items-center flex justify-between bg-gray-700 text-sm lg:text-lg">
+                <span>Dato</span>
+                <span>Sektion</span>
+                <span>Lokation</span>
               </div>
             </div>
           </div>
@@ -101,93 +101,87 @@
     </div>
 
     <!-- Info section 1 -->
-    <div class="py-32 px-46 flex justify-center">
-      <div class="grid grid-cols-2">
-        <div>
-          <img width="400" src="@/assets/man-studying.png" alt="Man studying">
-        </div>
+    <div class="py-24 px-8 grid grid-cols-2 justify-center gap-x-8">
+      <div class="flex flex-col gap-4 items-end">
+        <img src="@/assets/man-studying.png" alt="Man studying">
+      </div>
 
-        <div>
-          <h1 class="text-3xl py-16">Sparring og relationer på tværs af branchen</h1>
+      <div class="flex flex-col gap-4 items-start">
+        <h1 class="text-3xl py-4 md:py-8 lg:py-16">Sparring og relationer på tværs af branchen</h1>
 
-          <p class="text-xl pb-8">
-            Med over 550 medlemmer er du garanteret nye forbindelser og indsigter inden for forskellige eltekniske
-            områder.
-          </p>
+        <p class="text-xl pb-4 md:pb-6 lg:pb-8">
+          Med over 550 medlemmer er du garanteret nye forbindelser og indsigter inden for forskellige eltekniske
+          områder.
+        </p>
 
-          <button
-            class="rounded bg-gray-600 h-12 py-2 px-4 cursor-pointer hover:bg-gray-800 text-lg">Medlemsfordele</button>
-        </div>
+        <button
+          class="rounded bg-gray-600 h-12 py-2 px-4 cursor-pointer hover:bg-gray-800 text-lg">Medlemsfordele</button>
       </div>
     </div>
 
     <!-- Info section 2 -->
-    <div class="py-16 px-32 flex justify-center">
-      <div class="grid grid-cols-2">
-        <div>
-          <h1 class="text-3xl py-16">Fokus på faglig udvikling</h1>
+    <div class="py-16 px-8 grid grid-cols-2 justify-center gap-x-8">
+      <div class="flex flex-col gap-4 items-start">
+        <h1 class="text-3xl py-16">Fokus på faglig udvikling</h1>
 
-          <p class="text-xl pb-8">Bliv klogere på de nyeste tendenser og andre specialeområder ved at deltage i
-            arrangementer og
-            virksomhedsbesøg.
-          </p>
+        <p class="text-xl pb-8">Bliv klogere på de nyeste tendenser og andre specialeområder ved at deltage i
+          arrangementer og
+          virksomhedsbesøg.
+        </p>
 
-          <button class="rounded bg-gray-600 h-12 py-2 px-4 cursor-pointer hover:bg-gray-800 text-lg">Bliv
-            medlem</button>
-        </div>
+        <button class="rounded bg-gray-600 h-12 py-2 px-4 cursor-pointer hover:bg-gray-800 text-lg">Bliv
+          medlem</button>
+      </div>
 
-        <div>
-          <img width="400" src="@/assets/corporate-woman.png" alt="Corporate woman">
-        </div>
+      <div class="flex flex-col gap-4 items-start">
+        <img width="400" src="@/assets/corporate-woman.png" alt="Corporate woman">
       </div>
     </div>
 
     <!-- Reasons to become a member -->
-    <div class="py-16 px-32 flex justify-center">
-      <div class="grid grid-cols-2 gap-10">
-        <div>
-          <h1 class="text-3xl py-16">3 gode grunde til at være medlem</h1>
+    <div class="py-16 px-8 grid grid-cols-2 justify-center gap-x-8">
+      <div class="flex flex-col gap-4 items-start">
+        <h1 class="text-3xl py-8">3 gode grunde til at være medlem</h1>
 
-          <p class="text-lg py-12">
-            Stadig i tvivl? Lad os lige skitsere, hvad du får ud af et medlemskab.
-          </p>
+        <p class="text-lg py-12">
+          Stadig i tvivl? Lad os lige skitsere, hvad du får ud af et medlemskab.
+        </p>
 
-          <div class="pt-8">
-            <button class="rounded bg-gray-600 h-12 py-2 px-4 cursor-pointer hover:bg-gray-800 text-lg">Bliv
-              medlem</button>
+        <div class="pt-8">
+          <button class="rounded bg-gray-600 h-12 py-2 px-4 cursor-pointer hover:bg-gray-800 text-lg">Bliv
+            medlem</button>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-4 items-start">
+        <div class="pb-4">
+          <div class="border-gray-500 border-1 rounded-2xl flex justify-center p-2">
+            <div class="py-4">
+              <h2 class="text-2xl pb-4">Sparring</h2>
+              <p class="text-lg">
+                Diskuter og udveksl ideer med andre
+              </p>
+            </div>
           </div>
         </div>
 
-        <div>
-          <div class="pb-4">
-            <div class="border-gray-500 border-1 rounded-2xl flex justify-center">
-              <div class="py-8">
-                <h2 class="text-2xl pb-4">Sparring</h2>
-                <p class="text-lg">
-                  Diskuter og udveksl ideer med andre
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div class="pb-4">
-            <div class="border-gray-500 border-1 rounded-2xl flex justify-center">
-              <div class="py-8">
-                <h2 class="text-2xl pb-4">Netværk</h2>
-                <p class="text-lg">
-                  Få nye forbindelser - og måske venskaber
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div class="border-gray-500 border-1 rounded-2xl flex justify-center">
-            <div class="py-8">
-              <h2 class="text-2xl pb-4">Faglig udvikling</h2>
+        <div class="pb-4">
+          <div class="border-gray-500 border-1 rounded-2xl flex justify-center p-2">
+            <div class="py-4">
+              <h2 class="text-2xl pb-4">Netværk</h2>
               <p class="text-lg">
-                Styrk kompetencer og opnå ny viden
+                Få nye forbindelser - og måske venskaber
               </p>
             </div>
+          </div>
+        </div>
+
+        <div class="border-gray-500 border-1 rounded-2xl flex justify-center p-2">
+          <div class="py-4">
+            <h2 class="text-2xl pb-4">Faglig udvikling</h2>
+            <p class="text-lg">
+              Styrk kompetencer og opnå ny viden
+            </p>
           </div>
         </div>
       </div>
