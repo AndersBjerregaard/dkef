@@ -22,6 +22,11 @@ const router = createRouter({
       name: 'advantages',
       component: () => import('@/views/MemberAdvantagesView.vue'),
     },
+    {
+      path: '/events-and-news',
+      name: 'events-and-news',
+      component: () => import('@/components/EventsAndNews.vue'),
+    },
   ],
 })
 

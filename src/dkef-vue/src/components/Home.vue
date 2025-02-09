@@ -8,7 +8,8 @@
         <div class="w-5/6">
           <h1 class="text-4xl py-12">Dit netværk i elbranchen</h1>
 
-          <h2 class="text-xl py-12">Udvid din faglige horisont, bliv en del af fællesskabet og modtaging sparring fra erfarne hænder.</h2>
+          <h2 class="text-xl py-12">Udvid din faglige horisont, bliv en del af fællesskabet og modtaging sparring fra
+            erfarne hænder.</h2>
 
           <h2 class="text-xl py-12">⭐ 4.8/5 stjerner af vores 100+ anmeldelser.</h2>
         </div>
