@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import EventComponent from './EventComponent.vue';
+// Example items
 const items = ref([1, 2, 3]);
 </script>
 

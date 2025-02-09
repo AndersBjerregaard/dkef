@@ -29,7 +29,10 @@ import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue'
               </RouterLink>
             </div>
             <div class="p-3">
-              <button class="rounded bg-gray-600 h-12 w-32 p-2 cursor-pointer hover:bg-gray-800">Om foreningen</button>
+              <RouterLink to="/about">
+                <button class="rounded bg-gray-600 h-12 w-32 p-2 cursor-pointer hover:bg-gray-800">Om
+                  foreningen</button>
+              </RouterLink>
             </div>
             <div class="p-3">
               <button class="rounded bg-gray-600 h-12 w-24 p-2 cursor-pointer hover:bg-gray-800">Kontakt os</button>
@@ -72,11 +75,14 @@ import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue'
                       </button>
                     </RouterLink>
                     </MenuItem>
-                    <MenuItem v-slot="{ active }">
-                    <button
-                      :class="[active ? 'bg-gray-800' : 'bg-gray-600', 'group flex w-full items-center rounded-md px-2 py-2 text-sm cursor-pointer']">
-                      Om foreningen
-                    </button>
+                    <MenuItem v-slot="{ active, close }">
+                    <RouterLink to="/about">
+                      <button
+                        :class="[active ? 'bg-gray-800' : 'bg-gray-600', 'group flex w-full items-center rounded-md px-2 py-2 text-sm cursor-pointer']"
+                        @click="close">
+                        Om foreningen
+                      </button>
+                    </RouterLink>
                     </MenuItem>
                     <MenuItem v-slot="{ active }">
                     <button
