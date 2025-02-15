@@ -1,9 +1,10 @@
-<script lang="ts">
-import EventsAndNews from '@/components/EventsAndNews.vue';
+<script setup lang="ts">
+import EventsAndNewsComponent from '@/components/EventsAndNewsComponent.vue';
+
 </script>
 
 <template>
   <main>
-    <EventsAndNews />
+    <EventsAndNewsComponent />
   </main>
 </template>

@@ -35,7 +35,9 @@ import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue'
               </RouterLink>
             </div>
             <div class="p-3">
-              <button class="rounded bg-gray-600 h-12 w-24 p-2 cursor-pointer hover:bg-gray-800">Kontakt os</button>
+              <RouterLink to="/contact">
+                <button class="rounded bg-gray-600 h-12 w-24 p-2 cursor-pointer hover:bg-gray-800">Kontakt os</button>
+              </RouterLink>
             </div>
             <div class="p-3">
               <button class="rounded bg-gray-600 h-12 w-20 p-2 cursor-pointer hover:bg-gray-800">Log på</button>

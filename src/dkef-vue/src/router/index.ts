@@ -25,7 +25,12 @@ const router = createRouter({
     {
       path: '/events-and-news',
       name: 'events-and-news',
-      component: () => import('@/components/EventsAndNews.vue'),
+      component: () => import('@/views/EventsAndNewsView.vue'),
+    },
+    {
+      path: '/contact',
+      name: 'contact',
+      component: () => import('@/views/ContactView.vue'),
     },
   ],
 })

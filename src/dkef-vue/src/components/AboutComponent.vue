@@ -1,4 +1,6 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import ContactFormularComponent from '@/components/ContactFormularComponent.vue'
+</script>
 
 <template>
   <div class="py-12">
@@ -69,7 +71,7 @@
         </div>
       </div>
     </div>
-    <div class="flex justify-center items-center px-4 gap-x-4 pb-12">
+    <div class="flex justify-center items-center px-4 gap-x-4 pb-24">
       <div class="w-[45%] h-96">
         <div class="flex justify-center items-center text-center">
           <h1 class="text-2xl pb-4">Sekretariat</h1>
@@ -95,32 +97,7 @@
           </div>
         </div>
       </div>
-      <div class="w-[45%] flex-row h-96">
-        <h1 class="text-2xl pb-4">Kontakt os</h1>
-        <label for="name_input">Navn</label>
-        <br>
-        <input id="name_input" name="name_input" placeholder="Navn" type="text">
-        <br>
-        <label for="phone_input">Telefon</label>
-        <br>
-        <input id="phone_input" name="phone_input" placeholder="Telefon" type="text">
-        <br>
-        <label for="email_input">Email</label>
-        <br>
-        <input id="email_input" name="email_input" placeholder="Email" type="email">
-        <br>
-        <div class="py-2">
-          <label class="text-xl" for="message_input">Besked</label>
-          <br>
-          <textarea class="w-full h-32 bg-gray-800 border-0 rounded-2xl p-2" id="message_input" name="message_input"
-            placeholder="Skriv din besked her"></textarea>
-        </div>
-        <br>
-        <div>
-          <input class="flex justify-center rounded bg-gray-600 h-12 px-8 cursor-pointer hover:bg-gray-800 text-lg"
-            type="submit" value="Send besked">
-        </div>
-      </div>
+      <ContactFormularComponent />
     </div>
   </div>
 </template>
