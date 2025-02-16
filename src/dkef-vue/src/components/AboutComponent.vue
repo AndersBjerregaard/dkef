@@ -57,7 +57,7 @@ import ContactFormularComponent from '@/components/ContactFormularComponent.vue'
       </div>
       <div class="flex-row py-12">
         <div class="flex justify-center items-center text-center">
-          <h1 class="text-9xl font-serif">"</h1>
+          <h1 class="text-9xl font-serif">’’</h1>
         </div>
         <div class="flex justify-center items-center text-center pb-6">
           <h1 class="text-4xl">Udvid din faglige horisont, bliv en del af fællesskabet og modtag sparring fra erfarne
@@ -67,7 +67,7 @@ import ContactFormularComponent from '@/components/ContactFormularComponent.vue'
           <h2 class="text-2xl">Generelsekretær, René Kjemtrup</h2>
         </div>
         <div class="flex justify-center items-center text-center">
-          <h1 class="text-9xl font-serif">"</h1>
+          <h1 class="text-9xl font-serif">’’</h1>
         </div>
       </div>
     </div>
