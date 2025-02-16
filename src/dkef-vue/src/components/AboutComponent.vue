@@ -97,7 +97,10 @@ import ContactFormularComponent from '@/components/ContactFormularComponent.vue'
           </div>
         </div>
       </div>
-      <ContactFormularComponent />
+      <div class="w-[45%]">
+        <h1 class="text-2xl pb-4">Kontakt os</h1>
+        <ContactFormularComponent />
+      </div>
     </div>
   </div>
 </template>

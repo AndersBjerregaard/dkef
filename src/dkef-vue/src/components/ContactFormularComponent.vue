@@ -1,8 +1,7 @@
 <script setup lang="ts"></script>
 
 <template>
-  <div class="w-[45%] flex-row h-96">
-    <h1 class="text-2xl pb-4">Kontakt os</h1>
+  <div class="flex-row h-96">
     <label for="name_input">Navn</label>
     <br>
     <input class="w-full bg-gray-800 border-0 rounded-xl p-2" id="name_input" name="name_input" placeholder="Navn"
