@@ -77,7 +77,7 @@ app.MapGet("/contacts/seed", async (ContactContext context) => {
                 values[column] = columnValue;
                 column++;
                 columnValue = string.Empty;
-            } else {
+            } else if (character != '"') {
                 columnValue += character;
             }
             i++;
