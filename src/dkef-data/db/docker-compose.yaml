@@ -29,5 +29,8 @@ services:
       - PGADMIN_LISTEN_PORT=80
     ports:
       - 8080:80
+    volumes:
+      - ./config/pgpassfile:/pgadmin4/pgpassfile
+      - ./config/servers.json:/pgadmin4/servers.json
     depends_on:
       - db

@@ -1,4 +1,4 @@
 src/dkef-data/data/*
 **/bin/*
 **/obj/*
-src/dkef-data/db/*
+src/dkef-data/db/data/*
