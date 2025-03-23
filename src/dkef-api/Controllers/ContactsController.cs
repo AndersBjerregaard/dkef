@@ -6,11 +6,13 @@ namespace Dkef.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class ContactController(IContactRepository repository) : ControllerBase {
+public class ContactsController(IContactRepository repository) : ControllerBase {
 
     [HttpGet]
-    public async Task<IActionResult> GetMultiple([FromQuery] int take = 10, [FromQuery] int skip = 0) 
-        => Ok(await repository.GetMultipleAsync(take, skip));
+    public async Task<IActionResult> GetMultiple([FromQuery] int take = 10, [FromQuery] int skip = 0) {
+        if (take > 50) take = 50;
+        return Ok(await repository.GetMultipleAsync(take, skip));
+    }
 
     [HttpGet]
     [Route("{id}")]
