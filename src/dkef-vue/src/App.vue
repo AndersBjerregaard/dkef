@@ -32,6 +32,12 @@ function openModal() {
         <div class="hidden md:flex md:w-full">
           <div class="flex p-4 w-full justify-end items-center">
             <div class="p-3">
+              <RouterLink to="/members">
+                <button class="rounded bg-gray-600 h-12 w-36 p-2 cursor-pointer hover:bg-gray-800">Medlemmer
+                  (auth)</button>
+              </RouterLink>
+            </div>
+            <div class="p-3">
               <RouterLink to="/advantages">
                 <button
                   class="rounded bg-gray-600 h-12 w-36 p-2 cursor-pointer hover:bg-gray-800">Medlemsfordele</button>
@@ -112,6 +118,15 @@ function openModal() {
                 <MenuItems
                   class="absolute right-8 mt-2 w-56 origin-top-right divide-y divide-gray-600 rounded-md bg-gray-700 shadow-lg ring-1 ring-black/5 focus:outline-none">
                   <div class="px-1 py-1">
+                    <MenuItem v-slot="{ active, close }">
+                    <RouterLink to="/members">
+                      <button
+                        :class="[active ? 'bg-gray-800' : 'bg-gray-600', 'group flex w-full items-center rounded-md px-2 py-2 text-sm cursor-pointer']"
+                        @click="close">
+                        Medlemmer (auth)
+                      </button>
+                    </RouterLink>
+                    </MenuItem>
                     <MenuItem v-slot="{ active, close }">
                     <RouterLink to="/advantages">
                       <button
