@@ -2,3 +2,4 @@ src/dkef-data/data/*
 **/bin/*
 **/obj/*
 src/dkef-data/db/data/*
+src/dkef-data/db/backups/*
