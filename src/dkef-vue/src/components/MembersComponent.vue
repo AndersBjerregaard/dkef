@@ -1,7 +1,8 @@
 <script setup lang="ts">
+import MemberComponent from './MemberComponent.vue';
 import { ref } from 'vue';
 
-const items = ref([{ name: 'Nam' }, { name: 'Num' }])
+const items = ref([{ Name: 'Nam' }, { Name: 'Num' }])
 </script>
 
 <template>
@@ -10,9 +11,7 @@ const items = ref([{ name: 'Nam' }, { name: 'Num' }])
       <h1 class="text-4xl py-8">Members List</h1>
     </div>
     <ul>
-      <li v-for="(item, index) in items" v-bind:key="index">
-
-      </li>
+      <MemberComponent v-for="(item, index) in items" :key="index" :contact="item" />
     </ul>
   </div>
 </template>
