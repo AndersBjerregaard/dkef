@@ -2,7 +2,7 @@
 import MemberComponent from './MemberComponent.vue';
 import { ref } from 'vue';
 
-const items = ref([{ Name: 'Nam' }, { Name: 'Num' }])
+const items = ref([{ Name: 'John' }, { Name: 'Anders' }, { Name: 'Henrik' }])
 </script>
 
 <template>
