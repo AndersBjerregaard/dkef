@@ -32,6 +32,18 @@ bun dev
 bun run build
 ```
 
+### Build for specific environment
+
+```sh
+bun run build:staging
+```
+
+### Preview compiled and built artifact
+
+```sh
+bun run preview
+```
+
 ### Run Unit Tests with [Vitest](https://vitest.dev/)
 
 ```sh
