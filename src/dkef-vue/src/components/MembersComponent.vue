@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import MemberComponent from './MemberComponent.vue';
 import { ref } from 'vue';
+import apiUrl from '@/services/apiservice';
+
+console.info('Api url: ', apiUrl);
 
 const items = ref([{ Name: 'John' }, { Name: 'Anders' }, { Name: 'Henrik' }])
 </script>
