@@ -1,11 +1,18 @@
 <script setup lang="ts">
+import apiservice from '@/services/apiservice';
 import MemberComponent from './MemberComponent.vue';
 import { ref } from 'vue';
-import apiUrl from '@/services/apiservice';
-
-console.info('Api url: ', apiUrl);
 
 const items = ref([{ Name: 'John' }, { Name: 'Anders' }, { Name: 'Henrik' }])
+
+apiservice.get('/contacts')
+  .then(function (response) {
+    console.info(response);
+  })
+  .catch(function (error) {
+    console.error(error);
+  })
+
 </script>
 
 <template>
