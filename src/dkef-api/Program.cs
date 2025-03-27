@@ -5,7 +5,20 @@ using Dkef.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 
+var CorsPolicy = "_dkefOrigins";
+
 var builder = WebApplication.CreateBuilder(args);
+
+// Cors policy must be set to specific origins
+// in order to allow credentials
+builder.Services.AddCors(options => {
+    options.AddPolicy(name: CorsPolicy,
+        policy => {
+            policy.AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowAnyOrigin();
+    });
+});
 
 builder.Services.AddControllers();
 
@@ -27,6 +40,7 @@ builder.Services.AddTransient<IContactRepository>(x => {
 
 var app = builder.Build();
 
+// Database migration
 using (var scope = app.Services.CreateScope()) {
     var context = scope.ServiceProvider.GetService<ContactContext>();
     context!.Database.Migrate();
@@ -38,6 +52,7 @@ using (var scope = app.Services.CreateScope()) {
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    app.UseDeveloperExceptionPage();
     app.MapOpenApi();
     app.MapScalarApiReference(options => {
         options
@@ -48,6 +63,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors(CorsPolicy);
+
+// app.UseAuthorization();
 
 app.MapControllers();
 
