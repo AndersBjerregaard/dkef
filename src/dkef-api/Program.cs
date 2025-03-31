@@ -40,14 +40,14 @@ builder.Services.AddTransient<IContactRepository>(x => {
 
 var app = builder.Build();
 
-// Database migration
-using (var scope = app.Services.CreateScope()) {
-    var context = scope.ServiceProvider.GetService<ContactContext>();
-    context!.Database.Migrate();
-    if (app.Environment.IsDevelopment()) {
-        await ContactContext.SeedAsync(context);
-    }
-}
+// // Database migration
+// using (var scope = app.Services.CreateScope()) {
+//     var context = scope.ServiceProvider.GetService<ContactContext>();
+//     context!.Database.Migrate();
+//     if (app.Environment.IsDevelopment()) {
+//         await ContactContext.SeedAsync(context);
+//     }
+// }
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
