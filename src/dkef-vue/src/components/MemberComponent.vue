@@ -35,15 +35,30 @@ interface Contact {
   workTasks: string
 }
 
-const props = defineProps<{ contact?: Contact }>();
+const props = defineProps<{ contact?: Contact, index: number }>();
 
-console.info(props.contact);
+
 
 </script>
 
 <template>
-  <div class="border-x-2 border-gray-800 w-full py-1">
-    <p>{{ props.contact?.firstName }}</p>
+  <div class="border-x-2 border-gray-600 w-full py-1 justify-between flex"
+    :class="{ 'bg-black': index % 2 == 0, 'bg-gray-800': index % 2 == 1 }">
+    <div class="border-b-2 border-r-2 border-gray-800 h-10 flex-1 min-w-0 flex justify-center">
+      <span class="truncate">{{ props.contact?.firstName }}</span>
+    </div>
+    <div class="border-b-2 border-r-2 border-gray-800 h-10 flex-1 min-w-0 flex justify-center">
+      <span class="truncate">{{ props.contact?.email }}</span>
+    </div>
+    <div class="border-b-2 border-r-2 border-gray-800 h-10 flex-1 min-w-0 flex justify-center">
+      <span class="truncate">{{ props.contact?.privatePhone }}</span>
+    </div>
+    <div class="border-b-2 border-r-2 border-gray-800 h-10 flex-1 min-w-0 flex justify-center">
+      <span class="truncate">{{ props.contact?.primarySection }}</span>
+    </div>
+    <div class="border-b-2 border-gray-800 h-10 flex-1 min-w-0 flex justify-center">
+      <span class="truncate">{{ props.contact?.privateAddress }}</span>
+    </div>
   </div>
 </template>
 

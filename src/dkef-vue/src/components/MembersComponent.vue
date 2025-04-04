@@ -2,6 +2,7 @@
 import apiservice from '@/services/apiservice';
 import MemberComponent from './MemberComponent.vue';
 import MemberHeaderComponent from './MemberHeaderComponent.vue';
+import { onMounted, ref } from 'vue';
 
 interface Contact {
   attInvoice: string,
@@ -38,16 +39,22 @@ interface Contact {
   workTasks: string
 }
 
-let items: Contact[] = [];
+const items = ref([]);
 
-apiservice.get('/contacts')
-  .then(function (response) {
-    items = response.data.collection;
-    console.info(items);
-  })
-  .catch(function (error) {
-    console.error(error);
-  })
+function fetchItems() {
+  apiservice.get('/contacts')
+    .then(function (response) {
+      items.value = response.data.collection;
+      console.info(items);
+    })
+    .catch(function (error) {
+      console.error(error);
+    })
+}
+
+onMounted(
+  fetchItems
+);
 
 </script>
 
@@ -66,7 +73,7 @@ apiservice.get('/contacts')
           <MemberHeaderComponent :header="'Addresse'" />
         </div>
         <div class="w-full justify-between border-2 border-gray-800">
-          <MemberComponent v-for="(item, index) in items" :key="index" :contact="item" />
+          <MemberComponent v-for="(item, index) in items" :key="index" :contact="item" :index="index" />
         </div>
       </div>
     </div>
