@@ -1,6 +1,9 @@
 <script setup lang="ts">
+import { Sort } from '@/types/members';
 
-const props = defineProps<{ header?: string }>()
+const props = defineProps<{ header: string, sort: Sort }>()
+
+// TODO: Render header different depending on sort, and create sort click event to emit to parent component
 
 </script>
 
