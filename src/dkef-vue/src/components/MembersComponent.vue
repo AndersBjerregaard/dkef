@@ -59,7 +59,7 @@ onMounted(
 </script>
 
 <template>
-  <div class="justify-center items-center text-center members-list">
+  <div class="pb-20 justify-center items-center text-center members-list">
     <div >
       <div class="py-8">
         <h1 class="text-4xl py-8">Members List</h1>
