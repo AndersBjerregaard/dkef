@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import apiservice from '@/services/apiservice';
+import urlservice from '@/services/urlservice';
 import { Sort } from '@/types/members'
 import MemberComponent from './MemberComponent.vue';
 import MemberHeaderComponent from './MemberHeaderComponent.vue';
@@ -8,7 +9,7 @@ import { onMounted, ref } from 'vue';
 const items = ref([]);
 
 function fetchItems() {
-  apiservice.get('/contacts')
+  apiservice.get(urlservice.getContacts())
     .then(function (response) {
       items.value = response.data.collection;
       console.info(items);
