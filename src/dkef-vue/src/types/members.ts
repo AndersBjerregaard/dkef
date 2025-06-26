@@ -38,3 +38,7 @@ export enum Sort {
   Asc = "asc",
   Desc = "desc"
 }
+
+export interface ColumnSortState {
+  [key: string]: Sort;
+}

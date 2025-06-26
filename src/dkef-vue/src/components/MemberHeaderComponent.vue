@@ -1,35 +1,43 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { computed } from 'vue';
 import { Sort } from '@/types/members';
 
-const props = defineProps<{ header: string, sort: Sort }>()
+const props = defineProps<{ header: string, modelValue: Sort }>()
+
 const emit = defineEmits(['update:sort']);
 
-const currentSortDirection = ref(props.sort);
+// const currentSortDirection = ref(props.sort);
 
 const sortArrow = computed(() => {
-  if (props.sort === Sort.None) {
+  if (props.modelValue === Sort.None) {
     return '';
   }
-  return currentSortDirection.value === Sort.Asc ? '&#9650;' : '&#9660;'; // Up arrow or down arrow
+  return props.modelValue === Sort.Asc ? '&#9650;' : '&#9660;'; // Up arrow or down arrow
 });
 
 const handleClick = () => {
-  let newDirection = Sort.Asc;
-  if (props.sort === Sort.None) {
-    // Toggle direction if already sorting by this header
-    newDirection = currentSortDirection.value === Sort.Asc ? Sort.Desc : Sort.Asc;
-  }
-  currentSortDirection.value = newDirection; // Update internal state
+  let newDirection: Sort;
 
-  // Emit event to parent with new information
+  if (props.modelValue === Sort.None) {
+    // If not currently sorted, start with ascending
+    newDirection = Sort.Asc
+  } else if (props.modelValue === Sort.Asc) {
+    // If currently Ascending, toggle to Descending
+    newDirection = Sort.Desc;
+  } else {
+    // If currently Descending, toggle back to None
+    newDirection = Sort.None;
+  }
+
+  // Emit the new sort direction for *this* header.
+  // The parent will be responsible for updating the global stae.
   emit('update:sort', { key: props.header, sort: newDirection });
 }
 </script>
 
 <template>
   <div class="border-x-2 border-gray-800 w-full py-1 cursor-pointer" @click="handleClick">
-    <h2 class="text-lg overflow-ellipsis flex items-center justify-between">
+    <h2 class="text-lg overflow-ellipsis flex items-center justify-center">
       <span>{{ props.header }}</span>
       <span v-html="sortArrow" class="ml-2"></span>
     </h2>

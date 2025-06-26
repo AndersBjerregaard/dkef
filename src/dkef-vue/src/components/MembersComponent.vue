@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import apiservice from '@/services/apiservice';
 import urlservice from '@/services/urlservice';
-import { Sort } from '@/types/members'
+import { type ColumnSortState, Sort } from '@/types/members'
 import MemberComponent from './MemberComponent.vue';
 import MemberHeaderComponent from './MemberHeaderComponent.vue';
 import { onMounted, ref } from 'vue';
@@ -23,7 +23,28 @@ onMounted(
   fetchItems
 );
 
-// TODO: Hook into sort clicked event from MemberHeaderComponent
+const columnSortStates = ref<ColumnSortState>({
+  name: Sort.None,
+  email: Sort.None,
+  phone: Sort.None,
+  section: Sort.None,
+  adddress: Sort.None
+});
+
+// Function to handle update from MemberHeaderComponent
+const handleSortUpdate = (headerKey: string, newSortDirection: Sort) => {
+  // Reset all other headers to Sort.None
+  for (const key in columnSortStates.value) {
+    if (key !== headerKey) {
+      columnSortStates.value[key] = Sort.None;
+    }
+  }
+  // Set the new sort direction for the clicked header
+  columnSortStates.value[headerKey] = newSortDirection;
+
+  // TODO: Re-sort list data
+  console.info('Sorting by ', headerKey, newSortDirection);
+};
 
 </script>
 
@@ -35,11 +56,26 @@ onMounted(
       </div>
       <div class="py-4">
         <div class="flex w-full justify-between border-2 border-gray-800">
-          <MemberHeaderComponent :header="'Navn'" :sort="Sort.None" />
-          <MemberHeaderComponent :header="'Email'" :sort="Sort.None" />
-          <MemberHeaderComponent :header="'Telefon Nr.'" :sort="Sort.None" />
-          <MemberHeaderComponent :header="'Primær Sektion'" :sort="Sort.None" />
-          <MemberHeaderComponent :header="'Addresse'" :sort="Sort.None" />
+          <MemberHeaderComponent
+            :header="'Navn'"
+            v-model="columnSortStates.name"
+            @update:sort="(newValue) => handleSortUpdate('name', newValue)"/>
+          <MemberHeaderComponent
+            :header="'Email'"
+            v-model="columnSortStates.email"
+            @update:sort="(newValue) => handleSortUpdate('email', newValue)"/>
+          <MemberHeaderComponent
+            :header="'Telefon Nr.'"
+            v-model="columnSortStates.phone"
+            @update:sort="(newValue) => handleSortUpdate('phone', newValue)"/>
+          <MemberHeaderComponent
+            :header="'Primær Sektion'"
+            v-model="columnSortStates.section"
+            @update:sort="(newValue) => handleSortUpdate('section', newValue)"/>
+          <MemberHeaderComponent
+            :header="'Addresse'"
+            v-model="columnSortStates.address"
+            @update:sort="(newValue) => handleSortUpdate('address', newValue)"/>
         </div>
         <div class="w-full justify-between border-2 border-gray-800">
           <MemberComponent v-for="(item, index) in items" :key="index" :contact="item" :index="index" />
