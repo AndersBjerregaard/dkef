@@ -13,7 +13,6 @@ function fetchItems() {
     .get(urlservice.getContacts())
     .then(function (response) {
       items.value = response.data.collection
-      console.info(items)
     })
     .catch(function (error) {
       console.error(error)
@@ -41,19 +40,8 @@ const handleSortUpdate = (headerKey: string, newSortDirection: Sort) => {
   // Set the new sort direction for the clicked header
   columnSortStates.value[headerKey] = newSortDirection
 
-  // Re-sort list data
-  items.value = [...items.value].sort((a, b) => {
-    const aValue = a[headerKey as keyof typeof a]
-    const bValue = b[headerKey as keyof typeof b]
-
-    if (newSortDirection === Sort.Asc) {
-      return aValue < bValue ? -1 : aValue > bValue ? 1 : 0
-    } else {
-      return aValue < bValue ? 1 : aValue > bValue ? -1 : 0
-    }
-  })
-
-  console.info('Sorted by ', headerKey, newSortDirection, items.value)
+  // TODO: Sort
+  console.info('Sorted by ', headerKey, newSortDirection)
 }
 </script>
 
@@ -65,34 +53,19 @@ const handleSortUpdate = (headerKey: string, newSortDirection: Sort) => {
       </div>
       <div class="py-4">
         <div class="flex w-full justify-between border-2 border-gray-800">
-          <MemberHeaderComponent
-            :header="'Navn'"
-            @update:sort="(newValue: Sort) => handleSortUpdate('name', newValue)"
-          />
-          <MemberHeaderComponent
-            :header="'Email'"
-            @update:sort="(newValue: Sort) => handleSortUpdate('email', newValue)"
-          />
-          <MemberHeaderComponent
-            :header="'Telefon Nr.'"
-            @update:sort="(newValue: Sort) => handleSortUpdate('phone', newValue)"
-          />
-          <MemberHeaderComponent
-            :header="'Primær Sektion'"
-            @update:sort="(newValue: Sort) => handleSortUpdate('section', newValue)"
-          />
-          <MemberHeaderComponent
-            :header="'Addresse'"
-            @update:sort="(newValue: Sort) => handleSortUpdate('address', newValue)"
-          />
+          <MemberHeaderComponent :header="'Navn'" :currentSort="columnSortStates.name"
+            @update:sort="(newValue: Sort) => handleSortUpdate('name', newValue)" />
+          <MemberHeaderComponent :header="'Email'" :currentSort="columnSortStates.email"
+            @update:sort="(newValue: Sort) => handleSortUpdate('email', newValue)" />
+          <MemberHeaderComponent :header="'Telefon Nr.'" :currentSort="columnSortStates.phone"
+            @update:sort="(newValue: Sort) => handleSortUpdate('phone', newValue)" />
+          <MemberHeaderComponent :header="'Primær Sektion'" :currentSort="columnSortStates.section"
+            @update:sort="(newValue: Sort) => handleSortUpdate('section', newValue)" />
+          <MemberHeaderComponent :header="'Addresse'" :currentSort="columnSortStates.address"
+            @update:sort="(newValue: Sort) => handleSortUpdate('address', newValue)" />
         </div>
         <div class="w-full justify-between border-2 border-gray-800">
-          <MemberComponent
-            v-for="(item, index) in items"
-            :key="index"
-            :contact="item"
-            :index="index"
-          />
+          <MemberComponent v-for="(item, index) in items" :key="index" :contact="item" :index="index" />
         </div>
       </div>
     </div>

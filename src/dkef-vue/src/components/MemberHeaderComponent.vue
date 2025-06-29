@@ -1,41 +1,46 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue'; // Import watch
 import { Sort } from '@/types/members';
 
-const props = defineProps<{ header: string }>()
+const props = defineProps<{
+  header: string;
+  currentSort: Sort; // New prop to receive the sort state from parent
+}>();
 
 const emit = defineEmits(['update:sort']);
 
-// const currentSortDirection = ref(props.sort);
+// Use a local ref to manage the state internally for click logic,
+// but keep it synchronized with the prop.
+const internalSortDirection = ref(props.currentSort);
 
-const currentSortDirection = ref(Sort.None);
+// Watch for changes in the currentSort prop and update the internal ref
+watch(() => props.currentSort, (newVal) => {
+  internalSortDirection.value = newVal;
+});
 
 const sortArrow = computed(() => {
-  if (currentSortDirection.value === Sort.None) {
+  if (internalSortDirection.value === Sort.None) {
     return '';
   }
-  return currentSortDirection.value === Sort.Asc ? '&#9650;' : '&#9660;'; // Up arrow or down arrow
+  return internalSortDirection.value === Sort.Asc ? '&#9650;' : '&#9660;'; // Up arrow or down arrow
 });
 
 const handleClick = () => {
   let newDirection: Sort;
 
-  if (currentSortDirection.value === Sort.None) {
-    // If not currently sorted, start with ascending
-    newDirection = Sort.Asc
-  } else if (currentSortDirection.value === Sort.Asc) {
-    // If currently Ascending, toggle to Descending
+  if (internalSortDirection.value === Sort.None) {
+    newDirection = Sort.Asc;
+  } else if (internalSortDirection.value === Sort.Asc) {
     newDirection = Sort.Desc;
   } else {
-    // If currently Descending, toggle back to None
     newDirection = Sort.None;
   }
 
-  currentSortDirection.value = newDirection;
-  // Emit the new sort direction for *this* header.
-  // The parent will be responsible for updating the global stae.
-  emit('update:sort', { key: props.header, sort: newDirection });
-}
+  // Do not update internalSortDirection directly here based on newDirection.
+  // Instead, emit the event, and let the parent update the prop, which
+  // will then flow back down and update internalSortDirection via the watcher.
+  emit('update:sort', newDirection); // No need for an object if you only pass the new direction
+};
 </script>
 
 <template>
