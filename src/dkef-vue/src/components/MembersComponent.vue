@@ -4,7 +4,7 @@ import urlservice from '@/services/urlservice'
 import { type ColumnSortState, Sort } from '@/types/members'
 import MemberComponent from './MemberComponent.vue'
 import MemberHeaderComponent from './MemberHeaderComponent.vue'
-import { onMounted, ref } from 'vue'
+import { onMounted, reactive, ref } from 'vue'
 
 const items = ref([])
 
@@ -12,7 +12,8 @@ function fetchItems() {
   apiservice
     .get(urlservice.getContacts())
     .then(function (response) {
-      items.value = response.data.collection
+      // Make each item reactive
+      items.value = response.data.collection.map((item: any) => reactive(item))
     })
     .catch(function (error) {
       console.error(error)
@@ -37,11 +38,14 @@ const handleSortUpdate = (headerKey: string, newSortDirection: Sort) => {
       columnSortStates.value[key] = Sort.None
     }
   }
+
   // Set the new sort direction for the clicked header
   columnSortStates.value[headerKey] = newSortDirection
 
   // TODO: Sort
-  console.info('Sorted by ', headerKey, newSortDirection)
+  console.info('items before: ', items.value);
+  items.value[0].firstName = 'John';
+  console.info('items after: ', items.value);
 }
 </script>
 
