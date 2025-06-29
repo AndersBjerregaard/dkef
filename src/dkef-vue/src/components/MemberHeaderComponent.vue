@@ -1,27 +1,29 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { Sort } from '@/types/members';
 
-const props = defineProps<{ header: string, modelValue: Sort }>()
+const props = defineProps<{ header: string }>()
 
 const emit = defineEmits(['update:sort']);
 
 // const currentSortDirection = ref(props.sort);
 
+const currentSortDirection = ref(Sort.None);
+
 const sortArrow = computed(() => {
-  if (props.modelValue === Sort.None) {
+  if (currentSortDirection.value === Sort.None) {
     return '';
   }
-  return props.modelValue === Sort.Asc ? '&#9650;' : '&#9660;'; // Up arrow or down arrow
+  return currentSortDirection.value === Sort.Asc ? '&#9650;' : '&#9660;'; // Up arrow or down arrow
 });
 
 const handleClick = () => {
   let newDirection: Sort;
 
-  if (props.modelValue === Sort.None) {
+  if (currentSortDirection.value === Sort.None) {
     // If not currently sorted, start with ascending
     newDirection = Sort.Asc
-  } else if (props.modelValue === Sort.Asc) {
+  } else if (currentSortDirection.value === Sort.Asc) {
     // If currently Ascending, toggle to Descending
     newDirection = Sort.Desc;
   } else {
@@ -29,6 +31,7 @@ const handleClick = () => {
     newDirection = Sort.None;
   }
 
+  currentSortDirection.value = newDirection;
   // Emit the new sort direction for *this* header.
   // The parent will be responsible for updating the global stae.
   emit('update:sort', { key: props.header, sort: newDirection });

@@ -1,56 +1,65 @@
 <script setup lang="ts">
-import apiservice from '@/services/apiservice';
-import urlservice from '@/services/urlservice';
+import apiservice from '@/services/apiservice'
+import urlservice from '@/services/urlservice'
 import { type ColumnSortState, Sort } from '@/types/members'
-import MemberComponent from './MemberComponent.vue';
-import MemberHeaderComponent from './MemberHeaderComponent.vue';
-import { onMounted, ref } from 'vue';
+import MemberComponent from './MemberComponent.vue'
+import MemberHeaderComponent from './MemberHeaderComponent.vue'
+import { onMounted, ref } from 'vue'
 
-const items = ref([]);
+const items = ref([])
 
 function fetchItems() {
-  apiservice.get(urlservice.getContacts())
+  apiservice
+    .get(urlservice.getContacts())
     .then(function (response) {
-      items.value = response.data.collection;
-      console.info(items);
+      items.value = response.data.collection
+      console.info(items)
     })
     .catch(function (error) {
-      console.error(error);
+      console.error(error)
     })
 }
 
-onMounted(
-  fetchItems
-);
+onMounted(fetchItems)
 
 const columnSortStates = ref<ColumnSortState>({
   name: Sort.None,
   email: Sort.None,
   phone: Sort.None,
   section: Sort.None,
-  adddress: Sort.None
-});
+  address: Sort.None,
+})
 
 // Function to handle update from MemberHeaderComponent
 const handleSortUpdate = (headerKey: string, newSortDirection: Sort) => {
   // Reset all other headers to Sort.None
   for (const key in columnSortStates.value) {
     if (key !== headerKey) {
-      columnSortStates.value[key] = Sort.None;
+      columnSortStates.value[key] = Sort.None
     }
   }
   // Set the new sort direction for the clicked header
-  columnSortStates.value[headerKey] = newSortDirection;
+  columnSortStates.value[headerKey] = newSortDirection
 
-  // TODO: Re-sort list data
-  console.info('Sorting by ', headerKey, newSortDirection);
-};
+  // Re-sort list data
+  items.value = [...items.value].sort((a, b) => {
+    const aValue = a[headerKey as keyof typeof a]
+    const bValue = b[headerKey as keyof typeof b]
 
+    if (newSortDirection === Sort.Asc) {
+      return aValue < bValue ? -1 : aValue > bValue ? 1 : 0
+    } else {
+      return aValue < bValue ? 1 : aValue > bValue ? -1 : 0
+    }
+  })
+
+  console.info('Sorted by ', headerKey, newSortDirection, items.value)
+}
 </script>
 
 <template>
   <div class="pb-20 justify-center items-center text-center members-list">
-    <div >
+    <div>
       <div class="py-8">
         <h1 class="text-4xl py-8">Members List</h1>
       </div>
@@ -58,27 +67,32 @@ const handleSortUpdate = (headerKey: string, newSortDirection: Sort) => {
         <div class="flex w-full justify-between border-2 border-gray-800">
           <MemberHeaderComponent
             :header="'Navn'"
-            v-model="columnSortStates.name"
-            @update:sort="(newValue) => handleSortUpdate('name', newValue)"/>
+            @update:sort="(newValue: Sort) => handleSortUpdate('name', newValue)"
+          />
           <MemberHeaderComponent
             :header="'Email'"
-            v-model="columnSortStates.email"
-            @update:sort="(newValue) => handleSortUpdate('email', newValue)"/>
+            @update:sort="(newValue: Sort) => handleSortUpdate('email', newValue)"
+          />
           <MemberHeaderComponent
             :header="'Telefon Nr.'"
-            v-model="columnSortStates.phone"
-            @update:sort="(newValue) => handleSortUpdate('phone', newValue)"/>
+            @update:sort="(newValue: Sort) => handleSortUpdate('phone', newValue)"
+          />
           <MemberHeaderComponent
             :header="'Primær Sektion'"
-            v-model="columnSortStates.section"
-            @update:sort="(newValue) => handleSortUpdate('section', newValue)"/>
+            @update:sort="(newValue: Sort) => handleSortUpdate('section', newValue)"
+          />
           <MemberHeaderComponent
             :header="'Addresse'"
-            v-model="columnSortStates.address"
-            @update:sort="(newValue) => handleSortUpdate('address', newValue)"/>
+            @update:sort="(newValue: Sort) => handleSortUpdate('address', newValue)"
+          />
         </div>
         <div class="w-full justify-between border-2 border-gray-800">
-          <MemberComponent v-for="(item, index) in items" :key="index" :contact="item" :index="index" />
+          <MemberComponent
+            v-for="(item, index) in items"
+            :key="index"
+            :contact="item"
+            :index="index"
+          />
         </div>
       </div>
     </div>
