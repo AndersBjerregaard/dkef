@@ -1,26 +1,26 @@
 <script setup lang="ts">
 import apiservice from '@/services/apiservice'
 import urlservice from '@/services/urlservice'
-import { type ColumnSortState, Sort } from '@/types/members'
+import { type ColumnSortState, type Contact, Sort } from '@/types/members'
 import MemberComponent from './MemberComponent.vue'
 import MemberHeaderComponent from './MemberHeaderComponent.vue'
 import { onMounted, reactive, ref } from 'vue'
 
-const items = ref([])
+const items = ref([]);
 
 function fetchItems() {
   apiservice
     .get(urlservice.getContacts())
     .then(function (response) {
       // Make each item reactive
-      items.value = response.data.collection.map((item: any) => reactive(item))
+      items.value = response.data.collection.map((item: Contact) => reactive(item))
     })
     .catch(function (error) {
       console.error(error)
     })
-}
+};
 
-onMounted(fetchItems)
+onMounted(fetchItems);
 
 const columnSortStates = ref<ColumnSortState>({
   name: Sort.None,
@@ -28,7 +28,7 @@ const columnSortStates = ref<ColumnSortState>({
   phone: Sort.None,
   section: Sort.None,
   address: Sort.None,
-})
+});
 
 // Function to handle update from MemberHeaderComponent
 const handleSortUpdate = (headerKey: string, newSortDirection: Sort) => {
@@ -43,10 +43,11 @@ const handleSortUpdate = (headerKey: string, newSortDirection: Sort) => {
   columnSortStates.value[headerKey] = newSortDirection
 
   // TODO: Sort
-  console.info('items before: ', items.value);
-  items.value[0].firstName = 'John';
-  console.info('items after: ', items.value);
-}
+
+  //console.info('items before: ', items.value);
+  //items.value[0].firstName = 'John';
+  //console.info('items after: ', items.value);
+};
 </script>
 
 <template>

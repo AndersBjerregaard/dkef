@@ -44,7 +44,7 @@ const handleClick = () => {
 </script>
 
 <template>
-  <div class="border-x-2 border-gray-800 w-full py-1 cursor-pointer" @click="handleClick">
+  <div class="border-x-2 border-gray-800 w-full py-1 cursor-pointer hover:bg-gray-800 select-none" @click="handleClick">
     <h2 class="text-lg overflow-ellipsis flex items-center justify-center">
       <span>{{ props.header }}</span>
       <span v-html="sortArrow" class="ml-2"></span>
