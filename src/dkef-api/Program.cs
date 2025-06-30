@@ -3,6 +3,9 @@ using Dkef.Data;
 using Dkef.Domain;
 using Dkef.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Minio;
+using Minio.AspNetCore;
+
 using Scalar.AspNetCore;
 
 var CorsPolicy = "_dkefOrigins";
@@ -28,7 +31,20 @@ builder.Services.AddOpenApi();
 
 var dbConString = builder.Configuration.GetConnectionString("PostgresDb");
 
+// Contexts
 builder.Services.AddDbContext<ContactContext>(options => options.UseNpgsql(dbConString));
+builder.Services.AddDbContext<EventsContext>(options => options.UseNpgsql(dbConString));
+
+var minioConString = builder.Configuration.GetConnectionString("Minio");
+var minioAccessKey = builder.Configuration.GetSection("Minio")["AccessKey"];
+var minioSecretKey = builder.Configuration.GetSection("Minio")["SecretKey"];
+var minioSecure = bool.Parse(builder.Configuration.GetSection("Minio")["Secure"]!);
+
+builder.Services.AddMinio(configureClient => configureClient
+    .WithEndpoint(minioConString)
+    .WithCredentials(minioAccessKey, minioSecretKey)
+    .WithSSL(minioSecure)
+    .Build());
 
 var contactMapper = new MapperConfiguration(cfg => cfg.CreateMap<Contact, Contact>())
     .CreateMapper();

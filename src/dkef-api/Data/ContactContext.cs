@@ -1,6 +1,5 @@
 using Bogus;
 using Dkef.Domain;
-
 using Microsoft.EntityFrameworkCore;
 
 namespace Dkef.Data;
