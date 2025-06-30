@@ -2,6 +2,8 @@ using AutoMapper;
 using Dkef.Data;
 using Dkef.Domain;
 using Dkef.Repositories;
+using Dkef.Services;
+
 using Microsoft.EntityFrameworkCore;
 using Minio;
 using Minio.AspNetCore;
@@ -35,6 +37,7 @@ var dbConString = builder.Configuration.GetConnectionString("PostgresDb");
 builder.Services.AddDbContext<ContactContext>(options => options.UseNpgsql(dbConString));
 builder.Services.AddDbContext<EventsContext>(options => options.UseNpgsql(dbConString));
 
+// Minio
 var minioConString = builder.Configuration.GetConnectionString("Minio");
 var minioAccessKey = builder.Configuration.GetSection("Minio")["AccessKey"];
 var minioSecretKey = builder.Configuration.GetSection("Minio")["SecretKey"];
@@ -46,13 +49,23 @@ builder.Services.AddMinio(configureClient => configureClient
     .WithSSL(minioSecure)
     .Build());
 
+// AutoMapper
+var mapper = new MapperConfiguration(cfg =>
+{
+    cfg.CreateMap<Contact, Contact>();
+}).CreateMapper();
+
+builder.Services.AddSingleton<IMapper>(mapper);
+
 var contactMapper = new MapperConfiguration(cfg => cfg.CreateMap<Contact, Contact>())
     .CreateMapper();
 
-builder.Services.AddTransient<IContactRepository>(x => {
-    var context = x.GetService<ContactContext>();
-    return new ContactRepository(context!, contactMapper);
-});
+// Repositories
+builder.Services.AddTransient<IContactRepository, ContactRepository>();
+builder.Services.AddTransient<IEventsRepository, EventsRepository>();
+
+// Services
+builder.Services.AddTransient<IBucketService, MinioBucketService>();
 
 var app = builder.Build();
 

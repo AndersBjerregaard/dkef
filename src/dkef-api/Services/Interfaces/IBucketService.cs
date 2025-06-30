@@ -1,3 +1,6 @@
 namespace Dkef.Services;
 
-public interface IBucketService;
+public interface IBucketService
+{
+    Task<string> GetPresignedUrlAsync(string bucket, string objectName);
+}
