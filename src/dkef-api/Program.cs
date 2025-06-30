@@ -54,15 +54,19 @@ if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
     app.MapOpenApi();
-    app.MapScalarApiReference(options => {
+    app.MapScalarApiReference(options =>
+    {
         options
             .WithTitle("dkef-api")
             .WithTheme(ScalarTheme.DeepSpace)
             .WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.HttpClient);
     });
 }
+else
+{
+    app.UseHttpsRedirection();
+}
 
-app.UseHttpsRedirection();
 
 app.UseCors(CorsPolicy);
 
