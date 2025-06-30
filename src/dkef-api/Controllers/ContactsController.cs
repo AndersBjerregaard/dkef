@@ -9,7 +9,7 @@ namespace Dkef.Controllers;
 public class ContactsController(IContactRepository repository) : ControllerBase {
 
     [HttpGet]
-    public async Task<IActionResult> GetMultiple([FromQuery] int take = 10, [FromQuery] int skip = 0) {
+    public async Task<IActionResult> GetMultiple([FromQuery] int take = 20, [FromQuery] int skip = 0) {
         if (take > 50) take = 50;
         return Ok(await repository.GetMultipleAsync(take, skip));
     }
