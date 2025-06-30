@@ -4,11 +4,60 @@ import urlservice from '@/services/urlservice'
 import { type ColumnSortState, type Contact, Sort } from '@/types/members'
 import MemberComponent from './MemberComponent.vue'
 import MemberHeaderComponent from './MemberHeaderComponent.vue'
-import { onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref, type Ref } from 'vue'
 
-const items = ref([]);
+const items: Ref<Contact[]> = ref([]);
 
-function fetchItems() {
+const sortKey: Ref<string> = ref('none'); // Default sort key
+const sortOrder: Ref<number> = ref(1); // 1 for ascending, -1 for descending, 0 for none
+
+const sortedItems = computed(() => {
+
+  const sortKeyValue = sortKey.value;
+  const sortOrderValue = sortOrder.value;
+
+  if (sortKeyValue === 'none' || sortOrderValue === 0) {
+    return items.value;
+  }
+
+  const sorted = [...items.value]; // Create shallow copy
+
+  sorted.sort((a: Contact, b: Contact): number => {
+    const aValue = matchContactProperty(a, sortKeyValue);
+    const bValue = matchContactProperty(b, sortKeyValue);
+    // All of the property types of the Contact type are strings.
+    // Should this at some point not be true,
+    // more data types need to be accounted for in the sorting implementation.
+    return aValue.localeCompare(bValue) * sortOrderValue;
+  });
+
+  return sorted;
+});
+
+/**
+ * @param contact The contact instance to find the property of
+ * @param propertyName The property to find on the contact instance
+ * @returns The property value of the contact instance matched by the propertyName input argument
+ * @throws If the input argument value of propertyName cannot be found as a property on the contact type
+ */
+function matchContactProperty(contact: Contact, propertyName: string): string {
+  switch (propertyName) {
+    case 'name':
+      return contact.firstName;
+    case 'email':
+      return contact.email;
+    case 'phone':
+      return contact.privatePhone;
+    case 'section':
+      return contact.primarySection;
+    case 'address':
+      return contact.privateAddress;
+    default:
+      throw `Property with the name of ${propertyName} does not exist on type 'Contact'`;
+  }
+}
+
+function fetchItems(): void {
   apiservice
     .get(urlservice.getContacts())
     .then(function (response) {
@@ -22,6 +71,7 @@ function fetchItems() {
 
 onMounted(fetchItems);
 
+// Describes the sort state of the MemberHeaderComponents rendered altogether
 const columnSortStates = ref<ColumnSortState>({
   name: Sort.None,
   email: Sort.None,
@@ -42,12 +92,23 @@ const handleSortUpdate = (headerKey: string, newSortDirection: Sort) => {
   // Set the new sort direction for the clicked header
   columnSortStates.value[headerKey] = newSortDirection
 
-  // TODO: Sort
-
-  //console.info('items before: ', items.value);
-  //items.value[0].firstName = 'John';
-  //console.info('items after: ', items.value);
+  sort(headerKey, newSortDirection);
 };
+
+function sort(by: string, order: Sort): void {
+  switch (order) {
+    case Sort.Asc:
+      sortOrder.value = 1;
+      break;
+    case Sort.Desc:
+      sortOrder.value = -1;
+      break;
+    default:
+      sortOrder.value = 0;
+      break;
+  }
+  sortKey.value = by;
+}
 </script>
 
 <template>
@@ -70,7 +131,7 @@ const handleSortUpdate = (headerKey: string, newSortDirection: Sort) => {
             @update:sort="(newValue: Sort) => handleSortUpdate('address', newValue)" />
         </div>
         <div class="w-full justify-between border-2 border-gray-800">
-          <MemberComponent v-for="(item, index) in items" :key="index" :contact="item" :index="index" />
+          <MemberComponent v-for="(item, index) in sortedItems" :key="item.id" :contact="item" :index="index" />
         </div>
       </div>
     </div>
