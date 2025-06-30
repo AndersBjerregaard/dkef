@@ -54,7 +54,7 @@ public class ContactContext: DbContext {
             .RuleFor(x => x.ATTInvoice, y => "Nej")
             .RuleFor(x => x.Source, y => "V1 Medlemsportal")
             .RuleFor(x => x.ExpectedEndDateOfBeingStudent, y => string.Empty);
-        var contacts = faker.Generate(20);
+        var contacts = faker.Generate(600);
 
         await context.Database.ExecuteSqlRawAsync($"TRUNCATE TABLE \"{nameof(Contacts)}\";");
         await context.Contacts.AddRangeAsync(contacts);

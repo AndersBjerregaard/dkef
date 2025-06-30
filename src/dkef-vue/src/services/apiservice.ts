@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios, { type AxiosRequestConfig, type AxiosResponse } from 'axios'
 
 const apiUrl = import.meta.env.VITE_API_BASE_URL
 
@@ -10,8 +10,9 @@ const axiosInstance = axios.create({
   // headers: {'X-Custom': '1234'}
 })
 
-function get(url: string) {
-  return axiosInstance.get(url)
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function get<T = any>(url: string, config?: AxiosRequestConfig): Promise<AxiosResponse<T>> {
+  return axiosInstance.get(url, config)
 }
 
 export default {

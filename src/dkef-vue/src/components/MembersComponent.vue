@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import apiservice from '@/services/apiservice'
 import urlservice from '@/services/urlservice'
-import { type ColumnSortState, type Contact, Sort } from '@/types/members'
+import { type ColumnSortState, type Contact, type ContactCollection, Sort } from '@/types/members'
 import MemberComponent from './MemberComponent.vue'
 import MemberHeaderComponent from './MemberHeaderComponent.vue'
 import { computed, onMounted, reactive, ref, type Ref } from 'vue'
@@ -57,12 +57,44 @@ function matchContactProperty(contact: Contact, propertyName: string): string {
   }
 }
 
-function fetchItems(): void {
+const takeAmount = 25;
+let initialFetch = true;
+let total = Number.MAX_SAFE_INTEGER;
+
+function fetchItems(skip?: number): void {
+  if (items.value.length >= total) {
+    return;
+  }
+
+  if (skip === undefined) {
+    skip = 0;
+  }
+
   apiservice
-    .get(urlservice.getContacts())
+    .get<ContactCollection>(urlservice.getContacts(), {
+      params: {
+        take: takeAmount,
+        skip: skip
+      }
+    })
     .then(function (response) {
+      // Retrieve response body
+      const body = response.data;
+      // Only set total at initial fetch, in case the total changes while requesting
+      if (initialFetch) {
+        total = body.total;
+        initialFetch = false;
+      }
+      const collection = body.collection;
+      if (collection.length === 0) {
+        return;
+      }
       // Make each item reactive
-      items.value = response.data.collection.map((item: Contact) => reactive(item))
+      collection.forEach((item: Contact) => {
+        items.value.push(reactive(item));
+      });
+      // Recursively request until total has been reached
+      fetchItems(skip + collection.length);
     })
     .catch(function (error) {
       console.error(error)
