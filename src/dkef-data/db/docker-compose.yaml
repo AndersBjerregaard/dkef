@@ -1,6 +1,7 @@
 services:
   db:
     image: postgres:17.4
+    container_name: postgres1
     restart: on-failure
     # set shared memory limit when using docker-compose
     shm_size: 128mb
@@ -22,6 +23,7 @@ services:
 
   pgadmin:
     image: dpage/pgadmin4:9.1.0
+    container_name: pgadmin1
     restart: on-failure
     environment:
       - PGADMIN_DEFAULT_EMAIL=don-sbn@hotmail.com
@@ -38,6 +40,7 @@ services:
   minio:
     image: quay.io/minio/minio:RELEASE.2025-06-13T11-33-47Z
     container_name: minio1
+    restart: on-failure
     ports:
       - "9000:9000"
       - "9001:9001"
