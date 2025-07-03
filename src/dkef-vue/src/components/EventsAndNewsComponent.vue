@@ -62,6 +62,15 @@ function openModal() {
               leave-to="opacity-0 scale-95">
               <DialogPanel
                 class="w-full max-w-md transform overflow-hidden rounded-2xl bg-gray-700 p-6 text-left align-middle shadow-xl transition-all **origin-center** translate-z-0">
+
+                <button type="button" class="absolute top-3 right-3 text-gray-400 hover:text-gray-500"
+                  @click="closeModal">
+                  <span class="sr-only">Close</span>
+                  <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+
                 <DialogTitle as="h3" class="text-lg font-medium leading-6">
                   Ny Nyhed
                 </DialogTitle>
