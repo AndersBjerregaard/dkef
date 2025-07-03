@@ -21,7 +21,7 @@ function openModal() {
 <template>
   <header>
     <div>
-      <nav class="flex bg-gray-700 p-1 sm:p-4 w-screen">
+      <nav class="flex bg-gray-700 p-1 sm:p-4">
         <RouterLink to="/">
           <div class="w-10 sm:w-20">
             <img src="@/assets/dkef-logo.png" alt="DKEF logo">
