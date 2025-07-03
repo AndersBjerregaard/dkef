@@ -63,7 +63,7 @@ function openModal() {
               <DialogPanel
                 class="w-full max-w-md transform overflow-hidden rounded-2xl bg-gray-700 p-6 text-left align-middle shadow-xl transition-all **origin-center** translate-z-0">
 
-                <button type="button" class="absolute top-3 right-3 text-gray-400 hover:text-gray-500"
+                <button type="button" class="cursor-pointer absolute top-3 right-3 text-gray-400 hover:text-gray-500"
                   @click="closeModal">
                   <span class="sr-only">Close</span>
                   <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
@@ -71,20 +71,33 @@ function openModal() {
                   </svg>
                 </button>
 
-                <DialogTitle as="h3" class="text-lg font-medium leading-6">
+                <DialogTitle as="h3" class="text-lg font-medium leading-6 pb-4">
                   Ny Nyhed
                 </DialogTitle>
-                <div class="mt-2 py-2">
-                  <p class="text-sm">
-                    Du er nu logget på.
-                  </p>
+
+                <!-- Modal body -->
+
+                <div class="pb-4">
+                  <label for="title_input">Titel</label>
+                  <br>
+                  <input class="w-full bg-gray-800 border-0 rounded-xl p-2" id="title_input" name="title_input"
+                    placeholder="Titel" type="text">
                 </div>
+
+                <div class="pb-4">
+                  <label for="file_input">Filer</label>
+                  <br>
+                  <input class="w-full bg-gray-800 border-0 rounded-xl p-2 cursor-pointer hover:bg-gray-600 focus:bg-gray-300 focus:text-gray-900" id="file_input" name="file_input"
+                    type="file">
+                </div>
+
+                <!-- Modal body end -->
 
                 <div class="mt-4">
                   <button type="button"
-                    class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 cursor-pointer"
+                    class="inline-flex justify-center rounded-md border border-transparent bg-gray-300 px-4 py-2 text-md font-medium hover:bg-gray-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 text-gray-900 focus-visible:ring-offset-2 cursor-pointer"
                     @click="closeModal">
-                    Fortsæt til DKEF
+                    Opret Nyhed
                   </button>
                 </div>
               </DialogPanel>
