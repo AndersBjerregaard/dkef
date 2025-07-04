@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, type Ref } from 'vue';
 import EventComponent from './EventComponent.vue';
 import {
   Menu, MenuButton, MenuItems, MenuItem,
@@ -10,14 +10,68 @@ import {
 // Example items
 const items = ref([1, 2, 3]);
 
-const isOpen = ref(false);
+const isOpen: Ref<boolean> = ref(false);
 
 function closeModal() {
+  // Reset fields
+  newsTitle = '';
+  file = null;
+
   isOpen.value = false;
 }
 
 function openModal() {
+  // Reset fields
+  newsTitle = '';
+  file = null;
+
   isOpen.value = true;
+}
+
+let newsTitle: string = '';
+let file: File | null = null as File | null // null if no file is uploaded
+
+let fileUploadError: Ref<boolean> = ref(false);
+let submitError: Ref<boolean> = ref(false);
+
+function handleNewsTitleChange(event: Event) {
+  submitError.value = false;
+}
+
+function handleFileUpload(event: Event) {
+  submitError.value = false;
+  fileUploadError.value = false;
+  const input = event.target as HTMLInputElement;
+  if (input.files && input.files.length > 0) {
+    file = input.files[0];
+    if (file.size === 0) {
+      fileUploadError.value = true;
+    }
+  } else {
+    file = null; // Clear if no file is selected (e.g. user cancels)
+  }
+}
+
+function createNews() {
+  submitError.value = false;
+  if (file === null) {
+    submitError.value = true;
+    return;
+  }
+  if (newsTitle === '') {
+    submitError.value = true;
+    return;
+  }
+  if (!submitError.value) {
+    // Submit logic
+
+    // Reset fields
+    newsTitle = '';
+    file = null;
+
+    // Close modal
+    isOpen.value = false;
+  }
 }
 
 </script>
@@ -75,31 +129,47 @@ function openModal() {
                   Ny Nyhed
                 </DialogTitle>
 
-                <!-- Modal body -->
+                <form v-on:submit.prevent="createNews">
+                  <div class="pb-4">
+                    <label for="title_input">Titel</label>
+                    <br>
+                    <input
+                      class="w-full bg-gray-800 border-0 rounded-xl p-2"
+                      id="title_input"
+                      name="title_input"
+                      placeholder="Titel"
+                      type="text"
+                      v-model="newsTitle"
+                      @keypress="handleNewsTitleChange">
+                  </div>
 
-                <div class="pb-4">
-                  <label for="title_input">Titel</label>
-                  <br>
-                  <input class="w-full bg-gray-800 border-0 rounded-xl p-2" id="title_input" name="title_input"
-                    placeholder="Titel" type="text">
-                </div>
+                  <div class="pb-4">
+                    <label for="file_input">Billede</label>
+                    <br>
+                    <input
+                      class="w-full bg-gray-800 border-0 rounded-xl p-2 cursor-pointer hover:bg-gray-600 focus:bg-gray-300 focus:text-gray-900"
+                      id="file_input"
+                      name="file_input"
+                      type="file"
+                      accept="image/*"
+                      @change="handleFileUpload">
+                  </div>
 
-                <div class="pb-4">
-                  <label for="file_input">Filer</label>
-                  <br>
-                  <input class="w-full bg-gray-800 border-0 rounded-xl p-2 cursor-pointer hover:bg-gray-600 focus:bg-gray-300 focus:text-gray-900" id="file_input" name="file_input"
-                    type="file">
-                </div>
+                  <div v-show="fileUploadError" class="pb-4">
+                    <span>⚠️ Kan ikke uploade en fil med filstørrelse på 0 bytes!</span>
+                  </div>
 
-                <!-- Modal body end -->
+                  <div v-show="submitError" class="pb-4">
+                    <span>⚠️ Kan ikke oprette nyhed uden både titel og billede</span>
+                  </div>
 
-                <div class="mt-4">
-                  <button type="button"
-                    class="inline-flex justify-center rounded-md border border-transparent bg-gray-300 px-4 py-2 text-md font-medium hover:bg-gray-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 text-gray-900 focus-visible:ring-offset-2 cursor-pointer"
-                    @click="closeModal">
-                    Opret Nyhed
-                  </button>
-                </div>
+                  <div class="mt-4">
+                    <button type="submit"
+                      class="inline-flex justify-center rounded-md border border-transparent bg-gray-300 px-4 py-2 text-md font-medium hover:bg-gray-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 text-gray-900 focus-visible:ring-offset-2 cursor-pointer">
+                      Opret Nyhed
+                    </button>
+                  </div>
+                </form>
               </DialogPanel>
             </TransitionChild>
           </div>
