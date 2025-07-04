@@ -3,13 +3,16 @@ using AutoMapper;
 using Dkef.Contracts;
 using Dkef.Domain;
 using Dkef.Repositories;
+
+using Ganss.Xss;
+
 using Microsoft.AspNetCore.Mvc;
 
 namespace Dkef.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class EventsController(IEventsRepository _repository, IMapper _mapper) : ControllerBase
+public class EventsController(IEventsRepository _repository, IMapper _mapper, HtmlSanitizer _sanitizer) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> GetMultiple([FromQuery] int take = 10, [FromQuery] int skip = 0)
@@ -25,6 +28,8 @@ public class EventsController(IEventsRepository _repository, IMapper _mapper) : 
         {
             return BadRequest(ModelState);
         }
+
+        dto.Sanitize(_sanitizer);
 
         var mappedEvent = _mapper.Map<Event>(dto);
 

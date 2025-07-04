@@ -6,6 +6,9 @@ using Dkef.Data;
 using Dkef.Domain;
 using Dkef.Repositories;
 using Dkef.Services;
+
+using Ganss.Xss;
+
 using Microsoft.EntityFrameworkCore;
 using Minio;
 using Minio.AspNetCore;
@@ -75,6 +78,9 @@ builder.Services.AddTransient<IBucketService, MinioBucketService>();
 
 // Configuration
 builder.Services.AddSingleton<DomainUrlConfiguration>(x => new DomainUrlConfiguration(minioConString!));
+
+// Security
+builder.Services.AddSingleton<HtmlSanitizer>(x => new());
 
 var app = builder.Build();
 
