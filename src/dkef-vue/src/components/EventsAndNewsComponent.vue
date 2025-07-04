@@ -15,28 +15,31 @@ import axios from 'axios';
 const items = ref([1, 2, 3]);
 
 const isOpen: Ref<boolean> = ref(false);
+const isLoading: Ref<boolean> = ref(false); // New ref for loading state
+
+let newsTitle: Ref<string> = ref(''); // Use ref for newsTitle
+let newsFile: Ref<File | null> = ref(null); // Use ref for newsFile
+
+let fileUploadError: Ref<boolean> = ref(false);
+let submitError: Ref<boolean> = ref(false);
 
 function closeModal() {
   // Reset fields
-  newsTitle = '';
-  newsFile = null;
+  newsTitle.value = '';
+  newsFile.value = null;
 
   isOpen.value = false;
 }
 
 function openModal() {
   // Reset fields
-  newsTitle = '';
-  newsFile = null;
+  newsTitle.value = '';
+  newsFile.value = null;
 
   isOpen.value = true;
+  submitError.value = false; // Reset submit error on opening
+  fileUploadError.value = false; // Reset file upload error on opening
 }
-
-let newsTitle: string = '';
-let newsFile: File | null = null as File | null // null if no file is uploaded
-
-let fileUploadError: Ref<boolean> = ref(false);
-let submitError: Ref<boolean> = ref(false);
 
 function handleNewsTitleChange(event: Event) {
   submitError.value = false;
@@ -47,55 +50,59 @@ function handleFileUpload(event: Event) {
   fileUploadError.value = false;
   const input = event.target as HTMLInputElement;
   if (input.files && input.files.length > 0) {
-    newsFile = input.files[0];
-    if (newsFile.size === 0) {
+    newsFile.value = input.files[0];
+    if (newsFile.value.size === 0) {
       fileUploadError.value = true;
     }
   } else {
-    newsFile = null; // Clear if no file is selected (e.g. user cancels)
+    newsFile.value = null; // Clear if no file is selected (e.g. user cancels)
   }
 }
 
-function createNews() {
+async function createNews() {
   submitError.value = false;
-  if (newsFile === null) {
+  if (newsFile.value === null) {
     submitError.value = true;
     return;
   }
-  if (newsTitle === '') {
+  if (newsTitle.value === '') {
     submitError.value = true;
     return;
   }
+
   if (!submitError.value) {
-    // Submit logic
-    const guid: string = uuidv4();
-
-    apiservice.get<string>(urlservice.getEventPresignedUrl(guid)
-    ).then((response: AxiosResponse<string>) => {
+    isLoading.value = true; // Set loading to true
+    try {
+      const guid: string = uuidv4();
+      const response: AxiosResponse<string> = await apiservice.get<string>(urlservice.getEventPresignedUrl(guid));
       const presignedUrl: string = response.data;
-      console.info('Retrieved presigend url: ', presignedUrl);
-      uploadFile(presignedUrl, newsFile!);
-    }).catch((error: any) => {
-      console.error(error);
-    });
+      console.info('Retrieved presigned url: ', presignedUrl);
 
-    // Reset fields
-    // newsTitle = '';
-    // newsFile = null;
+      await uploadFile(presignedUrl, newsFile.value!); // Await the file upload
 
-    // Close modal
-    isOpen.value = false;
+      // Reset fields and close modal only after successful submission
+      newsTitle.value = '';
+      newsFile.value = null;
+      isOpen.value = false;
+    } catch (error: any) {
+      console.error('Error during news creation:', error);
+      submitError.value = true; // Indicate submission failure
+    } finally {
+      isLoading.value = false; // Always set loading to false when done
+    }
   }
 }
 
-function uploadFile(url: string, file: File) {
+async function uploadFile(url: string, file: File) {
   const axiosInstance = axios.create();
   console.info('Uploading file to bucket...', file);
-  axiosInstance.put(url, file, { headers: { 'Content-Type': file.type } }).then((response) => {
+  try {
+    const response = await axiosInstance.put(url, file, { headers: { 'Content-Type': file.type } });
     console.info('Successfully uploaded to bucket ', response);
-  }).catch((error) => {
-    console.error(error);
-  });
+  } catch (error) {
+    console.error('Error uploading file:', error);
+    throw error; // Re-throw the error so createNews can catch it
+  }
 }
 </script>
 
@@ -141,7 +148,7 @@ function uploadFile(url: string, file: File) {
                 class="w-full max-w-md transform overflow-hidden rounded-2xl bg-gray-700 p-6 text-left align-middle shadow-xl transition-all **origin-center** translate-z-0">
 
                 <button type="button" class="cursor-pointer absolute top-3 right-3 text-gray-400 hover:text-gray-500"
-                  @click="closeModal">
+                  @click="closeModal" :disabled="isLoading">
                   <span class="sr-only">Close</span>
                   <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -152,7 +159,7 @@ function uploadFile(url: string, file: File) {
                   Ny Nyhed
                 </DialogTitle>
 
-                <form v-on:submit.prevent="createNews">
+                <form @submit.prevent="createNews">
                   <div class="pb-4">
                     <label for="title_input">Titel</label>
                     <br>
@@ -163,7 +170,8 @@ function uploadFile(url: string, file: File) {
                       placeholder="Titel"
                       type="text"
                       v-model="newsTitle"
-                      @keypress="handleNewsTitleChange">
+                      @keypress="handleNewsTitleChange"
+                      :disabled="isLoading">
                   </div>
 
                   <div class="pb-4">
@@ -175,21 +183,32 @@ function uploadFile(url: string, file: File) {
                       name="file_input"
                       type="file"
                       accept="image/*"
-                      @change="handleFileUpload">
+                      @change="handleFileUpload"
+                      :disabled="isLoading">
                   </div>
 
-                  <div v-show="fileUploadError" class="pb-4">
+                  <div v-show="fileUploadError" class="pb-4 text-red-400">
                     <span>⚠️ Kan ikke uploade en fil med filstørrelse på 0 bytes!</span>
                   </div>
 
-                  <div v-show="submitError" class="pb-4">
-                    <span>⚠️ Kan ikke oprette nyhed uden både titel og billede</span>
+                  <div v-show="submitError" class="pb-4 text-red-400">
+                    <span>⚠️ Kan ikke oprette nyhed uden både titel og billede!</span>
                   </div>
 
                   <div class="mt-4">
                     <button type="submit"
-                      class="inline-flex justify-center rounded-md border border-transparent bg-gray-300 px-4 py-2 text-md font-medium hover:bg-gray-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 text-gray-900 focus-visible:ring-offset-2 cursor-pointer">
-                      Opret Nyhed
+                      class="inline-flex justify-center rounded-md border border-transparent bg-gray-300 px-4 py-2 text-md font-medium hover:bg-gray-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 text-gray-900 focus-visible:ring-offset-2"
+                      :disabled="isLoading">
+                      <span v-if="isLoading" class="flex items-center">
+                        <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-gray-900" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Opretter Nyhed...
+                      </span>
+                      <span v-else>
+                        Opret Nyhed
+                      </span>
                     </button>
                   </div>
                 </form>
@@ -201,3 +220,15 @@ function uploadFile(url: string, file: File) {
     </TransitionRoot>
   </div>
 </template>
+
+<style scoped>
+/* You might want to add some styling for the spinner if it's not handled by Tailwind */
+/* For example, if you want to explicitly define the animation */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+</style>
