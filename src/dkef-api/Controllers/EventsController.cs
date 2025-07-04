@@ -14,10 +14,18 @@ public class EventsController(IEventsRepository _repository) : ControllerBase
         return Ok(await _repository.GetMultipleAsync(take, skip));
     }
 
+    [HttpPost]
+    public async Task<IActionResult> Post()
+    {
+        throw new NotImplementedException();
+    }
+
     [HttpGet]
     [Route("{id}")]
-    public async Task<IActionResult> Get([FromRoute] string id) {
-        if (!Guid.TryParse(id, out var parsedId)) {
+    public async Task<IActionResult> Get([FromRoute] string id)
+    {
+        if (!Guid.TryParse(id, out var parsedId))
+        {
             return BadRequest($"Could not parse {id} as a guid");
         }
         var contact = await _repository.GetByIdAsync(parsedId);
