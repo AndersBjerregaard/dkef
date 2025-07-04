@@ -1,3 +1,7 @@
+using AutoMapper;
+
+using Dkef.Contracts;
+using Dkef.Domain;
 using Dkef.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
@@ -5,7 +9,7 @@ namespace Dkef.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class EventsController(IEventsRepository _repository) : ControllerBase
+public class EventsController(IEventsRepository _repository, IMapper _mapper) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> GetMultiple([FromQuery] int take = 10, [FromQuery] int skip = 0)
@@ -15,12 +19,21 @@ public class EventsController(IEventsRepository _repository) : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Post()
+    public async Task<IActionResult> Post([FromBody] EventDto dto)
     {
-        throw new NotImplementedException();
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        var mappedEvent = _mapper.Map<Event>(dto);
+
+        var newEvent = await _repository.CreateAsync(mappedEvent);
+
+        return CreatedAtAction(nameof(Get), new { id = newEvent.Id }, newEvent);
     }
 
-    [HttpGet]
+    [HttpGet(Name = nameof(Get))]
     [Route("{id}")]
     public async Task<IActionResult> Get([FromRoute] string id)
     {

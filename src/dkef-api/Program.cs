@@ -1,18 +1,21 @@
+using System.Globalization;
 using AutoMapper;
+using Dkef.Configuration;
+using Dkef.Contracts;
 using Dkef.Data;
 using Dkef.Domain;
 using Dkef.Repositories;
 using Dkef.Services;
-
 using Microsoft.EntityFrameworkCore;
 using Minio;
 using Minio.AspNetCore;
-
 using Scalar.AspNetCore;
 
 var CorsPolicy = "_dkefOrigins";
 
 var builder = WebApplication.CreateBuilder(args);
+
+var origins = builder.Configuration.GetValue<string>("AllowedHosts");
 
 // Cors policy must be set to specific origins
 // in order to allow credentials
@@ -21,7 +24,7 @@ builder.Services.AddCors(options => {
         policy => {
             policy.AllowAnyHeader()
                 .AllowAnyMethod()
-                .AllowAnyOrigin();
+                .WithOrigins([origins!]);
     });
 });
 
@@ -53,6 +56,9 @@ builder.Services.AddMinio(configureClient => configureClient
 var mapper = new MapperConfiguration(cfg =>
 {
     cfg.CreateMap<Contact, Contact>();
+    cfg.CreateMap<EventDto, Event>()
+        .ForMember(dest => dest.ThumbnailUrl, opt => opt.MapFrom(src => $"{minioConString}/events/{src.ThumbnailId}"))
+        .ForMember(dest => dest.DateTime, opt => opt.MapFrom(src => DateTime.Parse(src.DateTime, CultureInfo.InvariantCulture, DateTimeStyles.None)));
 }).CreateMapper();
 
 builder.Services.AddSingleton<IMapper>(mapper);
@@ -66,6 +72,9 @@ builder.Services.AddTransient<IEventsRepository, EventsRepository>();
 
 // Services
 builder.Services.AddTransient<IBucketService, MinioBucketService>();
+
+// Configuration
+builder.Services.AddSingleton<DomainUrlConfiguration>(x => new DomainUrlConfiguration(minioConString!));
 
 var app = builder.Build();
 
