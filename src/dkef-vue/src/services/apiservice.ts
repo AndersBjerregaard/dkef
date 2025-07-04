@@ -6,7 +6,7 @@ console.info('Api URL loaded as: ', apiUrl)
 
 const axiosInstance = axios.create({
   baseURL: apiUrl,
-  timeout: 1000,
+  timeout: 10000,
   // headers: {'X-Custom': '1234'}
 })
 
