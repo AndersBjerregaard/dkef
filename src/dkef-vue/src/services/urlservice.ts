@@ -1,6 +1,6 @@
 const mode = import.meta.env.VITE_MODE
 
-console.info('Mode loaded as: ', mode)
+console.info('Environment Mode loaded as: ', mode)
 
 function getContacts() {
   switch (mode) {
@@ -11,6 +11,16 @@ function getContacts() {
   }
 }
 
+function getEventPresignedUrl(guid: string) {
+  switch (mode) {
+    case 'Development':
+      throw 'Unimplemented!';
+    default:
+      return `bucket/events/${guid}`
+  }
+}
+
 export default {
   getContacts,
+  getEventPresignedUrl
 }

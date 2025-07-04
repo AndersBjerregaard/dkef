@@ -2,10 +2,14 @@
 import { ref, type Ref } from 'vue';
 import EventComponent from './EventComponent.vue';
 import {
-  Menu, MenuButton, MenuItems, MenuItem,
   TransitionRoot, TransitionChild,
   Dialog, DialogPanel, DialogTitle
 } from '@headlessui/vue'
+import { v4 as uuidv4 } from 'uuid'
+import apiservice from '@/services/apiservice';
+import urlservice from '@/services/urlservice';
+import type { AxiosResponse } from 'axios';
+import axios from 'axios';
 
 // Example items
 const items = ref([1, 2, 3]);
@@ -15,7 +19,7 @@ const isOpen: Ref<boolean> = ref(false);
 function closeModal() {
   // Reset fields
   newsTitle = '';
-  file = null;
+  newsFile = null;
 
   isOpen.value = false;
 }
@@ -23,13 +27,13 @@ function closeModal() {
 function openModal() {
   // Reset fields
   newsTitle = '';
-  file = null;
+  newsFile = null;
 
   isOpen.value = true;
 }
 
 let newsTitle: string = '';
-let file: File | null = null as File | null // null if no file is uploaded
+let newsFile: File | null = null as File | null // null if no file is uploaded
 
 let fileUploadError: Ref<boolean> = ref(false);
 let submitError: Ref<boolean> = ref(false);
@@ -43,18 +47,18 @@ function handleFileUpload(event: Event) {
   fileUploadError.value = false;
   const input = event.target as HTMLInputElement;
   if (input.files && input.files.length > 0) {
-    file = input.files[0];
-    if (file.size === 0) {
+    newsFile = input.files[0];
+    if (newsFile.size === 0) {
       fileUploadError.value = true;
     }
   } else {
-    file = null; // Clear if no file is selected (e.g. user cancels)
+    newsFile = null; // Clear if no file is selected (e.g. user cancels)
   }
 }
 
 function createNews() {
   submitError.value = false;
-  if (file === null) {
+  if (newsFile === null) {
     submitError.value = true;
     return;
   }
@@ -64,16 +68,35 @@ function createNews() {
   }
   if (!submitError.value) {
     // Submit logic
+    const guid: string = uuidv4();
+
+    apiservice.get<string>(urlservice.getEventPresignedUrl(guid)
+    ).then((response: AxiosResponse<string>) => {
+      const presignedUrl: string = response.data;
+      console.info('Retrieved presigend url: ', presignedUrl);
+      uploadFile(presignedUrl, newsFile!);
+    }).catch((error: any) => {
+      console.error(error);
+    });
 
     // Reset fields
-    newsTitle = '';
-    file = null;
+    // newsTitle = '';
+    // newsFile = null;
 
     // Close modal
     isOpen.value = false;
   }
 }
 
+function uploadFile(url: string, file: File) {
+  const axiosInstance = axios.create();
+  console.info('Uploading file to bucket...', file);
+  axiosInstance.put(url, file, { headers: { 'Content-Type': file.type } }).then((response) => {
+    console.info('Successfully uploaded to bucket ', response);
+  }).catch((error) => {
+    console.error(error);
+  });
+}
 </script>
 
 <template>

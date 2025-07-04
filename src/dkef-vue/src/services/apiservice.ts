@@ -10,11 +10,19 @@ const axiosInstance = axios.create({
   // headers: {'X-Custom': '1234'}
 })
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function get<T = any>(url: string, config?: AxiosRequestConfig): Promise<AxiosResponse<T>> {
   return axiosInstance.get(url, config)
 }
 
+function post<T = any>(url: string, data: any, config?: AxiosRequestConfig): Promise<AxiosResponse<T>> {
+  return axiosInstance.post(url, data, config);
+}
+
+function put<T = any>(url: string, data: any, config?: AxiosRequestConfig): Promise<AxiosResponse<T>> {
+  return axiosInstance.put(url, data, config);
+}
+
 export default {
   get,
+  post
 }
