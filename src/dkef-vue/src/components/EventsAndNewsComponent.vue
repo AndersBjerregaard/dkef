@@ -20,6 +20,9 @@ const isLoading: Ref<boolean> = ref(false);
 const eventTitle: Ref<string> = ref('');
 const eventFile: Ref<File | null> = ref(null);
 const eventDescription: Ref<string> = ref('');
+const eventSection: Ref<string> = ref('');
+const eventAddress: Ref<string> = ref('');
+const eventDate: Ref<string> = ref('');
 
 const fileUploadError: Ref<boolean> = ref(false);
 const submitError: Ref<boolean> = ref(false);
@@ -60,19 +63,24 @@ function resetFields() {
   eventTitle.value = '';
   eventDescription.value = '';
   eventFile.value = null;
+  eventSection.value = '';
+  eventAddress.value = '';
+  eventDate.value = '';
+}
+
+function validateFields(): boolean {
+  if (eventTitle.value === '') return false;
+  if (eventFile.value === null) return false;
+  if (eventDescription.value === '') return false;
+  if (eventSection.value === '') return false;
+  if (eventAddress.value === '') return false;
+  if (eventDate.value === '') return false;
+  return true;
 }
 
 async function createEvent() {
   submitError.value = false;
-  if (eventFile.value === null) {
-    submitError.value = true;
-    return;
-  }
-  if (eventTitle.value === '') {
-    submitError.value = true;
-    return;
-  }
-  if (eventDescription.value === '') {
+  if (!validateFields()) {
     submitError.value = true;
     return;
   }
@@ -146,12 +154,12 @@ async function uploadFile(url: string, file: File) {
         </TransitionChild>
 
         <div class="fixed inset-0 overflow-y-auto">
-          <div class="flex min-h-full items-center justify-center p-4 text-center">
+          <div class="flex min-h-full items-center justify-center p-8 text-center">
             <TransitionChild as="template" enter="duration-300 ease-out" enter-from="opacity-0 scale-95"
               enter-to="opacity-100 scale-100" leave="duration-200 ease-in" leave-from="opacity-100 scale-100"
               leave-to="opacity-0 scale-95">
               <DialogPanel
-                class="w-full max-w-md transform overflow-hidden rounded-2xl bg-gray-700 p-6 text-left align-middle shadow-xl transition-all **origin-center** translate-z-0 border">
+                class="w-full transform overflow-hidden rounded-2xl bg-gray-700 p-6 text-left align-middle shadow-xl transition-all **origin-center** translate-z-0 border">
 
                 <button type="button" class="cursor-pointer absolute top-3 right-3 text-gray-400 hover:text-gray-500"
                   @click="closeModal" :disabled="isLoading">
@@ -166,32 +174,46 @@ async function uploadFile(url: string, file: File) {
                 </DialogTitle>
 
                 <form @submit.prevent="createEvent">
-                  <div class="pb-4">
-                    <label for="title_input">Titel</label>
-                    <br>
-                    <input
-                      class="w-full bg-gray-800 border-0 rounded-xl p-2"
-                      id="title_input"
-                      name="title_input"
-                      placeholder="Titel"
-                      type="text"
-                      v-model="eventTitle"
-                      @keypress="handleEventTitleChange"
-                      :disabled="isLoading">
+                  <div class="flex justify-between">
+                    <div class="pb-4">
+                      <label for="title_input">Titel</label>
+                      <br>
+                      <input class="w-full bg-gray-800 border-0 rounded-xl p-2" id="title_input" name="title_input"
+                        placeholder="Titel" type="text" v-model="eventTitle" @keypress="handleEventTitleChange"
+                        :disabled="isLoading">
+                    </div>
+
+                    <div class="pb-4">
+                      <label for="section_input">Sektion</label>
+                      <br>
+                      <input class="w-full bg-gray-800 border-0 rounded-xl p-2" id="section_input" name="section_input"
+                        placeholder="Sektion" type="text" v-model="eventSection" @keypress="handleEventTitleChange"
+                        :disabled="isLoading">
+                    </div>
+
+                    <div class="pb-4">
+                      <label for="address_input">Addresse</label>
+                      <br>
+                      <input class="w-full bg-gray-800 border-0 rounded-xl p-2" id="address_input" name="address_input"
+                        placeholder="Addresse" type="text" v-model="eventAddress" @keypress="handleEventTitleChange"
+                        :disabled="isLoading">
+                    </div>
+
+                    <div class="pb-4">
+                      <label for="date_input">Dato</label>
+                      <br>
+                      <input class="w-full bg-gray-800 border-0 rounded-xl p-2 cursor-pointer" id="date_input" name="date_input"
+                        type="datetime-local" v-model="eventDate" @click="handleEventTitleChange"
+                        :disabled="isLoading">
+                    </div>
                   </div>
 
                   <div class="pb-4">
                     <label for="description_input">Beskrivelse</label>
                     <br>
-                    <textarea
-                      class="w-full bg-gray-800 border-0 rounded-xl p-2 h-32"
-                      id="description_input"
-                      name="description_input"
-                      placeholder="Beskrivelse"
-                      type="text"
-                      v-model="eventDescription"
-                      @keypress="handleEventTitleChange"
-                      :disabled="isLoading">
+                    <textarea class="w-full bg-gray-800 border-0 rounded-xl p-2 h-96" id="description_input"
+                      name="description_input" placeholder="Beskrivelse" type="text" v-model="eventDescription"
+                      @keypress="handleEventTitleChange" :disabled="isLoading">
                     </textarea>
                   </div>
 
@@ -200,11 +222,7 @@ async function uploadFile(url: string, file: File) {
                     <br>
                     <input
                       class="w-full bg-gray-800 border-0 rounded-xl p-2 cursor-pointer hover:bg-gray-600 focus:bg-gray-300 focus:text-gray-900"
-                      id="file_input"
-                      name="file_input"
-                      type="file"
-                      accept="image/*"
-                      @change="handleFileUpload"
+                      id="file_input" name="file_input" type="file" accept="image/*" @change="handleFileUpload"
                       :disabled="isLoading">
                   </div>
 
@@ -213,7 +231,7 @@ async function uploadFile(url: string, file: File) {
                   </div>
 
                   <div v-show="submitError" class="pb-4 text-red-400">
-                    <span>⚠️ Kan ikke oprette arrangement uden både titel, beskrivelse og billede!</span>
+                    <span>⚠️ Venligst udfyld alle felter</span>
                   </div>
 
                   <div class="mt-4">
@@ -221,9 +239,13 @@ async function uploadFile(url: string, file: File) {
                       class="inline-flex justify-center rounded-md border border-transparent bg-gray-300 px-4 py-2 text-md font-medium hover:bg-gray-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 text-gray-900 focus-visible:ring-offset-2"
                       :disabled="isLoading">
                       <span v-if="isLoading" class="flex items-center">
-                        <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-gray-900" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-gray-900" xmlns="http://www.w3.org/2000/svg"
+                          fill="none" viewBox="0 0 24 24">
+                          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+                          </circle>
+                          <path class="opacity-75" fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                          </path>
                         </svg>
                         Opretter Arrangement...
                       </span>
