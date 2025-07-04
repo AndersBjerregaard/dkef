@@ -15,33 +15,30 @@ import axios from 'axios';
 const items = ref([1, 2, 3]);
 
 const isOpen: Ref<boolean> = ref(false);
-const isLoading: Ref<boolean> = ref(false); // New ref for loading state
+const isLoading: Ref<boolean> = ref(false);
 
-let newsTitle: Ref<string> = ref(''); // Use ref for newsTitle
-let newsFile: Ref<File | null> = ref(null); // Use ref for newsFile
+const eventTitle: Ref<string> = ref('');
+const eventFile: Ref<File | null> = ref(null);
+const eventDescription: Ref<string> = ref('');
 
-let fileUploadError: Ref<boolean> = ref(false);
-let submitError: Ref<boolean> = ref(false);
+const fileUploadError: Ref<boolean> = ref(false);
+const submitError: Ref<boolean> = ref(false);
 
 function closeModal() {
-  // Reset fields
-  newsTitle.value = '';
-  newsFile.value = null;
+  resetFields();
 
   isOpen.value = false;
 }
 
 function openModal() {
-  // Reset fields
-  newsTitle.value = '';
-  newsFile.value = null;
+  resetFields();
 
   isOpen.value = true;
-  submitError.value = false; // Reset submit error on opening
-  fileUploadError.value = false; // Reset file upload error on opening
+  submitError.value = false;
+  fileUploadError.value = false;
 }
 
-function handleNewsTitleChange(event: Event) {
+function handleEventTitleChange(event: Event) {
   submitError.value = false;
 }
 
@@ -50,22 +47,32 @@ function handleFileUpload(event: Event) {
   fileUploadError.value = false;
   const input = event.target as HTMLInputElement;
   if (input.files && input.files.length > 0) {
-    newsFile.value = input.files[0];
-    if (newsFile.value.size === 0) {
+    eventFile.value = input.files[0];
+    if (eventFile.value.size === 0) {
       fileUploadError.value = true;
     }
   } else {
-    newsFile.value = null; // Clear if no file is selected (e.g. user cancels)
+    eventFile.value = null; // Clear if no file is selected (e.g. user cancels)
   }
 }
 
-async function createNews() {
+function resetFields() {
+  eventTitle.value = '';
+  eventDescription.value = '';
+  eventFile.value = null;
+}
+
+async function createEvent() {
   submitError.value = false;
-  if (newsFile.value === null) {
+  if (eventFile.value === null) {
     submitError.value = true;
     return;
   }
-  if (newsTitle.value === '') {
+  if (eventTitle.value === '') {
+    submitError.value = true;
+    return;
+  }
+  if (eventDescription.value === '') {
     submitError.value = true;
     return;
   }
@@ -78,14 +85,13 @@ async function createNews() {
       const presignedUrl: string = response.data;
       console.info('Retrieved presigned url: ', presignedUrl);
 
-      await uploadFile(presignedUrl, newsFile.value!); // Await the file upload
+      await uploadFile(presignedUrl, eventFile.value!); // Await the file upload
 
       // Reset fields and close modal only after successful submission
-      newsTitle.value = '';
-      newsFile.value = null;
+      resetFields();
       isOpen.value = false;
     } catch (error: any) {
-      console.error('Error during news creation:', error);
+      console.error('Error during event creation:', error);
       submitError.value = true; // Indicate submission failure
     } finally {
       isLoading.value = false; // Always set loading to false when done
@@ -101,7 +107,7 @@ async function uploadFile(url: string, file: File) {
     console.info('Successfully uploaded to bucket ', response);
   } catch (error) {
     console.error('Error uploading file:', error);
-    throw error; // Re-throw the error so createNews can catch it
+    throw error; // Re-throw the error so createEvent can catch it
   }
 }
 </script>
@@ -128,8 +134,8 @@ async function uploadFile(url: string, file: File) {
     </div>
     <div class="flex justify-center items-center py-12 gap-x-8">
       <button class="flex justify-center rounded bg-gray-600 h-10 sm:h-12 py-2
-        w-24 sm:w-32 cursor-pointer hover:bg-gray-800 sm:text-lg" @click="openModal">
-        Ny Nyhed
+        w-24 sm:w-48 cursor-pointer hover:bg-gray-800 sm:text-lg" @click="openModal">
+        Nyt Arrangement
       </button>
     </div>
     <TransitionRoot appear :show="isOpen" as="template">
@@ -145,7 +151,7 @@ async function uploadFile(url: string, file: File) {
               enter-to="opacity-100 scale-100" leave="duration-200 ease-in" leave-from="opacity-100 scale-100"
               leave-to="opacity-0 scale-95">
               <DialogPanel
-                class="w-full max-w-md transform overflow-hidden rounded-2xl bg-gray-700 p-6 text-left align-middle shadow-xl transition-all **origin-center** translate-z-0">
+                class="w-full max-w-md transform overflow-hidden rounded-2xl bg-gray-700 p-6 text-left align-middle shadow-xl transition-all **origin-center** translate-z-0 border">
 
                 <button type="button" class="cursor-pointer absolute top-3 right-3 text-gray-400 hover:text-gray-500"
                   @click="closeModal" :disabled="isLoading">
@@ -156,10 +162,10 @@ async function uploadFile(url: string, file: File) {
                 </button>
 
                 <DialogTitle as="h3" class="text-lg font-medium leading-6 pb-4">
-                  Ny Nyhed
+                  Nyt Arrangement
                 </DialogTitle>
 
-                <form @submit.prevent="createNews">
+                <form @submit.prevent="createEvent">
                   <div class="pb-4">
                     <label for="title_input">Titel</label>
                     <br>
@@ -169,9 +175,24 @@ async function uploadFile(url: string, file: File) {
                       name="title_input"
                       placeholder="Titel"
                       type="text"
-                      v-model="newsTitle"
-                      @keypress="handleNewsTitleChange"
+                      v-model="eventTitle"
+                      @keypress="handleEventTitleChange"
                       :disabled="isLoading">
+                  </div>
+
+                  <div class="pb-4">
+                    <label for="description_input">Beskrivelse</label>
+                    <br>
+                    <textarea
+                      class="w-full bg-gray-800 border-0 rounded-xl p-2 h-32"
+                      id="description_input"
+                      name="description_input"
+                      placeholder="Beskrivelse"
+                      type="text"
+                      v-model="eventDescription"
+                      @keypress="handleEventTitleChange"
+                      :disabled="isLoading">
+                    </textarea>
                   </div>
 
                   <div class="pb-4">
@@ -192,7 +213,7 @@ async function uploadFile(url: string, file: File) {
                   </div>
 
                   <div v-show="submitError" class="pb-4 text-red-400">
-                    <span>⚠️ Kan ikke oprette nyhed uden både titel og billede!</span>
+                    <span>⚠️ Kan ikke oprette arrangement uden både titel, beskrivelse og billede!</span>
                   </div>
 
                   <div class="mt-4">
@@ -204,10 +225,10 @@ async function uploadFile(url: string, file: File) {
                           <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                           <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                         </svg>
-                        Opretter Nyhed...
+                        Opretter Arrangement...
                       </span>
                       <span v-else>
-                        Opret Nyhed
+                        Opret Arrangement
                       </span>
                     </button>
                   </div>
