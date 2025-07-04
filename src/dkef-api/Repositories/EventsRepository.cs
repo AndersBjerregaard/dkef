@@ -27,9 +27,14 @@ public class EventsRepository(EventsContext context, IMapper mapper) : IEventsRe
 
     public async Task<DomainCollection<Event>> GetMultipleAsync(int take = 10, int skip = 0)
     {
+        return await GetMultipleAsync(x => x.Id, skip, take);
+    }
+
+    public async Task<DomainCollection<Event>> GetMultipleAsync<Y>(System.Linq.Expressions.Expression<Func<Event, Y>> orderBy, int take = 10, int skip = 0)
+    {
         var totalItems = await context.Events.CountAsync();
         var events = await context.Events.AsNoTracking()
-            .OrderBy(x => x.Id)
+            .OrderBy(orderBy)
             .Skip(skip)
             .Take(take)
             .ToListAsync();

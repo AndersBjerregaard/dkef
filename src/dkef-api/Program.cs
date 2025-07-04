@@ -1,14 +1,11 @@
 using System.Globalization;
 using AutoMapper;
-using Dkef.Configuration;
 using Dkef.Contracts;
 using Dkef.Data;
 using Dkef.Domain;
 using Dkef.Repositories;
 using Dkef.Services;
-
 using Ganss.Xss;
-
 using Microsoft.EntityFrameworkCore;
 using Minio;
 using Minio.AspNetCore;
@@ -27,7 +24,7 @@ builder.Services.AddCors(options => {
         policy => {
             policy.AllowAnyHeader()
                 .AllowAnyMethod()
-                .WithOrigins([origins!]);
+                .WithOrigins(origins!.Split(',', StringSplitOptions.RemoveEmptyEntries));
     });
 });
 
@@ -56,19 +53,19 @@ builder.Services.AddMinio(configureClient => configureClient
     .Build());
 
 // AutoMapper
+var thumbnailHttpProtocol = minioSecure ? "https" : "http";
+var thumbnailPrefix = $"{thumbnailHttpProtocol}://{minioConString}";
+
 var mapper = new MapperConfiguration(cfg =>
 {
     cfg.CreateMap<Contact, Contact>();
     cfg.CreateMap<Event, Event>();
     cfg.CreateMap<EventDto, Event>()
-        .ForMember(dest => dest.ThumbnailUrl, opt => opt.MapFrom(src => $"{minioConString}/events/{src.ThumbnailId}"))
-        .ForMember(dest => dest.DateTime, opt => opt.MapFrom(src => DateTime.Parse(src.DateTime, CultureInfo.InvariantCulture, DateTimeStyles.None)));
+        .ForMember(dest => dest.ThumbnailUrl, opt => opt.MapFrom(src => $"{thumbnailPrefix}/events/{src.ThumbnailId}"))
+        .ForMember(dest => dest.DateTime, opt => opt.MapFrom(src => DateTime.Parse(src.DateTime, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal).ToUniversalTime()));
 }).CreateMapper();
 
 builder.Services.AddSingleton<IMapper>(mapper);
-
-var contactMapper = new MapperConfiguration(cfg => cfg.CreateMap<Contact, Contact>())
-    .CreateMapper();
 
 // Repositories
 builder.Services.AddTransient<IContactRepository, ContactRepository>();
@@ -76,9 +73,6 @@ builder.Services.AddTransient<IEventsRepository, EventsRepository>();
 
 // Services
 builder.Services.AddTransient<IBucketService, MinioBucketService>();
-
-// Configuration
-builder.Services.AddSingleton<DomainUrlConfiguration>(x => new DomainUrlConfiguration(minioConString!));
 
 // Security
 builder.Services.AddSingleton<HtmlSanitizer>(x => new());

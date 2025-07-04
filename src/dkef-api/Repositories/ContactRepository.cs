@@ -26,9 +26,14 @@ public class ContactRepository(ContactContext context, IMapper mapper) : IContac
 
     public async Task<DomainCollection<Contact>> GetMultipleAsync(int take = 10, int skip = 0)
     {
+        return await GetMultipleAsync(x => x.Id, skip, take);
+    }
+
+    public async Task<DomainCollection<Contact>> GetMultipleAsync<Y>(System.Linq.Expressions.Expression<Func<Contact, Y>> orderBy, int take = 10, int skip = 0)
+    {
         var totalItems = await context.Contacts.CountAsync();
         var contacts = await context.Contacts.AsNoTracking()
-            .OrderBy(x => x.Id)
+            .OrderBy(orderBy)
             .Skip(skip)
             .Take(take)
             .ToListAsync();

@@ -1,11 +1,9 @@
 using AutoMapper;
-
 using Dkef.Contracts;
 using Dkef.Domain;
 using Dkef.Repositories;
-
+using Dkef.Services;
 using Ganss.Xss;
-
 using Microsoft.AspNetCore.Mvc;
 
 namespace Dkef.Controllers;
@@ -15,10 +13,13 @@ namespace Dkef.Controllers;
 public class EventsController(IEventsRepository _repository, IMapper _mapper, HtmlSanitizer _sanitizer) : ControllerBase
 {
     [HttpGet]
-    public async Task<IActionResult> GetMultiple([FromQuery] int take = 10, [FromQuery] int skip = 0)
+    public async Task<IActionResult> GetMultiple([FromQuery] int take = 10, [FromQuery] int skip = 0, [FromQuery] string orderBy = "Id", [FromQuery] string order = "asc")
     {
         if (take > 50) take = 50;
-        return Ok(await _repository.GetMultipleAsync(take, skip));
+
+        var orderExpression = SortOrderService.GetKeySelector<Event>(orderBy);
+
+        return Ok(await _repository.GetMultipleAsync(orderExpression,  take, skip));
     }
 
     [HttpPost]
@@ -38,7 +39,7 @@ public class EventsController(IEventsRepository _repository, IMapper _mapper, Ht
         return CreatedAtAction(nameof(Get), new { id = newEvent.Id }, newEvent);
     }
 
-    [HttpGet(Name = nameof(Get))]
+    [HttpGet]
     [Route("{id}")]
     public async Task<IActionResult> Get([FromRoute] string id)
     {
@@ -46,7 +47,7 @@ public class EventsController(IEventsRepository _repository, IMapper _mapper, Ht
         {
             return BadRequest($"Could not parse {id} as a guid");
         }
-        var contact = await _repository.GetByIdAsync(parsedId);
-        return contact is not null ? Ok(contact) : NotFound();
+        var existingEvent = await _repository.GetByIdAsync(parsedId);
+        return existingEvent is not null ? Ok(existingEvent) : NotFound();
     }
 }

@@ -16,11 +16,21 @@ function getEventPresignedUrl(guid: string) {
     case 'Development':
       throw 'Unimplemented!';
     default:
-      return `bucket/events/${guid}`
+      return `/bucket/events/${guid}`
+  }
+}
+
+function postEvent() {
+  switch (mode) {
+    case 'Development':
+      throw 'Unimplemented!';
+    default:
+      return `/events`
   }
 }
 
 export default {
   getContacts,
-  getEventPresignedUrl
+  getEventPresignedUrl,
+  postEvent
 }

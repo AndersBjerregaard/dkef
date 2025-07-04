@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, type Ref } from 'vue';
+import { onMounted, ref, type Ref } from 'vue';
 import EventComponent from './EventComponent.vue';
 import {
   TransitionRoot, TransitionChild,
@@ -10,9 +10,10 @@ import apiservice from '@/services/apiservice';
 import urlservice from '@/services/urlservice';
 import type { AxiosResponse } from 'axios';
 import axios from 'axios';
+import type { EventDto, PublishedEvent } from '@/types/events';
 
 // Example items
-const items = ref([1, 2, 3]);
+const publishedEvents: Ref<PublishedEvent[]> = ref([]);
 
 const isOpen: Ref<boolean> = ref(false);
 const isLoading: Ref<boolean> = ref(false);
@@ -26,6 +27,12 @@ const eventDate: Ref<string> = ref('');
 
 const fileUploadError: Ref<boolean> = ref(false);
 const submitError: Ref<boolean> = ref(false);
+
+function fetchLatestPublishedEvents(): void {
+
+}
+
+onMounted(fetchLatestPublishedEvents);
 
 function closeModal() {
   resetFields();
@@ -88,12 +95,22 @@ async function createEvent() {
   if (!submitError.value) {
     isLoading.value = true; // Set loading to true
     try {
-      const guid: string = uuidv4();
-      const response: AxiosResponse<string> = await apiservice.get<string>(urlservice.getEventPresignedUrl(guid));
-      const presignedUrl: string = response.data;
-      console.info('Retrieved presigned url: ', presignedUrl);
+      const guid: string = uuidv4(); // Generated guid to identify the uploaded file
+      const presignedUrlResponse: AxiosResponse<string> = await apiservice.get<string>(urlservice.getEventPresignedUrl(guid));
+      const presignedUrl: string = presignedUrlResponse.data;
 
-      await uploadFile(presignedUrl, eventFile.value!); // Await the file upload
+      await uploadFile(presignedUrl, eventFile.value!);
+
+      const newEvent: EventDto = {
+        title: eventTitle.value,
+        section: eventSection.value,
+        address: eventAddress.value,
+        dateTime: eventDate.value,
+        description: eventDescription.value,
+        thumbnailId: guid
+      }
+
+      const eventPostResponse: AxiosResponse<any> = await apiservice.post<any>(urlservice.postEvent(), newEvent);
 
       // Reset fields and close modal only after successful submission
       resetFields();
@@ -109,10 +126,8 @@ async function createEvent() {
 
 async function uploadFile(url: string, file: File) {
   const axiosInstance = axios.create();
-  console.info('Uploading file to bucket...', file);
   try {
-    const response = await axiosInstance.put(url, file, { headers: { 'Content-Type': file.type } });
-    console.info('Successfully uploaded to bucket ', response);
+    await axiosInstance.put(url, file, { headers: { 'Content-Type': file.type } });
   } catch (error) {
     console.error('Error uploading file:', error);
     throw error; // Re-throw the error so createEvent can catch it
@@ -136,9 +151,7 @@ async function uploadFile(url: string, file: File) {
         class="flex justify-center rounded bg-gray-600 h-10 sm:h-12 py-2 w-24 sm:w-48 cursor-pointer hover:bg-gray-800 sm:text-lg">Generalforsamlinger</button>
     </div>
     <div class="flex justify-center items-center gap-x-8">
-      <div v-for="x in items" :key="x">
-        <EventComponent />
-      </div>
+      <EventComponent v-for="item in publishedEvents" :key="item.id"/>
     </div>
     <div class="flex justify-center items-center py-12 gap-x-8">
       <button class="flex justify-center rounded bg-gray-600 h-10 sm:h-12 py-2
@@ -202,8 +215,8 @@ async function uploadFile(url: string, file: File) {
                     <div class="pb-4">
                       <label for="date_input">Dato</label>
                       <br>
-                      <input class="w-full bg-gray-800 border-0 rounded-xl p-2 cursor-pointer" id="date_input" name="date_input"
-                        type="datetime-local" v-model="eventDate" @click="handleEventTitleChange"
+                      <input class="w-full bg-gray-800 border-0 rounded-xl p-2 cursor-pointer" id="date_input"
+                        name="date_input" type="datetime-local" v-model="eventDate" @click="handleEventTitleChange"
                         :disabled="isLoading">
                     </div>
                   </div>
