@@ -16,6 +16,6 @@ public class BucketController(IBucketService _bucketService) : ControllerBase
         {
             return BadRequest($"Could not parse {id} as a guid");
         }
-        return Ok(await _bucketService.GetPresignedUrlAsync(EVENTS_BUCKET, id));
+        return Ok(await _bucketService.GetPresignedUrlAsync(EVENTS_BUCKET, id, isPublic: true));
     }
 }
