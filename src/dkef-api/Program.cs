@@ -59,6 +59,7 @@ builder.Services.AddMinio(configureClient => configureClient
 var mapper = new MapperConfiguration(cfg =>
 {
     cfg.CreateMap<Contact, Contact>();
+    cfg.CreateMap<Event, Event>();
     cfg.CreateMap<EventDto, Event>()
         .ForMember(dest => dest.ThumbnailUrl, opt => opt.MapFrom(src => $"{minioConString}/events/{src.ThumbnailId}"))
         .ForMember(dest => dest.DateTime, opt => opt.MapFrom(src => DateTime.Parse(src.DateTime, CultureInfo.InvariantCulture, DateTimeStyles.None)));

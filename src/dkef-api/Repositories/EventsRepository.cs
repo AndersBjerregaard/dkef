@@ -1,40 +1,52 @@
-
 using AutoMapper;
-
 using Dkef.Data;
 using Dkef.Domain;
+
+using Microsoft.EntityFrameworkCore;
 
 namespace Dkef.Repositories;
 
 public class EventsRepository(EventsContext context, IMapper mapper) : IEventsRepository
 {
-    public Task<Event> CreateAsync(Event dto)
+    public async Task<Event> CreateAsync(Event dto)
     {
-        throw new NotImplementedException();
+        var entityEntry = await context.Events.AddAsync(dto);
+        await context.SaveChangesAsync();
+        return entityEntry.Entity;
     }
 
-    public Task<bool> DeleteAsync(Guid id)
+    public async Task<bool> DeleteAsync(Guid id)
     {
-        throw new NotImplementedException();
+        return await context.Events.Where(x => x.Id == id).ExecuteDeleteAsync() == 1;
     }
 
-    public Task<Event?> GetByIdAsync(Guid id)
+    public async Task<Event?> GetByIdAsync(Guid id)
     {
-        throw new NotImplementedException();
+        return await context.Events.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
     }
 
-    public Task<DomainCollection<Event>> GetMultipleAsync(int take = 10, int skip = 0)
+    public async Task<DomainCollection<Event>> GetMultipleAsync(int take = 10, int skip = 0)
     {
-        throw new NotImplementedException();
+        var totalItems = await context.Events.CountAsync();
+        var events = await context.Events.AsNoTracking()
+            .OrderBy(x => x.Id)
+            .Skip(skip)
+            .Take(take)
+            .ToListAsync();
+        return new DomainCollection<Event>(events, totalItems);
     }
 
-    public Task<IEnumerable<Event>> GetMultipleByIdAsync(IEnumerable<Guid> ids)
+    public async Task<IEnumerable<Event>> GetMultipleByIdAsync(IEnumerable<Guid> ids)
     {
-        throw new NotImplementedException();
+        return await context.Events.AsNoTracking().Where(x => ids.Contains(x.Id)).ToListAsync();
     }
 
-    public Task<Event> UpdateAsync(Guid id, Event dto)
+    public async Task<Event> UpdateAsync(Guid id, Event dto)
     {
-        throw new NotImplementedException();
+        var existing = await context.Events.FirstOrDefaultAsync(x => x.Id == id)
+            ?? throw new KeyNotFoundException($"No event found with the id {id}");
+        var updated = mapper.Map(dto, existing);
+        await context.SaveChangesAsync();
+        return updated;
     }
 }
