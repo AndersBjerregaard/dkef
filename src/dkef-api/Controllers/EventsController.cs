@@ -10,16 +10,16 @@ namespace Dkef.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class EventsController(IEventsRepository _repository, IMapper _mapper, HtmlSanitizer _sanitizer) : ControllerBase
+public class EventsController(IEventsRepository _repository, IMapper _mapper, HtmlSanitizer _sanitizer, QueryableService<Event> _queryableService) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> GetMultiple([FromQuery] int take = 10, [FromQuery] int skip = 0, [FromQuery] string orderBy = "Id", [FromQuery] string order = "asc")
     {
         if (take > 50) take = 50;
 
-        var orderExpression = SortOrderService.GetKeySelector<Event>(orderBy);
+        var orderExpression = _queryableService.GetQuery(orderBy, order);
 
-        return Ok(await _repository.GetMultipleAsync(orderExpression,  take, skip));
+        return Ok(await _repository.GetMultipleAsync(orderExpression, take, skip));
     }
 
     [HttpPost]

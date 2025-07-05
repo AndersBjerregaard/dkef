@@ -1,8 +1,7 @@
 namespace Dkef.Domain;
 
 // Member ID,email,CreatedAt,Verified,Stripe Customer ID,Free Plans (plan ids),Paid Plans (price ids),Login Redirect,Last Login,Fornavn,Efternavn,Titel,Beskæftigelse,Arbejdsopgaver,Privat vejnavn og nr,Privat postnummer,Privat by,Privat mobil,Firma navn,Firma vejnavn og nr.,Firma postnummer,Firma by,CVR nr.,Firma mobil,Firma e-mail,El-teknik levering,EAN nr.,Fakturering,GDPR accept,Hjælp til studerende,Mentor,Primær sektion,Sekundær sektion,Faktura e-mail,Gammelt Medlemsnummer,Tilmeldingsdato,ATT Faktura,Kilde,Hvornår forventer du at være færdig som studerende?
-public class Contact {
-    public Guid Id { get; set; } // NaN
+public class Contact : DomainClass {
     public string Email { get; set; } = string.Empty; // 1
     public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow; // 2
     public string FirstName { get; set; } = string.Empty; // 9

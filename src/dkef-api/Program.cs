@@ -1,5 +1,9 @@
 using System.Globalization;
+using System.Reflection;
+
 using AutoMapper;
+
+using Dkef.Configuration;
 using Dkef.Contracts;
 using Dkef.Data;
 using Dkef.Domain;
@@ -40,6 +44,13 @@ var dbConString = builder.Configuration.GetConnectionString("PostgresDb");
 builder.Services.AddDbContext<ContactContext>(options => options.UseNpgsql(dbConString));
 builder.Services.AddDbContext<EventsContext>(options => options.UseNpgsql(dbConString));
 
+builder.Services.AddTransient<DbSet<Contact>>(x =>
+    x.GetRequiredService<ContactContext>()
+    .Contacts);
+builder.Services.AddTransient<DbSet<Event>>(x =>
+    x.GetRequiredService<EventsContext>()
+    .Events);
+
 // Minio
 var minioConString = builder.Configuration.GetConnectionString("Minio");
 var minioAccessKey = builder.Configuration.GetSection("Minio")["AccessKey"];
@@ -76,6 +87,11 @@ builder.Services.AddTransient<IBucketService, MinioBucketService>();
 
 // Security
 builder.Services.AddSingleton<HtmlSanitizer>(x => new());
+builder.Services.AddTransient<QueryableService<Event>>();
+builder.Services.AddTransient<QueryableService<Contact>>();
+
+// Configuration
+builder.Services.AddSingleton<SortablePropertyConfig>(x => new(Assembly.GetExecutingAssembly()));
 
 var app = builder.Build();
 
