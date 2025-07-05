@@ -33,7 +33,8 @@ async function fetchLatestPublishedEvents() {
     const response = await apiservice.get<EventsCollection>(urlservice.getEvents(), {
       params: {
         take: 3,
-        orderBy: 'createdAt'
+        orderBy: 'createdAt',
+        order: "desc"
       }
     });
     publishedEvents.value = response.data.collection;
