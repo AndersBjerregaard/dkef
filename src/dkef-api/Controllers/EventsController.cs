@@ -34,6 +34,8 @@ public class EventsController(IEventsRepository _repository, IMapper _mapper, Ht
 
         var mappedEvent = _mapper.Map<Event>(dto);
 
+        mappedEvent.CreatedAt = DateTime.UtcNow;
+
         var newEvent = await _repository.CreateAsync(mappedEvent);
 
         return CreatedAtAction(nameof(Get), new { id = newEvent.Id }, newEvent);

@@ -9,4 +9,5 @@ public class Event
     public DateTime DateTime { get; set; } = DateTime.MinValue;
     public string Description { get; set; } = string.Empty;
     public string ThumbnailUrl { get; set; } = string.Empty;
+    public DateTime CreatedAt { get; set; } = DateTime.MinValue;
 }
