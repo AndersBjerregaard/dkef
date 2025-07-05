@@ -29,8 +29,18 @@ function postEvent() {
   }
 }
 
+function getEvents() {
+  switch (mode) {
+    case 'Development':
+      throw 'Unimplemented!';
+    default:
+      return `/events`
+  }
+}
+
 export default {
   getContacts,
   getEventPresignedUrl,
-  postEvent
+  postEvent,
+  getEvents
 }

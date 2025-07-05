@@ -14,5 +14,11 @@ export interface PublishedEvent {
   address: string,
   dateTime: string,
   description: string,
-  thumbnailUrl: string
+  thumbnailUrl: string,
+  createdAt: string
+}
+
+export interface EventsCollection {
+  total: number,
+  collection: PublishedEvent[]
 }

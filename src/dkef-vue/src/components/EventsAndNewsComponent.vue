@@ -10,7 +10,7 @@ import apiservice from '@/services/apiservice';
 import urlservice from '@/services/urlservice';
 import type { AxiosResponse } from 'axios';
 import axios from 'axios';
-import type { EventDto, PublishedEvent } from '@/types/events';
+import { type EventsCollection, type EventDto, type PublishedEvent } from '@/types/events';
 
 // Example items
 const publishedEvents: Ref<PublishedEvent[]> = ref([]);
@@ -28,8 +28,18 @@ const eventDate: Ref<string> = ref('');
 const fileUploadError: Ref<boolean> = ref(false);
 const submitError: Ref<boolean> = ref(false);
 
-function fetchLatestPublishedEvents(): void {
-
+async function fetchLatestPublishedEvents() {
+  try {
+    const response = await apiservice.get<EventsCollection>(urlservice.getEvents(), {
+      params: {
+        take: 3,
+        orderBy: 'createdAt'
+      }
+    });
+    publishedEvents.value = response.data.collection;
+  } catch (error) {
+    console.error('Error retrieving published events: ', error);
+  }
 }
 
 onMounted(fetchLatestPublishedEvents);
@@ -150,8 +160,11 @@ async function uploadFile(url: string, file: File) {
       <button
         class="flex justify-center rounded bg-gray-600 h-10 sm:h-12 py-2 w-24 sm:w-48 cursor-pointer hover:bg-gray-800 sm:text-lg">Generalforsamlinger</button>
     </div>
+    <div class="flex justify-center items-center">
+      <h2 class="text-2xl pb-8">Seneste arrangementer og nyheder:</h2>
+    </div>
     <div class="flex justify-center items-center gap-x-8">
-      <EventComponent v-for="item in publishedEvents" :key="item.id"/>
+      <EventComponent v-for="item in publishedEvents" :key="item.id" :published-event="item"/>
     </div>
     <div class="flex justify-center items-center py-12 gap-x-8">
       <button class="flex justify-center rounded bg-gray-600 h-10 sm:h-12 py-2
