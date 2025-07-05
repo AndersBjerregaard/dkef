@@ -33,7 +33,7 @@ async function fetchLatestPublishedEvents() {
     const response = await apiservice.get<EventsCollection>(urlservice.getEvents(), {
       params: {
         take: 3,
-        orderBy: 'createdAt',
+        orderBy: 'dateTime',
         order: "desc"
       }
     });
@@ -121,11 +121,15 @@ async function createEvent() {
         thumbnailId: guid
       }
 
-      const eventPostResponse: AxiosResponse<any> = await apiservice.post<any>(urlservice.postEvent(), newEvent);
+      await apiservice.post<PublishedEvent>(urlservice.postEvent(), newEvent);
 
       // Reset fields and close modal only after successful submission
       resetFields();
       isOpen.value = false;
+
+      // Refetch latest events
+      await fetchLatestPublishedEvents();
+
     } catch (error: any) {
       console.error('Error during event creation:', error);
       submitError.value = true; // Indicate submission failure
