@@ -28,7 +28,7 @@ public class ContactRepository(ContactContext context, IMapper mapper) : IContac
     {
         var query = context.Contacts.AsNoTracking()
             .OrderBy(x => x.Id);
-        return await GetMultipleAsync(query, skip, take);
+        return await GetMultipleAsync(query, take, skip);
     }
 
     public async Task<DomainCollection<Contact>> GetMultipleAsync(IOrderedQueryable<Contact> orderBy, int take = 10, int skip = 0)

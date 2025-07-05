@@ -29,7 +29,7 @@ public class EventsRepository(EventsContext context, IMapper mapper) : IEventsRe
     {
         var query = context.Events.AsNoTracking()
             .OrderBy(x => x.Id);
-        return await GetMultipleAsync(query, skip, take);
+        return await GetMultipleAsync(query, take, skip);
     }
 
     public async Task<DomainCollection<Event>> GetMultipleAsync(IOrderedQueryable<Event> orderBy, int take = 10, int skip = 0)
