@@ -4,7 +4,8 @@ import urlservice from '@/services/urlservice'
 import { type ColumnSortState, type Contact, type ContactCollection, Sort } from '@/types/members'
 import MemberComponent from './MemberComponent.vue'
 import MemberHeaderComponent from './MemberHeaderComponent.vue'
-import { computed, onMounted, reactive, ref, type Ref } from 'vue'
+import { computed, onMounted, onUnmounted, reactive, ref, type Ref } from 'vue'
+import type { AxiosResponse } from 'axios'
 
 const items: Ref<Contact[]> = ref([]);
 
@@ -61,7 +62,9 @@ const takeAmount = 25;
 let initialFetch = true;
 let total = Number.MAX_SAFE_INTEGER;
 
-function fetchItems(skip?: number): void {
+const abortController: AbortController = new AbortController();
+
+async function fetchItems(skip?: number): Promise<void> {
   if (items.value.length >= total) {
     return;
   }
@@ -70,38 +73,55 @@ function fetchItems(skip?: number): void {
     skip = 0;
   }
 
-  apiservice
-    .get<ContactCollection>(urlservice.getContacts(), {
-      params: {
-        take: takeAmount,
-        skip: skip
-      }
-    })
-    .then(function (response) {
-      // Retrieve response body
-      const body = response.data;
-      // Only set total at initial fetch, in case the total changes while requesting
-      if (initialFetch) {
-        total = body.total;
-        initialFetch = false;
-      }
-      const collection = body.collection;
-      if (collection.length === 0) {
-        return;
-      }
-      // Make each item reactive
-      collection.forEach((item: Contact) => {
-        items.value.push(reactive(item));
-      });
-      // Recursively request until total has been reached
+  try {
+    const response: AxiosResponse<ContactCollection> = await apiservice
+      .get<ContactCollection>(urlservice.getContacts(), {
+        params: {
+          take: takeAmount,
+          skip: skip
+        },
+        signal: abortController.signal
+      })
+
+    // Retrieve response body
+    const body = response.data;
+
+    // Only set total at initial fetch, in case the total changes while requesting
+    if (initialFetch) {
+      total = body.total;
+      initialFetch = false;
+    }
+
+    const collection = body.collection;
+
+    // Return early if no items were fetched
+    if (collection.length === 0) {
+      return;
+    }
+
+    // Make each item reactive
+    collection.forEach((item: Contact) => {
+      items.value.push(reactive(item));
+    });
+
+    // Only recursively call if the component is still mounted and total hasn't been reached
+    if (items.value.length < total) {
       fetchItems(skip + collection.length);
-    })
-    .catch(function (error) {
-      console.error(error)
-    })
+    }
+
+  } catch (error) {
+    console.error(error);
+  }
 };
 
-onMounted(fetchItems);
+onUnmounted(() => {
+  abortController.abort();
+  console.info('Fetching aborted due to component umount.');
+});
+
+onMounted(() => {
+  fetchItems();
+});
 
 // Describes the sort state of the MemberHeaderComponents rendered altogether
 const columnSortStates = ref<ColumnSortState>({
