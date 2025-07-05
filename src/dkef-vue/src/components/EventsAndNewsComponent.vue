@@ -164,7 +164,7 @@ async function uploadFile(url: string, file: File) {
     <div class="flex justify-center items-center">
       <h2 class="text-2xl pb-8">Seneste arrangementer og nyheder:</h2>
     </div>
-    <div class="flex justify-center items-center gap-x-8">
+    <div class="flex flex-wrap justify-center items-stretch gap-8">
       <EventComponent v-for="item in publishedEvents" :key="item.id" :published-event="item"/>
     </div>
     <div class="flex justify-center items-center py-12 gap-x-8">
