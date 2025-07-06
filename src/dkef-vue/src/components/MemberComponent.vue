@@ -32,6 +32,7 @@ function closeModal() {
 }
 
 function resetFields() {
+  editState.value = 0;
   edit.value = false;
 }
 
@@ -403,7 +404,10 @@ const hasAccess = ref(true);
               <span>Fortryd</span>
             </button>
           </div>
-          <div class="w-80 pt-2">
+          <div
+            v-if="editState != 0"
+            class="w-80 pt-2"
+          >
             <span class="text-green-600">Opdateret: {{ localDateTime }}</span>
           </div>
         </div>
