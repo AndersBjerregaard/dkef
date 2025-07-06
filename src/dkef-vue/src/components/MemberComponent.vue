@@ -339,18 +339,35 @@ const hasAccess = ref(true);
         </div>
       </div>
 
-      <div v-if="hasAccess && edit" class="pt-4 flex gap-8">
-        <LoadingButton default-text="Opdater" loading-text="Opdaterer..." :is-loading="isLoading"
-          @loading-button-click="editMember" />
-        <button
-          type="button"
-          :disabled="isLoading"
-          :class="{ 'cursor-pointer': !isLoading, 'cursor-not-allowed': isLoading, 'hover:bg-gray-400': !isLoading }"
-          class="inline-flex justify-center rounded-md border border-transparent bg-gray-300 px-4 py-2 font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 text-gray-900 focus-visible:ring-offset-2"
-          @click="closeModal"
-        >
-          <span>Fortryd</span>
-        </button>
+      <div class="flex">
+        <div v-if="hasAccess && edit" class="pt-4 flex gap-8">
+          <LoadingButton
+            default-text="Opdater"
+            loading-text="Opdaterer..."
+            :is-loading="isLoading"
+            @loading-button-click="editMember"
+          />
+          <button
+            type="button"
+            :disabled="isLoading"
+            :class="{ 'cursor-pointer': !isLoading, 'cursor-not-allowed': isLoading, 'hover:bg-gray-400': !isLoading }"
+            class="inline-flex justify-center rounded-md border border-transparent bg-gray-300 px-4 py-2 font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 text-gray-900 focus-visible:ring-offset-2"
+            @click="closeModal"
+          >
+            <span>Fortryd</span>
+          </button>
+        </div>
+        <div class="pt-4 w-full flex justify-end">
+          <button
+            type="button"
+            :disabled="isLoading"
+            :class="{ 'cursor-pointer': !isLoading, 'cursor-not-allowed': isLoading, 'hover:bg-gray-400': !isLoading }"
+            class="inline-flex justify-center rounded-md border border-transparent bg-gray-300 px-4 py-2 font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 text-gray-900 focus-visible:ring-offset-2"
+            @click="closeModal"
+          >
+            <span>Luk</span>
+          </button>
+        </div>
       </div>
 
     </form>

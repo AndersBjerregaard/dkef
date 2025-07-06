@@ -1,18 +1,13 @@
-using AutoMapper;
-
 using Dkef.Contracts;
-using Dkef.Domain;
 using Dkef.Repositories;
-
 using Ganss.Xss;
-
 using Microsoft.AspNetCore.Mvc;
 
 namespace Dkef.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class ContactsController(IContactRepository _repository, HtmlSanitizer _sanitizer, IMapper _mapper) : ControllerBase
+public class ContactsController(IContactRepository _repository, HtmlSanitizer _sanitizer) : ControllerBase
 {
 
     [HttpGet]
