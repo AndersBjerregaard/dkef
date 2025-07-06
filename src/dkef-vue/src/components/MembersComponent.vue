@@ -4,12 +4,13 @@ import urlservice from '@/services/urlservice'
 import { type ColumnSortState, type Contact, type ContactCollection, Sort } from '@/types/members'
 import MemberComponent from './MemberComponent.vue'
 import MemberHeaderComponent from './MemberHeaderComponent.vue'
-import { computed, onMounted, onUnmounted, reactive, ref, type Ref } from 'vue'
+import { computed, onMounted, onUnmounted, reactive, ref, type ComputedRef, type Ref } from 'vue'
 import type { AxiosResponse } from 'axios'
 
 const items: Ref<Contact[]> = ref([]);
 const fetchedCount: Ref<number> = ref(0);
 const totalCount: Ref<number> = ref(0);
+const filterString: Ref<String> = ref('');
 
 const loadingProgress = computed<number>(() => {
   if (totalCount.value === 0) {
@@ -21,7 +22,7 @@ const loadingProgress = computed<number>(() => {
 const sortKey: Ref<string> = ref('none'); // Default sort key
 const sortOrder: Ref<number> = ref(1); // 1 for ascending, -1 for descending, 0 for none
 
-const sortedItems = computed(() => {
+const sortedItems: ComputedRef<Contact[]> = computed(() => {
 
   const sortKeyValue = sortKey.value;
   const sortOrderValue = sortOrder.value;
@@ -42,6 +43,39 @@ const sortedItems = computed(() => {
   });
 
   return sorted;
+});
+
+const filteredItems = computed(() => {
+  const fetchedSortedItems = sortedItems;
+
+  if (!filterString.value || filterString.value.length < 3) {
+    return fetchedSortedItems.value;
+  }
+
+  const items = [...fetchedSortedItems.value]; // Create shallow copy
+
+  const lowerCaseQuery = filterString.value.toLowerCase();
+
+  const filteredContacts = items.filter(contact => {
+    // Iterate over each property of the contact object
+    for (const key in contact) {
+      // Exclude 'id' property
+      if (key === 'id') {
+        continue;
+      }
+      const value = contact[key as keyof Contact]; // Type assertion for key
+      // Ensure the value is a string before checking for inclusion
+      if (typeof value === 'string') {
+        if (value.toLowerCase().includes(lowerCaseQuery)) {
+          return true; // Match found in this property
+        }
+      }
+      // Maybe handle different type differently here
+    }
+    return false; // No match found in any property for this contact
+  });
+
+  return filteredContacts
 });
 
 /**
@@ -179,13 +213,22 @@ function sort(by: string, order: Sort): void {
   <div class="pb-20 justify-center items-center text-center members-list">
     <div>
       <div class="py-8">
-        <h1 class="text-4xl py-8">Members List</h1>
+        <h1 class="text-4xl py-8">Alle medlemmer</h1>
       </div>
       <div v-if="loadingProgress < 100" class="pb-4">
         <div class="w-full bg-gray-200 rounded-full h-4 dark:bg-gray-700 mb-4">
           <div class="bg-blue-600 h-4 rounded-full" :style="{ width: loadingProgress + '%' }"></div>
           <p class="text-sm text-gray-500 mt-1">{{ fetchedCount }} / {{ totalCount }} Medlemmer hentet</p>
         </div>
+      </div>
+      <div class="py-4 flex gap-4">
+        <label class="p-1">Søg: </label>
+        <input
+          type="text"
+          class="bg-gray-700 rounded p-1 w-[100%]"
+          placeholder="Minimum 3 bogstaver..."
+          v-model="filterString"
+        >
       </div>
       <div class="py-4">
         <div class="flex w-full justify-between border-2 border-gray-800">
@@ -201,7 +244,7 @@ function sort(by: string, order: Sort): void {
             @update:sort="(newValue: Sort) => handleSortUpdate('address', newValue)" />
         </div>
         <div class="w-full justify-between border-2 border-gray-800">
-          <MemberComponent v-for="(item, index) in sortedItems" :key="item.id" :contact="item" :index="index" />
+          <MemberComponent v-for="(item, index) in filteredItems" :key="item.id" :contact="item" :index="index" />
         </div>
       </div>
     </div>
