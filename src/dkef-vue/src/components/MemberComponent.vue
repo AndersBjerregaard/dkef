@@ -9,6 +9,18 @@ import urlservice from '@/services/urlservice';
 // Modal state
 const isOpen = ref(false);
 const isLoading = ref(false);
+const editState = ref(0); // -1 for error, 0 for none, 1 for update
+
+const localDateTime = computed(() => {
+  const now = new Date();
+  return now.toLocaleString(undefined, {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+  });
+});
 
 function openModal() {
   isOpen.value = true;
@@ -111,7 +123,40 @@ async function editMember() {
       expectedEndDateOfBeingStudent: expectedEndDateOfBeingStudent
     };
     const response = await apiservice.put<Contact>(urlservice.updateContact(props.contact?.id), editMemberDto);
-    console.info('Contact updated! ', response);
+    if (response.status >= 200 && response.status < 300) {
+      editState.value = 1; // Indicate edit success
+      // Update properties to reflect the member list
+      const updatedContact = response.data;
+      props.contact.email = updatedContact.email;
+      props.contact.firstName = updatedContact.firstName;
+      props.contact.lastName = updatedContact.lastName;
+      props.contact.title = updatedContact.title;
+      props.contact.occupation = updatedContact.occupation;
+      props.contact.workTasks = updatedContact.workTasks;
+      props.contact.privateAddress = updatedContact.privateAddress;
+      props.contact.privateZIP = updatedContact.privateZIP;
+      props.contact.privateCity = updatedContact.privateCity;
+      props.contact.privatePhone = updatedContact.privatePhone;
+      props.contact.companyName = updatedContact.companyName;
+      props.contact.companyAddress = updatedContact.companyAddress;
+      props.contact.companyZIP = updatedContact.companyZIP;
+      props.contact.cvrNumber = updatedContact.cvrNumber;
+      props.contact.companyPhone = updatedContact.companyPhone;
+      props.contact.companyEmail = updatedContact.companyEmail;
+      props.contact.elTeknikDelivery = updatedContact.elTeknikDelivery;
+      props.contact.eanNumber = updatedContact.eanNumber;
+      props.contact.invoice = updatedContact.invoice;
+      props.contact.helpToStudents = updatedContact.helpToStudents;
+      props.contact.mentor = updatedContact.mentor;
+      props.contact.primarySection = updatedContact.primarySection;
+      props.contact.secondarySection = updatedContact.secondarySection;
+      props.contact.invoiceEmail = updatedContact.invoiceEmail;
+      props.contact.oldMemberNumber = updatedContact.oldMemberNumber;
+      props.contact.attInvoice = updatedContact.attInvoice;
+      props.contact.expectedEndDateOfBeingStudent = updatedContact.expectedEndDateOfBeingStudent;
+    } else {
+      throw `Unexpected error attempting to update contact information ${response}`;
+    }
   } catch (error) {
     console.error(error);
   } finally {
@@ -347,15 +392,20 @@ const hasAccess = ref(true);
             :is-loading="isLoading"
             @loading-button-click="editMember"
           />
-          <button
-            type="button"
-            :disabled="isLoading"
-            :class="{ 'cursor-pointer': !isLoading, 'cursor-not-allowed': isLoading, 'hover:bg-gray-400': !isLoading }"
-            class="inline-flex justify-center rounded-md border border-transparent bg-gray-300 px-4 py-2 font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 text-gray-900 focus-visible:ring-offset-2"
-            @click="closeModal"
-          >
-            <span>Fortryd</span>
-          </button>
+          <div class="mt-4">
+            <button
+              type="button"
+              :disabled="isLoading"
+              :class="{ 'cursor-pointer': !isLoading, 'cursor-not-allowed': isLoading, 'hover:bg-gray-400': !isLoading }"
+              class="inline-flex justify-center rounded-md border border-transparent bg-gray-300 px-4 py-2 font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 text-gray-900 focus-visible:ring-offset-2"
+              @click="closeModal"
+            >
+              <span>Fortryd</span>
+            </button>
+          </div>
+          <div class="w-80 pt-2">
+            <span class="text-green-600">Opdateret: {{ localDateTime }}</span>
+          </div>
         </div>
         <div class="pt-4 w-full flex justify-end">
           <button
