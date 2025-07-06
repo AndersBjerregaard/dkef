@@ -24,5 +24,6 @@ function put<T = any>(url: string, data: any, config?: AxiosRequestConfig): Prom
 
 export default {
   get,
-  post
+  post,
+  put
 }

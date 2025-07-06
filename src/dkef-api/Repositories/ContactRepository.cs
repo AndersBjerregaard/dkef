@@ -1,4 +1,6 @@
 using AutoMapper;
+
+using Dkef.Contracts;
 using Dkef.Data;
 using Dkef.Domain;
 using Microsoft.EntityFrameworkCore;
@@ -46,7 +48,7 @@ public class ContactRepository(ContactContext context, IMapper mapper) : IContac
         return await context.Contacts.AsNoTracking().Where(x => ids.Contains(x.Id)).ToListAsync();
     }
 
-    public async Task<Contact> UpdateAsync(Guid id, Contact dto)
+    public async Task<Contact> UpdateAsync(Guid id, ContactDto dto)
     {
         var existing = await context.Contacts.FirstOrDefaultAsync(x => x.Id == id)
             ?? throw new KeyNotFoundException($"No contact found with the id {id}");

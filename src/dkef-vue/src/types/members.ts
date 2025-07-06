@@ -33,6 +33,37 @@ export interface Contact {
   workTasks: string
 }
 
+export interface ContactDto {
+  email: string
+  firstName: string
+  lastName: string
+  title: string
+  occupation: string
+  workTasks: string
+  privateAddress: string
+  privateZIP: string
+  privateCity: string
+  privatePhone: string
+  companyName: string
+  companyAddress: string
+  companyZIP: string
+  companyCity: string
+  cvrNumber: string
+  companyPhone: string
+  companyEmail: string
+  elTeknikDelivery: string
+  eanNumber: string
+  invoice: string
+  helpToStudents: string
+  mentor: string
+  primarySection: string
+  secondarySection: string
+  invoiceEmail: string
+  oldMemberNumber: string
+  attInvoice: string
+  expectedEndDateOfBeingStudent: string
+}
+
 export interface ContactCollection {
   collection: Contact[]
   total: number

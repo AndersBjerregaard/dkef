@@ -70,6 +70,7 @@ var thumbnailPrefix = $"{thumbnailHttpProtocol}://{minioConString}";
 var mapper = new MapperConfiguration(cfg =>
 {
     cfg.CreateMap<Contact, Contact>();
+    cfg.CreateMap<ContactDto, Contact>();
     cfg.CreateMap<Event, Event>();
     cfg.CreateMap<EventDto, Event>()
         .ForMember(dest => dest.ThumbnailUrl, opt => opt.MapFrom(src => $"{thumbnailPrefix}/events/{src.ThumbnailId}"))

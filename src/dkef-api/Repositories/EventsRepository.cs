@@ -1,4 +1,6 @@
 using AutoMapper;
+
+using Dkef.Contracts;
 using Dkef.Data;
 using Dkef.Domain;
 
@@ -47,7 +49,7 @@ public class EventsRepository(EventsContext context, IMapper mapper) : IEventsRe
         return await context.Events.AsNoTracking().Where(x => ids.Contains(x.Id)).ToListAsync();
     }
 
-    public async Task<Event> UpdateAsync(Guid id, Event dto)
+    public async Task<Event> UpdateAsync(Guid id, EventDto dto)
     {
         var existing = await context.Events.FirstOrDefaultAsync(x => x.Id == id)
             ?? throw new KeyNotFoundException($"No event found with the id {id}");

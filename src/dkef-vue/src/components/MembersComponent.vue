@@ -8,6 +8,15 @@ import { computed, onMounted, onUnmounted, reactive, ref, type Ref } from 'vue'
 import type { AxiosResponse } from 'axios'
 
 const items: Ref<Contact[]> = ref([]);
+const fetchedCount: Ref<number> = ref(0);
+const totalCount: Ref<number> = ref(0);
+
+const loadingProgress = computed<number>(() => {
+  if (totalCount.value === 0) {
+    return 0;
+  }
+  return (fetchedCount.value / totalCount.value) * 100;
+});
 
 const sortKey: Ref<string> = ref('none'); // Default sort key
 const sortOrder: Ref<number> = ref(1); // 1 for ascending, -1 for descending, 0 for none
@@ -89,6 +98,7 @@ async function fetchItems(skip?: number): Promise<void> {
     // Only set total at initial fetch, in case the total changes while requesting
     if (initialFetch) {
       total = body.total;
+      totalCount.value = total;
       initialFetch = false;
     }
 
@@ -103,6 +113,8 @@ async function fetchItems(skip?: number): Promise<void> {
     collection.forEach((item: Contact) => {
       items.value.push(reactive(item));
     });
+
+    fetchedCount.value = items.value.length;
 
     // Only recursively call if the component is still mounted and total hasn't been reached
     if (items.value.length < total) {
@@ -168,6 +180,12 @@ function sort(by: string, order: Sort): void {
     <div>
       <div class="py-8">
         <h1 class="text-4xl py-8">Members List</h1>
+      </div>
+      <div v-if="loadingProgress < 100" class="pb-4">
+        <div class="w-full bg-gray-200 rounded-full h-4 dark:bg-gray-700 mb-4">
+          <div class="bg-blue-600 h-4 rounded-full" :style="{ width: loadingProgress + '%' }"></div>
+          <p class="text-sm text-gray-500 mt-1">{{ fetchedCount }} / {{ totalCount }} Medlemmer hentet</p>
+        </div>
       </div>
       <div class="py-4">
         <div class="flex w-full justify-between border-2 border-gray-800">

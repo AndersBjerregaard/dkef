@@ -1,34 +1,35 @@
 <script setup lang="ts">
-  const props = defineProps({
-    defaultText: {
-      type: String,
-      required: true
-    },
-    loadingText: {
-      type: String,
-      requried: true
-    },
-    isLoading: {
-      type: Boolean,
-      default: false
-    },
-  });
 
-  const emit = defineEmits(['loadingButtonClick']);
+const props = defineProps({
+  defaultText: {
+    type: String,
+    required: true
+  },
+  loadingText: {
+    type: String,
+    requried: true
+  },
+  isLoading: {
+    type: Boolean,
+    default: false
+  },
+});
 
-  function handleClick() {
-    if (!props.isLoading) {
-      emit('loadingButtonClick');
-    }
-  };
+const emit = defineEmits(['loadingButtonClick']);
+
+function handleClick() {
+  if (!props.isLoading) {
+    emit('loadingButtonClick');
+  }
+};
 </script>
 
 <template>
   <div class="mt-4">
     <button
-      class="inline-flex justify-center rounded-md border border-transparent bg-gray-300 px-4 py-2 text-md font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 text-gray-900 focus-visible:ring-offset-2"
+      class="inline-flex justify-center rounded-md border border-transparent bg-gray-300 px-4 py-2 font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 text-gray-900 focus-visible:ring-offset-2"
       :disabled="isLoading"
-      :class="{ 'cursor-pointer': !isLoading, 'hover:bg-gray-400': !isLoading }"
+      :class="{ 'cursor-pointer': !isLoading, 'cursor-not-allowed': isLoading , 'hover:bg-gray-400': !isLoading }"
       @click="handleClick"
     >
       <span v-if="isLoading" class="flex items-center">

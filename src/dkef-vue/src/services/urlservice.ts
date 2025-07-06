@@ -11,6 +11,24 @@ function getContacts() {
   }
 }
 
+function updateContact(guid: String) {
+  switch (mode) {
+    case 'Development':
+      throw 'Unimplemented!';
+    default:
+      return `/contacts/${guid}`
+  }
+}
+
+function getContactAuthorize(guid: string) {
+  switch (mode) {
+    case 'Development':
+      throw 'Unimplemented!';
+    default:
+      return `/contacts/${guid}/authorize`
+  }
+}
+
 function getEventPresignedUrl(guid: string) {
   switch (mode) {
     case 'Development':
@@ -40,6 +58,8 @@ function getEvents() {
 
 export default {
   getContacts,
+  updateContact,
+  getContactAuthorize,
   getEventPresignedUrl,
   postEvent,
   getEvents
