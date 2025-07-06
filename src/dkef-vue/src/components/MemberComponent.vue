@@ -2,6 +2,7 @@
 import { type Contact } from '@/types/members'
 import { computed, ref } from 'vue'
 import BaseModal from '@/components/BaseModal.vue';
+import LoadingButton from '@/components/LoadingButton.vue'
 
 // Modal state
 const isOpen = ref(false);
@@ -12,11 +13,17 @@ function openModal() {
 }
 
 function closeModal() {
+  resetFields();
   isOpen.value = false;
+}
+
+function resetFields() {
+  edit.value = false;
 }
 
 const props = defineProps<{ contact: Contact, index: number }>();
 
+// Shown fields
 const fields = computed(() => [
   props.contact?.firstName,
   props.contact?.email,
@@ -24,6 +31,36 @@ const fields = computed(() => [
   props.contact?.primarySection,
   props.contact?.privateAddress
 ]);
+
+// Editable fields
+let attInvoice = props.contact?.attInvoice; // ATT Faktura
+let companyAddress = props.contact?.companyAddress; // Firma vejnavn og nr.
+let companyCity = props.contact?.companyCity; // Firma by
+let companyZIP = props.contact?.companyZIP; // Firma postnummer
+let cvrNumber = props.contact?.cvrNumber; // CVR nr.
+let companyPhone = props.contact?.companyPhone; // Firma mobil
+let companyEmail = props.contact?.companyEmail; // Firma e-mail
+
+async function editMember() {
+  console.info('Form submitted!');
+}
+
+async function authorize() {
+  isLoading.value = true;
+
+  try {
+    // Simulate
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    edit.value = true;
+  } catch (error) {
+
+  } finally {
+    isLoading.value = false;
+  }
+}
+
+const edit = ref(false);
+const hasAccess = ref(true);
 
 </script>
 
@@ -44,8 +81,45 @@ const fields = computed(() => [
     :is-loading="isLoading"
     @close="closeModal"
   >
-    <h2 class="text-2xl">Ola</h2>
+    <div class="pb-4" v-if="hasAccess">
+      <div v-if="!edit">
+        <LoadingButton @loading-button-click="authorize" default-text="Autorisér" loading-text="Autoriserer..." :is-loading="isLoading"/>
+      </div>
+      <div v-else class="text-lg text-green-600">
+        <span>Autoriseret</span>
+      </div>
+    </div>
+    <form @submit.prevent="editMember">
+      <div class="flex justify-between">
+        <div>
+          <label for="companyAddress_input">Firma vejnavn og nr.</label>
+          <input :class="{ 'cursor-not-allowed': !edit }" class="inputField" id="companyAddress_input" type="text" v-model="companyAddress" :disabled="isLoading || !edit">
+        </div>
+        <div>
+          <label for="companyCity_input">Firma by</label>
+          <input :class="{ 'cursor-not-allowed': !edit }" class="inputField" id="companyCity_input" type="text" v-model="companyCity" :disabled="isLoading || !edit">
+        </div>
+        <div>
+          <label for="companyZIP_input">Firma postnummer</label>
+          <input :class="{ 'cursor-not-allowed': !edit }" class="inputField" id="companyZIP_input" type="text" v-model="companyZIP" :disabled="isLoading || !edit">
+        </div>
+      </div>
+    </form>
   </BaseModal>
 </template>
 
-<style lang="css" scoped></style>
+<style lang="css" scoped>
+.inputField {
+  width: 100%;
+  background-color: var(--color-gray-800);
+  border-style: var(--tw-border-style);
+  border-width: 0px;
+  border-radius: var(--radius-xl);
+  padding: calc(var(--spacing) * 2);
+}
+@property --tw-border-style {
+  syntax: "*";
+  inherits: false;
+  initial-value: solid;
+}
+</style>
