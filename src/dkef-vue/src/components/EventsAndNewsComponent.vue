@@ -203,7 +203,7 @@ async function uploadFile(url: string, file: File) {
                 <DialogTitle as="h3" class="text-lg font-medium leading-6 pb-4">
                   Nyt Arrangement
                 </DialogTitle>
-
+                <!-- Modal body start -->
                 <form @submit.prevent="createEvent">
                   <div class="flex justify-between">
                     <div class="pb-4">
@@ -286,6 +286,7 @@ async function uploadFile(url: string, file: File) {
                     </button>
                   </div>
                 </form>
+                <!-- Modal body end -->
               </DialogPanel>
             </TransitionChild>
           </div>
