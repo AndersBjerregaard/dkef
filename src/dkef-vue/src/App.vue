@@ -29,7 +29,7 @@ function openModal() {
         </RouterLink>
 
         <!-- Inline buttons (visible on larger screens ) -->
-        <div class="hidden md:flex md:w-full">
+        <div class="hidden lg:flex lg:w-full">
           <div class="flex p-4 w-full justify-end items-center">
             <div class="p-3">
               <RouterLink to="/members">
@@ -105,7 +105,7 @@ function openModal() {
         </TransitionRoot>
 
         <!-- Burger menu (visible on small screens) -->
-        <div class="md:hidden flex w-full sm:p-4 justify-end items-center">
+        <div class="lg:hidden flex w-full sm:p-4 justify-end items-center">
           <div class="text-right">
             <Menu>
               <MenuButton

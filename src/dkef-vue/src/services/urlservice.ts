@@ -56,11 +56,21 @@ function getEvents() {
   }
 }
 
+function getEvent(guid: String) {
+  switch (mode) {
+    case 'Development':
+      throw 'Unimplemented!';
+    default:
+      return `/events/${guid}`
+  }
+}
+
 export default {
   getContacts,
   updateContact,
   getContactAuthorize,
   getEventPresignedUrl,
   postEvent,
-  getEvents
+  getEvents,
+  getEvent
 }

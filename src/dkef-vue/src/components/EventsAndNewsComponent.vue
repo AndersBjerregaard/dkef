@@ -11,9 +11,12 @@ import urlservice from '@/services/urlservice';
 import type { AxiosResponse } from 'axios';
 import axios from 'axios';
 import { type EventsCollection, type EventDto, type PublishedEvent } from '@/types/events';
+import { useEventStore } from '@/stores/eventStore';
 
-// Example items
+const eventStore = useEventStore();
+
 const publishedEvents: Ref<PublishedEvent[]> = ref([]);
+const isFetching = ref(true);
 
 const isOpen: Ref<boolean> = ref(false);
 const isLoading: Ref<boolean> = ref(false);
@@ -29,21 +32,15 @@ const fileUploadError: Ref<boolean> = ref(false);
 const submitError: Ref<boolean> = ref(false);
 
 async function fetchLatestPublishedEvents() {
-  try {
-    const response = await apiservice.get<EventsCollection>(urlservice.getEvents(), {
-      params: {
-        take: 3,
-        orderBy: 'dateTime',
-        order: "desc"
-      }
-    });
-    publishedEvents.value = response.data.collection;
-  } catch (error) {
-    console.error('Error retrieving published events: ', error);
-  }
+  isFetching.value = true;
+  const latestEvents: PublishedEvent[] = await eventStore.fetchLatestEvents();
+  publishedEvents.value = latestEvents;
+  isFetching.value = false;
 }
 
-onMounted(fetchLatestPublishedEvents);
+onMounted(async () => {
+  await fetchLatestPublishedEvents();
+});
 
 function closeModal() {
   resetFields();
@@ -165,11 +162,24 @@ async function uploadFile(url: string, file: File) {
       <button
         class="flex justify-center rounded bg-gray-600 h-10 sm:h-12 py-2 w-24 sm:w-48 cursor-pointer hover:bg-gray-800 sm:text-lg">Generalforsamlinger</button>
     </div>
+
     <div class="flex justify-center items-center">
       <h2 class="text-2xl pb-8">Seneste arrangementer og nyheder:</h2>
     </div>
-    <div class="flex flex-wrap justify-center items-stretch gap-8">
-      <EventComponent v-for="item in publishedEvents" :key="item.id" :published-event="item"/>
+
+    <div v-if="isFetching" class="flex justify-center items-center min-h-[200px]">
+      <svg class="animate-spin h-10 w-10 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none"
+        viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor"
+          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+        </path>
+      </svg>
+      <span class="ml-3 text-lg">Henter...</span>
+    </div>
+
+    <div v-else class="flex flex-wrap justify-center items-stretch gap-8">
+      <EventComponent v-for="item in publishedEvents" :key="item.id" :published-event="item" />
     </div>
     <div class="flex justify-center items-center py-12 gap-x-8">
       <button class="flex justify-center rounded bg-gray-600 h-10 sm:h-12 py-2

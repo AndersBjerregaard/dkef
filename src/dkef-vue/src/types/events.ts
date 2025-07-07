@@ -7,6 +7,16 @@ export interface EventDto {
   thumbnailId: string
 }
 
+/**
+ * @prop id: string
+ * @prop title: string
+ * @prop section: string
+ * @prop address: string
+ * @prop dateTime: string
+ * @prop description: string
+ * @prop thumbnailUrl: string
+ * @prop createdAt: string
+ */
 export interface PublishedEvent {
   id: string,
   title: string,

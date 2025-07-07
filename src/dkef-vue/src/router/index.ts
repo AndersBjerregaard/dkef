@@ -28,6 +28,12 @@ const router = createRouter({
       component: () => import('@/views/EventsAndNewsView.vue'),
     },
     {
+      path: '/events-and-news/:id',
+      name: 'SpecificEvent',
+      component: () => import('@/views/SpecificEventView.vue'),
+      props: true
+    },
+    {
       path: '/contact',
       name: 'contact',
       component: () => import('@/views/ContactView.vue'),
