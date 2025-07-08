@@ -1,0 +1,33 @@
+- name: Ensure kind is installed
+  hosts: hosts
+  become: yes # Required for moving files to /usr/local/bin and changing permissions
+
+  tasks:
+    - name: Check if kind is already installed
+      ansible.builtin.stat:
+        path: /usr/local/bin/kind
+      register: kind_executable_check
+
+    - name: Download kind executable (if not installed)
+      ansible.builtin.get_url:
+        url: https://kind.sigs.k8s.io/dl/v0.29.0/kind-linux-arm64 # Change to 'amd64' if not arm-based
+        dest: /tmp/kind
+        mode: '0755' # Set executable permissions directly upon download
+      when: not kind_executable_check.stat.exists
+
+    - name: Move kind to /usr/local/bin (if not installed)
+      ansible.builtin.copy:
+        src: /tmp/kind
+        dest: /usr/local/bin/kind
+        owner: root
+        group: root
+        mode: '0755'
+        remote_src: yes # This is important as the source is on the remote machine
+      when: not kind_executable_check.stat.exists
+      notify: Clean up downloaded kind file
+
+  handlers:
+    - name: Clean up downloaded kind file
+      ansible.builtin.file:
+        path: /tmp/kind
+        state: absent

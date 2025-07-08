@@ -3,3 +3,4 @@ src/dkef-data/data/*
 **/obj/*
 src/dkef-data/db/data/*
 src/dkef-data/db/backups/*
+.vscode/
