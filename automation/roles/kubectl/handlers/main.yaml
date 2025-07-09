@@ -1,0 +1,4 @@
+- name: Clean up downloaded kubectl file
+  ansible.builtin.file:
+    path: /tmp/kubectl
+    state: absent

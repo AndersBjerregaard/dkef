@@ -1,0 +1,32 @@
+- name: Check if kubectl is already installed
+  ansible.builtin.stat:
+    path: /usr/local/bin/kubectl
+  register: kubectl_executable_check
+
+- name: Set kubectl download URL based on architecture
+  ansible.builtin.set_fact:
+    kubectl_download_url: >-
+      https://dl.k8s.io/release/{{ kubectl_version }}/bin/linux/{{ 'arm64' if ansible_architecture == 'aarch64' else 'amd64' }}/kubectl
+
+- name: Download kubectl executable (if not installed)
+  ansible.builtin.get_url:
+    url: "{{ kubectl_download_url }}"
+    dest: /tmp/kubectl
+    mode: '0755' # Set executable permissions directly upon download
+  when: not kubectl_executable_check.stat.exists
+
+- name: Install kubectl binary to /usr/local/bin (if not installed)
+  ansible.builtin.command: install -o root -g root -m 0755 /tmp/kubectl /usr/local/bin/kubectl
+  args:
+    creates: /usr/local/bin/kubectl
+  when: not kubectl_executable_check.stat.exists
+  notify: Clean up downloaded kubectl file
+
+- name: Verify kubectl installation
+  ansible.builtin.command: kubectl version --client
+  register: kubectl_version_check
+  changed_when: false
+
+- name: Display kubectl version
+  ansible.builtin.debug:
+    msg: "{{ kubectl_version_check.stdout }}"

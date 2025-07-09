@@ -6,7 +6,7 @@
 - name: Set kind download URL based on architecture
   ansible.builtin.set_fact:
     kind_download_url: >-
-      https://kind.sigs.k8s.io/dl/v0.29.0/kind-linux-{{
+      https://kind.sigs.k8s.io/dl/{{ kind_version }}/kind-linux-{{
       'arm64' if ansible_architecture == 'aarch64' else 'amd64'
       }}
 
@@ -27,3 +27,12 @@
     remote_src: yes # This is important as the source is on the remote machine
   when: not kind_executable_check.stat.exists
   notify: Clean up downloaded kind file
+
+- name: Verify kind installation
+  ansible.builtin.command: kind --version
+  register: kind_version_check
+  changed_when: false
+
+- name: Display kind version
+  ansible.builtin.debug:
+    msg: "{{ kind_version_check.stdout }}"
