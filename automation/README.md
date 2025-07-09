@@ -23,3 +23,10 @@ ansible --version
 ```
 
 Use ssh key-based authentication to have ansible's ssh connection be fully automated.
+
+## Example Run
+
+Use `-K` flag to prompt for sudo password
+```bash
+ansible-playbook -i inventory.ini site.yaml -K
+```
