@@ -1,0 +1,22 @@
+- name: Check if 'kind-dkef' cluster exists
+  ansible.builtin.command: kubectl cluster-info --context {{ cluster_name }}
+  register: cluster_info_result
+  ignore_errors: true # Expected to fail if cluster doesn't exists
+
+- name: Debug cluster info result (if it failed)
+  ansible.builtin.debug:
+    var: cluster_info_result
+  when: cluster_info_result.failed
+
+- name: Create 'kind-dkef' cluster if it doesn't exists
+  ansible.builtin.command: kind create cluster --name {{ cluster_name }} --image kindest/node:{{ kubernetes_version }}
+  when: "'does not exist' in cluster_info_result.stderr or cluster_info_result.rc != 0"
+
+- name: Get current kubectl config view
+  ansible.builtin.command: kubectl config view
+  register: kubectl_config_view
+  changed_when: false
+
+- name: Display kubectl config view
+  ansible.builtin.debug:
+    msg: "{{ kubectl_config_view.stdout }}"
