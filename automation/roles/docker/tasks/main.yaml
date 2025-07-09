@@ -1,0 +1,50 @@
+- name: Update apt cache and install necessary packages for Docker
+  ansible.builtin.apt:
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gnupg-agent
+      - software-properties-common
+    state: present
+    update_cache: yes
+
+- name: Add Docker's official GPG key
+  ansible.builtin.apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+
+- name: Add Docker API repository
+  ansible.builtin.apt_repository:
+    repo: deb https://download.docker.com/linux/ubuntu noble stable # Ubuntu 24.04 is codenamed 'Noble Numbat'
+    state: present
+    filename: docker # This will create /etc/apt/sources.list.d/docker.list
+
+- name: Install Docker packages
+  ansible.builtin.apt:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - docker-buildx-plugin # Optional
+      - docker-compose-plugin # Optional
+    state: present
+    update_cache: yes # Update cache again after adding the new repo
+
+- name: Ensure Docker service is running and enabled
+  ansible.builtin.systemd:
+    name: docker
+    state: started
+    enabled: yes
+  notify: Restart Docker
+
+- name: Create docker group if it doesn't exist
+  ansible.builtin.group:
+    name: docker
+    state: present
+
+- name: Add current user to the docker group
+  ansible.builtin.user:
+    name: "{{ ansible_user }}"
+    groups: docker
+    append: yes

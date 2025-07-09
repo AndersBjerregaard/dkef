@@ -1,0 +1,7 @@
+- name: Configure systems with Docker and Kind
+  hosts: hosts
+  become: yes # Roles will inherit this if not overridden within the role
+
+  roles:
+    - docker
+    - kind
