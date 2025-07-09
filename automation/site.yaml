@@ -1,6 +1,5 @@
 - name: Configure systems with Docker, Kind and Kubectl
   hosts: hosts
-  become: yes # Roles will inherit this if not overridden within the role
 
   roles:
     - docker

@@ -13,12 +13,14 @@
     url: "{{ kubectl_download_url }}"
     dest: /tmp/kubectl
     mode: '0755' # Set executable permissions directly upon download
+  become: yes
   when: not kubectl_executable_check.stat.exists
 
 - name: Install kubectl binary to /usr/local/bin (if not installed)
   ansible.builtin.command: install -o root -g root -m 0755 /tmp/kubectl /usr/local/bin/kubectl
   args:
     creates: /usr/local/bin/kubectl
+  become: yes
   when: not kubectl_executable_check.stat.exists
   notify: Clean up downloaded kubectl file
 

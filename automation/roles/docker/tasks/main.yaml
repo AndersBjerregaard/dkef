@@ -8,11 +8,13 @@
       - software-properties-common
     state: present
     update_cache: yes
+  become: yes
 
 - name: Add Docker's official GPG key
   ansible.builtin.apt_key:
     url: https://download.docker.com/linux/ubuntu/gpg
     state: present
+  become: yes
 
   # Defaults to amd64
 - name: Add Docker API repository
@@ -20,6 +22,7 @@
     repo: deb https://download.docker.com/linux/ubuntu noble stable # Ubuntu 24.04 is codenamed 'Noble Numbat'
     state: present
     filename: docker # This will create /etc/apt/sources.list.d/docker.list
+  become: yes
 
 - name: Install Docker packages
   ansible.builtin.apt:
@@ -31,6 +34,7 @@
       - docker-compose-plugin # Optional
     state: present
     update_cache: yes # Update cache again after adding the new repo
+  become: yes
 
 - name: Ensure Docker service is running and enabled
   ansible.builtin.systemd:
@@ -38,14 +42,17 @@
     state: started
     enabled: yes
   notify: Restart Docker
+  become: yes
 
 - name: Create docker group if it doesn't exist
   ansible.builtin.group:
     name: docker
     state: present
+  become: yes
 
 - name: Add current user to the docker group
   ansible.builtin.user:
     name: "{{ ansible_user }}"
     groups: docker
     append: yes
+  become: yes

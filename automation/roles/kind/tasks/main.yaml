@@ -9,6 +9,7 @@
       https://kind.sigs.k8s.io/dl/{{ kind_version }}/kind-linux-{{
       'arm64' if ansible_architecture == 'aarch64' else 'amd64'
       }}
+  become: yes
 
 - name: Download kind executable (if not installed)
   ansible.builtin.get_url:
@@ -16,6 +17,7 @@
     dest: /tmp/kind
     mode: '0755' # Set executable permissions directly upon download
   when: not kind_executable_check.stat.exists
+  become: yes
 
 - name: Move kind to /usr/local/bin (if not installed)
   ansible.builtin.copy:
@@ -27,6 +29,7 @@
     remote_src: yes # This is important as the source is on the remote machine
   when: not kind_executable_check.stat.exists
   notify: Clean up downloaded kind file
+  become: yes
 
 - name: Verify kind installation
   ansible.builtin.command: kind --version
