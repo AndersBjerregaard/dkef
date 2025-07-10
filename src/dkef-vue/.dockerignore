@@ -1,0 +1,7 @@
+.editorconfig
+.gitattributes
+.gitignore
+.dockerignore
+.prettierrc.json
+eslint.config.ts
+README.md

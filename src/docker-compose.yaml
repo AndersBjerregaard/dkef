@@ -13,6 +13,16 @@ services:
       ASPNETCORE_URLS: http://*:8080
     networks:
       - dkef-network
+  dkef-frontend:
+    container_name: dkef-frontend1
+    build:
+      context: ./dkef-vue
+      dockerfile: Dockerfile
+    restart: on-failure
+    ports:
+      - "5173:80"
+    networks:
+      - dkef-network
 
 networks:
   dkef-network:
