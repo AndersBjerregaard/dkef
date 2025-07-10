@@ -20,6 +20,8 @@ services:
       - PGDATA=/var/lib/postgresql/data/pgdata
     volumes:
       - ./db-data:/var/lib/postgresql/data
+    networks:
+      - dkef-network
 
   pgadmin:
     image: dpage/pgadmin4:9.1.0
@@ -36,6 +38,8 @@ services:
       - ./config/servers.json:/pgadmin4/servers.json
     depends_on:
       - db
+    networks:
+      - dkef-network
 
   minio:
     image: quay.io/minio/minio:RELEASE.2025-06-13T11-33-47Z
@@ -50,4 +54,9 @@ services:
       MINIO_ROOT_USER: ROOTUSER
       MINIO_ROOT_PASSWORD: CHANGEME123
     command: server /data --console-address ":9001"
+    networks:
+      - dkef-network
 
+networks:
+  dkef-network:
+    external: true

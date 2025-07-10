@@ -1,0 +1,8 @@
+bin/
+obj/
+.editorconfig
+.gitignore
+appsettings.Development.json
+denero_contacts.csv
+Dockerfile
+.env

@@ -1,0 +1,19 @@
+services:
+  dkef-api:
+    container_name: dkef-api1
+    build:
+      context: ./dkef-api
+      dockerfile: Dockerfile
+    restart: on-failure
+    ports:
+      - "5275:8080"
+    env_file:
+      - ./dkef-api/.env
+    environment:
+      ASPNETCORE_URLS: http://*:8080
+    networks:
+      - dkef-network
+
+networks:
+  dkef-network:
+    external: true
