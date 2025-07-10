@@ -2,12 +2,13 @@ using Dkef.Contracts;
 using Dkef.Repositories;
 using Ganss.Xss;
 using Microsoft.AspNetCore.Mvc;
+using ILogger = Serilog.ILogger;
 
 namespace Dkef.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class ContactsController(IContactRepository _repository, HtmlSanitizer _sanitizer) : ControllerBase
+public class ContactsController(IContactRepository _repository, HtmlSanitizer _sanitizer, ILogger _logger) : ControllerBase
 {
 
     [HttpGet]
@@ -65,4 +66,18 @@ public class ContactsController(IContactRepository _repository, HtmlSanitizer _s
         // TODO: Do some auth
         return Ok();
     }
+
+// Endpoint only available in development
+#if DEBUG
+    [HttpPost]
+    [Route("seed")]
+    public async Task<IActionResult> Seed()
+    {
+        _logger.Information("Seeding...");
+
+        await _repository.SeedAsync();
+
+        return Ok();
+    }
+#endif
 }
