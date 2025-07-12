@@ -33,4 +33,4 @@ jobs:
         with:
           context: src/dkef-vue/
           push: true
-          tags: ${{ vars.DOCKERHUB_USERNAME }}/dkef-frontend:0.${{ github.run_id }}
+          tags: ${{ vars.DOCKERHUB_USERNAME }}/dkef-frontend:0.${{ github.run_number }}
