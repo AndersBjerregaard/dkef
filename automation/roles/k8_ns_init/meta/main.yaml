@@ -1,0 +1,5 @@
+dependencies:
+  - docker
+  - kind
+  - kubectl
+  - dkef_cluster
