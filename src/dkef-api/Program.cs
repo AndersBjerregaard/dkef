@@ -1,5 +1,7 @@
 using System.Globalization;
 using System.Reflection;
+using System.Text;
+
 using AutoMapper;
 using Dkef.Configuration;
 using Dkef.Contracts;
@@ -8,7 +10,12 @@ using Dkef.Domain;
 using Dkef.Repositories;
 using Dkef.Services;
 using Ganss.Xss;
+
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+
 using Minio;
 using Minio.AspNetCore;
 using Scalar.AspNetCore;
@@ -80,7 +87,52 @@ try
         x.GetRequiredService<EventsContext>()
         .Events);
 
-    // Minio
+    // Identity
+    builder.Services.AddIdentity<Contact, IdentityRole>(options =>
+    {
+        // Password settings
+        options.Password.RequireDigit = true;
+        options.Password.RequireLowercase = true;
+        options.Password.RequireUppercase = true;
+        options.Password.RequireNonAlphanumeric = true;
+        options.Password.RequiredLength = 8;
+
+        // Lockout settings
+        options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+        options.Lockout.MaxFailedAccessAttempts = 5;
+        options.Lockout.AllowedForNewUsers = true;
+
+        // User settings
+        options.User.RequireUniqueEmail = true;
+        options.SignIn.RequireConfirmedEmail = false; // Set to true if you want email confirmation
+    })
+        .AddEntityFrameworkStores<ContactContext>()
+        .AddDefaultTokenProviders();
+
+    // Authentication
+    builder.Services.AddAuthentication(options =>
+    {
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["JwtSettings:Issuer"],
+            ValidAudience = builder.Configuration["JwtSettings:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:Key"]!)),
+            ClockSkew = TimeSpan.Zero // Optional: reduce the default clock skew of 5 minutes
+        };
+    });
+
+    builder.Services.AddAuthorization();
+
+    // Minio (S3 compatible storage)
     var minioConString = builder.Configuration.GetConnectionString("Minio");
     var minioAccessKey = builder.Configuration.GetSection("Minio")["AccessKey"];
     var minioSecretKey = builder.Configuration.GetSection("Minio")["SecretKey"];
@@ -109,8 +161,8 @@ try
     builder.Services.AddSingleton<IMapper>(mapper);
 
     // Repositories
-    builder.Services.AddTransient<IContactRepository, ContactRepository>();
-    builder.Services.AddTransient<IEventsRepository, EventsRepository>();
+    builder.Services.AddScoped<IContactRepository, ContactRepository>();
+    builder.Services.AddScoped<IEventsRepository, EventsRepository>();
 
     // Services
     builder.Services.AddTransient<IBucketService, MinioBucketService>();
@@ -118,7 +170,8 @@ try
     // Security
     builder.Services.AddSingleton<HtmlSanitizer>(x => new());
     builder.Services.AddTransient<QueryableService<Event>>();
-    builder.Services.AddTransient<QueryableService<Contact>>();
+
+    // builder.Services.AddTransient<QueryableService<Contact>>(); // Can currently not be used with Identity
 
     // Configuration
     builder.Services.AddSingleton<SortablePropertyConfig>(x => new(Assembly.GetExecutingAssembly()));
@@ -159,7 +212,8 @@ try
 
     app.UseCors(CorsPolicy);
 
-    // app.UseAuthorization();
+    app.UseAuthentication();
+    app.UseAuthorization();
 
     app.MapControllers();
 
