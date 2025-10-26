@@ -60,4 +60,9 @@ public class ContactRepository(ContactContext _context, IMapper _mapper) : ICont
     }
 
     public async Task SeedAsync() => await ContactContext.SeedAsync(_context);
+
+    public Task<Contact?> GetByEmailAsync(string email)
+    {
+        return _context.Contacts.AsNoTracking().FirstOrDefaultAsync(x => x.Email == email);
+    }
 }

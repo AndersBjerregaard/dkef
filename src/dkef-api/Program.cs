@@ -79,6 +79,7 @@ try
     // Contexts
     builder.Services.AddDbContext<ContactContext>(options => options.UseNpgsql(dbConString));
     builder.Services.AddDbContext<EventsContext>(options => options.UseNpgsql(dbConString));
+    builder.Services.AddDbContext<ForgotPasswordContext>(options => options.UseNpgsql(dbConString));
 
     builder.Services.AddTransient<DbSet<Contact>>(x =>
         x.GetRequiredService<ContactContext>()
@@ -91,10 +92,10 @@ try
     builder.Services.AddIdentity<Contact, IdentityRole>(options =>
     {
         // Password settings
-        options.Password.RequireDigit = true;
-        options.Password.RequireLowercase = true;
-        options.Password.RequireUppercase = true;
-        options.Password.RequireNonAlphanumeric = true;
+        options.Password.RequireDigit = false;
+        options.Password.RequireLowercase = false;
+        options.Password.RequireUppercase = false;
+        options.Password.RequireNonAlphanumeric = false;
         options.Password.RequiredLength = 8;
 
         // Lockout settings
@@ -104,10 +105,17 @@ try
 
         // User settings
         options.User.RequireUniqueEmail = true;
-        options.SignIn.RequireConfirmedEmail = false; // Set to true if you want email confirmation
+        options.SignIn.RequireConfirmedEmail = true; // Set to true if you want email confirmation
+        
+        // Configure token provider settings
+        options.Tokens.PasswordResetTokenProvider = "DatabaseTokenProvider";
     })
         .AddEntityFrameworkStores<ContactContext>()
-        .AddDefaultTokenProviders();
+        .AddDefaultTokenProviders()
+        .AddTokenProvider<DatabaseTokenProvider>("DatabaseTokenProvider");
+    
+    // Register the DatabaseTokenProvider's dependency
+    builder.Services.AddScoped<DatabaseTokenProvider>();
 
     // Authentication
     builder.Services.AddAuthentication(options =>
@@ -163,6 +171,7 @@ try
     // Repositories
     builder.Services.AddScoped<IContactRepository, ContactRepository>();
     builder.Services.AddScoped<IEventsRepository, EventsRepository>();
+    builder.Services.AddScoped<ForgotPasswordRepository>();
 
     // Services
     builder.Services.AddTransient<IBucketService, MinioBucketService>();
@@ -170,8 +179,7 @@ try
     // Security
     builder.Services.AddSingleton<HtmlSanitizer>(x => new());
     builder.Services.AddTransient<QueryableService<Event>>();
-
-    // builder.Services.AddTransient<QueryableService<Contact>>(); // Can currently not be used with Identity
+    builder.Services.AddTransient<QueryableService<Contact>>();
 
     // Configuration
     builder.Services.AddSingleton<SortablePropertyConfig>(x => new(Assembly.GetExecutingAssembly()));
@@ -184,8 +192,12 @@ try
     using (var scope = app.Services.CreateScope())
     {
         Log.Information("Migrating database...");
-        var context = scope.ServiceProvider.GetService<ContactContext>();
-        context!.Database.Migrate();
+        var contactContext = scope.ServiceProvider.GetService<ContactContext>();
+        contactContext!.Database.Migrate();
+        var eventsContext = scope.ServiceProvider.GetService<EventsContext>();
+        eventsContext!.Database.Migrate();
+        var forgotPasswordContext = scope.ServiceProvider.GetService<ForgotPasswordContext>();
+        forgotPasswordContext!.Database.Migrate();
         // if (app.Environment.IsDevelopment()) {
         //     await ContactContext.SeedAsync(context);
         // }

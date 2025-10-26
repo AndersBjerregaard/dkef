@@ -6,4 +6,5 @@ namespace Dkef.Repositories;
 public interface IContactRepository : IRepository<Contact, ContactDto>
 {
     Task SeedAsync();
+    Task<Contact?> GetByEmailAsync(string email);
 }
