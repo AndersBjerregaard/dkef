@@ -25,16 +25,16 @@ const dateTime = computed(() => {
         <img class="picture" :src="props.publishedEvent?.thumbnailUrl" alt="event picture">
       </div>
       <div class="text-content-area flex-grow flex flex-col">
-        <div class="h-6 overflow-hidden">
+        <div class="h-20 overflow-hidden">
           <span class="line-clamp-1">{{ props.publishedEvent?.section }}</span>
         </div>
-        <div class="py-4 h-20 overflow-hidden">
+        <div class="h-20 overflow-hidden">
           <span class="line-clamp-2">{{ props.publishedEvent?.title }}</span>
         </div>
-        <div class="pb-4 h-12 overflow-hidden">
+        <div class="h-20 overflow-hidden">
           <span class="line-clamp-2">{{ props.publishedEvent?.address }}</span>
         </div>
-        <div class="h-6 overflow-hidden">
+        <div class="h-10 overflow-hidden">
           <span class="line-clamp-1">{{ dateTime }}</span>
         </div>
       </div>
