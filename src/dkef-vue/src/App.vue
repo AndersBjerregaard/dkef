@@ -73,7 +73,7 @@ async function handleLogout() {
         <!-- Inline buttons (visible on larger screens ) -->
         <div class="hidden lg:flex lg:w-full">
           <div class="flex p-4 w-full justify-end items-center">
-            <div class="p-3">
+            <div class="p-3" v-if="authStore.isAdmin">
               <RouterLink to="/members">
                 <button class="rounded bg-gray-600 h-12 w-36 p-2 cursor-pointer hover:bg-gray-800">Medlemmer</button>
               </RouterLink>
@@ -201,12 +201,12 @@ async function handleLogout() {
                 <MenuItems
                   class="absolute right-8 mt-2 w-56 origin-top-right divide-y divide-gray-600 rounded-md bg-gray-700 shadow-lg ring-1 ring-black/5 focus:outline-none">
                   <div class="px-1 py-1">
-                    <MenuItem v-slot="{ active, close }">
+                    <MenuItem v-if="authStore.isAdmin" v-slot="{ active, close }">
                     <RouterLink to="/members">
                       <button
                         :class="[active ? 'bg-gray-800' : 'bg-gray-600', 'group flex w-full items-center rounded-md px-2 py-2 text-sm cursor-pointer']"
                         @click="close">
-                        Medlemmer (auth)
+                        Medlemmer (admin)
                       </button>
                     </RouterLink>
                     </MenuItem>

@@ -21,6 +21,9 @@ export const useAuthStore = defineStore(
 
     // Computed
     const isAuthenticated = computed(() => !!accessToken.value && !!user.value)
+    const isAdmin = computed(() => {
+      return isAuthenticated.value && user.value?.roles?.includes('Admin')
+    })
 
     // Actions
     async function login(credentials: LoginDto): Promise<void> {
@@ -100,10 +103,22 @@ export const useAuthStore = defineStore(
       if (accessToken.value) {
         try {
           const payload = parseJwt(accessToken.value)
+          // Extract roles - JWT claims can use different formats
+          let roles: string[] = []
+          if (payload.role) {
+            // Single role or array of roles
+            roles = Array.isArray(payload.role) ? (payload.role as string[]) : [payload.role as string]
+          } else if (payload['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']) {
+            // ASP.NET Core default role claim
+            const roleClaim = payload['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']
+            roles = Array.isArray(roleClaim) ? (roleClaim as string[]) : [roleClaim as string]
+          }
+
           user.value = {
             email: (payload.email as string) || (payload.sub as string) || '',
             firstName: (payload.given_name as string) || (payload.firstName as string) || '',
             lastName: (payload.family_name as string) || (payload.lastName as string) || '',
+            roles,
           }
         } catch (error) {
           console.error('Failed to parse JWT token:', error)
@@ -151,6 +166,7 @@ export const useAuthStore = defineStore(
       user,
       // Computed
       isAuthenticated,
+      isAdmin,
       // Actions
       login,
       register,
