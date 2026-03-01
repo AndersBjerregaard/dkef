@@ -166,6 +166,16 @@ async function handleLogout() {
                         />
                       </div>
 
+                      <div class="mb-4 text-right">
+                        <RouterLink
+                          to="/forgot-password"
+                          @click="closeModal"
+                          class="text-sm text-blue-600 hover:text-blue-800 cursor-pointer"
+                        >
+                          Glemt adgangskode?
+                        </RouterLink>
+                      </div>
+
                       <div v-if="loginError" class="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
                         {{ loginError }}
                       </div>
