@@ -120,6 +120,54 @@ public class AuthController(
     }
 
     [HttpPost]
+    [Route("register")]
+    public async Task<IActionResult> Register([FromBody] RegisterDto dto)
+    {
+        // Check if user with email already exists
+        Contact? existingContact = await _contactRepository.GetByEmailAsync(dto.Email);
+        if (existingContact is not null)
+        {
+            return BadRequest("A user with this email already exists.");
+        }
+
+        // Create new contact
+        var contact = new Contact
+        {
+            UserName = dto.Email,
+            Email = dto.Email,
+            FirstName = dto.FirstName,
+            LastName = dto.LastName,
+            CreatedAt = DateTimeOffset.UtcNow
+        };
+
+        // Create user with password using UserManager
+        IdentityResult result = await _userManager.CreateAsync(contact, dto.Password);
+
+        if (!result.Succeeded)
+        {
+            return BadRequest(new
+            {
+                message = "Failed to register user.",
+                errors = result.Errors.Select(e => e.Description)
+            });
+        }
+
+        // Generate JWT token for the newly registered user
+        var token = _jwtService.GenerateToken(contact);
+        var expiryInSeconds = _jwtConfig.ExpiryMinutes * 60;
+
+        return CreatedAtAction(
+            nameof(Register),
+            new
+            {
+                message = "Registration successful.",
+                token = token,
+                expiresIn = expiryInSeconds
+            }
+        );
+    }
+
+    [HttpPost]
     [Route("change")]
     public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDto dto)
     {
