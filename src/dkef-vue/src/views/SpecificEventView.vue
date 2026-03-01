@@ -42,6 +42,12 @@ onMounted(async () => {
 <template>
   <div class="py-16 w-screen px-8 justify-items-center">
     <div class="w-[70%]">
+      <div class="pb-4">
+        <RouterLink to="/events-and-news" class="flex justify-center items-center rounded bg-gray-600 h-14 w-64 p-2 cursor-pointer hover:bg-gray-800">
+          &larr; Tilbage til arrangementer og nyheder
+        </RouterLink>
+      </div>
+
       <!-- Loading -->
       <div v-if="eventStore.isFetching" class="flex justify-center items-center min-h-[200px]">
         <svg class="animate-spin h-10 w-10 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none"
