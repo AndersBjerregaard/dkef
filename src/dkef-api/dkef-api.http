@@ -4,3 +4,37 @@ GET {{dkef_api_HostAddress}}/weatherforecast/
 Accept: application/json
 
 ###
+
+# Auth - Register
+POST {{dkef_api_HostAddress}}/auth/register
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "Test1234!",
+  "firstName": "John",
+  "lastName": "Doe"
+}
+
+###
+
+# Auth - Login
+POST {{dkef_api_HostAddress}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "Test1234!"
+}
+
+###
+
+# Auth - Refresh Token
+POST {{dkef_api_HostAddress}}/auth/refresh
+Content-Type: application/json
+
+{
+  "refreshToken": "YOUR_REFRESH_TOKEN_HERE"
+}
+
+###

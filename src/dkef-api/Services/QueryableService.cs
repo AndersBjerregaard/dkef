@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Dkef.Services;
 
-public sealed class QueryableService<TEntity>(DbSet<TEntity> _table, SortablePropertyConfig _sortConfig) where TEntity : DomainClass
+public sealed class QueryableService<TEntity>(DbSet<TEntity> _table, SortablePropertyConfig _sortConfig) where TEntity : class
 {
     public IOrderedQueryable<TEntity> GetQuery(string orderBy, string order)
     {

@@ -1,10 +1,14 @@
 using Bogus;
 using Dkef.Domain;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Dkef.Data;
 
-public class ContactContext: DbContext {
+public class ContactContext: IdentityDbContext<Contact> {
+
+    private const string RELATION_NAME = "AspNetUsers";
     
     public ContactContext(DbContextOptions<ContactContext> options) : base(options) {
         Database.EnsureCreated();
@@ -17,12 +21,17 @@ public class ContactContext: DbContext {
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder) {
+
+        base.OnModelCreating(modelBuilder); // IMPORTANT: must call base method to let Identity set up its own tables
+
         modelBuilder.Entity<Contact>().HasKey(t => t.Id);
     }
 
     public static async Task SeedAsync(ContactContext context) {
 
         var faker = new Faker<Contact>().UseSeed(69)
+            // Contact specific properties
+            .RuleFor(x => x.Id, y => Guid.NewGuid().ToString())
             .RuleFor(x => x.Email, y => y.Person.Email)
             .RuleFor(x => x.FirstName, y => y.Person.FirstName)
             .RuleFor(x => x.LastName, y => y.Person.LastName)
@@ -52,10 +61,22 @@ public class ContactContext: DbContext {
             .RuleFor(x => x.RegistrationDate, y => y.Date.RecentDateOnly().ToString())
             .RuleFor(x => x.ATTInvoice, y => "Nej")
             .RuleFor(x => x.Source, y => "V1 Medlemsportal")
-            .RuleFor(x => x.ExpectedEndDateOfBeingStudent, y => string.Empty);
+            .RuleFor(x => x.ExpectedEndDateOfBeingStudent, y => string.Empty)
+            // IdentityUser specific properties
+            .RuleFor(x => x.UserName, (y, x) => x.Email)
+            .RuleFor(x => x.NormalizedUserName, (y, x) => x.Email)
+            .RuleFor(x => x.NormalizedEmail, (y, x) => x.Email)
+            .RuleFor(x => x.EmailConfirmed, y => true)
+            .RuleFor(x => x.PasswordHash, (x, y) => new PasswordHasher<Contact>().HashPassword(y, "Password123!"))
+            .RuleFor(x => x.SecurityStamp, y => Guid.NewGuid().ToString())
+            .RuleFor(x => x.ConcurrencyStamp, y => Guid.NewGuid().ToString())
+            .RuleFor(x => x.PhoneNumber, (y, x) => x.PrivatePhone)
+            .RuleFor(x => x.PhoneNumberConfirmed, y => true);
         var contacts = faker.Generate(600);
 
-        await context.Database.ExecuteSqlRawAsync($"TRUNCATE TABLE \"{nameof(Contacts)}\";");
+        // Needs to use cascading truncate
+        // await context.Database.ExecuteSqlRawAsync($"TRUNCATE TABLE \"{RELATION_NAME}\";");
+
         await context.Contacts.AddRangeAsync(contacts);
         await context.SaveChangesAsync();
     }

@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '@/views/HomeView.vue'
+import { useAuthStore } from '@/stores/authStore'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -31,7 +32,7 @@ const router = createRouter({
       path: '/events-and-news/:id',
       name: 'SpecificEvent',
       component: () => import('@/views/SpecificEventView.vue'),
-      props: true
+      props: true,
     },
     {
       path: '/contact',
@@ -42,8 +43,44 @@ const router = createRouter({
       path: '/members',
       name: 'members',
       component: () => import('@/views/MembersView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/register',
+      name: 'register',
+      component: () => import('@/views/RegisterView.vue'),
+      meta: { guest: true },
+    },
+    {
+      path: '/forgot-password',
+      name: 'forgot-password',
+      component: () => import('@/views/ForgotPasswordView.vue'),
+      meta: { guest: true },
+    },
+    {
+      path: '/reset-password',
+      name: 'reset-password',
+      component: () => import('@/views/ResetPasswordView.vue'),
+      meta: { guest: true },
     },
   ],
+})
+
+// Navigation guard for authentication
+router.beforeEach((to, from, next) => {
+  const authStore = useAuthStore()
+  const requiresAuth = to.matched.some((record) => record.meta.requiresAuth)
+  const guestOnly = to.matched.some((record) => record.meta.guest)
+
+  if (requiresAuth && !authStore.isAuthenticated) {
+    // Redirect to login if route requires auth and user is not authenticated
+    next({ name: 'login', query: { redirect: to.fullPath } })
+  } else if (guestOnly && authStore.isAuthenticated) {
+    // Redirect to home if route is for guests only and user is authenticated
+    next({ name: 'home' })
+  } else {
+    next()
+  }
 })
 
 export default router

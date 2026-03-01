@@ -1,6 +1,7 @@
 using Dkef.Contracts;
 using Dkef.Repositories;
 using Ganss.Xss;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ILogger = Serilog.ILogger;
 
@@ -8,6 +9,7 @@ namespace Dkef.Controllers;
 
 [ApiController]
 [Route("[controller]")]
+[Authorize(Roles = "Admin")]
 public class ContactsController(IContactRepository _repository, HtmlSanitizer _sanitizer, ILogger _logger) : ControllerBase
 {
 
@@ -34,8 +36,6 @@ public class ContactsController(IContactRepository _repository, HtmlSanitizer _s
     [Route("{id}")]
     public async Task<IActionResult> Update([FromRoute] string id, [FromBody] ContactDto dto)
     {
-        // TODO: Auth
-
         if (!Guid.TryParse(id, out var parsedId))
         {
             return BadRequest($"Could not parse {id} as a guid");
@@ -63,12 +63,11 @@ public class ContactsController(IContactRepository _repository, HtmlSanitizer _s
         {
             return BadRequest($"Could not parse {id} as a guid");
         }
-        // TODO: Do some auth
         return Ok();
     }
 
-// Endpoint only available in development
 #if DEBUG
+    // Endpoint only available in development
     [HttpPost]
     [Route("seed")]
     public async Task<IActionResult> Seed()

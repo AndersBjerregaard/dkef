@@ -10,10 +10,12 @@ import apiservice from '@/services/apiservice';
 import urlservice from '@/services/urlservice';
 import type { AxiosResponse } from 'axios';
 import axios from 'axios';
-import { type EventsCollection, type EventDto, type PublishedEvent } from '@/types/events';
+import { type EventDto, type PublishedEvent } from '@/types/events';
 import { useEventStore } from '@/stores/eventStore';
+import { useAuthStore } from '@/stores/authStore';
 
 const eventStore = useEventStore();
+const authStore = useAuthStore();
 
 const publishedEvents: Ref<PublishedEvent[]> = ref([]);
 const isFetching = ref(true);
@@ -56,7 +58,7 @@ function openModal() {
   fileUploadError.value = false;
 }
 
-function handleEventTitleChange(event: Event) {
+function handleEventTitleChange() {
   submitError.value = false;
 }
 
@@ -127,8 +129,14 @@ async function createEvent() {
       // Refetch latest events
       await fetchLatestPublishedEvents();
 
-    } catch (error: any) {
-      console.error('Error during event creation:', error);
+    } catch (err) {
+      const error = err as { value?: string };
+      const axiosError = err as { response?: { data?: { message?: string } }; message?: string };
+      error.value =
+        axiosError.response?.data?.message ||
+        axiosError.message ||
+        'Fejl ved oprettelse af arrangement. Prøv igen.';
+      console.error(error.value);
       submitError.value = true; // Indicate submission failure
     } finally {
       isLoading.value = false; // Always set loading to false when done
@@ -181,7 +189,7 @@ async function uploadFile(url: string, file: File) {
     <div v-else class="flex flex-wrap justify-center items-stretch gap-8">
       <EventComponent v-for="item in publishedEvents" :key="item.id" :published-event="item" />
     </div>
-    <div class="flex justify-center items-center py-12 gap-x-8">
+    <div class="flex justify-center items-center py-12 gap-x-8" v-if="authStore.isAdmin">
       <button class="flex justify-center rounded bg-gray-600 h-10 sm:h-12 py-2
         w-24 sm:w-48 cursor-pointer hover:bg-gray-800 sm:text-lg" @click="openModal">
         Nyt Arrangement
@@ -210,7 +218,7 @@ async function uploadFile(url: string, file: File) {
                   </svg>
                 </button>
 
-                <DialogTitle as="h3" class="text-lg font-medium leading-6 pb-4">
+                <DialogTitle v-if="authStore.isAdmin" as="h3" class="text-lg font-medium leading-6 pb-4">
                   Nyt Arrangement
                 </DialogTitle>
                 <!-- Modal body start -->
