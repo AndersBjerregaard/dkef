@@ -223,7 +223,7 @@ async function handleLogout() {
                       <button
                         :class="[active ? 'bg-gray-800' : 'bg-gray-600', 'group flex w-full items-center rounded-md px-2 py-2 text-sm cursor-pointer']"
                         @click="close">
-                        Medlemmer (admin)
+                        Medlemmer
                       </button>
                     </RouterLink>
                     </MenuItem>

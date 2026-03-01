@@ -4,6 +4,7 @@ using Dkef.Domain;
 using Dkef.Repositories;
 using Dkef.Services;
 using Ganss.Xss;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Dkef.Controllers;
@@ -23,6 +24,7 @@ public class EventsController(IEventsRepository _repository, IMapper _mapper, Ht
     }
 
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Post([FromBody] EventDto dto)
     {
         if (!ModelState.IsValid)
