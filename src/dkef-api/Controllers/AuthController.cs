@@ -215,4 +215,27 @@ public class AuthController(
 
         return Ok(new { message = "Password changed successfully." });
     }
+
+    [HttpPost]
+    [Route("logout")]
+    public async Task<IActionResult> Logout([FromBody] RefreshTokenDto dto)
+    {
+        try
+        {
+            await _jwtService.RevokeRefreshTokenAsync(dto.RefreshToken);
+            return Ok(new { message = "Logout successful. Refresh token has been revoked." });
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Unauthorized(new { message = ex.Message });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { message = "An error occurred during logout.", details = ex.Message });
+        }
+    }
 }

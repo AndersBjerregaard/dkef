@@ -110,6 +110,23 @@ public class JwtService(
         return await GenerateTokensAsync(storedToken.Contact);
     }
 
+    public async Task RevokeRefreshTokenAsync(string refreshToken)
+    {
+        var storedToken = await _refreshTokenRepository.GetByTokenAsync(refreshToken);
+
+        if (storedToken == null)
+        {
+            throw new UnauthorizedAccessException("Invalid refresh token.");
+        }
+
+        if (storedToken.IsRevoked)
+        {
+            throw new InvalidOperationException("Refresh token is already revoked.");
+        }
+
+        await _refreshTokenRepository.RevokeByTokenAsync(refreshToken);
+    }
+
     private static string GenerateRefreshToken()
     {
         var randomNumber = new byte[64];

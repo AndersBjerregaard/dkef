@@ -52,8 +52,16 @@ export const useAuthStore = defineStore(
     }
 
     async function logout(): Promise<void> {
+      // Revoke refresh token on the backend if available
+      if (refreshToken.value) {
+        try {
+          await api.post('/auth/logout', { refreshToken: refreshToken.value })
+        } catch (error) {
+          console.error('Failed to revoke refresh token on server:', error)
+          // Continue with local logout even if backend call fails
+        }
+      }
       clearAuth()
-      // Optionally call backend logout endpoint if you implement one
     }
 
     async function refreshAccessToken(): Promise<string> {
