@@ -163,7 +163,7 @@ async function handleLogout() {
                         {{ loginError }}
                       </div>
 
-                      <div class="flex gap-3">
+                      <div class="flex gap-3 py-2">
                         <button
                           type="submit"
                           :disabled="isLoggingIn"
