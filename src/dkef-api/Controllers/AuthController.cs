@@ -64,7 +64,27 @@ public class AuthController(
     [Route("reset")]
     public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto dto)
     {
-        Contact? contact = await _userManager.FindByEmailAsync(dto.Email);
+        // Parse the token as a GUID to look up the password reset request
+        if (!Guid.TryParse(dto.Token, out Guid tokenId))
+        {
+            return BadRequest("Invalid password reset token format.");
+        }
+
+        // Look up the forgot password request by token
+        ForgotPassword? forgotPasswordRequest = await _forgotPasswordRepository.GetByIdAsync(tokenId);
+        if (forgotPasswordRequest is null)
+        {
+            return BadRequest("Invalid password reset request.");
+        }
+
+        // Validate the token is still valid
+        if (forgotPasswordRequest.IsUsed || !forgotPasswordRequest.IsValid)
+        {
+            return BadRequest("The password reset token is either used or expired.");
+        }
+
+        // Get the contact associated with the token
+        Contact? contact = await _userManager.FindByIdAsync(forgotPasswordRequest.ContactId.ToString());
         if (contact is null)
         {
             return BadRequest("Invalid password reset request.");
@@ -84,10 +104,7 @@ public class AuthController(
         }
 
         // Mark the token as used in the database
-        if (Guid.TryParse(dto.Token, out Guid tokenId))
-        {
-            await _forgotPasswordRepository.SetAsUsedAsync(tokenId);
-        }
+        await _forgotPasswordRepository.SetAsUsedAsync(tokenId);
 
         return Ok(new { message = "Password has been reset successfully." });
     }

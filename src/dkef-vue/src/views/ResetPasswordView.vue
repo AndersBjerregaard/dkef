@@ -7,7 +7,6 @@ import type { ResetPasswordDto } from '@/types/auth'
 const route = useRoute()
 const authStore = useAuthStore()
 
-const email = ref('')
 const password = ref('')
 const confirmPassword = ref('')
 const token = ref('')
@@ -16,9 +15,8 @@ const error = ref('')
 const loading = ref(false)
 
 onMounted(() => {
-  // Get token and email from query parameters
+  // Get token from query parameters
   token.value = (route.query.token as string) || ''
-  email.value = (route.query.email as string) || ''
 
   if (!token.value) {
     error.value = 'Ugyldig eller manglende token til nulstilling af adgangskode.'
@@ -43,7 +41,6 @@ async function handleResetPassword() {
 
   try {
     const resetData: ResetPasswordDto = {
-      email: email.value,
       token: token.value,
       newPassword: password.value,
     }
@@ -79,22 +76,6 @@ async function handleResetPassword() {
         </div>
 
         <div class="space-y-4">
-          <div>
-            <label for="email-address" class="block text-sm font-medium mb-1">
-              Email
-            </label>
-            <input
-              id="email-address"
-              v-model="email"
-              name="email"
-              type="email"
-              autocomplete="email"
-              required
-              class="w-full bg-gray-800 border-0 rounded-xl p-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-600"
-              placeholder="Email"
-            />
-          </div>
-
           <div>
             <label for="password" class="block text-sm font-medium mb-1">
               Ny adgangskode
