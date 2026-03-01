@@ -53,21 +53,21 @@ async function handleRegister() {
 </script>
 
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-    <div class="max-w-md w-full space-y-8">
+  <div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full space-y-6">
       <div>
-        <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+        <h2 class="mt-6 text-center text-3xl font-bold">
           Opret din konto
         </h2>
       </div>
-      <form class="mt-8 space-y-6" @submit.prevent="handleRegister">
-        <div v-if="error" class="rounded-md bg-red-50 p-4">
-          <p class="text-sm text-red-800">{{ error }}</p>
+      <form class="mt-8 space-y-4" @submit.prevent="handleRegister">
+        <div v-if="error" class="rounded-xl bg-red-900 bg-opacity-50 p-4 border border-red-700">
+          <p class="text-sm text-red-200">{{ error }}</p>
         </div>
 
         <div class="space-y-4">
           <div>
-            <label for="first-name" class="block text-sm font-medium text-gray-700">
+            <label for="first-name" class="block text-sm font-medium mb-1">
               Fornavn
             </label>
             <input
@@ -76,13 +76,13 @@ async function handleRegister() {
               name="first-name"
               type="text"
               required
-              class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              class="w-full bg-gray-800 border-0 rounded-xl p-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-600"
               placeholder="Fornavn"
             />
           </div>
 
           <div>
-            <label for="last-name" class="block text-sm font-medium text-gray-700">
+            <label for="last-name" class="block text-sm font-medium mb-1">
               Efternavn
             </label>
             <input
@@ -91,13 +91,13 @@ async function handleRegister() {
               name="last-name"
               type="text"
               required
-              class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              class="w-full bg-gray-800 border-0 rounded-xl p-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-600"
               placeholder="Efternavn"
             />
           </div>
 
           <div>
-            <label for="email-address" class="block text-sm font-medium text-gray-700">
+            <label for="email-address" class="block text-sm font-medium mb-1">
               Email
             </label>
             <input
@@ -107,13 +107,13 @@ async function handleRegister() {
               type="email"
               autocomplete="email"
               required
-              class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              class="w-full bg-gray-800 border-0 rounded-xl p-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-600"
               placeholder="Email"
             />
           </div>
 
           <div>
-            <label for="password" class="block text-sm font-medium text-gray-700">Adgangskode</label>
+            <label for="password" class="block text-sm font-medium mb-1">Adgangskode</label>
             <input
               id="password"
               v-model="password"
@@ -121,13 +121,13 @@ async function handleRegister() {
               type="password"
               autocomplete="new-password"
               required
-              class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              class="w-full bg-gray-800 border-0 rounded-xl p-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-600"
               placeholder="Adgangskode (min 8 tegn)"
             />
           </div>
 
           <div>
-            <label for="confirm-password" class="block text-sm font-medium text-gray-700">
+            <label for="confirm-password" class="block text-sm font-medium mb-1">
               Bekræft adgangskode
             </label>
             <input
@@ -137,17 +137,17 @@ async function handleRegister() {
               type="password"
               autocomplete="new-password"
               required
-              class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              class="w-full bg-gray-800 border-0 rounded-xl p-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-600"
               placeholder="Bekræft adgangskode"
             />
           </div>
         </div>
 
-        <div class="py-2">
+        <div class="pt-4">
           <button
             type="submit"
             :disabled="loading"
-            class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+            class="w-full flex justify-center items-center rounded-xl bg-gray-600 h-12 px-8 cursor-pointer hover:bg-gray-800 text-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             {{ loading ? 'Opretter konto...' : 'Opret konto' }}
           </button>

@@ -112,6 +112,13 @@ async function handleLogout() {
                 Log ud
               </button>
             </div>
+            <div class="p-3" v-if="!authStore.isAuthenticated">
+              <RouterLink to="/register">
+                <button class="rounded bg-gray-600 h-12 w-32 p-2 cursor-pointer hover:bg-gray-800">
+                  Nyt medlem?
+                </button>
+              </RouterLink>
+            </div>
           </div>
         </div>
         <TransitionRoot appear :show="isOpen" as="template">
