@@ -31,9 +31,11 @@ public class DatabaseTokenProvider : IUserTwoFactorTokenProvider<Contact>
         }
 
         // Create a new forgot password request in the database
+        // Only set the ContactId (foreign key), not the Contact navigation property
+        // to avoid EF Core trying to insert the Contact entity
         ForgotPassword forgotPasswordRequest = new()
         {
-            Contact = user
+            ContactId = user.Id
         };
 
         ForgotPassword createdRequest = await _forgotPasswordRepository.CreateAsync(forgotPasswordRequest);

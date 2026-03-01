@@ -22,7 +22,7 @@ public class AuthController(
     [Route("forgot")]
     public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDto dto)
     {
-        Contact? contact = await _contactRepository.GetByEmailAsync(dto.Email);
+        Contact? contact = await _userManager.FindByEmailAsync(dto.Email);
         if (contact is null)
         {
             return NotFound("No user found with the provided email.");
@@ -64,7 +64,7 @@ public class AuthController(
     [Route("reset")]
     public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto dto)
     {
-        Contact? contact = await _contactRepository.GetByEmailAsync(dto.Email);
+        Contact? contact = await _userManager.FindByEmailAsync(dto.Email);
         if (contact is null)
         {
             return BadRequest("Invalid password reset request.");
