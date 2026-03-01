@@ -15,8 +15,7 @@ public class AuthController(
     ForgotPasswordRepository _forgotPasswordRepository,
     IContactRepository _contactRepository,
     UserManager<Contact> _userManager,
-    IJwtService _jwtService,
-    JwtConfig _jwtConfig
+    IJwtService _jwtService
 ) : ControllerBase
 {
     [HttpPost]
@@ -109,16 +108,41 @@ public class AuthController(
             return Unauthorized("Invalid email or password.");
         }
 
-        // Generate JWT token for the authenticated user
-        var token = await _jwtService.GenerateTokenAsync(contact);
-
-        var expiryInSeconds = _jwtConfig.ExpiryMinutes * 60;
+        // Generate JWT token and refresh token for the authenticated user
+        var tokens = await _jwtService.GenerateTokensAsync(contact);
         
         return Ok(new { 
             message = "Login successful.",
-            token = token,
-            expiresIn = expiryInSeconds
+            accessToken = tokens.AccessToken,
+            refreshToken = tokens.RefreshToken,
+            expiresIn = tokens.ExpiresIn
         });
+    }
+
+    [HttpPost]
+    [Route("refresh")]
+    public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenDto dto)
+    {
+        try
+        {
+            var tokens = await _jwtService.RefreshTokenAsync(dto.RefreshToken);
+            
+            return Ok(new
+            {
+                message = "Token refreshed successfully.",
+                accessToken = tokens.AccessToken,
+                refreshToken = tokens.RefreshToken,
+                expiresIn = tokens.ExpiresIn
+            });
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Unauthorized(new { message = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { message = "An error occurred while refreshing the token.", details = ex.Message });
+        }
     }
 
     [HttpPost]
@@ -154,17 +178,17 @@ public class AuthController(
             });
         }
 
-        // Generate JWT token for the newly registered user
-        var token = await _jwtService.GenerateTokenAsync(contact);
-        var expiryInSeconds = _jwtConfig.ExpiryMinutes * 60;
+        // Generate JWT token and refresh token for the newly registered user
+        var tokens = await _jwtService.GenerateTokensAsync(contact);
 
         return CreatedAtAction(
             nameof(Register),
             new
             {
                 message = "Registration successful.",
-                token = token,
-                expiresIn = expiryInSeconds
+                accessToken = tokens.AccessToken,
+                refreshToken = tokens.RefreshToken,
+                expiresIn = tokens.ExpiresIn
             }
         );
     }

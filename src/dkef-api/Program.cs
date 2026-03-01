@@ -80,6 +80,7 @@ try
     builder.Services.AddDbContext<ContactContext>(options => options.UseNpgsql(dbConString));
     builder.Services.AddDbContext<EventsContext>(options => options.UseNpgsql(dbConString));
     builder.Services.AddDbContext<ForgotPasswordContext>(options => options.UseNpgsql(dbConString));
+    builder.Services.AddDbContext<RefreshTokenContext>(options => options.UseNpgsql(dbConString));
 
     builder.Services.AddTransient<DbSet<Contact>>(x =>
         x.GetRequiredService<ContactContext>()
@@ -183,6 +184,7 @@ try
     builder.Services.AddScoped<IContactRepository, ContactRepository>();
     builder.Services.AddScoped<IEventsRepository, EventsRepository>();
     builder.Services.AddScoped<ForgotPasswordRepository>();
+    builder.Services.AddScoped<RefreshTokenRepository>();
 
     // Services
     builder.Services.AddTransient<IBucketService, MinioBucketService>();
@@ -210,6 +212,8 @@ try
         eventsContext!.Database.Migrate();
         var forgotPasswordContext = scope.ServiceProvider.GetService<ForgotPasswordContext>();
         forgotPasswordContext!.Database.Migrate();
+        var refreshTokenContext = scope.ServiceProvider.GetService<RefreshTokenContext>();
+        refreshTokenContext!.Database.Migrate();
         // if (app.Environment.IsDevelopment()) {
         //     await ContactContext.SeedAsync(context);
         // }
