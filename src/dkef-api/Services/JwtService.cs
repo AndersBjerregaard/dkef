@@ -1,19 +1,20 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-
 using Dkef.Configuration;
 using Dkef.Domain;
 using Dkef.Services.Interfaces;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Dkef.Services;
 
 public class JwtService(
-    JwtConfig _jwtConfig
+    JwtConfig _jwtConfig,
+    UserManager<Contact> _userManager
 ) : IJwtService
 {
-    public string GenerateToken(Contact contact)
+    public async Task<string> GenerateTokenAsync(Contact contact)
     {
         var key = Encoding.UTF8.GetBytes(_jwtConfig.Key);
         var issuer = _jwtConfig.Issuer;
@@ -36,6 +37,13 @@ public class JwtService(
         if (!string.IsNullOrEmpty(contact.LastName))
         {
             claims.Add(new Claim(ClaimTypes.Surname, contact.LastName));
+        }
+
+        // Add role claims
+        var roles = await _userManager.GetRolesAsync(contact);
+        foreach (var role in roles)
+        {
+            claims.Add(new Claim(ClaimTypes.Role, role));
         }
 
         var tokenDescriptor = new SecurityTokenDescriptor

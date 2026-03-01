@@ -1,6 +1,8 @@
 using Dkef.Contracts;
 using Dkef.Repositories;
 using Ganss.Xss;
+
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ILogger = Serilog.ILogger;
 
@@ -8,6 +10,7 @@ namespace Dkef.Controllers;
 
 [ApiController]
 [Route("[controller]")]
+[Authorize]
 public class ContactsController(IContactRepository _repository, HtmlSanitizer _sanitizer, ILogger _logger) : ControllerBase
 {
 

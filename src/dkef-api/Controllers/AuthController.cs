@@ -3,6 +3,7 @@ using Dkef.Contracts;
 using Dkef.Domain;
 using Dkef.Repositories;
 using Dkef.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -42,6 +43,7 @@ public class AuthController(
 
     [HttpGet]
     [Route("forgot/{id}", Name = nameof(GetForgotPasswordRequest))]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> GetForgotPasswordRequest(Guid id)
     {
         ForgotPassword? request = await _forgotPasswordRepository.GetByIdAsync(id);
@@ -108,7 +110,7 @@ public class AuthController(
         }
 
         // Generate JWT token for the authenticated user
-        var token = _jwtService.GenerateToken(contact);
+        var token = await _jwtService.GenerateTokenAsync(contact);
 
         var expiryInSeconds = _jwtConfig.ExpiryMinutes * 60;
         
@@ -153,7 +155,7 @@ public class AuthController(
         }
 
         // Generate JWT token for the newly registered user
-        var token = _jwtService.GenerateToken(contact);
+        var token = await _jwtService.GenerateTokenAsync(contact);
         var expiryInSeconds = _jwtConfig.ExpiryMinutes * 60;
 
         return CreatedAtAction(

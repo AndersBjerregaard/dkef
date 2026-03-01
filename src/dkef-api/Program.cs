@@ -144,7 +144,8 @@ try
             ValidIssuer = jwtConfig.Issuer,
             ValidAudience = jwtConfig.Audience,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtConfig.Key)),
-            ClockSkew = TimeSpan.Zero // Optional: reduce the default clock skew of 5 minutes
+            ClockSkew = TimeSpan.Zero, // Optional: reduce the default clock skew of 5 minutes
+            RoleClaimType = System.Security.Claims.ClaimTypes.Role // Explicitly set role claim type
         };
     });
 

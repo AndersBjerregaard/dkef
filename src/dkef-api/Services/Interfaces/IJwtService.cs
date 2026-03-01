@@ -4,5 +4,5 @@ namespace Dkef.Services.Interfaces;
 
 public interface IJwtService
 {
-    string GenerateToken(Contact contact);
+    Task<string> GenerateTokenAsync(Contact contact);
 }
