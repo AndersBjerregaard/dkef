@@ -1,6 +1,8 @@
+using Dkef.Configuration;
 using Dkef.Contracts;
 using Dkef.Domain;
 using Dkef.Repositories;
+using Dkef.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,7 +13,9 @@ namespace Dkef.Controllers;
 public class AuthController(
     ForgotPasswordRepository _forgotPasswordRepository,
     IContactRepository _contactRepository,
-    UserManager<Contact> _userManager
+    UserManager<Contact> _userManager,
+    IJwtService _jwtService,
+    JwtConfig _jwtConfig
 ) : ControllerBase
 {
     [HttpPost]
@@ -103,8 +107,16 @@ public class AuthController(
             return Unauthorized("Invalid email or password.");
         }
 
-        // Here you would typically generate a JWT or similar token for the authenticated user
-        return Ok(new { message = "Login successful." });
+        // Generate JWT token for the authenticated user
+        var token = _jwtService.GenerateToken(contact);
+
+        var expiryInSeconds = _jwtConfig.ExpiryMinutes * 60;
+        
+        return Ok(new { 
+            message = "Login successful.",
+            token = token,
+            expiresIn = expiryInSeconds
+        });
     }
 
     [HttpPost]

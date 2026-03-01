@@ -1,7 +1,6 @@
 using System.Globalization;
 using System.Reflection;
 using System.Text;
-
 using AutoMapper;
 using Dkef.Configuration;
 using Dkef.Contracts;
@@ -9,13 +8,12 @@ using Dkef.Data;
 using Dkef.Domain;
 using Dkef.Repositories;
 using Dkef.Services;
+using Dkef.Services.Interfaces;
 using Ganss.Xss;
-
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-
 using Minio;
 using Minio.AspNetCore;
 using Scalar.AspNetCore;
@@ -120,6 +118,16 @@ try
     builder.Services.AddScoped<DatabaseTokenProvider>();
 
     // Authentication
+    JwtConfig jwtConfig = new(
+    
+        Key: builder.Configuration.GetSection("JwtSettings")["Key"]!,
+        Issuer: builder.Configuration.GetSection("JwtSettings")["Issuer"]!,
+        Audience: builder.Configuration.GetSection("JwtSettings")["Audience"]!,
+        ExpiryMinutes: int.Parse(builder.Configuration.GetSection("JwtSettings")["ExpiryMinutes"] ?? "60")
+    );
+
+    builder.Services.AddSingleton(jwtConfig);
+
     builder.Services.AddAuthentication(options =>
     {
         options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -133,9 +141,9 @@ try
             ValidateAudience = true,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
-            ValidIssuer = builder.Configuration["JwtSettings:Issuer"],
-            ValidAudience = builder.Configuration["JwtSettings:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:Key"]!)),
+            ValidIssuer = jwtConfig.Issuer,
+            ValidAudience = jwtConfig.Audience,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtConfig.Key)),
             ClockSkew = TimeSpan.Zero // Optional: reduce the default clock skew of 5 minutes
         };
     });
@@ -177,6 +185,7 @@ try
 
     // Services
     builder.Services.AddTransient<IBucketService, MinioBucketService>();
+    builder.Services.AddScoped<IJwtService, JwtService>();
 
     // Security
     builder.Services.AddSingleton<HtmlSanitizer>(x => new());
