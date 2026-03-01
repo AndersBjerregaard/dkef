@@ -10,7 +10,7 @@ import apiservice from '@/services/apiservice';
 import urlservice from '@/services/urlservice';
 import type { AxiosResponse } from 'axios';
 import axios from 'axios';
-import { type EventsCollection, type EventDto, type PublishedEvent } from '@/types/events';
+import { type EventDto, type PublishedEvent } from '@/types/events';
 import { useEventStore } from '@/stores/eventStore';
 
 const eventStore = useEventStore();
@@ -56,7 +56,7 @@ function openModal() {
   fileUploadError.value = false;
 }
 
-function handleEventTitleChange(event: Event) {
+function handleEventTitleChange() {
   submitError.value = false;
 }
 
@@ -127,8 +127,14 @@ async function createEvent() {
       // Refetch latest events
       await fetchLatestPublishedEvents();
 
-    } catch (error: any) {
-      console.error('Error during event creation:', error);
+    } catch (err) {
+      const error = err as { value?: string };
+      const axiosError = err as { response?: { data?: { message?: string } }; message?: string };
+      error.value =
+        axiosError.response?.data?.message ||
+        axiosError.message ||
+        'Fejl ved oprettelse af arrangement. Prøv igen.';
+      console.error(error.value);
       submitError.value = true; // Indicate submission failure
     } finally {
       isLoading.value = false; // Always set loading to false when done
