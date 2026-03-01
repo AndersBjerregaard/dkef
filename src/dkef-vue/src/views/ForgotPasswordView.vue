@@ -21,7 +21,7 @@ async function handleForgotPassword() {
     error.value =
       axiosError.response?.data?.message ||
       axiosError.message ||
-      'Failed to send password reset email. Please try again.'
+      'Fejl ved afsendelse af nulstillings-e-mail. Prøv igen.'
   } finally {
     loading.value = false
   }
@@ -29,32 +29,32 @@ async function handleForgotPassword() {
 </script>
 
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-    <div class="max-w-md w-full space-y-8">
+  <div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full space-y-6">
       <div>
-        <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
-          Reset your password
+        <h2 class="mt-6 text-center text-3xl font-bold">
+          Nulstil din adgangskode
         </h2>
-        <p class="mt-2 text-center text-sm text-gray-600">
-          Enter your email address and we'll send you a password reset link.
+        <p class="mt-2 text-center text-sm">
+          Indtast din e-mailadresse, og vi sender dig et link til at nulstille din adgangskode.
         </p>
       </div>
 
-      <div v-if="success" class="rounded-md bg-green-50 p-4">
-        <p class="text-sm text-green-800">
-          Password reset instructions have been sent to your email. Please check your inbox and
-          follow the link to reset your password.
+      <div v-if="success" class="rounded-xl bg-green-900 bg-opacity-50 p-4 border border-green-700">
+        <p class="text-sm text-green-200">
+          Instruktioner til nulstilling af adgangskode er blevet sendt til din e-mail. Tjek din indbakke og
+          følg linket for at nulstille din adgangskode.
         </p>
       </div>
 
-      <form v-else class="mt-8 space-y-6" @submit.prevent="handleForgotPassword">
-        <div v-if="error" class="rounded-md bg-red-50 p-4">
-          <p class="text-sm text-red-800">{{ error }}</p>
+      <form v-else class="mt-8 space-y-4" @submit.prevent="handleForgotPassword">
+        <div v-if="error" class="rounded-xl bg-red-900 bg-opacity-50 p-4 border border-red-700">
+          <p class="text-sm text-red-200">{{ error }}</p>
         </div>
 
         <div>
-          <label for="email-address" class="block text-sm font-medium text-gray-700">
-            Email address
+          <label for="email-address" class="block text-sm font-medium mb-1 py-2">
+            Email
           </label>
           <input
             id="email-address"
@@ -63,25 +63,19 @@ async function handleForgotPassword() {
             type="email"
             autocomplete="email"
             required
-            class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            placeholder="Email address"
+            class="w-full bg-gray-800 border-0 rounded-xl p-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-600"
+            placeholder="Email"
           />
         </div>
 
-        <div>
+        <div class="pt-4">
           <button
             type="submit"
             :disabled="loading"
-            class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+            class="w-full flex justify-center items-center rounded-xl bg-gray-600 h-12 px-8 cursor-pointer hover:bg-gray-800 text-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
-            {{ loading ? 'Sending...' : 'Send reset link' }}
+            {{ loading ? 'Sender...' : 'Send nulstillingslink' }}
           </button>
-        </div>
-
-        <div class="text-center text-sm">
-          <router-link to="/login" class="font-medium text-indigo-600 hover:text-indigo-500">
-            Back to login
-          </router-link>
         </div>
       </form>
     </div>

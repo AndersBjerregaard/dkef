@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
+import { useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/authStore'
 import type { ResetPasswordDto } from '@/types/auth'
 
-const router = useRouter()
 const route = useRoute()
 const authStore = useAuthStore()
 
@@ -22,7 +21,7 @@ onMounted(() => {
   email.value = (route.query.email as string) || ''
 
   if (!token.value) {
-    error.value = 'Invalid or missing password reset token.'
+    error.value = 'Ugyldig eller manglende token til nulstilling af adgangskode.'
   }
 })
 
@@ -31,12 +30,12 @@ async function handleResetPassword() {
 
   // Validation
   if (password.value !== confirmPassword.value) {
-    error.value = 'Passwords do not match'
+    error.value = 'Adgangskoderne matcher ikke'
     return
   }
 
   if (password.value.length < 8) {
-    error.value = 'Password must be at least 8 characters long'
+    error.value = 'Adgangskoden skal være mindst 8 tegn lang'
     return
   }
 
@@ -51,15 +50,10 @@ async function handleResetPassword() {
 
     await authStore.resetPassword(resetData)
     success.value = true
-
-    // Redirect to login after 2 seconds
-    setTimeout(() => {
-      router.push('/login')
-    }, 2000)
   } catch (err) {
     const axiosError = err as { response?: { data?: { message?: string } }; message?: string }
     error.value =
-      axiosError.response?.data?.message || axiosError.message || 'Failed to reset password. Please try again.'
+      axiosError.response?.data?.message || axiosError.message || 'Kunne ikke nulstille adgangskoden. Prøv igen.'
   } finally {
     loading.value = false
   }
@@ -67,27 +61,27 @@ async function handleResetPassword() {
 </script>
 
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-    <div class="max-w-md w-full space-y-8">
+  <div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full space-y-6">
       <div>
-        <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">Set new password</h2>
+        <h2 class="mt-6 text-center text-3xl font-bold">Ny adgangskode</h2>
       </div>
 
-      <div v-if="success" class="rounded-md bg-green-50 p-4">
-        <p class="text-sm text-green-800">
-          Your password has been reset successfully! Redirecting to login...
+      <div v-if="success" class="rounded-xl bg-green-900 bg-opacity-50 p-4 border border-green-700">
+        <p class="text-sm text-green-200">
+          Din adgangskode er blevet nulstillet! Du kan nu logge ind med din nye adgangskode.
         </p>
       </div>
 
-      <form v-else class="mt-8 space-y-6" @submit.prevent="handleResetPassword">
-        <div v-if="error" class="rounded-md bg-red-50 p-4">
-          <p class="text-sm text-red-800">{{ error }}</p>
+      <form v-else class="mt-8 space-y-4" @submit.prevent="handleResetPassword">
+        <div v-if="error" class="rounded-xl bg-red-900 bg-opacity-50 p-4 border border-red-700">
+          <p class="text-sm text-red-200">{{ error }}</p>
         </div>
 
         <div class="space-y-4">
           <div>
-            <label for="email-address" class="block text-sm font-medium text-gray-700">
-              Email address
+            <label for="email-address" class="block text-sm font-medium mb-1">
+              Email
             </label>
             <input
               id="email-address"
@@ -96,14 +90,14 @@ async function handleResetPassword() {
               type="email"
               autocomplete="email"
               required
-              class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              placeholder="Email address"
+              class="w-full bg-gray-800 border-0 rounded-xl p-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-600"
+              placeholder="Email"
             />
           </div>
 
           <div>
-            <label for="password" class="block text-sm font-medium text-gray-700">
-              New Password
+            <label for="password" class="block text-sm font-medium mb-1">
+              Ny adgangskode
             </label>
             <input
               id="password"
@@ -112,14 +106,14 @@ async function handleResetPassword() {
               type="password"
               autocomplete="new-password"
               required
-              class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              placeholder="New Password (min 8 characters)"
+              class="w-full bg-gray-800 border-0 rounded-xl p-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-600"
+              placeholder="Ny adgangskode (min 8 tegn)"
             />
           </div>
 
           <div>
-            <label for="confirm-password" class="block text-sm font-medium text-gray-700">
-              Confirm New Password
+            <label for="confirm-password" class="block text-sm font-medium mb-1">
+              Bekræft ny adgangskode
             </label>
             <input
               id="confirm-password"
@@ -128,26 +122,20 @@ async function handleResetPassword() {
               type="password"
               autocomplete="new-password"
               required
-              class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              placeholder="Confirm New Password"
+              class="w-full bg-gray-800 border-0 rounded-xl p-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-600"
+              placeholder="Bekræft ny adgangskode"
             />
           </div>
         </div>
 
-        <div>
+        <div class="pt-4">
           <button
             type="submit"
             :disabled="loading || !token"
-            class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+            class="w-full flex justify-center items-center rounded-xl bg-gray-600 h-12 px-8 cursor-pointer hover:bg-gray-800 text-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
-            {{ loading ? 'Resetting password...' : 'Reset password' }}
+            {{ loading ? 'Nulstiller adgangskode...' : 'Nulstil adgangskode' }}
           </button>
-        </div>
-
-        <div class="text-center text-sm">
-          <router-link to="/login" class="font-medium text-indigo-600 hover:text-indigo-500">
-            Back to login
-          </router-link>
         </div>
       </form>
     </div>
