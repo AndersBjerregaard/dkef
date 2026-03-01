@@ -43,7 +43,7 @@ const router = createRouter({
       path: '/members',
       name: 'members',
       component: () => import('@/views/MembersView.vue'),
-      meta: { requiresAuth: true }, // Example: Protect this route
+      meta: { requiresAuth: true },
     },
     {
       path: '/register',

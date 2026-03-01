@@ -75,8 +75,7 @@ async function handleLogout() {
           <div class="flex p-4 w-full justify-end items-center">
             <div class="p-3">
               <RouterLink to="/members">
-                <button class="rounded bg-gray-600 h-12 w-36 p-2 cursor-pointer hover:bg-gray-800">Medlemmer
-                  (auth)</button>
+                <button class="rounded bg-gray-600 h-12 w-36 p-2 cursor-pointer hover:bg-gray-800">Medlemmer</button>
               </RouterLink>
             </div>
             <div class="p-3">
