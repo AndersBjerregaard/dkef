@@ -24,18 +24,18 @@ const dateTime = computed(() => {
       <div class="h-60 pb-4">
         <img class="picture" :src="props.publishedEvent?.thumbnailUrl" alt="event picture">
       </div>
-      <div class="text-content-area flex-grow">
-        <div>
-          <span>{{ props.publishedEvent?.section }}</span>
+      <div class="text-content-area flex-grow flex flex-col">
+        <div class="h-6 overflow-hidden">
+          <span class="line-clamp-1">{{ props.publishedEvent?.section }}</span>
         </div>
-        <div class="py-4">
-          <span>{{ props.publishedEvent?.title }}</span>
+        <div class="py-4 h-20 overflow-hidden">
+          <span class="line-clamp-2">{{ props.publishedEvent?.title }}</span>
         </div>
-        <div class="pb-4">
-          <span>{{ props.publishedEvent?.address }}</span>
+        <div class="pb-4 h-12 overflow-hidden">
+          <span class="line-clamp-2">{{ props.publishedEvent?.address }}</span>
         </div>
-        <div>
-          <span>{{ dateTime }}</span>
+        <div class="h-6 overflow-hidden">
+          <span class="line-clamp-1">{{ dateTime }}</span>
         </div>
       </div>
     </div>
@@ -47,12 +47,5 @@ const dateTime = computed(() => {
   height: 100%;
   width: 100%;
   object-fit: fill;
-}
-
-.text-content-area {
-  /* Calculate a suitable height based on your design for two lines of text
-     for each item + padding. This will require some trial and error. */
-  min-height: calc(var(--spacing) * 48); /* Adjust this value as needed */
-  overflow: hidden;
 }
 </style>
