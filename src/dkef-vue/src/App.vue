@@ -6,15 +6,57 @@ import {
   Dialog, DialogPanel, DialogTitle
 } from '@headlessui/vue'
 import { ref } from 'vue'
+import { useAuthStore } from '@/stores/authStore'
 
+const authStore = useAuthStore()
 const isOpen = ref(false)
+const email = ref('')
+const password = ref('')
+const loginError = ref('')
+const isLoggingIn = ref(false)
 
 function closeModal() {
   isOpen.value = false
+  loginError.value = ''
+  email.value = ''
+  password.value = ''
 }
 
 function openModal() {
   isOpen.value = true
+}
+
+async function handleLogin() {
+  if (!email.value || !password.value) {
+    loginError.value = 'Udfyld venligst alle felter'
+    return
+  }
+
+  isLoggingIn.value = true
+  loginError.value = ''
+
+  try {
+    await authStore.login({
+      email: email.value,
+      password: password.value
+    })
+    closeModal()
+  } catch (error: unknown) {
+    const errorMessage = error && typeof error === 'object' && 'response' in error
+      ? (error as { response?: { data?: { message?: string } } }).response?.data?.message
+      : undefined
+    loginError.value = errorMessage || 'Login fejlede. Tjek dine oplysninger og prøv igen.'
+  } finally {
+    isLoggingIn.value = false
+  }
+}
+
+async function handleLogout() {
+  try {
+    await authStore.logout()
+  } catch (error) {
+    console.error('Logout error:', error)
+  }
 }
 </script>
 
@@ -60,9 +102,15 @@ function openModal() {
                 <button class="rounded bg-gray-600 h-12 w-24 p-2 cursor-pointer hover:bg-gray-800">Kontakt os</button>
               </RouterLink>
             </div>
-            <div class="p-3">
+            <div class="p-3" v-if="!authStore.isAuthenticated">
               <button class="rounded bg-gray-600 h-12 w-20 p-2 cursor-pointer hover:bg-gray-800" @click="openModal">
                 Log på
+              </button>
+            </div>
+            <div class="p-3 flex items-center gap-3" v-else>
+              <span class="text-white">Hej, {{ authStore.user?.firstName }}</span>
+              <button class="rounded bg-gray-600 h-12 w-24 p-2 cursor-pointer hover:bg-gray-800" @click="handleLogout">
+                Log ud
               </button>
             </div>
           </div>
@@ -82,21 +130,57 @@ function openModal() {
                   <DialogPanel
                     class="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
                     <DialogTitle as="h3" class="text-lg font-medium leading-6 text-gray-900">
-                      Login
+                      Log på
                     </DialogTitle>
-                    <div class="mt-2">
-                      <p class="text-sm text-gray-500">
-                        Du er nu logget på.
-                      </p>
-                    </div>
+                    <form @submit.prevent="handleLogin" class="mt-4">
+                      <div class="mb-4">
+                        <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
+                          Email
+                        </label>
+                        <input
+                          id="email"
+                          v-model="email"
+                          type="email"
+                          required
+                          class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-gray-900"
+                          placeholder="din@email.dk"
+                        />
+                      </div>
+                      <div class="mb-4">
+                        <label for="password" class="block text-sm font-medium text-gray-700 mb-2">
+                          Adgangskode
+                        </label>
+                        <input
+                          id="password"
+                          v-model="password"
+                          type="password"
+                          required
+                          class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-gray-900"
+                          placeholder="••••••••"
+                        />
+                      </div>
 
-                    <div class="mt-4">
-                      <button type="button"
-                        class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 cursor-pointer"
-                        @click="closeModal">
-                        Fortsæt til DKEF
-                      </button>
-                    </div>
+                      <div v-if="loginError" class="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+                        {{ loginError }}
+                      </div>
+
+                      <div class="flex gap-3">
+                        <button
+                          type="submit"
+                          :disabled="isLoggingIn"
+                          class="inline-flex justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          {{ isLoggingIn ? 'Logger på...' : 'Log på' }}
+                        </button>
+                        <button
+                          type="button"
+                          class="inline-flex justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 cursor-pointer"
+                          @click="closeModal"
+                        >
+                          Annuller
+                        </button>
+                      </div>
+                    </form>
                   </DialogPanel>
                 </TransitionChild>
               </div>
@@ -154,16 +238,27 @@ function openModal() {
                       </button>
                     </RouterLink>
                     </MenuItem>
-                    <MenuItem v-slot="{ active }">
+                    <MenuItem v-slot="{ active, close }">
+                    <RouterLink to="/contact">
+                      <button
+                        :class="[active ? 'bg-gray-800' : 'bg-gray-600', 'group flex w-full items-center rounded-md px-2 py-2 text-sm cursor-pointer']"
+                        @click="close">
+                        Kontakt os
+                      </button>
+                    </RouterLink>
+                    </MenuItem>
+                    <MenuItem v-if="!authStore.isAuthenticated" v-slot="{ active }">
                     <button
-                      :class="[active ? 'bg-gray-800' : 'bg-gray-600', 'group flex w-full items-center rounded-md px-2 py-2 text-sm cursor-pointer']">
-                      Kontakt os
+                      :class="[active ? 'bg-gray-800' : 'bg-gray-600', 'group flex w-full items-center rounded-md px-2 py-2 text-sm cursor-pointer']"
+                      @click="openModal">
+                      Log på
                     </button>
                     </MenuItem>
-                    <MenuItem v-slot="{ active }">
+                    <MenuItem v-else v-slot="{ active }">
                     <button
-                      :class="[active ? 'bg-gray-800' : 'bg-gray-600', 'group flex w-full items-center rounded-md px-2 py-2 text-sm cursor-pointer']">
-                      Log på
+                      :class="[active ? 'bg-gray-800' : 'bg-gray-600', 'group flex w-full items-center rounded-md px-2 py-2 text-sm cursor-pointer']"
+                      @click="handleLogout">
+                      Log ud ({{ authStore.user?.firstName }})
                     </button>
                     </MenuItem>
                   </div>
@@ -218,7 +313,18 @@ function openModal() {
           <div class="flex flex-col">
             <div class="w-48 h-60 p-2">
               <h2 class="text-xl pb-4">Medlemmer</h2>
-              <button class="block text-lg text-gray-300 hover:text-gray-500 cursor-pointer pb-2">Log på</button>
+              <button
+                v-if="!authStore.isAuthenticated"
+                @click="openModal"
+                class="block text-lg text-gray-300 hover:text-gray-500 cursor-pointer pb-2">
+                Log på
+              </button>
+              <button
+                v-else
+                @click="handleLogout"
+                class="block text-lg text-gray-300 hover:text-gray-500 cursor-pointer pb-2">
+                Log ud
+              </button>
             </div>
           </div>
         </div>

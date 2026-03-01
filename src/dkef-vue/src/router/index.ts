@@ -46,12 +46,6 @@ const router = createRouter({
       meta: { requiresAuth: true }, // Example: Protect this route
     },
     {
-      path: '/login',
-      name: 'login',
-      component: () => import('@/views/LoginView.vue'),
-      meta: { guest: true }, // Redirect to home if already authenticated
-    },
-    {
       path: '/register',
       name: 'register',
       component: () => import('@/views/RegisterView.vue'),
