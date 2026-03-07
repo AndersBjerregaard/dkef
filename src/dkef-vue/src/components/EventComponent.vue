@@ -19,35 +19,74 @@ const dateTime = computed(() => {
 </script>
 
 <template>
-  <RouterLink :to="`/events-and-news/${props.publishedEvent.id}`">
+  <RouterLink :to="`/events-and-news/${props.publishedEvent.id}`" class="block w-72">
     <div
-      class="border border-gray-600 p-4 rounded-2xl max-w-sm flex flex-col cursor-pointer hover:bg-gray-600"
+      class="h-full border border-gray-600 rounded-2xl overflow-hidden flex flex-col cursor-pointer hover:bg-gray-600 transition-colors"
     >
-      <div class="h-60 pb-4">
-        <img class="picture" :src="props.publishedEvent?.thumbnailUrl" alt="event picture" />
+      <!-- Thumbnail -->
+      <div class="h-44 shrink-0 bg-gray-700">
+        <img
+          class="h-full w-full object-cover"
+          :src="props.publishedEvent?.thumbnailUrl"
+          alt="event picture"
+        />
       </div>
-      <div class="text-content-area flex-grow flex flex-col">
-        <div class="h-20 overflow-hidden">
-          <span class="line-clamp-1">{{ props.publishedEvent?.section }}</span>
-        </div>
-        <div class="h-20 overflow-hidden">
-          <span class="line-clamp-2">{{ props.publishedEvent?.title }}</span>
-        </div>
-        <div class="h-20 overflow-hidden">
-          <span class="line-clamp-2">{{ props.publishedEvent?.address }}</span>
-        </div>
-        <div class="h-10 overflow-hidden">
-          <span class="line-clamp-1">{{ dateTime }}</span>
+
+      <!-- Content -->
+      <div class="flex flex-col flex-1 p-4 gap-2">
+        <!-- Type badge -->
+        <span class="text-xs font-semibold uppercase tracking-wide text-blue-400">Arrangement</span>
+
+        <!-- Section -->
+        <p class="text-xs text-gray-400 line-clamp-1">{{ props.publishedEvent?.section }}</p>
+
+        <!-- Title -->
+        <p class="font-semibold line-clamp-2 leading-snug flex-1">
+          {{ props.publishedEvent?.title }}
+        </p>
+
+        <!-- Metadata -->
+        <div class="mt-auto flex flex-col gap-1 text-sm text-gray-300">
+          <div class="flex items-start gap-1">
+            <svg
+              class="h-4 w-4 shrink-0 mt-0.5 text-gray-400"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+              />
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+              />
+            </svg>
+            <span class="line-clamp-2">{{ props.publishedEvent?.address }}</span>
+          </div>
+          <div class="flex items-center gap-1">
+            <svg
+              class="h-4 w-4 shrink-0 text-gray-400"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+              />
+            </svg>
+            <span class="line-clamp-1">{{ dateTime }}</span>
+          </div>
         </div>
       </div>
     </div>
   </RouterLink>
 </template>
-
-<style lang="css" scoped>
-.picture {
-  height: 100%;
-  width: 100%;
-  object-fit: fill;
-}
-</style>
