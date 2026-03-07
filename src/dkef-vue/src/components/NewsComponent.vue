@@ -42,7 +42,7 @@ const publishedAt = computed(() => {
         <p class="text-xs text-gray-400 line-clamp-1">{{ props.publishedNews?.section }}</p>
 
         <!-- Title -->
-        <p class="font-semibold line-clamp-2 leading-snug flex-1">
+        <p class="font-semibold line-clamp-2 leading-snug h-10 overflow-hidden">
           {{ props.publishedNews?.title }}
         </p>
 

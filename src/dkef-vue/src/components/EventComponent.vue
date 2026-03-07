@@ -41,13 +41,13 @@ const dateTime = computed(() => {
         <p class="text-xs text-gray-400 line-clamp-1">{{ props.publishedEvent?.section }}</p>
 
         <!-- Title -->
-        <p class="font-semibold line-clamp-2 leading-snug flex-1">
+        <p class="font-semibold line-clamp-2 leading-snug h-10 overflow-hidden">
           {{ props.publishedEvent?.title }}
         </p>
 
         <!-- Metadata -->
         <div class="mt-auto flex flex-col gap-1 text-sm text-gray-300">
-          <div class="flex items-start gap-1">
+          <div class="flex items-start gap-1 h-10 overflow-hidden">
             <svg
               class="h-4 w-4 shrink-0 mt-0.5 text-gray-400"
               fill="none"
