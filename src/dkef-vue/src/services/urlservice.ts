@@ -65,6 +65,78 @@ function getEvent(guid: String) {
   }
 }
 
+function getNewsPresignedUrl(guid: string) {
+  switch (mode) {
+    case 'Development':
+      throw 'Unimplemented!';
+    default:
+      return `/bucket/news/${guid}`
+  }
+}
+
+function postNews() {
+  switch (mode) {
+    case 'Development':
+      throw 'Unimplemented!';
+    default:
+      return `/news`
+  }
+}
+
+function getNews() {
+  switch (mode) {
+    case 'Development':
+      throw 'Unimplemented!';
+    default:
+      return `/news`
+  }
+}
+
+function getNewsItem(guid: string) {
+  switch (mode) {
+    case 'Development':
+      throw 'Unimplemented!';
+    default:
+      return `/news/${guid}`
+  }
+}
+
+function getGeneralAssemblyPresignedUrl(guid: string) {
+  switch (mode) {
+    case 'Development':
+      throw 'Unimplemented!';
+    default:
+      return `/bucket/general-assemblies/${guid}`
+  }
+}
+
+function postGeneralAssembly() {
+  switch (mode) {
+    case 'Development':
+      throw 'Unimplemented!';
+    default:
+      return `/general-assemblies`
+  }
+}
+
+function getGeneralAssemblies() {
+  switch (mode) {
+    case 'Development':
+      throw 'Unimplemented!';
+    default:
+      return `/general-assemblies`
+  }
+}
+
+function getGeneralAssembly(guid: string) {
+  switch (mode) {
+    case 'Development':
+      throw 'Unimplemented!';
+    default:
+      return `/general-assemblies/${guid}`
+  }
+}
+
 export default {
   getContacts,
   updateContact,
@@ -72,5 +144,13 @@ export default {
   getEventPresignedUrl,
   postEvent,
   getEvents,
-  getEvent
+  getEvent,
+  getNewsPresignedUrl,
+  postNews,
+  getNews,
+  getNewsItem,
+  getGeneralAssemblyPresignedUrl,
+  postGeneralAssembly,
+  getGeneralAssemblies,
+  getGeneralAssembly,
 }

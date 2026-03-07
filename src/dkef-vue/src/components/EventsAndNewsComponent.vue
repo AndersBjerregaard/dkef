@@ -1,158 +1,283 @@
 <script setup lang="ts">
-import { onMounted, ref, type Ref } from 'vue';
-import EventComponent from './EventComponent.vue';
-import {
-  TransitionRoot, TransitionChild,
-  Dialog, DialogPanel, DialogTitle
-} from '@headlessui/vue'
+import { computed, onMounted, ref, type Ref } from 'vue'
+import EventComponent from './EventComponent.vue'
+import NewsComponent from './NewsComponent.vue'
+import GeneralAssemblyComponent from './GeneralAssemblyComponent.vue'
+import { TransitionRoot, TransitionChild, Dialog, DialogPanel, DialogTitle } from '@headlessui/vue'
 import { v4 as uuidv4 } from 'uuid'
-import apiservice from '@/services/apiservice';
-import urlservice from '@/services/urlservice';
-import type { AxiosResponse } from 'axios';
-import axios from 'axios';
-import { type EventDto, type PublishedEvent } from '@/types/events';
-import { useEventStore } from '@/stores/eventStore';
-import { useAuthStore } from '@/stores/authStore';
+import apiservice from '@/services/apiservice'
+import urlservice from '@/services/urlservice'
+import type { AxiosResponse } from 'axios'
+import axios from 'axios'
+import { type EventDto, type PublishedEvent } from '@/types/events'
+import type { NewsDto, PublishedNews } from '@/types/news'
+import type { GeneralAssemblyDto, PublishedGeneralAssembly } from '@/types/generalAssembly'
+import { useEventStore } from '@/stores/eventStore'
+import { useNewsStore } from '@/stores/newsStore'
+import { useGeneralAssemblyStore } from '@/stores/generalAssemblyStore'
+import { useAuthStore } from '@/stores/authStore'
 
-const eventStore = useEventStore();
-const authStore = useAuthStore();
+type FilterType = 'all' | 'events' | 'news' | 'general-assemblies'
+type CreateType = 'event' | 'news' | 'general-assembly'
 
-const publishedEvents: Ref<PublishedEvent[]> = ref([]);
-const isFetching = ref(true);
+const eventStore = useEventStore()
+const newsStore = useNewsStore()
+const generalAssemblyStore = useGeneralAssemblyStore()
+const authStore = useAuthStore()
 
-const isOpen: Ref<boolean> = ref(false);
-const isLoading: Ref<boolean> = ref(false);
+const publishedEvents: Ref<PublishedEvent[]> = ref([])
+const publishedNews: Ref<PublishedNews[]> = ref([])
+const publishedGeneralAssemblies: Ref<PublishedGeneralAssembly[]> = ref([])
 
-const eventTitle: Ref<string> = ref('');
-const eventFile: Ref<File | null> = ref(null);
-const eventDescription: Ref<string> = ref('');
-const eventSection: Ref<string> = ref('');
-const eventAddress: Ref<string> = ref('');
-const eventDate: Ref<string> = ref('');
+const isFetching = ref(true)
+const activeFilter = ref<FilterType>('all')
 
-const fileUploadError: Ref<boolean> = ref(false);
-const submitError: Ref<boolean> = ref(false);
+const isOpen: Ref<boolean> = ref(false)
+const isLoading: Ref<boolean> = ref(false)
 
-async function fetchLatestPublishedEvents() {
-  isFetching.value = true;
-  const latestEvents: PublishedEvent[] = await eventStore.fetchLatestEvents();
-  publishedEvents.value = latestEvents;
-  isFetching.value = false;
+// Shared fields
+const createType: Ref<CreateType> = ref('event')
+const itemTitle: Ref<string> = ref('')
+const itemFile: Ref<File | null> = ref(null)
+const itemDescription: Ref<string> = ref('')
+const itemSection: Ref<string> = ref('')
+
+// Event + General Assembly fields
+const itemAddress: Ref<string> = ref('')
+const itemDate: Ref<string> = ref('')
+
+// News-specific fields
+const itemAuthor: Ref<string> = ref('')
+
+const fileUploadError: Ref<boolean> = ref(false)
+const submitError: Ref<boolean> = ref(false)
+
+// Computed: items to display based on active filter
+const displayedItems = computed(() => {
+  switch (activeFilter.value) {
+    case 'events':
+      return { events: publishedEvents.value, news: [], assemblies: [] }
+    case 'news':
+      return { events: [], news: publishedNews.value, assemblies: [] }
+    case 'general-assemblies':
+      return { events: [], news: [], assemblies: publishedGeneralAssemblies.value }
+    default:
+      return {
+        events: publishedEvents.value,
+        news: publishedNews.value,
+        assemblies: publishedGeneralAssemblies.value,
+      }
+  }
+})
+
+const isAnyFetching = computed(
+  () => isFetching.value || eventStore.isFetching || newsStore.isFetching || generalAssemblyStore.isFetching,
+)
+
+async function fetchAll() {
+  isFetching.value = true
+  const [events, news, assemblies] = await Promise.all([
+    eventStore.fetchLatestEvents(),
+    newsStore.fetchLatestNews(),
+    generalAssemblyStore.fetchLatestGeneralAssemblies(),
+  ])
+  publishedEvents.value = events
+  publishedNews.value = news
+  publishedGeneralAssemblies.value = assemblies
+  isFetching.value = false
 }
 
 onMounted(async () => {
-  await fetchLatestPublishedEvents();
-});
+  await fetchAll()
+})
+
+function setFilter(filter: FilterType) {
+  activeFilter.value = filter
+}
 
 function closeModal() {
-  resetFields();
-
-  isOpen.value = false;
+  resetFields()
+  isOpen.value = false
 }
 
 function openModal() {
-  resetFields();
-
-  isOpen.value = true;
-  submitError.value = false;
-  fileUploadError.value = false;
+  resetFields()
+  isOpen.value = true
+  submitError.value = false
+  fileUploadError.value = false
 }
 
-function handleEventTitleChange() {
-  submitError.value = false;
+function handleFieldChange() {
+  submitError.value = false
 }
 
 function handleFileUpload(event: Event) {
-  submitError.value = false;
-  fileUploadError.value = false;
-  const input = event.target as HTMLInputElement;
+  submitError.value = false
+  fileUploadError.value = false
+  const input = event.target as HTMLInputElement
   if (input.files && input.files.length > 0) {
-    eventFile.value = input.files[0];
-    if (eventFile.value.size === 0) {
-      fileUploadError.value = true;
+    itemFile.value = input.files[0]
+    if (itemFile.value.size === 0) {
+      fileUploadError.value = true
     }
   } else {
-    eventFile.value = null; // Clear if no file is selected (e.g. user cancels)
+    itemFile.value = null
   }
 }
 
 function resetFields() {
-  eventTitle.value = '';
-  eventDescription.value = '';
-  eventFile.value = null;
-  eventSection.value = '';
-  eventAddress.value = '';
-  eventDate.value = '';
+  createType.value = 'event'
+  itemTitle.value = ''
+  itemDescription.value = ''
+  itemFile.value = null
+  itemSection.value = ''
+  itemAddress.value = ''
+  itemDate.value = ''
+  itemAuthor.value = ''
 }
 
 function validateFields(): boolean {
-  if (eventTitle.value === '') return false;
-  if (eventFile.value === null) return false;
-  if (eventDescription.value === '') return false;
-  if (eventSection.value === '') return false;
-  if (eventAddress.value === '') return false;
-  if (eventDate.value === '') return false;
-  return true;
-}
+  if (itemTitle.value === '') return false
+  if (itemDescription.value === '') return false
 
-async function createEvent() {
-  submitError.value = false;
-  if (!validateFields()) {
-    submitError.value = true;
-    return;
+  if (createType.value === 'event' || createType.value === 'general-assembly') {
+    if (itemFile.value === null) return false
+    if (itemSection.value === '') return false
+    if (itemAddress.value === '') return false
+    if (itemDate.value === '') return false
   }
 
-  if (!submitError.value) {
-    isLoading.value = true; // Set loading to true
-    try {
-      const guid: string = uuidv4(); // Generated guid to identify the uploaded file
-      const presignedUrlResponse: AxiosResponse<string> = await apiservice.get<string>(urlservice.getEventPresignedUrl(guid));
-      const presignedUrl: string = presignedUrlResponse.data;
-
-      await uploadFile(presignedUrl, eventFile.value!);
-
-      const newEvent: EventDto = {
-        title: eventTitle.value,
-        section: eventSection.value,
-        address: eventAddress.value,
-        dateTime: eventDate.value,
-        description: eventDescription.value,
-        thumbnailId: guid
-      }
-
-      await apiservice.post<PublishedEvent>(urlservice.postEvent(), newEvent);
-
-      // Reset fields and close modal only after successful submission
-      resetFields();
-      isOpen.value = false;
-
-      // Refetch latest events
-      await fetchLatestPublishedEvents();
-
-    } catch (err) {
-      const error = err as { value?: string };
-      const axiosError = err as { response?: { data?: { message?: string } }; message?: string };
-      error.value =
-        axiosError.response?.data?.message ||
-        axiosError.message ||
-        'Fejl ved oprettelse af arrangement. Prøv igen.';
-      console.error(error.value);
-      submitError.value = true; // Indicate submission failure
-    } finally {
-      isLoading.value = false; // Always set loading to false when done
-    }
-  }
+  // News: file, section and author are all optional
+  return true
 }
 
 async function uploadFile(url: string, file: File) {
-  const axiosInstance = axios.create();
+  const axiosInstance = axios.create()
   try {
-    await axiosInstance.put(url, file, { headers: { 'Content-Type': file.type } });
-  } catch (error) {
-    console.error('Error uploading file:', error);
-    throw error; // Re-throw the error so createEvent can catch it
+    await axiosInstance.put(url, file, { headers: { 'Content-Type': file.type } })
+  } catch (error: unknown) {
+    console.error('Error uploading file:', error)
+    throw error
   }
 }
+
+async function createItem() {
+  submitError.value = false
+  if (!validateFields()) {
+    submitError.value = true
+    return
+  }
+
+  isLoading.value = true
+  try {
+    if (createType.value === 'event') {
+      await createEvent()
+    } else if (createType.value === 'news') {
+      await createNews()
+    } else {
+      await createGeneralAssembly()
+    }
+    resetFields()
+    isOpen.value = false
+    await fetchAll()
+  } catch (err: unknown) {
+    const axiosError = err as { response?: { data?: { message?: string } }; message?: string }
+    const message =
+      axiosError.response?.data?.message || axiosError.message || 'Fejl ved oprettelse. Prøv igen.'
+    console.error(message)
+    submitError.value = true
+  } finally {
+    isLoading.value = false
+  }
+}
+
+async function createEvent() {
+  const guid: string = uuidv4()
+  const presignedUrlResponse: AxiosResponse<string> = await apiservice.get<string>(
+    urlservice.getEventPresignedUrl(guid),
+  )
+  await uploadFile(presignedUrlResponse.data, itemFile.value!)
+
+  const newEvent: EventDto = {
+    title: itemTitle.value,
+    section: itemSection.value,
+    address: itemAddress.value,
+    dateTime: itemDate.value,
+    description: itemDescription.value,
+    thumbnailId: guid,
+  }
+  await apiservice.post<PublishedEvent>(urlservice.postEvent(), newEvent)
+}
+
+async function createNews() {
+  let thumbnailId = ''
+  if (itemFile.value !== null) {
+    thumbnailId = uuidv4()
+    const presignedUrlResponse: AxiosResponse<string> = await apiservice.get<string>(
+      urlservice.getNewsPresignedUrl(thumbnailId),
+    )
+    await uploadFile(presignedUrlResponse.data, itemFile.value)
+  }
+
+  const newNews: NewsDto = {
+    title: itemTitle.value,
+    section: itemSection.value,
+    author: itemAuthor.value,
+    description: itemDescription.value,
+    thumbnailId,
+  }
+  await apiservice.post<PublishedNews>(urlservice.postNews(), newNews)
+}
+
+async function createGeneralAssembly() {
+  const guid: string = uuidv4()
+  const presignedUrlResponse: AxiosResponse<string> = await apiservice.get<string>(
+    urlservice.getGeneralAssemblyPresignedUrl(guid),
+  )
+  await uploadFile(presignedUrlResponse.data, itemFile.value!)
+
+  const newAssembly: GeneralAssemblyDto = {
+    title: itemTitle.value,
+    section: itemSection.value,
+    address: itemAddress.value,
+    dateTime: itemDate.value,
+    description: itemDescription.value,
+    thumbnailId: guid,
+  }
+  await apiservice.post<PublishedGeneralAssembly>(urlservice.postGeneralAssembly(), newAssembly)
+}
+
+const modalTitle = computed(() => {
+  switch (createType.value) {
+    case 'news':
+      return 'Ny Nyhed'
+    case 'general-assembly':
+      return 'Ny Generalforsamling'
+    default:
+      return 'Nyt Arrangement'
+  }
+})
+
+const submitLabel = computed(() => {
+  if (isLoading.value) {
+    switch (createType.value) {
+      case 'news':
+        return 'Opretter Nyhed...'
+      case 'general-assembly':
+        return 'Opretter Generalforsamling...'
+      default:
+        return 'Opretter Arrangement...'
+    }
+  }
+  switch (createType.value) {
+    case 'news':
+      return 'Opret Nyhed'
+    case 'general-assembly':
+      return 'Opret Generalforsamling'
+    default:
+      return 'Opret Arrangement'
+  }
+})
 </script>
 
 <template>
@@ -160,151 +285,324 @@ async function uploadFile(url: string, file: File) {
     <div class="flex justify-center items-center">
       <h1 class="text-4xl">Arrangementer og Nyheder</h1>
     </div>
-    <div class="flex justify-center items-center py-12 gap-x-8">
+
+    <!-- Filter buttons -->
+    <div class="flex justify-center items-center py-12 gap-x-8 flex-wrap gap-y-4">
       <button
-        class="flex justify-center rounded bg-gray-600 h-10 sm:h-12 py-2 w-24 sm:w-32 cursor-pointer hover:bg-gray-800 sm:text-lg">Alle</button>
+        class="flex justify-center rounded h-10 sm:h-12 py-2 w-24 sm:w-32 cursor-pointer sm:text-lg transition-colors"
+        :class="activeFilter === 'all' ? 'bg-gray-400 text-gray-900' : 'bg-gray-600 hover:bg-gray-800'"
+        @click="setFilter('all')"
+      >
+        Alle
+      </button>
       <button
-        class="flex justify-center rounded bg-gray-600 h-10 sm:h-12 py-2 w-24 sm:w-32 cursor-pointer hover:bg-gray-800 sm:text-lg">Nyheder</button>
+        class="flex justify-center rounded h-10 sm:h-12 py-2 w-24 sm:w-32 cursor-pointer sm:text-lg transition-colors"
+        :class="activeFilter === 'news' ? 'bg-gray-400 text-gray-900' : 'bg-gray-600 hover:bg-gray-800'"
+        @click="setFilter('news')"
+      >
+        Nyheder
+      </button>
       <button
-        class="flex justify-center rounded bg-gray-600 h-10 sm:h-12 py-2 w-24 sm:w-36 cursor-pointer hover:bg-gray-800 sm:text-lg">Arrangementer</button>
+        class="flex justify-center rounded h-10 sm:h-12 py-2 w-24 sm:w-36 cursor-pointer sm:text-lg transition-colors"
+        :class="activeFilter === 'events' ? 'bg-gray-400 text-gray-900' : 'bg-gray-600 hover:bg-gray-800'"
+        @click="setFilter('events')"
+      >
+        Arrangementer
+      </button>
       <button
-        class="flex justify-center rounded bg-gray-600 h-10 sm:h-12 py-2 w-24 sm:w-48 cursor-pointer hover:bg-gray-800 sm:text-lg">Generalforsamlinger</button>
+        class="flex justify-center rounded h-10 sm:h-12 py-2 w-24 sm:w-48 cursor-pointer sm:text-lg transition-colors"
+        :class="
+          activeFilter === 'general-assemblies' ? 'bg-gray-400 text-gray-900' : 'bg-gray-600 hover:bg-gray-800'
+        "
+        @click="setFilter('general-assemblies')"
+      >
+        Generalforsamlinger
+      </button>
     </div>
 
     <div class="flex justify-center items-center">
       <h2 class="text-2xl pb-8">Seneste arrangementer og nyheder:</h2>
     </div>
 
-    <div v-if="isFetching" class="flex justify-center items-center min-h-[200px]">
-      <svg class="animate-spin h-10 w-10 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none"
-        viewBox="0 0 24 24">
+    <!-- Loading spinner -->
+    <div v-if="isAnyFetching" class="flex justify-center items-center min-h-[200px]">
+      <svg
+        class="animate-spin h-10 w-10 text-blue-500"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+      >
         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-        <path class="opacity-75" fill="currentColor"
-          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-        </path>
+        <path
+          class="opacity-75"
+          fill="currentColor"
+          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+        ></path>
       </svg>
       <span class="ml-3 text-lg">Henter...</span>
     </div>
 
+    <!-- Items grid -->
     <div v-else class="flex flex-wrap justify-center items-stretch gap-8">
-      <EventComponent v-for="item in publishedEvents" :key="item.id" :published-event="item" />
+      <EventComponent
+        v-for="item in displayedItems.events"
+        :key="item.id"
+        :published-event="item"
+      />
+      <NewsComponent v-for="item in displayedItems.news" :key="item.id" :published-news="item" />
+      <GeneralAssemblyComponent
+        v-for="item in displayedItems.assemblies"
+        :key="item.id"
+        :published-general-assembly="item"
+      />
     </div>
+
+    <!-- Admin create button -->
     <div class="flex justify-center items-center py-12 gap-x-8" v-if="authStore.isAdmin">
-      <button class="flex justify-center rounded bg-gray-600 h-10 sm:h-12 py-2
-        w-24 sm:w-48 cursor-pointer hover:bg-gray-800 sm:text-lg" @click="openModal">
-        Nyt Arrangement
+      <button
+        class="flex justify-center rounded bg-gray-600 h-10 sm:h-12 py-2 w-24 sm:w-48 cursor-pointer hover:bg-gray-800 sm:text-lg"
+        @click="openModal"
+      >
+        Opret ny...
       </button>
     </div>
+
+    <!-- Creation modal -->
     <TransitionRoot appear :show="isOpen" as="template">
       <Dialog as="div" @close="closeModal" class="relative z-10">
-        <TransitionChild as="template" enter="duration-300 ease-out" enter-from="opacity-0" enter-to="opacity-100"
-          leave="duration-200 ease-in" leave-from="opacity-100" leave-to="opacity-0">
+        <TransitionChild
+          as="template"
+          enter="duration-300 ease-out"
+          enter-from="opacity-0"
+          enter-to="opacity-100"
+          leave="duration-200 ease-in"
+          leave-from="opacity-100"
+          leave-to="opacity-0"
+        >
           <div class="fixed inset-0 bg-black/25"></div>
         </TransitionChild>
 
         <div class="fixed inset-0 overflow-y-auto">
           <div class="flex min-h-full items-center justify-center p-8 text-center">
-            <TransitionChild as="template" enter="duration-300 ease-out" enter-from="opacity-0 scale-95"
-              enter-to="opacity-100 scale-100" leave="duration-200 ease-in" leave-from="opacity-100 scale-100"
-              leave-to="opacity-0 scale-95">
+            <TransitionChild
+              as="template"
+              enter="duration-300 ease-out"
+              enter-from="opacity-0 scale-95"
+              enter-to="opacity-100 scale-100"
+              leave="duration-200 ease-in"
+              leave-from="opacity-100 scale-100"
+              leave-to="opacity-0 scale-95"
+            >
               <DialogPanel
-                class="w-full transform overflow-hidden rounded-2xl bg-gray-700 p-6 text-left align-middle shadow-xl transition-all **origin-center** translate-z-0 border">
-
-                <button type="button" class="cursor-pointer absolute top-3 right-3 text-gray-400 hover:text-gray-500"
-                  @click="closeModal" :disabled="isLoading">
-                  <span class="sr-only">Close</span>
-                  <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                class="w-full transform overflow-hidden rounded-2xl bg-gray-700 p-6 text-left align-middle shadow-xl transition-all **origin-center** translate-z-0 border"
+              >
+                <button
+                  type="button"
+                  class="cursor-pointer absolute top-3 right-3 text-gray-400 hover:text-gray-500"
+                  @click="closeModal"
+                  :disabled="isLoading"
+                >
+                  <span class="sr-only">Luk</span>
+                  <svg
+                    class="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    aria-hidden="true"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M6 18L18 6M6 6l12 12"
+                    />
                   </svg>
                 </button>
 
-                <DialogTitle v-if="authStore.isAdmin" as="h3" class="text-lg font-medium leading-6 pb-4">
-                  Nyt Arrangement
+                <DialogTitle as="h3" class="text-lg font-medium leading-6 pb-4">
+                  {{ modalTitle }}
                 </DialogTitle>
-                <!-- Modal body start -->
-                <form @submit.prevent="createEvent">
-                  <div class="flex justify-between">
-                    <div class="pb-4">
-                      <label for="title_input">Titel</label>
-                      <br>
-                      <input class="w-full bg-gray-800 border-0 rounded-xl p-2" id="title_input" name="title_input"
-                        placeholder="Titel" type="text" v-model="eventTitle" @keypress="handleEventTitleChange"
-                        :disabled="isLoading">
-                    </div>
 
-                    <div class="pb-4">
-                      <label for="section_input">Sektion</label>
-                      <br>
-                      <input class="w-full bg-gray-800 border-0 rounded-xl p-2" id="section_input" name="section_input"
-                        placeholder="Sektion" type="text" v-model="eventSection" @keypress="handleEventTitleChange"
-                        :disabled="isLoading">
-                    </div>
-
-                    <div class="pb-4">
-                      <label for="address_input">Addresse</label>
-                      <br>
-                      <input class="w-full bg-gray-800 border-0 rounded-xl p-2" id="address_input" name="address_input"
-                        placeholder="Addresse" type="text" v-model="eventAddress" @keypress="handleEventTitleChange"
-                        :disabled="isLoading">
-                    </div>
-
-                    <div class="pb-4">
-                      <label for="date_input">Dato</label>
-                      <br>
-                      <input class="w-full bg-gray-800 border-0 rounded-xl p-2 cursor-pointer" id="date_input"
-                        name="date_input" type="datetime-local" v-model="eventDate" @click="handleEventTitleChange"
-                        :disabled="isLoading">
-                    </div>
+                <form @submit.prevent="createItem">
+                  <!-- Type selector -->
+                  <div class="pb-4">
+                    <label for="type_select">Type</label>
+                    <br />
+                    <select
+                      id="type_select"
+                      class="w-full bg-gray-800 border-0 rounded-xl p-2 cursor-pointer"
+                      v-model="createType"
+                      :disabled="isLoading"
+                      @change="handleFieldChange"
+                    >
+                      <option value="event">Arrangement</option>
+                      <option value="news">Nyhed</option>
+                      <option value="general-assembly">Generalforsamling</option>
+                    </select>
                   </div>
 
+                  <!-- Shared: Title -->
+                  <div class="pb-4">
+                    <label for="title_input">Titel</label>
+                    <br />
+                    <input
+                      class="w-full bg-gray-800 border-0 rounded-xl p-2"
+                      id="title_input"
+                      placeholder="Titel"
+                      type="text"
+                      v-model="itemTitle"
+                      @keypress="handleFieldChange"
+                      :disabled="isLoading"
+                    />
+                  </div>
+
+                  <!-- Event + General Assembly fields -->
+                  <template v-if="createType === 'event' || createType === 'general-assembly'">
+                    <div class="flex justify-between gap-4 pb-4">
+                      <div class="flex-1">
+                        <label for="section_input">Sektion</label>
+                        <br />
+                        <input
+                          class="w-full bg-gray-800 border-0 rounded-xl p-2"
+                          id="section_input"
+                          placeholder="Sektion"
+                          type="text"
+                          v-model="itemSection"
+                          @keypress="handleFieldChange"
+                          :disabled="isLoading"
+                        />
+                      </div>
+                      <div class="flex-1">
+                        <label for="address_input">Adresse</label>
+                        <br />
+                        <input
+                          class="w-full bg-gray-800 border-0 rounded-xl p-2"
+                          id="address_input"
+                          placeholder="Adresse"
+                          type="text"
+                          v-model="itemAddress"
+                          @keypress="handleFieldChange"
+                          :disabled="isLoading"
+                        />
+                      </div>
+                      <div class="flex-1">
+                        <label for="date_input">Dato</label>
+                        <br />
+                        <input
+                          class="w-full bg-gray-800 border-0 rounded-xl p-2 cursor-pointer"
+                          id="date_input"
+                          type="datetime-local"
+                          v-model="itemDate"
+                          @click="handleFieldChange"
+                          :disabled="isLoading"
+                        />
+                      </div>
+                    </div>
+                  </template>
+
+                  <!-- News-specific optional fields -->
+                  <template v-if="createType === 'news'">
+                    <div class="flex gap-4 pb-4">
+                      <div class="flex-1">
+                        <label for="section_input_news">Sektion (valgfri)</label>
+                        <br />
+                        <input
+                          class="w-full bg-gray-800 border-0 rounded-xl p-2"
+                          id="section_input_news"
+                          placeholder="Sektion"
+                          type="text"
+                          v-model="itemSection"
+                          @keypress="handleFieldChange"
+                          :disabled="isLoading"
+                        />
+                      </div>
+                      <div class="flex-1">
+                        <label for="author_input">Forfatter (valgfri)</label>
+                        <br />
+                        <input
+                          class="w-full bg-gray-800 border-0 rounded-xl p-2"
+                          id="author_input"
+                          placeholder="Forfatter"
+                          type="text"
+                          v-model="itemAuthor"
+                          @keypress="handleFieldChange"
+                          :disabled="isLoading"
+                        />
+                      </div>
+                    </div>
+                  </template>
+
+                  <!-- Shared: Description -->
                   <div class="pb-4">
                     <label for="description_input">Beskrivelse</label>
-                    <br>
-                    <textarea class="w-full bg-gray-800 border-0 rounded-xl p-2 h-96" id="description_input"
-                      name="description_input" placeholder="Beskrivelse" type="text" v-model="eventDescription"
-                      @keypress="handleEventTitleChange" :disabled="isLoading">
-                    </textarea>
+                    <br />
+                    <textarea
+                      class="w-full bg-gray-800 border-0 rounded-xl p-2 h-96"
+                      id="description_input"
+                      placeholder="Beskrivelse"
+                      v-model="itemDescription"
+                      @keypress="handleFieldChange"
+                      :disabled="isLoading"
+                    ></textarea>
                   </div>
 
+                  <!-- File upload: required for event/general-assembly, optional for news -->
                   <div class="pb-4">
-                    <label for="file_input">Billede</label>
-                    <br>
+                    <label for="file_input">
+                      Billede{{ createType === 'news' ? ' (valgfri)' : '' }}
+                    </label>
+                    <br />
                     <input
                       class="w-full bg-gray-800 border-0 rounded-xl p-2 cursor-pointer hover:bg-gray-600 focus:bg-gray-300 focus:text-gray-900"
-                      id="file_input" name="file_input" type="file" accept="image/*" @change="handleFileUpload"
-                      :disabled="isLoading">
+                      id="file_input"
+                      type="file"
+                      accept="image/*"
+                      @change="handleFileUpload"
+                      :disabled="isLoading"
+                    />
                   </div>
 
                   <div v-show="fileUploadError" class="pb-4 text-red-400">
-                    <span>⚠️ Kan ikke uploade en fil med filstørrelse på 0 bytes!</span>
+                    <span>Kan ikke uploade en fil med filstørrelse på 0 bytes!</span>
                   </div>
 
                   <div v-show="submitError" class="pb-4 text-red-400">
-                    <span>⚠️ Venligst udfyld alle felter</span>
+                    <span>Venligst udfyld alle påkrævede felter</span>
                   </div>
 
                   <div class="mt-4">
-                    <button type="submit"
+                    <button
+                      type="submit"
                       class="inline-flex justify-center rounded-md border border-transparent bg-gray-300 px-4 py-2 text-md font-medium hover:bg-gray-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 text-gray-900 focus-visible:ring-offset-2"
-                      :disabled="isLoading">
+                      :disabled="isLoading"
+                    >
                       <span v-if="isLoading" class="flex items-center">
-                        <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-gray-900" xmlns="http://www.w3.org/2000/svg"
-                          fill="none" viewBox="0 0 24 24">
-                          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
-                          </circle>
-                          <path class="opacity-75" fill="currentColor"
-                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-                          </path>
+                        <svg
+                          class="animate-spin -ml-1 mr-3 h-5 w-5 text-gray-900"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            class="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            stroke-width="4"
+                          ></circle>
+                          <path
+                            class="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                          ></path>
                         </svg>
-                        Opretter Arrangement...
+                        {{ submitLabel }}
                       </span>
-                      <span v-else>
-                        Opret Arrangement
-                      </span>
+                      <span v-else>{{ submitLabel }}</span>
                     </button>
                   </div>
                 </form>
-                <!-- Modal body end -->
               </DialogPanel>
             </TransitionChild>
           </div>
@@ -315,11 +613,13 @@ async function uploadFile(url: string, file: File) {
 </template>
 
 <style scoped>
-/* You might want to add some styling for the spinner if it's not handled by Tailwind */
-/* For example, if you want to explicitly define the animation */
 @keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 .animate-spin {
   animation: spin 1s linear infinite;
