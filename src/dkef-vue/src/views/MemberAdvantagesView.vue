@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import MemberAdvantages from '@/components/MemberAdvantages.vue';
+import MemberAdvantages from '@/components/MemberAdvantages.vue'
 </script>
 
 <template>

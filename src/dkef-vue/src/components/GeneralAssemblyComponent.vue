@@ -19,7 +19,9 @@ const dateTime = computed(() => {
 
 <template>
   <RouterLink :to="`/general-assemblies/${props.publishedGeneralAssembly.id}`">
-    <div class="border border-gray-600 p-4 rounded-2xl max-w-sm flex flex-col cursor-pointer hover:bg-gray-600">
+    <div
+      class="border border-gray-600 p-4 rounded-2xl max-w-sm flex flex-col cursor-pointer hover:bg-gray-600"
+    >
       <div class="h-60 pb-4">
         <img
           class="picture"

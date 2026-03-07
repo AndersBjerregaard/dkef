@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { useGeneralAssemblyStore } from '@/stores/generalAssemblyStore'
+import { useAuthStore } from '@/stores/authStore'
 import type { PublishedGeneralAssembly } from '@/types/generalAssembly'
-import { computed, onMounted } from 'vue'
+import { computed, onMounted, ref } from 'vue'
+import EditGeneralAssemblyModal from '@/components/EditGeneralAssemblyModal.vue'
 
 const props = defineProps({
   id: {
@@ -11,10 +13,13 @@ const props = defineProps({
 })
 
 const generalAssemblyStore = useGeneralAssemblyStore()
+const authStore = useAuthStore()
 
 const currentAssembly = computed<PublishedGeneralAssembly | undefined>(() =>
   generalAssemblyStore.getGeneralAssemblyById(props.id),
 )
+
+const isEditOpen = ref(false)
 
 const dateTime = computed(() => {
   const item = currentAssembly.value
@@ -37,13 +42,20 @@ onMounted(async () => {
 <template>
   <div class="py-16 w-screen px-8 justify-items-center">
     <div class="w-[70%]">
-      <div class="pb-4">
+      <div class="pb-4 flex gap-4">
         <RouterLink
           to="/events-and-news"
           class="flex justify-center items-center rounded bg-gray-600 h-14 w-64 p-2 cursor-pointer hover:bg-gray-800"
         >
           &larr; Tilbage til arrangementer og nyheder
         </RouterLink>
+        <button
+          v-if="authStore.isAdmin && currentAssembly"
+          class="flex justify-center items-center rounded bg-gray-600 h-14 w-36 p-2 cursor-pointer hover:bg-gray-800"
+          @click="isEditOpen = true"
+        >
+          Rediger
+        </button>
       </div>
 
       <!-- Loading -->
@@ -57,7 +69,14 @@ onMounted(async () => {
           fill="none"
           viewBox="0 0 24 24"
         >
-          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <circle
+            class="opacity-25"
+            cx="12"
+            cy="12"
+            r="10"
+            stroke="currentColor"
+            stroke-width="4"
+          ></circle>
           <path
             class="opacity-75"
             fill="currentColor"
@@ -108,6 +127,13 @@ onMounted(async () => {
       </div>
     </div>
   </div>
+
+  <EditGeneralAssemblyModal
+    v-if="currentAssembly"
+    :is-open="isEditOpen"
+    :assembly="currentAssembly"
+    @close="isEditOpen = false"
+  />
 </template>
 
 <style lang="css" scoped></style>

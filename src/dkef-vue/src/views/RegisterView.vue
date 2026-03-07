@@ -45,7 +45,9 @@ async function handleRegister() {
   } catch (err) {
     const axiosError = err as { response?: { data?: { message?: string } }; message?: string }
     error.value =
-      axiosError.response?.data?.message || axiosError.message || 'Registrering mislykkedes. Prøv igen.'
+      axiosError.response?.data?.message ||
+      axiosError.message ||
+      'Registrering mislykkedes. Prøv igen.'
   } finally {
     loading.value = false
   }
@@ -56,9 +58,7 @@ async function handleRegister() {
   <div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
     <div class="max-w-md w-full space-y-6">
       <div>
-        <h2 class="mt-6 text-center text-3xl font-bold">
-          Opret din konto
-        </h2>
+        <h2 class="mt-6 text-center text-3xl font-bold">Opret din konto</h2>
       </div>
       <form class="mt-8 space-y-4" @submit.prevent="handleRegister">
         <div v-if="error" class="rounded-xl bg-red-900 bg-opacity-50 p-4 border border-red-700">
@@ -67,9 +67,7 @@ async function handleRegister() {
 
         <div class="space-y-4">
           <div>
-            <label for="first-name" class="block text-sm font-medium mb-1">
-              Fornavn
-            </label>
+            <label for="first-name" class="block text-sm font-medium mb-1"> Fornavn </label>
             <input
               id="first-name"
               v-model="firstName"
@@ -82,9 +80,7 @@ async function handleRegister() {
           </div>
 
           <div>
-            <label for="last-name" class="block text-sm font-medium mb-1">
-              Efternavn
-            </label>
+            <label for="last-name" class="block text-sm font-medium mb-1"> Efternavn </label>
             <input
               id="last-name"
               v-model="lastName"
@@ -97,9 +93,7 @@ async function handleRegister() {
           </div>
 
           <div>
-            <label for="email-address" class="block text-sm font-medium mb-1">
-              Email
-            </label>
+            <label for="email-address" class="block text-sm font-medium mb-1"> Email </label>
             <input
               id="email-address"
               v-model="email"

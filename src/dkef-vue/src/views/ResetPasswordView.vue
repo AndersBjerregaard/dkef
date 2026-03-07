@@ -50,7 +50,9 @@ async function handleResetPassword() {
   } catch (err) {
     const axiosError = err as { response?: { data?: { message?: string } }; message?: string }
     error.value =
-      axiosError.response?.data?.message || axiosError.message || 'Kunne ikke nulstille adgangskoden. Prøv igen.'
+      axiosError.response?.data?.message ||
+      axiosError.message ||
+      'Kunne ikke nulstille adgangskoden. Prøv igen.'
   } finally {
     loading.value = false
   }
@@ -77,9 +79,7 @@ async function handleResetPassword() {
 
         <div class="space-y-4">
           <div>
-            <label for="password" class="block text-sm font-medium mb-1">
-              Ny adgangskode
-            </label>
+            <label for="password" class="block text-sm font-medium mb-1"> Ny adgangskode </label>
             <input
               id="password"
               v-model="password"

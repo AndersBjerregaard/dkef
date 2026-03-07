@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import type { AxiosResponse } from 'axios'
 import apiservice from '@/services/apiservice'
 import urlservice from '@/services/urlservice'
-import type { NewsCollection, PublishedNews } from '@/types/news'
+import type { NewsCollection, NewsDto, PublishedNews } from '@/types/news'
 
 export const useNewsStore = defineStore('news', () => {
   const news = ref<Record<string, PublishedNews>>({})
@@ -67,5 +67,24 @@ export const useNewsStore = defineStore('news', () => {
     return undefined
   }
 
-  return { news, isFetching, error, getNewsById, fetchLatestNews, fetchNewsItem }
+  async function updateNewsItem(id: string, dto: NewsDto): Promise<void> {
+    isFetching.value = true
+    error.value = null
+    try {
+      const response: AxiosResponse<PublishedNews> = await apiservice.put<PublishedNews>(
+        urlservice.updateNews(id),
+        dto,
+      )
+      news.value[id] = response.data
+    } catch (err: unknown) {
+      const errorMessage = `Error attempting to update news item ${id}: ${err}`
+      error.value = errorMessage
+      console.error(errorMessage)
+      throw err
+    } finally {
+      isFetching.value = false
+    }
+  }
+
+  return { news, isFetching, error, getNewsById, fetchLatestNews, fetchNewsItem, updateNewsItem }
 })

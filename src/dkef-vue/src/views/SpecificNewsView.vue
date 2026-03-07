@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { useNewsStore } from '@/stores/newsStore'
+import { useAuthStore } from '@/stores/authStore'
 import type { PublishedNews } from '@/types/news'
-import { computed, onMounted } from 'vue'
+import { computed, onMounted, ref } from 'vue'
+import EditNewsModal from '@/components/EditNewsModal.vue'
 
 const props = defineProps({
   id: {
@@ -11,8 +13,11 @@ const props = defineProps({
 })
 
 const newsStore = useNewsStore()
+const authStore = useAuthStore()
 
 const currentNews = computed<PublishedNews | undefined>(() => newsStore.getNewsById(props.id))
+
+const isEditOpen = ref(false)
 
 const publishedAt = computed(() => {
   const item = currentNews.value
@@ -33,13 +38,20 @@ onMounted(async () => {
 <template>
   <div class="py-16 w-screen px-8 justify-items-center">
     <div class="w-[70%]">
-      <div class="pb-4">
+      <div class="pb-4 flex gap-4">
         <RouterLink
           to="/events-and-news"
           class="flex justify-center items-center rounded bg-gray-600 h-14 w-64 p-2 cursor-pointer hover:bg-gray-800"
         >
           &larr; Tilbage til arrangementer og nyheder
         </RouterLink>
+        <button
+          v-if="authStore.isAdmin && currentNews"
+          class="flex justify-center items-center rounded bg-gray-600 h-14 w-36 p-2 cursor-pointer hover:bg-gray-800"
+          @click="isEditOpen = true"
+        >
+          Rediger
+        </button>
       </div>
 
       <!-- Loading -->
@@ -50,7 +62,14 @@ onMounted(async () => {
           fill="none"
           viewBox="0 0 24 24"
         >
-          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <circle
+            class="opacity-25"
+            cx="12"
+            cy="12"
+            r="10"
+            stroke="currentColor"
+            stroke-width="4"
+          ></circle>
           <path
             class="opacity-75"
             fill="currentColor"
@@ -101,6 +120,13 @@ onMounted(async () => {
       </div>
     </div>
   </div>
+
+  <EditNewsModal
+    v-if="currentNews"
+    :is-open="isEditOpen"
+    :news="currentNews"
+    @close="isEditOpen = false"
+  />
 </template>
 
 <style lang="css" scoped></style>

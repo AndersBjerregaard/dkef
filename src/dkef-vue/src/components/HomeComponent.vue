@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import NewsLetterComponent from './NewsLetterComponent.vue';
-
+import NewsLetterComponent from './NewsLetterComponent.vue'
 </script>
 
 <template>
@@ -11,8 +10,10 @@ import NewsLetterComponent from './NewsLetterComponent.vue';
         <div class="w-5/6">
           <h1 class="text-4xl py-12">Dit netværk i elbranchen</h1>
 
-          <h2 class="text-xl py-12">Udvid din faglige horisont, bliv en del af fællesskabet og modtaging sparring fra
-            erfarne hænder.</h2>
+          <h2 class="text-xl py-12">
+            Udvid din faglige horisont, bliv en del af fællesskabet og modtaging sparring fra
+            erfarne hænder.
+          </h2>
 
           <h2 class="text-xl py-12">⭐ 4.8/5 stjerner af vores 100+ anmeldelser.</h2>
         </div>
@@ -20,7 +21,7 @@ import NewsLetterComponent from './NewsLetterComponent.vue';
       <!--Right Column -->
       <div class="flex flex-col gap-4 items-start">
         <div class="w-5/6">
-          <img src="@/assets/el-mast.jpeg" alt="An electrical mast">
+          <img src="@/assets/el-mast.jpeg" alt="An electrical mast" />
         </div>
       </div>
     </div>
@@ -32,27 +33,27 @@ import NewsLetterComponent from './NewsLetterComponent.vue';
 
       <div class="flex justify-between">
         <div class="flex items-center justify-center w-24 h-24 lg:w-32 lg:h-32">
-          <img src="@/assets/cubic.png" alt="CUBIC">
+          <img src="@/assets/cubic.png" alt="CUBIC" />
         </div>
 
         <div class="flex items-center justify-center w-24 h-24 lg:w-32 lg:h-32">
-          <img src="@/assets/ledvance.png" alt="LEDVANCE">
+          <img src="@/assets/ledvance.png" alt="LEDVANCE" />
         </div>
 
         <div class="flex items-center justify-center w-24 h-24 lg:w-32 lg:h-32">
-          <img src="@/assets/wexoe.svg" alt="WEXOE">
+          <img src="@/assets/wexoe.svg" alt="WEXOE" />
         </div>
 
         <div class="flex items-center justify-center w-24 h-24 lg:w-32 lg:h-32">
-          <img src="@/assets/schneider.png" alt="Schneider">
+          <img src="@/assets/schneider.png" alt="Schneider" />
         </div>
 
         <div class="flex items-center justify-center w-24 h-24 lg:w-32 lg:h-32">
-          <img src="@/assets/lauritz.svg" alt="Lauritz Knudsen">
+          <img src="@/assets/lauritz.svg" alt="Lauritz Knudsen" />
         </div>
 
         <div class="flex items-center justify-center w-24 h-24 lg:w-32 lg:h-32">
-          <img src="@/assets/solar.png" alt="Solar">
+          <img src="@/assets/solar.png" alt="Solar" />
         </div>
       </div>
     </div>
@@ -69,7 +70,9 @@ import NewsLetterComponent from './NewsLetterComponent.vue';
           <div class="py-4">
             <div class="border-1 border-gray-400 rounded-2xl p-4">
               <h3 class="text-xl pb-4">Arrangement titel</h3>
-              <div class="p-4 items-center flex justify-between bg-gray-700 text-sm md:text-base lg:text-lg">
+              <div
+                class="p-4 items-center flex justify-between bg-gray-700 text-sm md:text-base lg:text-lg"
+              >
                 <span>Dato</span>
                 <span>Sektion</span>
                 <span>Lokation</span>
@@ -96,9 +99,7 @@ import NewsLetterComponent from './NewsLetterComponent.vue';
           <h2 class="text-3xl">Generalforsamlinger</h2>
 
           <div class="pt-8">
-            <p class="text-xl">
-              Der er ingen planlagte generalforsamlinger foreløbigt.
-            </p>
+            <p class="text-xl">Der er ingen planlagte generalforsamlinger foreløbigt.</p>
           </div>
         </div>
       </div>
@@ -107,19 +108,20 @@ import NewsLetterComponent from './NewsLetterComponent.vue';
     <!-- Info section 1 -->
     <div class="py-24 px-8 grid grid-cols-2 justify-center gap-x-8">
       <div class="flex flex-col gap-4 items-end">
-        <img src="@/assets/man-studying.png" alt="Man studying">
+        <img src="@/assets/man-studying.png" alt="Man studying" />
       </div>
 
       <div class="flex flex-col gap-4 items-start">
         <h1 class="text-3xl py-4 md:py-8 lg:py-16">Sparring og relationer på tværs af branchen</h1>
 
         <p class="text-xl pb-4 md:pb-6 lg:pb-8">
-          Med over 550 medlemmer er du garanteret nye forbindelser og indsigter inden for forskellige eltekniske
-          områder.
+          Med over 550 medlemmer er du garanteret nye forbindelser og indsigter inden for
+          forskellige eltekniske områder.
         </p>
 
-        <button
-          class="rounded bg-gray-600 h-12 py-2 px-4 cursor-pointer hover:bg-gray-800 text-lg">Medlemsfordele</button>
+        <button class="rounded bg-gray-600 h-12 py-2 px-4 cursor-pointer hover:bg-gray-800 text-lg">
+          Medlemsfordele
+        </button>
       </div>
     </div>
 
@@ -128,17 +130,18 @@ import NewsLetterComponent from './NewsLetterComponent.vue';
       <div class="flex flex-col gap-4 items-start">
         <h1 class="text-3xl py-16">Fokus på faglig udvikling</h1>
 
-        <p class="text-xl pb-8">Bliv klogere på de nyeste tendenser og andre specialeområder ved at deltage i
-          arrangementer og
-          virksomhedsbesøg.
+        <p class="text-xl pb-8">
+          Bliv klogere på de nyeste tendenser og andre specialeområder ved at deltage i
+          arrangementer og virksomhedsbesøg.
         </p>
 
-        <button class="rounded bg-gray-600 h-12 py-2 px-4 cursor-pointer hover:bg-gray-800 text-lg">Bliv
-          medlem</button>
+        <button class="rounded bg-gray-600 h-12 py-2 px-4 cursor-pointer hover:bg-gray-800 text-lg">
+          Bliv medlem
+        </button>
       </div>
 
       <div class="flex flex-col gap-4 items-start">
-        <img src="@/assets/corporate-woman.png" alt="Corporate woman">
+        <img src="@/assets/corporate-woman.png" alt="Corporate woman" />
       </div>
     </div>
 
@@ -152,8 +155,11 @@ import NewsLetterComponent from './NewsLetterComponent.vue';
         </p>
 
         <div class="pt-8">
-          <button class="rounded bg-gray-600 h-12 py-2 px-4 cursor-pointer hover:bg-gray-800 text-lg">Bliv
-            medlem</button>
+          <button
+            class="rounded bg-gray-600 h-12 py-2 px-4 cursor-pointer hover:bg-gray-800 text-lg"
+          >
+            Bliv medlem
+          </button>
         </div>
       </div>
 
@@ -162,9 +168,7 @@ import NewsLetterComponent from './NewsLetterComponent.vue';
           <div class="border-gray-500 border-1 rounded-2xl flex justify-center p-2">
             <div class="py-4">
               <h2 class="text-2xl pb-4">Sparring</h2>
-              <p class="text-lg">
-                Diskuter og udveksl ideer med andre
-              </p>
+              <p class="text-lg">Diskuter og udveksl ideer med andre</p>
             </div>
           </div>
         </div>
@@ -173,9 +177,7 @@ import NewsLetterComponent from './NewsLetterComponent.vue';
           <div class="border-gray-500 border-1 rounded-2xl flex justify-center p-2">
             <div class="py-4">
               <h2 class="text-2xl pb-4">Netværk</h2>
-              <p class="text-lg">
-                Få nye forbindelser - og måske venskaber
-              </p>
+              <p class="text-lg">Få nye forbindelser - og måske venskaber</p>
             </div>
           </div>
         </div>
@@ -183,9 +185,7 @@ import NewsLetterComponent from './NewsLetterComponent.vue';
         <div class="border-gray-500 border-1 rounded-2xl flex justify-center p-2">
           <div class="py-4">
             <h2 class="text-2xl pb-4">Faglig udvikling</h2>
-            <p class="text-lg">
-              Styrk kompetencer og opnå ny viden
-            </p>
+            <p class="text-lg">Styrk kompetencer og opnå ny viden</p>
           </div>
         </div>
       </div>
@@ -203,17 +203,18 @@ import NewsLetterComponent from './NewsLetterComponent.vue';
           <h2 class="text-2xl">Bliv medlem</h2>
         </div>
         <div class="flex">
-          <h1 class="text-4xl">700,-</h1><span class="px-4 self-center">inkl. moms pr. år</span>
+          <h1 class="text-4xl">700,-</h1>
+          <span class="px-4 self-center">inkl. moms pr. år</span>
         </div>
-        <p class="pt-8">
-          Giv dig selv de bedste betingelser for et stærkt uddannelsesforløb.
-        </p>
+        <p class="pt-8">Giv dig selv de bedste betingelser for et stærkt uddannelsesforløb.</p>
         <p class="pt-4 pb-8">
           Deltag i studieture, del ud af din viden og styrk dit arbejdsnetværk.
         </p>
         <button
-          class="flex justify-center rounded bg-gray-600 h-12 py-2 w-full cursor-pointer hover:bg-gray-800 text-lg">Bliv
-          medlem</button>
+          class="flex justify-center rounded bg-gray-600 h-12 py-2 w-full cursor-pointer hover:bg-gray-800 text-lg"
+        >
+          Bliv medlem
+        </button>
         <div class="pt-4">
           <p class="py-4">✅ Faglig udvikling</p>
           <p class="pb-4">✅ Styrk dit netværk</p>
@@ -237,21 +238,21 @@ import NewsLetterComponent from './NewsLetterComponent.vue';
 
       <div class="py-16 px-32 gap-10 grid grid-cols-3">
         <div class="border-1 border-gray-600 rounded-2xl p-4">
-          <img width="300" src="@/assets/stickman-bowling.jpeg" alt="activity picture">
+          <img width="300" src="@/assets/stickman-bowling.jpeg" alt="activity picture" />
           <h1 class="pt-8 pb-4 text-2xl">Arrangement titel</h1>
           <h2 class="text-xl pb-4">Arrangement undertitel</h2>
           <p class="text-lg">Dato</p>
           <span class="text-lg">Lokation</span>
         </div>
         <div class="border-1 border-gray-600 rounded-2xl p-4">
-          <img width="300" src="@/assets/stickman-party.jpeg" alt="activity picture">
+          <img width="300" src="@/assets/stickman-party.jpeg" alt="activity picture" />
           <h1 class="pt-8 pb-4 text-2xl">Arrangement titel</h1>
           <h2 class="text-xl pb-4">Arrangement undertitel</h2>
           <p class="text-lg">Dato</p>
           <span class="text-lg">Lokation</span>
         </div>
         <div class="border-1 border-gray-600 rounded-2xl p-4">
-          <img width="300" src="@/assets/stickmen-driving.jpeg" alt="activity picture">
+          <img width="300" src="@/assets/stickmen-driving.jpeg" alt="activity picture" />
           <h1 class="pt-8 pb-4 text-2xl">Arrangement titel</h1>
           <h2 class="text-xl pb-4">Arrangement undertitel</h2>
           <p class="text-lg">Dato</p>

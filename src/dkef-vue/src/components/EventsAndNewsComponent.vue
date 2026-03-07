@@ -71,7 +71,11 @@ const displayedItems = computed(() => {
 })
 
 const isAnyFetching = computed(
-  () => isFetching.value || eventStore.isFetching || newsStore.isFetching || generalAssemblyStore.isFetching,
+  () =>
+    isFetching.value ||
+    eventStore.isFetching ||
+    newsStore.isFetching ||
+    generalAssemblyStore.isFetching,
 )
 
 async function fetchAll() {
@@ -290,21 +294,27 @@ const submitLabel = computed(() => {
     <div class="flex justify-center items-center py-12 gap-x-8 flex-wrap gap-y-4">
       <button
         class="flex justify-center rounded h-10 sm:h-12 py-2 w-24 sm:w-32 cursor-pointer sm:text-lg transition-colors"
-        :class="activeFilter === 'all' ? 'bg-gray-400 text-gray-900' : 'bg-gray-600 hover:bg-gray-800'"
+        :class="
+          activeFilter === 'all' ? 'bg-gray-400 text-gray-900' : 'bg-gray-600 hover:bg-gray-800'
+        "
         @click="setFilter('all')"
       >
         Alle
       </button>
       <button
         class="flex justify-center rounded h-10 sm:h-12 py-2 w-24 sm:w-32 cursor-pointer sm:text-lg transition-colors"
-        :class="activeFilter === 'news' ? 'bg-gray-400 text-gray-900' : 'bg-gray-600 hover:bg-gray-800'"
+        :class="
+          activeFilter === 'news' ? 'bg-gray-400 text-gray-900' : 'bg-gray-600 hover:bg-gray-800'
+        "
         @click="setFilter('news')"
       >
         Nyheder
       </button>
       <button
         class="flex justify-center rounded h-10 sm:h-12 py-2 w-24 sm:w-36 cursor-pointer sm:text-lg transition-colors"
-        :class="activeFilter === 'events' ? 'bg-gray-400 text-gray-900' : 'bg-gray-600 hover:bg-gray-800'"
+        :class="
+          activeFilter === 'events' ? 'bg-gray-400 text-gray-900' : 'bg-gray-600 hover:bg-gray-800'
+        "
         @click="setFilter('events')"
       >
         Arrangementer
@@ -312,7 +322,9 @@ const submitLabel = computed(() => {
       <button
         class="flex justify-center rounded h-10 sm:h-12 py-2 w-24 sm:w-48 cursor-pointer sm:text-lg transition-colors"
         :class="
-          activeFilter === 'general-assemblies' ? 'bg-gray-400 text-gray-900' : 'bg-gray-600 hover:bg-gray-800'
+          activeFilter === 'general-assemblies'
+            ? 'bg-gray-400 text-gray-900'
+            : 'bg-gray-600 hover:bg-gray-800'
         "
         @click="setFilter('general-assemblies')"
       >
@@ -332,7 +344,14 @@ const submitLabel = computed(() => {
         fill="none"
         viewBox="0 0 24 24"
       >
-        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <circle
+          class="opacity-25"
+          cx="12"
+          cy="12"
+          r="10"
+          stroke="currentColor"
+          stroke-width="4"
+        ></circle>
         <path
           class="opacity-75"
           fill="currentColor"

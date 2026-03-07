@@ -1,5 +1,4 @@
-<script setup lang="ts">
-</script>
+<script setup lang="ts"></script>
 
 <template>
   <div class="pb-16">
@@ -15,17 +14,29 @@
       <div class="flex flex-col gap-4 items-start">
         <div class="w-3/6 h-54">
           <div class="py-4">
-            <input id="name_input" name="name_input" placeholder="Navn" class="rounded bg-gray-800 p-2 w-full"
-              type="text">
+            <input
+              id="name_input"
+              name="name_input"
+              placeholder="Navn"
+              class="rounded bg-gray-800 p-2 w-full"
+              type="text"
+            />
           </div>
           <div>
-            <input id="email_input" name="email_input" placeholder="Email" class="rounded bg-gray-800 p-2 w-full"
-              type="email">
+            <input
+              id="email_input"
+              name="email_input"
+              placeholder="Email"
+              class="rounded bg-gray-800 p-2 w-full"
+              type="email"
+            />
           </div>
           <div class="py-4">
             <input
               class="flex justify-center rounded bg-gray-600 h-12 py-2 px-8 cursor-pointer hover:bg-gray-800 text-lg"
-              type="submit" value="Timeld">
+              type="submit"
+              value="Timeld"
+            />
           </div>
         </div>
       </div>

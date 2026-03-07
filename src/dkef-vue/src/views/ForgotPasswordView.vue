@@ -32,9 +32,7 @@ async function handleForgotPassword() {
   <div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
     <div class="max-w-md w-full space-y-6">
       <div>
-        <h2 class="mt-6 text-center text-3xl font-bold">
-          Nulstil din adgangskode
-        </h2>
+        <h2 class="mt-6 text-center text-3xl font-bold">Nulstil din adgangskode</h2>
         <p class="mt-2 text-center text-sm">
           Indtast din e-mailadresse, og vi sender dig et link til at nulstille din adgangskode.
         </p>
@@ -42,8 +40,8 @@ async function handleForgotPassword() {
 
       <div v-if="success" class="rounded-xl bg-green-900 bg-opacity-50 p-4 border border-green-700">
         <p class="text-sm text-green-200">
-          Instruktioner til nulstilling af adgangskode er blevet sendt til din e-mail. Tjek din indbakke og
-          følg linket for at nulstille din adgangskode.
+          Instruktioner til nulstilling af adgangskode er blevet sendt til din e-mail. Tjek din
+          indbakke og følg linket for at nulstille din adgangskode.
         </p>
       </div>
 
@@ -53,9 +51,7 @@ async function handleForgotPassword() {
         </div>
 
         <div>
-          <label for="email-address" class="block text-sm font-medium mb-1 py-2">
-            Email
-          </label>
+          <label for="email-address" class="block text-sm font-medium mb-1 py-2"> Email </label>
           <input
             id="email-address"
             v-model="email"

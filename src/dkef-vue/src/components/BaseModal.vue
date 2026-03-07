@@ -1,11 +1,5 @@
 <script setup lang="ts">
-import {
-  TransitionRoot,
-  TransitionChild,
-  Dialog,
-  DialogPanel,
-  DialogTitle,
-} from "@headlessui/vue";
+import { TransitionRoot, TransitionChild, Dialog, DialogPanel, DialogTitle } from '@headlessui/vue'
 
 const props = defineProps({
   isOpen: {
@@ -14,21 +8,21 @@ const props = defineProps({
   },
   title: {
     type: String,
-    default: "",
+    default: '',
   },
   isLoading: {
     type: Boolean,
     default: false,
   },
-});
+})
 
-const emit = defineEmits(["close"]);
+const emit = defineEmits(['close'])
 
 const closeModal = () => {
   if (!props.isLoading) {
-    emit("close");
+    emit('close')
   }
-};
+}
 </script>
 
 <template>

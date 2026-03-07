@@ -19,10 +19,11 @@ import ContactFormularComponent from '@/components/ContactFormularComponent.vue'
         </div>
         <div class="h-80 flex justify-center items-center text-center">
           <p class="text-lg">
-            Hos Elektroteknisk forening samler vi elbranchen på tværs af faglige nicher, virksomheder og alle med en
-            interesse for området. Vi er en traditionsrig forening, men vi er samtidig et moderne og dynamisk
-            samlingspunkt, der nysgerrigt opsøger nye indsigter og perspektiver. Vores mål er at give vores medlemmer
-            stærke muligheder for at skabe netværk og udvikle sig fagligt gennem både sparring med branchekollegaer og
+            Hos Elektroteknisk forening samler vi elbranchen på tværs af faglige nicher,
+            virksomheder og alle med en interesse for området. Vi er en traditionsrig forening, men
+            vi er samtidig et moderne og dynamisk samlingspunkt, der nysgerrigt opsøger nye
+            indsigter og perspektiver. Vores mål er at give vores medlemmer stærke muligheder for at
+            skabe netværk og udvikle sig fagligt gennem både sparring med branchekollegaer og
             arrangementer.
           </p>
         </div>
@@ -32,7 +33,10 @@ import ContactFormularComponent from '@/components/ContactFormularComponent.vue'
           <h2 class="text-xl">Sektioner</h2>
         </div>
         <div class="h-80 bg-gray-400">
-          <img style="width: 100%; height: 100%; object-fit: contain;" src="@/assets/dkef-sections.png">
+          <img
+            style="width: 100%; height: 100%; object-fit: contain"
+            src="@/assets/dkef-sections.png"
+          />
         </div>
       </div>
     </div>
@@ -60,8 +64,10 @@ import ContactFormularComponent from '@/components/ContactFormularComponent.vue'
           <h1 class="text-9xl font-serif">’’</h1>
         </div>
         <div class="flex justify-center items-center text-center pb-6">
-          <h1 class="text-4xl">Udvid din faglige horisont, bliv en del af fællesskabet og modtag sparring fra erfarne
-            hænder.</h1>
+          <h1 class="text-4xl">
+            Udvid din faglige horisont, bliv en del af fællesskabet og modtag sparring fra erfarne
+            hænder.
+          </h1>
         </div>
         <div class="flex justify-center items-center text-center pb-12">
           <h2 class="text-2xl">Generelsekretær, René Kjemtrup</h2>
@@ -93,7 +99,11 @@ import ContactFormularComponent from '@/components/ContactFormularComponent.vue'
         </div>
         <div class="flex justify-center items-center text-center">
           <div class="h-48 w-48 border-2 rounded-full overflow-hidden">
-            <img class="h-full w-full object-cover rounded-full" src="@/assets/secretary.jpg" alt="secretary">
+            <img
+              class="h-full w-full object-cover rounded-full"
+              src="@/assets/secretary.jpg"
+              alt="secretary"
+            />
           </div>
         </div>
       </div>

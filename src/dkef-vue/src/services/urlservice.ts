@@ -11,10 +11,10 @@ function getContacts() {
   }
 }
 
-function updateContact(guid: String) {
+function updateContact(guid: string) {
   switch (mode) {
     case 'Development':
-      throw 'Unimplemented!';
+      throw 'Unimplemented!'
     default:
       return `/contacts/${guid}`
   }
@@ -23,7 +23,7 @@ function updateContact(guid: String) {
 function getContactAuthorize(guid: string) {
   switch (mode) {
     case 'Development':
-      throw 'Unimplemented!';
+      throw 'Unimplemented!'
     default:
       return `/contacts/${guid}/authorize`
   }
@@ -32,7 +32,7 @@ function getContactAuthorize(guid: string) {
 function getEventPresignedUrl(guid: string) {
   switch (mode) {
     case 'Development':
-      throw 'Unimplemented!';
+      throw 'Unimplemented!'
     default:
       return `/bucket/events/${guid}`
   }
@@ -41,25 +41,34 @@ function getEventPresignedUrl(guid: string) {
 function postEvent() {
   switch (mode) {
     case 'Development':
-      throw 'Unimplemented!';
+      throw 'Unimplemented!'
     default:
       return `/events`
+  }
+}
+
+function updateEvent(guid: string) {
+  switch (mode) {
+    case 'Development':
+      throw 'Unimplemented!'
+    default:
+      return `/events/${guid}`
   }
 }
 
 function getEvents() {
   switch (mode) {
     case 'Development':
-      throw 'Unimplemented!';
+      throw 'Unimplemented!'
     default:
       return `/events`
   }
 }
 
-function getEvent(guid: String) {
+function getEvent(guid: string) {
   switch (mode) {
     case 'Development':
-      throw 'Unimplemented!';
+      throw 'Unimplemented!'
     default:
       return `/events/${guid}`
   }
@@ -68,7 +77,7 @@ function getEvent(guid: String) {
 function getNewsPresignedUrl(guid: string) {
   switch (mode) {
     case 'Development':
-      throw 'Unimplemented!';
+      throw 'Unimplemented!'
     default:
       return `/bucket/news/${guid}`
   }
@@ -77,16 +86,25 @@ function getNewsPresignedUrl(guid: string) {
 function postNews() {
   switch (mode) {
     case 'Development':
-      throw 'Unimplemented!';
+      throw 'Unimplemented!'
     default:
       return `/news`
+  }
+}
+
+function updateNews(guid: string) {
+  switch (mode) {
+    case 'Development':
+      throw 'Unimplemented!'
+    default:
+      return `/news/${guid}`
   }
 }
 
 function getNews() {
   switch (mode) {
     case 'Development':
-      throw 'Unimplemented!';
+      throw 'Unimplemented!'
     default:
       return `/news`
   }
@@ -95,7 +113,7 @@ function getNews() {
 function getNewsItem(guid: string) {
   switch (mode) {
     case 'Development':
-      throw 'Unimplemented!';
+      throw 'Unimplemented!'
     default:
       return `/news/${guid}`
   }
@@ -104,7 +122,7 @@ function getNewsItem(guid: string) {
 function getGeneralAssemblyPresignedUrl(guid: string) {
   switch (mode) {
     case 'Development':
-      throw 'Unimplemented!';
+      throw 'Unimplemented!'
     default:
       return `/bucket/general-assemblies/${guid}`
   }
@@ -113,16 +131,25 @@ function getGeneralAssemblyPresignedUrl(guid: string) {
 function postGeneralAssembly() {
   switch (mode) {
     case 'Development':
-      throw 'Unimplemented!';
+      throw 'Unimplemented!'
     default:
       return `/general-assemblies`
+  }
+}
+
+function updateGeneralAssembly(guid: string) {
+  switch (mode) {
+    case 'Development':
+      throw 'Unimplemented!'
+    default:
+      return `/general-assemblies/${guid}`
   }
 }
 
 function getGeneralAssemblies() {
   switch (mode) {
     case 'Development':
-      throw 'Unimplemented!';
+      throw 'Unimplemented!'
     default:
       return `/general-assemblies`
   }
@@ -131,7 +158,7 @@ function getGeneralAssemblies() {
 function getGeneralAssembly(guid: string) {
   switch (mode) {
     case 'Development':
-      throw 'Unimplemented!';
+      throw 'Unimplemented!'
     default:
       return `/general-assemblies/${guid}`
   }
@@ -143,14 +170,17 @@ export default {
   getContactAuthorize,
   getEventPresignedUrl,
   postEvent,
+  updateEvent,
   getEvents,
   getEvent,
   getNewsPresignedUrl,
   postNews,
+  updateNews,
   getNews,
   getNewsItem,
   getGeneralAssemblyPresignedUrl,
   postGeneralAssembly,
+  updateGeneralAssembly,
   getGeneralAssemblies,
   getGeneralAssembly,
 }

@@ -3,7 +3,11 @@ import { ref } from 'vue'
 import type { AxiosResponse } from 'axios'
 import apiservice from '@/services/apiservice'
 import urlservice from '@/services/urlservice'
-import type { GeneralAssemblyCollection, PublishedGeneralAssembly } from '@/types/generalAssembly'
+import type {
+  GeneralAssemblyCollection,
+  GeneralAssemblyDto,
+  PublishedGeneralAssembly,
+} from '@/types/generalAssembly'
 
 export const useGeneralAssemblyStore = defineStore('generalAssembly', () => {
   const assemblies = ref<Record<string, PublishedGeneralAssembly>>({})
@@ -64,6 +68,23 @@ export const useGeneralAssemblyStore = defineStore('generalAssembly', () => {
     return undefined
   }
 
+  async function updateGeneralAssembly(id: string, dto: GeneralAssemblyDto): Promise<void> {
+    isFetching.value = true
+    error.value = null
+    try {
+      const response: AxiosResponse<PublishedGeneralAssembly> =
+        await apiservice.put<PublishedGeneralAssembly>(urlservice.updateGeneralAssembly(id), dto)
+      assemblies.value[id] = response.data
+    } catch (err: unknown) {
+      const errorMessage = `Error attempting to update general assembly ${id}: ${err}`
+      error.value = errorMessage
+      console.error(errorMessage)
+      throw err
+    } finally {
+      isFetching.value = false
+    }
+  }
+
   return {
     assemblies,
     isFetching,
@@ -71,5 +92,6 @@ export const useGeneralAssemblyStore = defineStore('generalAssembly', () => {
     getGeneralAssemblyById,
     fetchLatestGeneralAssemblies,
     fetchGeneralAssembly,
+    updateGeneralAssembly,
   }
 })

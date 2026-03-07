@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { RouterLink } from 'vue-router';
-import type { PublishedEvent } from '@/types/events';
-import { computed } from 'vue';
+import { RouterLink } from 'vue-router'
+import type { PublishedEvent } from '@/types/events'
+import { computed } from 'vue'
 
-const props = defineProps<{ publishedEvent: PublishedEvent }>();
+const props = defineProps<{ publishedEvent: PublishedEvent }>()
 
 const dateTime = computed(() => {
-  const date = new Date(props.publishedEvent?.dateTime);
+  const date = new Date(props.publishedEvent?.dateTime)
 
   return new Intl.DateTimeFormat(undefined, {
     year: 'numeric',
@@ -14,15 +14,17 @@ const dateTime = computed(() => {
     day: 'numeric',
     hour: 'numeric',
     minute: 'numeric',
-  }).format(date);
+  }).format(date)
 })
 </script>
 
 <template>
   <RouterLink :to="`/events-and-news/${props.publishedEvent.id}`">
-    <div class="border border-gray-600 p-4 rounded-2xl max-w-sm flex flex-col cursor-pointer hover:bg-gray-600">
+    <div
+      class="border border-gray-600 p-4 rounded-2xl max-w-sm flex flex-col cursor-pointer hover:bg-gray-600"
+    >
       <div class="h-60 pb-4">
-        <img class="picture" :src="props.publishedEvent?.thumbnailUrl" alt="event picture">
+        <img class="picture" :src="props.publishedEvent?.thumbnailUrl" alt="event picture" />
       </div>
       <div class="text-content-area flex-grow flex flex-col">
         <div class="h-20 overflow-hidden">

@@ -99,7 +99,10 @@ axiosInstance.interceptors.response.use(
 
         return axiosInstance(originalRequest)
       } catch (refreshError) {
-        processQueue(refreshError instanceof Error ? refreshError : new Error('Token refresh failed'), null)
+        processQueue(
+          refreshError instanceof Error ? refreshError : new Error('Token refresh failed'),
+          null,
+        )
         // Refresh failed, clear auth and redirect to login
         authStore?.clearAuth()
         // Optionally redirect to login page
