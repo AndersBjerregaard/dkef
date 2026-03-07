@@ -234,7 +234,7 @@ async function saveEvent() {
         <span>{{ submitError }}</span>
       </div>
 
-      <div class="mt-4">
+      <div class="mt-4 flex gap-3">
         <button
           type="submit"
           class="inline-flex justify-center rounded-md border border-transparent bg-gray-300 px-4 py-2 text-md font-medium hover:bg-gray-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 text-gray-900 focus-visible:ring-offset-2"
@@ -264,6 +264,14 @@ async function saveEvent() {
             Opdaterer...
           </span>
           <span v-else>Gem ændringer</span>
+        </button>
+        <button
+          type="button"
+          class="inline-flex justify-center rounded-md border border-transparent bg-gray-600 px-4 py-2 text-md font-medium hover:bg-gray-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 text-gray-100 focus-visible:ring-offset-2"
+          :disabled="isLoading"
+          @click="emit('close')"
+        >
+          Annuller
         </button>
       </div>
     </form>
