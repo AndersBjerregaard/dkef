@@ -1,9 +1,12 @@
 using AutoMapper;
+
 using Dkef.Contracts;
 using Dkef.Domain;
 using Dkef.Repositories;
 using Dkef.Services;
+
 using Ganss.Xss;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -27,11 +30,6 @@ public class EventsController(IEventsRepository _repository, IMapper _mapper, Ht
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Post([FromBody] EventDto dto)
     {
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(ModelState);
-        }
-
         dto.Sanitize(_sanitizer);
 
         var mappedEvent = _mapper.Map<Event>(dto);
