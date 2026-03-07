@@ -53,4 +53,26 @@ public class NewsController(INewsRepository _repository, IMapper _mapper, HtmlSa
         var existingNews = await _repository.GetByIdAsync(parsedId);
         return existingNews is not null ? Ok(existingNews) : NotFound();
     }
+
+    [HttpPut("{id}")]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> Put([FromRoute] string id, [FromBody] NewsDto dto)
+    {
+        if (!Guid.TryParse(id, out var parsedId))
+        {
+            return BadRequest($"Could not parse {id} as a guid");
+        }
+
+        dto.Sanitize(_sanitizer);
+
+        try
+        {
+            var updatedNews = await _repository.UpdateAsync(parsedId, dto);
+            return Ok(updatedNews);
+        }
+        catch (KeyNotFoundException)
+        {
+            return NotFound();
+        }
+    }
 }

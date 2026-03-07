@@ -52,4 +52,26 @@ public class GeneralAssembliesController(IGeneralAssemblyRepository _repository,
         var existingAssembly = await _repository.GetByIdAsync(parsedId);
         return existingAssembly is not null ? Ok(existingAssembly) : NotFound();
     }
+
+    [HttpPut("{id}")]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> Put([FromRoute] string id, [FromBody] GeneralAssemblyDto dto)
+    {
+        if (!Guid.TryParse(id, out var parsedId))
+        {
+            return BadRequest($"Could not parse {id} as a guid");
+        }
+
+        dto.Sanitize(_sanitizer);
+
+        try
+        {
+            var updatedAssembly = await _repository.UpdateAsync(parsedId, dto);
+            return Ok(updatedAssembly);
+        }
+        catch (KeyNotFoundException)
+        {
+            return NotFound();
+        }
+    }
 }
