@@ -7,6 +7,21 @@ import MemberHeaderComponent from './MemberHeaderComponent.vue'
 import { computed, onMounted, onUnmounted, reactive, ref, type ComputedRef, type Ref } from 'vue'
 import type { AxiosResponse } from 'axios'
 
+const emailsCopied = ref(false)
+
+async function copyEmailsToClipboard(): Promise<void> {
+  const emails = filteredItems.value.map((contact) => contact.email).join(',')
+  try {
+    await navigator.clipboard.writeText(emails)
+    emailsCopied.value = true
+    setTimeout(() => {
+      emailsCopied.value = false
+    }, 2000)
+  } catch (error: unknown) {
+    if (error instanceof Error) console.error(error.message)
+  }
+}
+
 const items: Ref<Contact[]> = ref([])
 const fetchedCount: Ref<number> = ref(0)
 const totalCount: Ref<number> = ref(0)
@@ -223,7 +238,7 @@ function sort(by: string, order: Sort): void {
           </p>
         </div>
       </div>
-      <div class="py-4 flex gap-4">
+      <div class="py-4 flex gap-4 items-center">
         <label class="p-1">Søg: </label>
         <input
           type="text"
@@ -231,6 +246,32 @@ function sort(by: string, order: Sort): void {
           placeholder="Minimum 3 bogstaver..."
           v-model="filterString"
         />
+        <button
+          @click="copyEmailsToClipboard"
+          class="ml-auto flex items-center gap-2 rounded bg-blue-600 px-4 py-1.5 text-sm text-white transition hover:bg-blue-500 active:bg-blue-700 disabled:opacity-50"
+          :disabled="filteredItems.length === 0"
+          :title="emailsCopied ? 'Kopieret!' : `Kopiér ${filteredItems.length} email-adresser`"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-4 w-4 shrink-0"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <template v-if="emailsCopied">
+              <polyline points="20 6 9 17 4 12" />
+            </template>
+            <template v-else>
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+            </template>
+          </svg>
+          {{ emailsCopied ? 'Kopieret!' : 'Kopiér emails' }}
+        </button>
       </div>
       <div class="py-4">
         <div class="flex w-full justify-between border-2 border-gray-800">
