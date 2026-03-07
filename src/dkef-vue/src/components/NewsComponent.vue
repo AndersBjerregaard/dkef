@@ -48,7 +48,7 @@ const publishedAt = computed(() => {
 
         <!-- Metadata -->
         <div class="mt-auto flex flex-col gap-1 text-sm text-gray-300">
-          <div class="flex items-center gap-1" v-if="props.publishedNews?.author">
+          <div class="flex items-center gap-1 h-10 overflow-hidden">
             <svg
               class="h-4 w-4 shrink-0 text-gray-400"
               fill="none"
