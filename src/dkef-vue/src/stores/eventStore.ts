@@ -12,7 +12,7 @@ interface EventState {
 
 interface EventGetters {
   [key: string]:
-    | ((state: EventState) => any)
+    | ((state: EventState) => unknown)
     | ((state: EventState) => (id: string) => PublishedEvent | undefined)
   getEventById: (state: EventState) => (id: string) => PublishedEvent | undefined
 }
@@ -38,7 +38,7 @@ export const useEventStore = defineStore<'event', EventState, EventGetters, Even
       this.error = null
       let result: PublishedEvent[] = []
       try {
-        const response: AxiosResponse<EventsCollection, any> =
+        const response: AxiosResponse<EventsCollection, unknown> =
           await apiservice.get<EventsCollection>(urlservice.getEvents(), {
             params: {
               take: 3,
@@ -51,7 +51,7 @@ export const useEventStore = defineStore<'event', EventState, EventGetters, Even
           this.events[event.id] = event
         })
         result = events
-      } catch (error: any) {
+      } catch (error: unknown) {
         const errorMessage = `Error attempting to fetch latest events ${error}`
         this.error = errorMessage
         console.error(errorMessage)
@@ -67,7 +67,7 @@ export const useEventStore = defineStore<'event', EventState, EventGetters, Even
       this.isFetching = true
       this.error = null
       try {
-        const response: AxiosResponse<PublishedEvent, any> = await apiservice.get<PublishedEvent>(
+        const response: AxiosResponse<PublishedEvent, unknown> = await apiservice.get<PublishedEvent>(
           urlservice.getEvent(id),
         )
         const event: PublishedEvent = response.data

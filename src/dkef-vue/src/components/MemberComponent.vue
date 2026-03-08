@@ -37,6 +37,7 @@ function resetFields() {
 }
 
 const props = defineProps<{ contact: Contact; index: number }>()
+const emit = defineEmits<{ (e: 'contact-updated', contact: Contact): void }>()
 
 // Shown fields
 const fields = computed(() => [
@@ -47,35 +48,35 @@ const fields = computed(() => [
   props.contact?.privateAddress,
 ])
 
-// Editable fields
-const companyName = props.contact?.companyName // Firma navn
-const companyAddress = props.contact?.companyAddress // Firma vejnavn og nr.
-const companyCity = props.contact?.companyCity // Firma by
-const companyZIP = props.contact?.companyZIP // Firma postnummer
-const cvrNumber = props.contact?.cvrNumber // CVR nr.
-const companyPhone = props.contact?.companyPhone // Firma mobil
-const companyEmail = props.contact?.companyEmail // Firma e-mail
-const title = props.contact?.title // Titel
-const occupation = props.contact?.occupation // Beskæftigelse
-const workTasks = props.contact?.workTasks // Arbejds Opgaver
-const email = props.contact?.email // Email
-const firstName = props.contact?.firstName // Fornavn
-const lastName = props.contact?.lastName // Efternavn
-const primarySection = props.contact?.primarySection // Primær sektion
-const secondarySection = props.contact?.secondarySection // Sekundær sektion
-const privateAddress = props.contact?.privateAddress // Privat vejnavn og nr.
-const privateCity = props.contact?.privateCity // Privat by
-const privateZIP = props.contact?.privateZIP // Privat postnummer
-const privatePhone = props.contact?.privatePhone // Privat mobil
-const elTeknikDelivery = props.contact?.elTeknikDelivery // El-teknik levering
-const eanNumber = props.contact?.eanNumber // EAN nr.
-const invoice = props.contact?.invoice // Fakturering
-const invoiceEmail = props.contact?.invoiceEmail // Faktura e-mail
-const attInvoice = props.contact?.attInvoice // ATT Faktura
-const oldMemberNumber = props.contact?.oldMemberNumber // Gammelt Medlemsnummer
-const helpToStudents = props.contact?.helpToStudents // Hjælp til studerende
-const mentor = props.contact?.mentor // Mentor
-const expectedEndDateOfBeingStudent = props.contact?.expectedEndDateOfBeingStudent // Hvornår forventer du at være færdig some studerende?
+// Editable fields (local reactive copies — never mutate props directly)
+const companyName = ref(props.contact?.companyName ?? '') // Firma navn
+const companyAddress = ref(props.contact?.companyAddress ?? '') // Firma vejnavn og nr.
+const companyCity = ref(props.contact?.companyCity ?? '') // Firma by
+const companyZIP = ref(props.contact?.companyZIP ?? '') // Firma postnummer
+const cvrNumber = ref(props.contact?.cvrNumber ?? '') // CVR nr.
+const companyPhone = ref(props.contact?.companyPhone ?? '') // Firma mobil
+const companyEmail = ref(props.contact?.companyEmail ?? '') // Firma e-mail
+const title = ref(props.contact?.title ?? '') // Titel
+const occupation = ref(props.contact?.occupation ?? '') // Beskæftigelse
+const workTasks = ref(props.contact?.workTasks ?? '') // Arbejds Opgaver
+const email = ref(props.contact?.email ?? '') // Email
+const firstName = ref(props.contact?.firstName ?? '') // Fornavn
+const lastName = ref(props.contact?.lastName ?? '') // Efternavn
+const primarySection = ref(props.contact?.primarySection ?? '') // Primær sektion
+const secondarySection = ref(props.contact?.secondarySection ?? '') // Sekundær sektion
+const privateAddress = ref(props.contact?.privateAddress ?? '') // Privat vejnavn og nr.
+const privateCity = ref(props.contact?.privateCity ?? '') // Privat by
+const privateZIP = ref(props.contact?.privateZIP ?? '') // Privat postnummer
+const privatePhone = ref(props.contact?.privatePhone ?? '') // Privat mobil
+const elTeknikDelivery = ref(props.contact?.elTeknikDelivery ?? '') // El-teknik levering
+const eanNumber = ref(props.contact?.eanNumber ?? '') // EAN nr.
+const invoice = ref(props.contact?.invoice ?? '') // Fakturering
+const invoiceEmail = ref(props.contact?.invoiceEmail ?? '') // Faktura e-mail
+const attInvoice = ref(props.contact?.attInvoice ?? '') // ATT Faktura
+const oldMemberNumber = ref(props.contact?.oldMemberNumber ?? '') // Gammelt Medlemsnummer
+const helpToStudents = ref(props.contact?.helpToStudents ?? '') // Hjælp til studerende
+const mentor = ref(props.contact?.mentor ?? '') // Mentor
+const expectedEndDateOfBeingStudent = ref(props.contact?.expectedEndDateOfBeingStudent ?? '') // Hvornår forventer du at være færdig some studerende?
 
 // Computed fields
 const memberCreatedAt = computed(() => {
@@ -94,34 +95,34 @@ async function editMember() {
   isLoading.value = true
   try {
     const editMemberDto: ContactDto = {
-      email: email,
-      firstName: firstName,
-      lastName: lastName,
-      title: title,
-      occupation: occupation,
-      workTasks: workTasks,
-      privateAddress: privateAddress,
-      privateZIP: privateZIP,
-      privateCity: privateCity,
-      privatePhone: privatePhone,
-      companyName: companyName,
-      companyAddress: companyAddress,
-      companyZIP: companyZIP,
-      companyCity: companyCity,
-      cvrNumber: cvrNumber,
-      companyPhone: companyPhone,
-      companyEmail: companyEmail,
-      elTeknikDelivery: elTeknikDelivery,
-      eanNumber: eanNumber,
-      invoice: invoice,
-      helpToStudents: helpToStudents,
-      mentor: mentor,
-      primarySection: primarySection,
-      secondarySection: secondarySection,
-      invoiceEmail: invoiceEmail,
-      oldMemberNumber: oldMemberNumber,
-      attInvoice: attInvoice,
-      expectedEndDateOfBeingStudent: expectedEndDateOfBeingStudent,
+      email: email.value,
+      firstName: firstName.value,
+      lastName: lastName.value,
+      title: title.value,
+      occupation: occupation.value,
+      workTasks: workTasks.value,
+      privateAddress: privateAddress.value,
+      privateZIP: privateZIP.value,
+      privateCity: privateCity.value,
+      privatePhone: privatePhone.value,
+      companyName: companyName.value,
+      companyAddress: companyAddress.value,
+      companyZIP: companyZIP.value,
+      companyCity: companyCity.value,
+      cvrNumber: cvrNumber.value,
+      companyPhone: companyPhone.value,
+      companyEmail: companyEmail.value,
+      elTeknikDelivery: elTeknikDelivery.value,
+      eanNumber: eanNumber.value,
+      invoice: invoice.value,
+      helpToStudents: helpToStudents.value,
+      mentor: mentor.value,
+      primarySection: primarySection.value,
+      secondarySection: secondarySection.value,
+      invoiceEmail: invoiceEmail.value,
+      oldMemberNumber: oldMemberNumber.value,
+      attInvoice: attInvoice.value,
+      expectedEndDateOfBeingStudent: expectedEndDateOfBeingStudent.value,
     }
     const response = await apiservice.put<Contact>(
       urlservice.updateContact(props.contact?.id),
@@ -129,35 +130,38 @@ async function editMember() {
     )
     if (response.status >= 200 && response.status < 300) {
       editState.value = 1 // Indicate edit success
-      // Update properties to reflect the member list
+      // Update local refs to reflect the saved values
       const updatedContact = response.data
-      props.contact.email = updatedContact.email
-      props.contact.firstName = updatedContact.firstName
-      props.contact.lastName = updatedContact.lastName
-      props.contact.title = updatedContact.title
-      props.contact.occupation = updatedContact.occupation
-      props.contact.workTasks = updatedContact.workTasks
-      props.contact.privateAddress = updatedContact.privateAddress
-      props.contact.privateZIP = updatedContact.privateZIP
-      props.contact.privateCity = updatedContact.privateCity
-      props.contact.privatePhone = updatedContact.privatePhone
-      props.contact.companyName = updatedContact.companyName
-      props.contact.companyAddress = updatedContact.companyAddress
-      props.contact.companyZIP = updatedContact.companyZIP
-      props.contact.cvrNumber = updatedContact.cvrNumber
-      props.contact.companyPhone = updatedContact.companyPhone
-      props.contact.companyEmail = updatedContact.companyEmail
-      props.contact.elTeknikDelivery = updatedContact.elTeknikDelivery
-      props.contact.eanNumber = updatedContact.eanNumber
-      props.contact.invoice = updatedContact.invoice
-      props.contact.helpToStudents = updatedContact.helpToStudents
-      props.contact.mentor = updatedContact.mentor
-      props.contact.primarySection = updatedContact.primarySection
-      props.contact.secondarySection = updatedContact.secondarySection
-      props.contact.invoiceEmail = updatedContact.invoiceEmail
-      props.contact.oldMemberNumber = updatedContact.oldMemberNumber
-      props.contact.attInvoice = updatedContact.attInvoice
-      props.contact.expectedEndDateOfBeingStudent = updatedContact.expectedEndDateOfBeingStudent
+      email.value = updatedContact.email
+      firstName.value = updatedContact.firstName
+      lastName.value = updatedContact.lastName
+      title.value = updatedContact.title
+      occupation.value = updatedContact.occupation
+      workTasks.value = updatedContact.workTasks
+      privateAddress.value = updatedContact.privateAddress
+      privateZIP.value = updatedContact.privateZIP
+      privateCity.value = updatedContact.privateCity
+      privatePhone.value = updatedContact.privatePhone
+      companyName.value = updatedContact.companyName
+      companyAddress.value = updatedContact.companyAddress
+      companyZIP.value = updatedContact.companyZIP
+      companyCity.value = updatedContact.companyCity
+      cvrNumber.value = updatedContact.cvrNumber
+      companyPhone.value = updatedContact.companyPhone
+      companyEmail.value = updatedContact.companyEmail
+      elTeknikDelivery.value = updatedContact.elTeknikDelivery
+      eanNumber.value = updatedContact.eanNumber
+      invoice.value = updatedContact.invoice
+      helpToStudents.value = updatedContact.helpToStudents
+      mentor.value = updatedContact.mentor
+      primarySection.value = updatedContact.primarySection
+      secondarySection.value = updatedContact.secondarySection
+      invoiceEmail.value = updatedContact.invoiceEmail
+      oldMemberNumber.value = updatedContact.oldMemberNumber
+      attInvoice.value = updatedContact.attInvoice
+      expectedEndDateOfBeingStudent.value = updatedContact.expectedEndDateOfBeingStudent
+      // Notify parent so the list row stays in sync
+      emit('contact-updated', updatedContact)
     } else {
       throw `Unexpected error attempting to update contact information ${response}`
     }
