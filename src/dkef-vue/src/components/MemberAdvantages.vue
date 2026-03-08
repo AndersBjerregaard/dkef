@@ -6,9 +6,7 @@
     class="flex flex-col md:flex-row justify-center items-center gap-x-12 px-4 py-12 sm:py-20 mx-auto"
   >
     <div class="gap-4 w-full md:w-96 px-2 pb-8 md:pb-0 mx-auto">
-      <p class="text-theme-accent text-sm font-semibold uppercase tracking-widest pb-3">
-        Medlemskab
-      </p>
+      <p class="text-theme-accent text-lg font-bold uppercase tracking-widest pb-3">Medlemskab</p>
       <h1 class="text-3xl md:text-4xl pb-6 text-theme-heading leading-tight">
         Bliv medlem af Elektroteknisk forening i dag
       </h1>
@@ -71,7 +69,7 @@
     class="bg-theme-soft flex flex-col md:flex-row justify-center items-center gap-x-12 px-4 py-12 sm:py-20 mx-auto"
   >
     <div class="gap-4 w-full md:w-96 px-2 pb-8 md:pb-0 mx-auto">
-      <p class="text-theme-accent text-sm font-semibold uppercase tracking-widest pb-3">Netværk</p>
+      <p class="text-theme-accent text-lg font-bold uppercase tracking-widest pb-3">Netværk</p>
       <h1 class="text-2xl sm:text-4xl pb-6 text-theme-heading leading-tight">
         Få adgang til netværksdatabase
       </h1>
@@ -99,7 +97,7 @@
     class="flex flex-col md:flex-row justify-center items-center gap-x-12 px-4 py-12 sm:py-20 mx-auto"
   >
     <div class="gap-4 w-full md:w-96 px-2 pb-8 md:pb-0 mx-auto">
-      <p class="text-theme-accent text-sm font-semibold uppercase tracking-widest pb-3">
+      <p class="text-theme-accent text-lg font-bold uppercase tracking-widest pb-3">
         Arrangementer
       </p>
       <h1 class="text-2xl sm:text-4xl pb-6 text-theme-heading leading-tight">
@@ -127,7 +125,7 @@
   <!-- Fourth section -->
   <div class="bg-theme-soft px-4 py-16">
     <div class="text-center mb-10">
-      <p class="text-theme-accent text-sm font-semibold uppercase tracking-widest pb-3">Fordele</p>
+      <p class="text-theme-accent text-lg font-bold uppercase tracking-widest pb-3">Fordele</p>
       <h1 class="text-2xl sm:text-3xl text-theme-heading">
         Andre gode grunde til at være med i Elektroteknisk forening
       </h1>

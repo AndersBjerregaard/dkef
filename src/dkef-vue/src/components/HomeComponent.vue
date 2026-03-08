@@ -8,7 +8,7 @@ import NewsLetterComponent from './NewsLetterComponent.vue'
     <div class="flex flex-col md:flex-row justify-center items-center gap-x-12 mx-auto">
       <!-- Left Column -->
       <div class="w-full md:w-96 px-2 pb-8 md:pb-0 mx-auto">
-        <p class="text-theme-accent text-sm font-semibold uppercase tracking-widest pb-4">
+        <p class="text-theme-accent text-lg font-bold uppercase tracking-widest pb-4">
           Elektroteknisk forening
         </p>
         <h1 class="text-4xl pb-8 text-theme-heading leading-tight">Dit netværk i elbranchen</h1>
@@ -31,7 +31,7 @@ import NewsLetterComponent from './NewsLetterComponent.vue'
 
   <!-- Member companies strip -->
   <div
-    class="bg-theme-soft border-y border-amber-500/15 px-4 py-12 flex justify-center items-center"
+    class="bg-theme-mute border-y border-amber-500/15 px-4 py-12 flex justify-center items-center"
   >
     <div class="max-w-4xl mx-auto">
       <div class="pb-8 flex items-center justify-center">
@@ -139,9 +139,7 @@ import NewsLetterComponent from './NewsLetterComponent.vue'
       </div>
 
       <div class="w-full md:w-96 px-2 pb-8 md:pb-0 mx-auto">
-        <p class="text-theme-accent text-sm font-semibold uppercase tracking-widest pb-3">
-          Netværk
-        </p>
+        <p class="text-theme-accent text-lg font-bold uppercase tracking-widest pb-3">Netværk</p>
         <h2 class="text-3xl text-theme-heading leading-tight pb-4">
           Sparring og relationer på tværs af branchen
         </h2>
@@ -164,9 +162,7 @@ import NewsLetterComponent from './NewsLetterComponent.vue'
   <div class="px-4 py-12 sm:py-20">
     <div class="flex flex-col md:flex-row justify-center items-center gap-x-12 mx-auto">
       <div class="w-full md:w-96 px-2 pb-8 md:pb-0 mx-auto">
-        <p class="text-theme-accent text-sm font-semibold uppercase tracking-widest pb-3">
-          Udvikling
-        </p>
+        <p class="text-theme-accent text-lg font-bold uppercase tracking-widest pb-3">Udvikling</p>
         <h2 class="text-3xl text-theme-heading leading-tight pb-4">Fokus på faglig udvikling</h2>
 
         <p class="text-lg text-theme-text leading-relaxed pb-6">
@@ -191,9 +187,7 @@ import NewsLetterComponent from './NewsLetterComponent.vue'
   <div class="bg-theme-soft border-y border-amber-500/10 px-4 py-12 sm:py-20">
     <div class="flex flex-col md:flex-row justify-center items-center gap-x-12 mx-auto">
       <div class="w-full md:w-96 px-2 pb-8 md:pb-0 mx-auto">
-        <p class="text-theme-accent text-sm font-semibold uppercase tracking-widest pb-3">
-          Hvorfor?
-        </p>
+        <p class="text-theme-accent text-lg font-bold uppercase tracking-widest pb-3">Hvorfor?</p>
         <h2 class="text-3xl text-theme-heading leading-tight pb-4">
           3 gode grunde til at være medlem
         </h2>
@@ -281,7 +275,7 @@ import NewsLetterComponent from './NewsLetterComponent.vue'
   <div class="flex justify-center items-center py-16 border-b border-amber-500/10 px-4">
     <div class="max-w-3xl mx-auto">
       <div class="text-center pb-12">
-        <p class="text-theme-accent text-sm font-semibold uppercase tracking-widest pb-4">
+        <p class="text-theme-accent text-lg font-bold uppercase tracking-widest pb-4">
           Aktiviteter
         </p>
         <h2 class="text-4xl text-theme-heading pb-4">Nyheder og aktiviteter</h2>
@@ -299,7 +293,7 @@ import NewsLetterComponent from './NewsLetterComponent.vue'
           />
           <div class="p-4">
             <h3 class="pt-4 pb-2 text-xl text-theme-heading">Arrangement titel</h3>
-            <p class="text-lg pb-2 text-amber-300">Arrangement undertitel</p>
+            <p class="text-lg pb-2 text-theme-accent">Arrangement undertitel</p>
             <p class="text-sm text-theme-text">Dato</p>
             <span class="text-sm text-theme-text">Lokation</span>
           </div>
@@ -314,7 +308,7 @@ import NewsLetterComponent from './NewsLetterComponent.vue'
           />
           <div class="p-4">
             <h3 class="pt-4 pb-2 text-xl text-theme-heading">Arrangement titel</h3>
-            <p class="text-lg pb-2 text-amber-300">Arrangement undertitel</p>
+            <p class="text-lg pb-2 text-theme-accent">Arrangement undertitel</p>
             <p class="text-sm text-theme-text">Dato</p>
             <span class="text-sm text-theme-text">Lokation</span>
           </div>
@@ -329,7 +323,7 @@ import NewsLetterComponent from './NewsLetterComponent.vue'
           />
           <div class="p-4">
             <h3 class="pt-4 pb-2 text-xl text-theme-heading">Arrangement titel</h3>
-            <p class="text-lg pb-2 text-amber-300">Arrangement undertitel</p>
+            <p class="text-lg pb-2 text-theme-accent">Arrangement undertitel</p>
             <p class="text-sm text-theme-text">Dato</p>
             <span class="text-sm text-theme-text">Lokation</span>
           </div>
