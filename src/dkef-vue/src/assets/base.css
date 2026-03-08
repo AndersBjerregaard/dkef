@@ -1,5 +1,13 @@
 @import 'tailwindcss';
 
+@theme {
+  --color-navy-950: #0a0f1e;
+  --color-navy-900: #0f172a;
+  --color-navy-800: #1e2a45;
+  --color-navy-700: #2d3f6b;
+  --color-navy-600: #3d5499;
+}
+
 /* Deep navy + amber/gold design system */
 :root {
   --color-background:      #0a0f1e;
