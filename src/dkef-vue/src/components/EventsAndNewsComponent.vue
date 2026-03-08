@@ -114,17 +114,19 @@ async function fetchFiltered(filter: FilterType) {
     if (filter === 'events') {
       const response = await apiservice.get<EventsCollection>(urlservice.getEvents(), {
         params: { take: 9 },
+        skipAuth: true,
       })
       filteredEvents.value = response.data.collection
     } else if (filter === 'news') {
       const response = await apiservice.get<NewsCollection>(urlservice.getNews(), {
         params: { take: 9 },
+        skipAuth: true,
       })
       filteredNews.value = response.data.collection
     } else if (filter === 'general-assemblies') {
       const response = await apiservice.get<GeneralAssemblyCollection>(
         urlservice.getGeneralAssemblies(),
-        { params: { take: 9 } },
+        { params: { take: 9 }, skipAuth: true },
       )
       filteredAssemblies.value = response.data.collection
     }

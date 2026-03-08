@@ -16,7 +16,7 @@ export const useFeedStore = defineStore('feed', () => {
     try {
       const response: AxiosResponse<FeedResponse> = await apiservice.get<FeedResponse>(
         urlservice.getFeed(),
-        { params: { take } },
+        { params: { take }, skipAuth: true },
       )
       items.value = response.data
     } catch (err: unknown) {

@@ -5,6 +5,10 @@ import axios, {
   AxiosError,
 } from 'axios'
 
+export interface ApiRequestConfig extends AxiosRequestConfig {
+  skipAuth?: boolean
+}
+
 const apiUrl = import.meta.env.VITE_API_BASE_URL
 
 console.info('Api URL loaded as: ', apiUrl)
@@ -35,7 +39,10 @@ const processQueue = (error: Error | null, token: string | null = null) => {
 
 // Request interceptor to attach access token
 axiosInstance.interceptors.request.use(
-  (config: InternalAxiosRequestConfig) => {
+  (config: InternalAxiosRequestConfig & { skipAuth?: boolean }) => {
+    // Skip auth header for public endpoints
+    if (config.skipAuth) return config
+
     // Import dynamically to avoid circular dependency
     const authStore = getAuthStore()
     const token = authStore?.accessToken
@@ -137,14 +144,14 @@ function getAuthStore() {
   return authStoreInstance
 }
 
-function get<T = unknown>(url: string, config?: AxiosRequestConfig): Promise<AxiosResponse<T>> {
+function get<T = unknown>(url: string, config?: ApiRequestConfig): Promise<AxiosResponse<T>> {
   return axiosInstance.get(url, config)
 }
 
 function post<T = unknown>(
   url: string,
   data: unknown,
-  config?: AxiosRequestConfig,
+  config?: ApiRequestConfig,
 ): Promise<AxiosResponse<T>> {
   return axiosInstance.post(url, data, config)
 }
@@ -152,12 +159,12 @@ function post<T = unknown>(
 function put<T = unknown>(
   url: string,
   data: unknown,
-  config?: AxiosRequestConfig,
+  config?: ApiRequestConfig,
 ): Promise<AxiosResponse<T>> {
   return axiosInstance.put(url, data, config)
 }
 
-function del<T = unknown>(url: string, config?: AxiosRequestConfig): Promise<AxiosResponse<T>> {
+function del<T = unknown>(url: string, config?: ApiRequestConfig): Promise<AxiosResponse<T>> {
   return axiosInstance.delete(url, config)
 }
 
