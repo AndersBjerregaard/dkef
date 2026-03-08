@@ -63,7 +63,7 @@ const isAnyFetching = computed(() => isFetching.value || feedStore.isFetching)
 
 async function fetchAll() {
   isFetching.value = true
-  await feedStore.fetchFeed(3)
+  await feedStore.fetchFeed(9)
   isFetching.value = false
 }
 

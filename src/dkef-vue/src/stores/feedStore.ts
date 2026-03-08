@@ -10,7 +10,7 @@ export const useFeedStore = defineStore('feed', () => {
   const isFetching = ref(false)
   const error = ref<string | null>(null)
 
-  async function fetchFeed(take: number = 3): Promise<void> {
+  async function fetchFeed(take: number = 9): Promise<void> {
     isFetching.value = true
     error.value = null
     try {
