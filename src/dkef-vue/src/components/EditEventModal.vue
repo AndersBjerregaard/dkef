@@ -191,7 +191,7 @@ async function saveEvent() {
           <br />
           <input
             id="edit_event_date"
-            class="w-full bg-navy-900 border border-navy-700 rounded-xl p-2 text-white cursor-pointer focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+            class="w-full bg-navy-900 border border-navy-700 rounded-xl p-2 text-white cursor-pointer focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 [color-scheme:dark]"
             type="datetime-local"
             v-model="itemDate"
             :disabled="isLoading"
