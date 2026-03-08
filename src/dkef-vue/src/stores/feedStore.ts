@@ -6,9 +6,7 @@ import urlservice from '@/services/urlservice'
 import type { FeedItem, FeedResponse } from '@/types/feed'
 
 export const useFeedStore = defineStore('feed', () => {
-  const events = ref<FeedItem[]>([])
-  const news = ref<FeedItem[]>([])
-  const generalAssemblies = ref<FeedItem[]>([])
+  const items = ref<FeedItem[]>([])
   const isFetching = ref(false)
   const error = ref<string | null>(null)
 
@@ -20,9 +18,7 @@ export const useFeedStore = defineStore('feed', () => {
         urlservice.getFeed(),
         { params: { take } },
       )
-      events.value = response.data.events
-      news.value = response.data.news
-      generalAssemblies.value = response.data.generalAssemblies
+      items.value = response.data
     } catch (err: unknown) {
       const errorMessage = `Error attempting to fetch feed: ${err}`
       error.value = errorMessage
@@ -32,5 +28,5 @@ export const useFeedStore = defineStore('feed', () => {
     }
   }
 
-  return { events, news, generalAssemblies, isFetching, error, fetchFeed }
+  return { items, isFetching, error, fetchFeed }
 })

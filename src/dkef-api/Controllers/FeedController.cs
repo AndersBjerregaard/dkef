@@ -33,7 +33,7 @@ public class FeedController(
         var events = eventsTask.Result.Collection.Select(e => new FeedItem
         {
             Id = e.Id,
-            Kind = FeedItemKind.Event,
+            Kind = "event",
             Title = e.Title,
             Section = e.Section,
             Description = e.Description,
@@ -46,7 +46,7 @@ public class FeedController(
         var news = newsTask.Result.Collection.Select(n => new FeedItem
         {
             Id = n.Id,
-            Kind = FeedItemKind.News,
+            Kind = "news",
             Title = n.Title,
             Section = n.Section,
             Description = n.Description,
@@ -59,7 +59,7 @@ public class FeedController(
         var assemblies = assembliesTask.Result.Collection.Select(a => new FeedItem
         {
             Id = a.Id,
-            Kind = FeedItemKind.GeneralAssembly,
+            Kind = "general-assembly",
             Title = a.Title,
             Section = a.Section,
             Description = a.Description,
@@ -69,11 +69,12 @@ public class FeedController(
             DateTime = a.DateTime,
         });
 
-        return Ok(new
-        {
-            events,
-            news,
-            generalAssemblies = assemblies,
-        });
+        var feed = events
+            .Concat(news)
+            .Concat(assemblies)
+            .OrderByDescending(x => x.CreatedAt)
+            .Take(take);
+
+        return Ok(feed);
     }
 }

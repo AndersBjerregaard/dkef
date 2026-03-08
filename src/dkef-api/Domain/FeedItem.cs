@@ -1,13 +1,8 @@
-using System.Text.Json.Serialization;
-
-using Dkef.Converters;
-
 namespace Dkef.Domain;
 
 public class FeedItem : DomainClass
 {
-    [JsonConverter(typeof(FeedItemKindConverter))]
-    public FeedItemKind Kind { get; set; }
+    public string Kind { get; set; } = string.Empty;
     public string Title { get; set; } = string.Empty;
     public string Section { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
@@ -21,11 +16,4 @@ public class FeedItem : DomainClass
     // News specific
     public string? Author { get; set; }
     public System.DateTime? PublishedAt { get; set; }
-}
-
-public enum FeedItemKind
-{
-    Event,
-    News,
-    GeneralAssembly,
 }

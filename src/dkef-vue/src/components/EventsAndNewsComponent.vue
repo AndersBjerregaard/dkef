@@ -21,10 +21,6 @@ type CreateType = 'event' | 'news' | 'general-assembly'
 const feedStore = useFeedStore()
 const authStore = useAuthStore()
 
-const publishedEvents: Ref<PublishedEvent[]> = ref([])
-const publishedNews: Ref<PublishedNews[]> = ref([])
-const publishedGeneralAssemblies: Ref<PublishedGeneralAssembly[]> = ref([])
-
 const isFetching = ref(true)
 const activeFilter = ref<FilterType>('all')
 
@@ -48,21 +44,63 @@ const itemAuthor: Ref<string> = ref('')
 const fileUploadError: Ref<boolean> = ref(false)
 const submitError: Ref<boolean> = ref(false)
 
+// Derive typed buckets from the flat feed, preserving CreatedAt sort order
+const allEvents = computed(() =>
+  feedStore.items
+    .filter((item) => item.kind === 'event')
+    .map((item) => ({
+      id: item.id,
+      title: item.title,
+      section: item.section,
+      address: item.address ?? '',
+      dateTime: item.dateTime ?? '',
+      description: item.description,
+      thumbnailUrl: item.thumbnailUrl,
+      createdAt: item.createdAt,
+    })) satisfies PublishedEvent[],
+)
+
+const allNews = computed(() =>
+  feedStore.items
+    .filter((item) => item.kind === 'news')
+    .map((item) => ({
+      id: item.id,
+      title: item.title,
+      section: item.section,
+      author: item.author ?? '',
+      description: item.description,
+      thumbnailUrl: item.thumbnailUrl,
+      publishedAt: item.publishedAt ?? '',
+      createdAt: item.createdAt,
+    })) satisfies PublishedNews[],
+)
+
+const allAssemblies = computed(() =>
+  feedStore.items
+    .filter((item) => item.kind === 'general-assembly')
+    .map((item) => ({
+      id: item.id,
+      title: item.title,
+      section: item.section,
+      address: item.address ?? '',
+      dateTime: item.dateTime ?? '',
+      description: item.description,
+      thumbnailUrl: item.thumbnailUrl,
+      createdAt: item.createdAt,
+    })) satisfies PublishedGeneralAssembly[],
+)
+
 // Computed: items to display based on active filter
 const displayedItems = computed(() => {
   switch (activeFilter.value) {
     case 'events':
-      return { events: publishedEvents.value, news: [], assemblies: [] }
+      return { events: allEvents.value, news: [], assemblies: [] }
     case 'news':
-      return { events: [], news: publishedNews.value, assemblies: [] }
+      return { events: [], news: allNews.value, assemblies: [] }
     case 'general-assemblies':
-      return { events: [], news: [], assemblies: publishedGeneralAssemblies.value }
+      return { events: [], news: [], assemblies: allAssemblies.value }
     default:
-      return {
-        events: publishedEvents.value,
-        news: publishedNews.value,
-        assemblies: publishedGeneralAssemblies.value,
-      }
+      return { events: allEvents.value, news: allNews.value, assemblies: allAssemblies.value }
   }
 })
 
@@ -70,37 +108,7 @@ const isAnyFetching = computed(() => isFetching.value || feedStore.isFetching)
 
 async function fetchAll() {
   isFetching.value = true
-  await feedStore.fetchFeed(3)
-  publishedEvents.value = feedStore.events.map((item) => ({
-    id: item.id,
-    title: item.title,
-    section: item.section,
-    address: item.address ?? '',
-    dateTime: item.dateTime ?? '',
-    description: item.description,
-    thumbnailUrl: item.thumbnailUrl,
-    createdAt: item.createdAt,
-  }))
-  publishedNews.value = feedStore.news.map((item) => ({
-    id: item.id,
-    title: item.title,
-    section: item.section,
-    author: item.author ?? '',
-    description: item.description,
-    thumbnailUrl: item.thumbnailUrl,
-    publishedAt: item.publishedAt ?? '',
-    createdAt: item.createdAt,
-  }))
-  publishedGeneralAssemblies.value = feedStore.generalAssemblies.map((item) => ({
-    id: item.id,
-    title: item.title,
-    section: item.section,
-    address: item.address ?? '',
-    dateTime: item.dateTime ?? '',
-    description: item.description,
-    thumbnailUrl: item.thumbnailUrl,
-    createdAt: item.createdAt,
-  }))
+  await feedStore.fetchFeed(9)
   isFetching.value = false
 }
 

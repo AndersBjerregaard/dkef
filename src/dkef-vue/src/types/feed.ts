@@ -14,8 +14,4 @@ export interface FeedItem {
   publishedAt?: string
 }
 
-export interface FeedResponse {
-  events: FeedItem[]
-  news: FeedItem[]
-  generalAssemblies: FeedItem[]
-}
+export type FeedResponse = FeedItem[]
