@@ -52,7 +52,7 @@ const closeModal = () => {
             leave-to="opacity-0 scale-95"
           >
             <DialogPanel
-              class="w-full transform overflow-hidden rounded-2xl bg-navy-800 border border-navy-700 p-6 text-left align-middle shadow-xl transition-all origin-center translate-z-0"
+              class="relative w-full max-w-2xl transform overflow-hidden rounded-2xl bg-navy-800 border border-navy-700 p-6 text-left align-middle shadow-xl transition-all origin-center"
             >
               <button
                 type="button"
