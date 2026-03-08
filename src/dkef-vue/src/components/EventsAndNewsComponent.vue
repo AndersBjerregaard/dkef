@@ -12,17 +12,13 @@ import axios from 'axios'
 import { type EventDto, type PublishedEvent } from '@/types/events'
 import type { NewsDto, PublishedNews } from '@/types/news'
 import type { GeneralAssemblyDto, PublishedGeneralAssembly } from '@/types/generalAssembly'
-import { useEventStore } from '@/stores/eventStore'
-import { useNewsStore } from '@/stores/newsStore'
-import { useGeneralAssemblyStore } from '@/stores/generalAssemblyStore'
+import { useFeedStore } from '@/stores/feedStore'
 import { useAuthStore } from '@/stores/authStore'
 
 type FilterType = 'all' | 'events' | 'news' | 'general-assemblies'
 type CreateType = 'event' | 'news' | 'general-assembly'
 
-const eventStore = useEventStore()
-const newsStore = useNewsStore()
-const generalAssemblyStore = useGeneralAssemblyStore()
+const feedStore = useFeedStore()
 const authStore = useAuthStore()
 
 const publishedEvents: Ref<PublishedEvent[]> = ref([])
@@ -70,24 +66,41 @@ const displayedItems = computed(() => {
   }
 })
 
-const isAnyFetching = computed(
-  () =>
-    isFetching.value ||
-    eventStore.isFetching ||
-    newsStore.isFetching ||
-    generalAssemblyStore.isFetching,
-)
+const isAnyFetching = computed(() => isFetching.value || feedStore.isFetching)
 
 async function fetchAll() {
   isFetching.value = true
-  const [events, news, assemblies] = await Promise.all([
-    eventStore.fetchLatestEvents(),
-    newsStore.fetchLatestNews(),
-    generalAssemblyStore.fetchLatestGeneralAssemblies(),
-  ])
-  publishedEvents.value = events
-  publishedNews.value = news
-  publishedGeneralAssemblies.value = assemblies
+  await feedStore.fetchFeed(3)
+  publishedEvents.value = feedStore.events.map((item) => ({
+    id: item.id,
+    title: item.title,
+    section: item.section,
+    address: item.address ?? '',
+    dateTime: item.dateTime ?? '',
+    description: item.description,
+    thumbnailUrl: item.thumbnailUrl,
+    createdAt: item.createdAt,
+  }))
+  publishedNews.value = feedStore.news.map((item) => ({
+    id: item.id,
+    title: item.title,
+    section: item.section,
+    author: item.author ?? '',
+    description: item.description,
+    thumbnailUrl: item.thumbnailUrl,
+    publishedAt: item.publishedAt ?? '',
+    createdAt: item.createdAt,
+  }))
+  publishedGeneralAssemblies.value = feedStore.generalAssemblies.map((item) => ({
+    id: item.id,
+    title: item.title,
+    section: item.section,
+    address: item.address ?? '',
+    dateTime: item.dateTime ?? '',
+    description: item.description,
+    thumbnailUrl: item.thumbnailUrl,
+    createdAt: item.createdAt,
+  }))
   isFetching.value = false
 }
 

@@ -164,6 +164,15 @@ function getGeneralAssembly(guid: string) {
   }
 }
 
+function getFeed() {
+  switch (mode) {
+    case 'Development':
+      throw 'Unimplemented!'
+    default:
+      return `/feed`
+  }
+}
+
 export default {
   getContacts,
   updateContact,
@@ -183,4 +192,5 @@ export default {
   updateGeneralAssembly,
   getGeneralAssemblies,
   getGeneralAssembly,
+  getFeed,
 }
