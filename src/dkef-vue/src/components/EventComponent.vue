@@ -19,7 +19,7 @@ const dateTime = computed(() => {
 </script>
 
 <template>
-  <RouterLink :to="`/events-and-news/${props.publishedEvent.id}`" class="block w-72">
+  <RouterLink :to="`/events-and-news/${props.publishedEvent.id}`" class="block w-full">
     <div
       class="h-full border border-navy-700 rounded-2xl overflow-hidden flex flex-col cursor-pointer hover:border-amber-500/40 bg-navy-800 transition-colors"
     >

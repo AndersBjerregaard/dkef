@@ -423,7 +423,10 @@ const submitLabel = computed(() => {
     </div>
 
     <!-- Items grid -->
-    <div v-else class="flex flex-wrap justify-center items-start gap-6 px-4">
+    <div
+      v-else
+      class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-4 max-w-5xl mx-auto w-full"
+    >
       <template v-for="item in displayedItems" :key="item.id">
         <EventComponent
           v-if="item.kind === 'event'"
