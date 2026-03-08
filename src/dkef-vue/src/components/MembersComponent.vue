@@ -232,7 +232,10 @@ function sort(by: string, order: Sort): void {
       </div>
       <div v-if="loadingProgress < 100" class="pb-4">
         <div class="w-full bg-navy-700 rounded-full h-4 mb-4">
-          <div class="bg-amber-500 h-4 rounded-full transition-all" :style="{ width: loadingProgress + '%' }"></div>
+          <div
+            class="bg-amber-500 h-4 rounded-full transition-all"
+            :style="{ width: loadingProgress + '%' }"
+          ></div>
           <p class="text-sm text-slate-400 mt-1">
             {{ fetchedCount }} / {{ totalCount }} Medlemmer hentet
           </p>

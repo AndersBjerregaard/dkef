@@ -99,7 +99,9 @@ const displayedItems = computed<FeedItem[]>(() => {
   }
 })
 
-const isAnyFetching = computed(() => isFetching.value || feedStore.isFetching || isFilterFetching.value)
+const isAnyFetching = computed(
+  () => isFetching.value || feedStore.isFetching || isFilterFetching.value,
+)
 
 async function fetchAll() {
   isFetching.value = true

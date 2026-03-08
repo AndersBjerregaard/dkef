@@ -2,7 +2,9 @@
 
 <template>
   <!-- First section -->
-  <div class="flex flex-col md:flex-row justify-center items-center gap-x-12 px-4 py-12 sm:py-20 mx-auto">
+  <div
+    class="flex flex-col md:flex-row justify-center items-center gap-x-12 px-4 py-12 sm:py-20 mx-auto"
+  >
     <div class="gap-4 w-full md:w-96 px-2 pb-8 md:pb-0 mx-auto">
       <p class="text-amber-400 text-sm font-semibold uppercase tracking-widest pb-3">Medlemskab</p>
       <h1 class="text-3xl md:text-4xl pb-6 text-slate-100 leading-tight">
@@ -20,7 +22,9 @@
     </div>
 
     <div class="w-full md:w-96 px-2 mx-auto">
-      <div class="bg-navy-800 border border-amber-500/30 rounded-2xl p-6 shadow-xl shadow-amber-500/5">
+      <div
+        class="bg-navy-800 border border-amber-500/30 rounded-2xl p-6 shadow-xl shadow-amber-500/5"
+      >
         <!-- Amber top accent bar -->
         <div class="h-1 w-16 bg-amber-500 rounded-full mb-6"></div>
         <div class="flex justify-center mb-2">
@@ -61,7 +65,9 @@
   <div class="w-full border-t border-amber-500/10"></div>
 
   <!-- Second section -->
-  <div class="bg-navy-900 flex flex-col md:flex-row justify-center items-center gap-x-12 px-4 py-12 sm:py-20 mx-auto">
+  <div
+    class="bg-navy-900 flex flex-col md:flex-row justify-center items-center gap-x-12 px-4 py-12 sm:py-20 mx-auto"
+  >
     <div class="gap-4 w-full md:w-96 px-2 pb-8 md:pb-0 mx-auto">
       <p class="text-amber-400 text-sm font-semibold uppercase tracking-widest pb-3">Netværk</p>
       <h1 class="text-2xl sm:text-4xl pb-6 text-slate-100 leading-tight">
@@ -69,13 +75,17 @@
       </h1>
       <p class="pb-6 text-slate-400 leading-relaxed">
         Søger du specifikke kompetencer og indsigter i elbranchen? Som medlem i Elektroteknisk
-        forening har du adgang til en komplet oversigt over andre medlemmer, som du kan søge sparring
-        og ekspertise hos.
+        forening har du adgang til en komplet oversigt over andre medlemmer, som du kan søge
+        sparring og ekspertise hos.
       </p>
     </div>
 
     <div class="hidden sm:flex w-96 gap-4 items-start">
-      <img class="rounded-xl object-cover w-full" src="@/assets/advantages1.jpeg" alt="member advantages" />
+      <img
+        class="rounded-xl object-cover w-full"
+        src="@/assets/advantages1.jpeg"
+        alt="member advantages"
+      />
     </div>
   </div>
 
@@ -83,9 +93,13 @@
   <div class="w-full border-t border-amber-500/10"></div>
 
   <!-- Third section -->
-  <div class="flex flex-col md:flex-row justify-center items-center gap-x-12 px-4 py-12 sm:py-20 mx-auto">
+  <div
+    class="flex flex-col md:flex-row justify-center items-center gap-x-12 px-4 py-12 sm:py-20 mx-auto"
+  >
     <div class="gap-4 w-full md:w-96 px-2 pb-8 md:pb-0 mx-auto">
-      <p class="text-amber-400 text-sm font-semibold uppercase tracking-widest pb-3">Arrangementer</p>
+      <p class="text-amber-400 text-sm font-semibold uppercase tracking-widest pb-3">
+        Arrangementer
+      </p>
       <h1 class="text-2xl sm:text-4xl pb-6 text-slate-100 leading-tight">
         Deltag i arrangementer og studieture
       </h1>
@@ -97,7 +111,11 @@
     </div>
 
     <div class="hidden sm:flex w-96 gap-4 items-start">
-      <img class="rounded-xl object-cover w-full" src="@/assets/advantages2.jpeg" alt="member advantages" />
+      <img
+        class="rounded-xl object-cover w-full"
+        src="@/assets/advantages2.jpeg"
+        alt="member advantages"
+      />
     </div>
   </div>
 
@@ -126,7 +144,9 @@
           />
         </div>
         <div class="p-5">
-          <h2 class="text-lg font-semibold text-amber-300 pb-3">Bliv en del af vores mentorordning</h2>
+          <h2 class="text-lg font-semibold text-amber-300 pb-3">
+            Bliv en del af vores mentorordning
+          </h2>
           <p class="text-slate-400 text-sm leading-relaxed">
             Som erfarent medlem i Elektroteknisk forening kan du dele ud af din viden ved at tage en
             studerende i elbranchen under dine vinger — og som studerende kan du sætte skub på din
@@ -147,7 +167,9 @@
           />
         </div>
         <div class="p-5">
-          <h2 class="text-lg font-semibold text-amber-300 pb-3">Søg sparring på tværs af branchen</h2>
+          <h2 class="text-lg font-semibold text-amber-300 pb-3">
+            Søg sparring på tværs af branchen
+          </h2>
           <p class="text-slate-400 text-sm leading-relaxed">
             Lad dig inspirere af andre, og lad andre inspirere af dig. Elektroteknisk forening giver
             dig den ideelle platform til at udveksle og diskutere faglige indsigter med
@@ -168,7 +190,9 @@
           />
         </div>
         <div class="p-5">
-          <h2 class="text-lg font-semibold text-amber-300 pb-3">Få gratis abonnement på EL+ENERGI</h2>
+          <h2 class="text-lg font-semibold text-amber-300 pb-3">
+            Få gratis abonnement på EL+ENERGI
+          </h2>
           <p class="text-slate-400 text-sm leading-relaxed">
             Som medlem i Elektroteknisk forening modtager du hvert kvartal gratis den seneste udgave
             af fagbladet EL+ENERGI hvori du kan finde nyheder og faglige informationer om alt, der

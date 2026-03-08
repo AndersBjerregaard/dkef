@@ -134,7 +134,9 @@ async function handleLogout() {
               </button>
             </div>
             <div class="p-1 flex items-center gap-3" v-else>
-              <span class="text-amber-400 font-medium text-sm">Hej, {{ authStore.user?.firstName }}</span>
+              <span class="text-amber-400 font-medium text-sm"
+                >Hej, {{ authStore.user?.firstName }}</span
+              >
               <button
                 class="rounded-lg bg-navy-800 h-10 px-4 cursor-pointer text-slate-300 hover:bg-navy-700 hover:text-amber-400 transition-colors text-sm font-medium"
                 @click="handleLogout"
@@ -394,7 +396,9 @@ async function handleLogout() {
           <div class="flex flex-col">
             <div class="w-48 h-60 p-2">
               <h2 class="text-xl pb-4 text-amber-400">Priser</h2>
-              <button class="text-sm text-slate-400 hover:text-amber-400 cursor-pointer transition-colors">
+              <button
+                class="text-sm text-slate-400 hover:text-amber-400 cursor-pointer transition-colors"
+              >
                 Bliv medlem
               </button>
             </div>

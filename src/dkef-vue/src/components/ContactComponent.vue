@@ -20,10 +20,14 @@ import NewsLetterComponent from './NewsLetterComponent.vue'
 
   <!-- Contact info -->
   <div class="pb-20 flex">
-    <div class="flex w-full justify-between items-center text-center px-8 bg-navy-900 border-t border-amber-500/10 h-40">
+    <div
+      class="flex w-full justify-between items-center text-center px-8 bg-navy-900 border-t border-amber-500/10 h-40"
+    >
       <!-- Email -->
       <div class="flex gap-x-4">
-        <div class="w-20 h-20 border-0 rounded-full bg-amber-500/20 flex justify-center items-center">
+        <div
+          class="w-20 h-20 border-0 rounded-full bg-amber-500/20 flex justify-center items-center"
+        >
           <div class="w-12 h-12">
             <img class="w-full h-full object-fill" src="@/assets/envelope-icon.svg" />
           </div>
@@ -35,7 +39,9 @@ import NewsLetterComponent from './NewsLetterComponent.vue'
       </div>
       <!-- Phone -->
       <div class="flex gap-x-4">
-        <div class="w-20 h-20 border-0 rounded-full bg-amber-500/20 flex justify-center items-center">
+        <div
+          class="w-20 h-20 border-0 rounded-full bg-amber-500/20 flex justify-center items-center"
+        >
           <div class="w-12 h-12">
             <img class="w-full h-full object-fill" src="@/assets/call-square-icon.svg" />
           </div>
@@ -47,7 +53,9 @@ import NewsLetterComponent from './NewsLetterComponent.vue'
       </div>
       <!-- Address -->
       <div class="flex gap-x-4">
-        <div class="w-20 h-20 border-0 rounded-full bg-amber-500/20 flex justify-center items-center">
+        <div
+          class="w-20 h-20 border-0 rounded-full bg-amber-500/20 flex justify-center items-center"
+        >
           <div class="w-12 h-12">
             <img class="w-full h-full object-fill" src="@/assets/maps-pin-black-icon.svg" />
           </div>
