@@ -32,7 +32,7 @@ import ContactFormularComponent from '@/components/ContactFormularComponent.vue'
         <div class="flex justify-center items-center pb-4">
           <h2 class="text-xl">Sektioner</h2>
         </div>
-        <div class="h-80 bg-gray-400">
+        <div class="h-80 bg-navy-800 rounded-xl overflow-hidden">
           <img
             style="width: 100%; height: 100%; object-fit: contain"
             src="@/assets/dkef-sections.png"
@@ -45,19 +45,19 @@ import ContactFormularComponent from '@/components/ContactFormularComponent.vue'
         <h2 class="text-xl">Medlemmer</h2>
       </div>
       <div class="flex justify-center items-center text-center pb-8">
-        <h1 class="text-6xl">+550</h1>
+        <h1 class="text-6xl text-amber-400">+550</h1>
       </div>
       <div class="flex justify-center items-center text-center pb-2">
         <h2 class="text-xl">Sektioner</h2>
       </div>
       <div class="flex justify-center items-center text-center pb-8">
-        <h1 class="text-6xl">5</h1>
+        <h1 class="text-6xl text-amber-400">5</h1>
       </div>
       <div class="flex justify-center items-center text-center pb-2">
         <h2 class="text-xl">Siden</h2>
       </div>
       <div class="flex justify-center items-center text-center pb-8">
-        <h1 class="text-6xl">1903</h1>
+        <h1 class="text-6xl text-amber-400">1903</h1>
       </div>
       <div class="flex-row py-12">
         <div class="flex justify-center items-center text-center">
@@ -98,7 +98,7 @@ import ContactFormularComponent from '@/components/ContactFormularComponent.vue'
           <h3 class="text-xl pb-2">Email: info@dkef.dk</h3>
         </div>
         <div class="flex justify-center items-center text-center">
-          <div class="h-48 w-48 border-2 rounded-full overflow-hidden">
+          <div class="h-48 w-48 border-2 border-amber-500/30 rounded-full overflow-hidden">
             <img
               class="h-full w-full object-cover rounded-full"
               src="@/assets/secretary.jpg"

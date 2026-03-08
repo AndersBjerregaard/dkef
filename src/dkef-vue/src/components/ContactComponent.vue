@@ -20,40 +20,40 @@ import NewsLetterComponent from './NewsLetterComponent.vue'
 
   <!-- Contact info -->
   <div class="pb-20 flex">
-    <div class="flex w-full justify-between items-center text-center px-8 bg-gray-800 h-40">
+    <div class="flex w-full justify-between items-center text-center px-8 bg-navy-900 border-t border-amber-500/10 h-40">
       <!-- Email -->
       <div class="flex gap-x-4">
-        <div class="w-20 h-20 border-0 rounded-full bg-gray-400 flex justify-center items-center">
+        <div class="w-20 h-20 border-0 rounded-full bg-amber-500/20 flex justify-center items-center">
           <div class="w-12 h-12">
             <img class="w-full h-full object-fill" src="@/assets/envelope-icon.svg" />
           </div>
         </div>
         <div class="flex-row">
-          <h1 class="text-xl">Email</h1>
+          <h1 class="text-xl text-amber-400">Email</h1>
           <h3 class="text-lg">info@dkef.dk</h3>
         </div>
       </div>
       <!-- Phone -->
       <div class="flex gap-x-4">
-        <div class="w-20 h-20 border-0 rounded-full bg-gray-400 flex justify-center items-center">
+        <div class="w-20 h-20 border-0 rounded-full bg-amber-500/20 flex justify-center items-center">
           <div class="w-12 h-12">
             <img class="w-full h-full object-fill" src="@/assets/call-square-icon.svg" />
           </div>
         </div>
         <div class="flex-row">
-          <h1 class="text-xl">Telefon</h1>
+          <h1 class="text-xl text-amber-400">Telefon</h1>
           <h3 class="text-lg">+45 42 57 70 69</h3>
         </div>
       </div>
       <!-- Address -->
       <div class="flex gap-x-4">
-        <div class="w-20 h-20 border-0 rounded-full bg-gray-400 flex justify-center items-center">
+        <div class="w-20 h-20 border-0 rounded-full bg-amber-500/20 flex justify-center items-center">
           <div class="w-12 h-12">
             <img class="w-full h-full object-fill" src="@/assets/maps-pin-black-icon.svg" />
           </div>
         </div>
         <div class="flex-row">
-          <h1 class="text-xl">Adresse</h1>
+          <h1 class="text-xl text-amber-400">Adresse</h1>
           <h3 class="text-lg">Elleholmvej 28C</h3>
           <h3 class="text-lg">5250 Odense SV</h3>
         </div>

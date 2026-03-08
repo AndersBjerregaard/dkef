@@ -20,10 +20,10 @@ const dateTime = computed(() => {
 <template>
   <RouterLink :to="`/general-assemblies/${props.publishedGeneralAssembly.id}`" class="block w-72">
     <div
-      class="h-full border border-gray-600 rounded-2xl overflow-hidden flex flex-col cursor-pointer hover:bg-gray-600 transition-colors"
+      class="h-full border border-navy-700 rounded-2xl overflow-hidden flex flex-col cursor-pointer hover:border-amber-500/40 bg-navy-800 transition-colors"
     >
       <!-- Thumbnail -->
-      <div class="h-44 shrink-0 bg-gray-700">
+      <div class="h-44 shrink-0 bg-navy-900">
         <img
           class="h-full w-full object-cover"
           :src="props.publishedGeneralAssembly?.thumbnailUrl"
@@ -39,7 +39,7 @@ const dateTime = computed(() => {
         >
 
         <!-- Section -->
-        <p class="text-xs text-gray-400 line-clamp-1">
+        <p class="text-xs text-slate-400 line-clamp-1">
           {{ props.publishedGeneralAssembly?.section }}
         </p>
 
@@ -49,10 +49,10 @@ const dateTime = computed(() => {
         </p>
 
         <!-- Metadata -->
-        <div class="mt-auto flex flex-col gap-1 text-sm text-gray-300">
+        <div class="mt-auto flex flex-col gap-1 text-sm text-slate-300">
           <div class="flex items-start gap-1 h-10 overflow-hidden">
             <svg
-              class="h-4 w-4 shrink-0 mt-0.5 text-gray-400"
+              class="h-4 w-4 shrink-0 mt-0.5 text-slate-400"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -74,7 +74,7 @@ const dateTime = computed(() => {
           </div>
           <div class="flex items-center gap-1">
             <svg
-              class="h-4 w-4 shrink-0 text-gray-400"
+              class="h-4 w-4 shrink-0 text-slate-400"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"

@@ -41,13 +41,13 @@ onMounted(async () => {
       <div class="pb-4 flex gap-4">
         <RouterLink
           to="/events-and-news"
-          class="flex justify-center items-center rounded bg-gray-600 h-14 w-64 p-2 cursor-pointer hover:bg-gray-800"
+          class="flex justify-center items-center rounded-lg bg-navy-800 h-14 w-64 p-2 cursor-pointer hover:bg-navy-700 hover:text-amber-400 transition-colors text-slate-200"
         >
           &larr; Tilbage til arrangementer og nyheder
         </RouterLink>
         <button
           v-if="authStore.isAdmin && currentNews"
-          class="flex justify-center items-center rounded bg-gray-600 h-14 w-36 p-2 cursor-pointer hover:bg-gray-800"
+          class="flex justify-center items-center rounded-lg bg-navy-800 h-14 w-36 p-2 cursor-pointer hover:bg-navy-700 hover:text-amber-400 transition-colors text-slate-200"
           @click="isEditOpen = true"
         >
           Rediger
@@ -57,7 +57,7 @@ onMounted(async () => {
       <!-- Loading -->
       <div v-if="newsStore.isFetching" class="flex justify-center items-center min-h-[200px]">
         <svg
-          class="animate-spin h-10 w-10 text-blue-500"
+          class="animate-spin h-10 w-10 text-amber-500"
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
           viewBox="0 0 24 24"

@@ -231,9 +231,9 @@ function sort(by: string, order: Sort): void {
         <h1 class="text-4xl py-8">Alle medlemmer</h1>
       </div>
       <div v-if="loadingProgress < 100" class="pb-4">
-        <div class="w-full bg-gray-200 rounded-full h-4 dark:bg-gray-700 mb-4">
-          <div class="bg-blue-600 h-4 rounded-full" :style="{ width: loadingProgress + '%' }"></div>
-          <p class="text-sm text-gray-500 mt-1">
+        <div class="w-full bg-navy-700 rounded-full h-4 mb-4">
+          <div class="bg-amber-500 h-4 rounded-full transition-all" :style="{ width: loadingProgress + '%' }"></div>
+          <p class="text-sm text-slate-400 mt-1">
             {{ fetchedCount }} / {{ totalCount }} Medlemmer hentet
           </p>
         </div>
@@ -242,13 +242,13 @@ function sort(by: string, order: Sort): void {
         <label class="p-1">Søg: </label>
         <input
           type="text"
-          class="bg-gray-700 rounded p-1 w-[50%]"
+          class="bg-navy-900 border border-navy-700 rounded p-1 w-[50%] focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
           placeholder="Minimum 3 bogstaver..."
           v-model="filterString"
         />
         <button
           @click="copyEmailsToClipboard"
-          class="ml-auto flex items-center gap-2 rounded bg-blue-600 px-4 py-1.5 text-sm text-white transition hover:bg-blue-500 active:bg-blue-700 disabled:opacity-50"
+          class="ml-auto flex items-center gap-2 rounded bg-amber-500 text-navy-950 px-4 py-1.5 text-sm font-semibold transition hover:bg-amber-400 active:bg-amber-600 disabled:opacity-50"
           :disabled="filteredItems.length === 0"
           :title="emailsCopied ? 'Kopieret!' : `Kopiér ${filteredItems.length} email-adresser`"
         >
@@ -274,7 +274,7 @@ function sort(by: string, order: Sort): void {
         </button>
       </div>
       <div class="py-4">
-        <div class="flex w-full justify-between border-2 border-gray-800">
+        <div class="flex w-full justify-between border-2 border-navy-700">
           <MemberHeaderComponent
             :header="'Navn'"
             :currentSort="columnSortStates.name"
@@ -301,7 +301,7 @@ function sort(by: string, order: Sort): void {
             @update:sort="(newValue: Sort) => handleSortUpdate('address', newValue)"
           />
         </div>
-        <div class="w-full justify-between border-2 border-gray-800">
+        <div class="w-full justify-between border-2 border-navy-700">
           <MemberComponent
             v-for="(item, index) in filteredItems"
             :key="item.id"

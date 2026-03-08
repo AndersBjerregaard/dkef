@@ -135,7 +135,7 @@ async function saveNews() {
         <br />
         <input
           id="edit_news_title"
-          class="w-full bg-gray-800 border-0 rounded-xl p-2"
+          class="w-full bg-navy-900 border border-navy-700 rounded-xl p-2 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
           type="text"
           placeholder="Titel"
           v-model="itemTitle"
@@ -150,7 +150,7 @@ async function saveNews() {
           <br />
           <input
             id="edit_news_section"
-            class="w-full bg-gray-800 border-0 rounded-xl p-2"
+            class="w-full bg-navy-900 border border-navy-700 rounded-xl p-2 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
             type="text"
             placeholder="Sektion"
             v-model="itemSection"
@@ -162,7 +162,7 @@ async function saveNews() {
           <br />
           <input
             id="edit_news_author"
-            class="w-full bg-gray-800 border-0 rounded-xl p-2"
+            class="w-full bg-navy-900 border border-navy-700 rounded-xl p-2 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
             type="text"
             placeholder="Forfatter"
             v-model="itemAuthor"
@@ -177,7 +177,7 @@ async function saveNews() {
         <br />
         <textarea
           id="edit_news_description"
-          class="w-full bg-gray-800 border-0 rounded-xl p-2 h-96"
+          class="w-full bg-navy-900 border border-navy-700 rounded-xl p-2 h-96 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
           placeholder="Beskrivelse"
           v-model="itemDescription"
           :disabled="isLoading"
@@ -190,7 +190,7 @@ async function saveNews() {
         <br />
         <input
           id="edit_news_file"
-          class="w-full bg-gray-800 border-0 rounded-xl p-2 cursor-pointer hover:bg-gray-600"
+          class="w-full bg-navy-900 border border-navy-700 rounded-xl p-2 cursor-pointer hover:bg-navy-800 text-slate-300 focus:outline-none focus:ring-2 focus:ring-amber-500"
           type="file"
           accept="image/*"
           @change="handleFileUpload"
@@ -209,12 +209,12 @@ async function saveNews() {
       <div class="mt-4 flex gap-3">
         <button
           type="submit"
-          class="inline-flex justify-center rounded-md border border-transparent bg-gray-300 px-4 py-2 text-md font-medium hover:bg-gray-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 text-gray-900 focus-visible:ring-offset-2"
+          class="inline-flex justify-center rounded-md border border-transparent bg-amber-500 px-4 py-2 text-md font-semibold hover:bg-amber-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 text-navy-950 focus-visible:ring-offset-2 shadow-lg shadow-amber-500/20 disabled:opacity-50"
           :disabled="isLoading"
         >
           <span v-if="isLoading" class="flex items-center">
             <svg
-              class="animate-spin -ml-1 mr-3 h-5 w-5 text-gray-900"
+              class="animate-spin -ml-1 mr-3 h-5 w-5 text-navy-950"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
@@ -239,7 +239,7 @@ async function saveNews() {
         </button>
         <button
           type="button"
-          class="inline-flex justify-center rounded-md border border-transparent bg-gray-600 px-4 py-2 text-md font-medium hover:bg-gray-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 text-gray-100 focus-visible:ring-offset-2"
+          class="inline-flex justify-center rounded-md border border-transparent bg-navy-800 px-4 py-2 text-md font-medium hover:bg-navy-700 hover:text-amber-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 text-slate-200 focus-visible:ring-offset-2 disabled:opacity-50"
           :disabled="isLoading"
           @click="emit('close')"
         >

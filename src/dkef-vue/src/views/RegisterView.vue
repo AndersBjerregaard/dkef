@@ -74,7 +74,7 @@ async function handleRegister() {
               name="first-name"
               type="text"
               required
-              class="w-full bg-gray-800 border-0 rounded-xl p-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-600"
+              class="w-full bg-navy-900 border border-navy-700 rounded-xl p-2 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
               placeholder="Fornavn"
             />
           </div>
@@ -87,7 +87,7 @@ async function handleRegister() {
               name="last-name"
               type="text"
               required
-              class="w-full bg-gray-800 border-0 rounded-xl p-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-600"
+              class="w-full bg-navy-900 border border-navy-700 rounded-xl p-2 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
               placeholder="Efternavn"
             />
           </div>
@@ -101,7 +101,7 @@ async function handleRegister() {
               type="email"
               autocomplete="email"
               required
-              class="w-full bg-gray-800 border-0 rounded-xl p-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-600"
+              class="w-full bg-navy-900 border border-navy-700 rounded-xl p-2 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
               placeholder="Email"
             />
           </div>
@@ -115,7 +115,7 @@ async function handleRegister() {
               type="password"
               autocomplete="new-password"
               required
-              class="w-full bg-gray-800 border-0 rounded-xl p-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-600"
+              class="w-full bg-navy-900 border border-navy-700 rounded-xl p-2 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
               placeholder="Adgangskode (min 8 tegn)"
             />
           </div>
@@ -131,7 +131,7 @@ async function handleRegister() {
               type="password"
               autocomplete="new-password"
               required
-              class="w-full bg-gray-800 border-0 rounded-xl p-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-600"
+              class="w-full bg-navy-900 border border-navy-700 rounded-xl p-2 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
               placeholder="Bekræft adgangskode"
             />
           </div>
@@ -141,7 +141,7 @@ async function handleRegister() {
           <button
             type="submit"
             :disabled="loading"
-            class="w-full flex justify-center items-center rounded-xl bg-gray-600 h-12 px-8 cursor-pointer hover:bg-gray-800 text-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            class="w-full flex justify-center items-center rounded-xl bg-amber-500 h-12 px-8 cursor-pointer hover:bg-amber-400 text-navy-950 font-semibold text-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-lg shadow-amber-500/20"
           >
             {{ loading ? 'Opretter konto...' : 'Opret konto' }}
           </button>

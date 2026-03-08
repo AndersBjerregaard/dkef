@@ -37,7 +37,7 @@ const closeModal = () => {
         leave-from="opacity-100"
         leave-to="opacity-0"
       >
-        <div class="fixed inset-0 bg-black/25"></div>
+        <div class="fixed inset-0 bg-black/50"></div>
       </TransitionChild>
 
       <div class="fixed inset-0 overflow-y-auto">
@@ -52,11 +52,11 @@ const closeModal = () => {
             leave-to="opacity-0 scale-95"
           >
             <DialogPanel
-              class="w-full transform overflow-hidden rounded-2xl bg-gray-700 p-6 text-left align-middle shadow-xl transition-all origin-center translate-z-0 border"
+              class="w-full transform overflow-hidden rounded-2xl bg-navy-800 border border-navy-700 p-6 text-left align-middle shadow-xl transition-all origin-center translate-z-0"
             >
               <button
                 type="button"
-                class="cursor-pointer absolute top-3 right-3 text-gray-400 hover:text-gray-500"
+                class="cursor-pointer absolute top-3 right-3 text-slate-400 hover:text-amber-400 transition-colors"
                 @click="closeModal"
                 :disabled="isLoading"
               >

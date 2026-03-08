@@ -26,19 +26,18 @@ function handleClick() {
 <template>
   <div class="mt-4">
     <button
-      class="inline-flex justify-center rounded-md border border-transparent bg-gray-300 px-4 py-2 font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 text-gray-900 focus-visible:ring-offset-2"
+      class="inline-flex justify-center rounded-md border border-transparent bg-amber-500 text-navy-950 px-4 py-2 font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 shadow-lg shadow-amber-500/20 transition-colors"
       :disabled="isLoading"
       :class="{
-        'cursor-pointer': !isLoading,
-        'cursor-not-allowed': isLoading,
-        'hover:bg-gray-400': !isLoading,
+        'cursor-pointer hover:bg-amber-400': !isLoading,
+        'cursor-not-allowed opacity-70': isLoading,
       }"
       @click="handleClick"
     >
       <span v-if="isLoading" class="flex items-center">
         {{ loadingText }}
         <svg
-          class="animate-spin -ml-1 mr-3 h-5 w-5 text-gray-900"
+          class="animate-spin ml-2 h-5 w-5 text-navy-950"
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
           viewBox="0 0 24 24"
@@ -64,17 +63,3 @@ function handleClick() {
     </button>
   </div>
 </template>
-
-<style lang="css" scoped>
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-.animate-spin {
-  animation: spin 1s linear infinite;
-}
-</style>
