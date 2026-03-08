@@ -26,10 +26,10 @@ function handleClick() {
 <template>
   <div class="mt-4">
     <button
-      class="inline-flex justify-center rounded-md border border-transparent bg-amber-500 text-navy-950 px-4 py-2 font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 shadow-lg shadow-amber-500/20 transition-colors"
+      class="inline-flex justify-center rounded-md border border-transparent bg-amber-600 text-navy-950 px-4 py-2 font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 shadow-lg shadow-amber-600/20 transition-colors"
       :disabled="isLoading"
       :class="{
-        'cursor-pointer hover:bg-amber-400': !isLoading,
+        'cursor-pointer hover:bg-amber-500': !isLoading,
         'cursor-not-allowed opacity-70': isLoading,
       }"
       @click="handleClick"

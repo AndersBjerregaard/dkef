@@ -7,14 +7,14 @@
   --color-background-mute: #1e2a45;
 
   --color-border:          rgba(148, 163, 208, 0.20);
-  --color-border-hover:    #f59e0b;
+  --color-border-hover:    #d97706;
 
   --color-heading:         #f1f5f9;
   --color-text:            rgba(203, 213, 225, 0.85);
 
-  --color-accent:          #f59e0b;
-  --color-accent-hover:    #d97706;
-  --color-accent-muted:    rgba(245, 158, 11, 0.12);
+  --color-accent:          #d97706;
+  --color-accent-hover:    #f59e0b;
+  --color-accent-muted:    rgba(217, 119, 6, 0.12);
 }
 
 *,

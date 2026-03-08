@@ -127,7 +127,7 @@ async function handleLogout() {
             </div>
             <div class="p-1" v-if="!authStore.isAuthenticated">
               <button
-                class="rounded-lg bg-amber-500 h-10 px-4 cursor-pointer text-navy-950 font-semibold hover:bg-amber-400 active:bg-amber-600 transition-colors text-sm shadow-lg shadow-amber-500/20"
+                class="rounded-lg bg-amber-600 h-10 px-4 cursor-pointer text-navy-950 font-semibold hover:bg-amber-500 active:bg-amber-700 transition-colors text-sm shadow-lg shadow-amber-600/20"
                 @click="openModal"
               >
                 Log på
@@ -233,7 +233,7 @@ async function handleLogout() {
                         <button
                           type="submit"
                           :disabled="isLoggingIn"
-                          class="inline-flex justify-center rounded-lg bg-amber-500 px-4 py-2 text-sm font-semibold text-navy-950 hover:bg-amber-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 focus-visible:ring-offset-navy-800 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-lg shadow-amber-500/20"
+                          class="inline-flex justify-center rounded-lg bg-amber-600 px-4 py-2 text-sm font-semibold text-navy-950 hover:bg-amber-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 focus-visible:ring-offset-navy-800 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-lg shadow-amber-600/20"
                         >
                           {{ isLoggingIn ? 'Logger på...' : 'Log på' }}
                         </button>

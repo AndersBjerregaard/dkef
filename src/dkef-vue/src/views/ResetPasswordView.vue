@@ -113,7 +113,7 @@ async function handleResetPassword() {
           <button
             type="submit"
             :disabled="loading || !token"
-            class="w-full flex justify-center items-center rounded-xl bg-amber-500 h-12 px-8 cursor-pointer hover:bg-amber-400 text-navy-950 font-semibold text-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-lg shadow-amber-500/20"
+            class="w-full flex justify-center items-center rounded-xl bg-amber-600 h-12 px-8 cursor-pointer hover:bg-amber-500 text-navy-950 font-semibold text-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-lg shadow-amber-600/20"
           >
             {{ loading ? 'Nulstiller adgangskode...' : 'Nulstil adgangskode' }}
           </button>

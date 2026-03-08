@@ -45,7 +45,7 @@
     <br />
     <div>
       <input
-        class="flex justify-center rounded-xl bg-amber-500 text-navy-950 font-semibold h-12 px-8 cursor-pointer hover:bg-amber-400 text-lg transition-colors shadow-lg shadow-amber-500/20"
+        class="flex justify-center rounded-xl bg-amber-600 text-navy-950 font-semibold h-12 px-8 cursor-pointer hover:bg-amber-500 text-lg transition-colors shadow-lg shadow-amber-600/20"
         type="submit"
         value="Send besked"
       />

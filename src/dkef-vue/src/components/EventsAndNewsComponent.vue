@@ -296,7 +296,7 @@ const submitLabel = computed(() => {
         class="flex justify-center rounded-lg h-10 sm:h-12 py-2 w-24 sm:w-32 cursor-pointer sm:text-lg transition-colors font-medium"
         :class="
           activeFilter === 'all'
-            ? 'bg-amber-500 text-navy-950'
+            ? 'bg-amber-600 text-navy-950'
             : 'bg-navy-800 text-slate-200 hover:bg-navy-700 hover:text-amber-400'
         "
         @click="setFilter('all')"
@@ -307,7 +307,7 @@ const submitLabel = computed(() => {
         class="flex justify-center rounded-lg h-10 sm:h-12 py-2 w-24 sm:w-32 cursor-pointer sm:text-lg transition-colors font-medium"
         :class="
           activeFilter === 'news'
-            ? 'bg-amber-500 text-navy-950'
+            ? 'bg-amber-600 text-navy-950'
             : 'bg-navy-800 text-slate-200 hover:bg-navy-700 hover:text-amber-400'
         "
         @click="setFilter('news')"
@@ -318,7 +318,7 @@ const submitLabel = computed(() => {
         class="flex justify-center rounded-lg h-10 sm:h-12 py-2 w-24 sm:w-36 cursor-pointer sm:text-lg transition-colors font-medium"
         :class="
           activeFilter === 'events'
-            ? 'bg-amber-500 text-navy-950'
+            ? 'bg-amber-600 text-navy-950'
             : 'bg-navy-800 text-slate-200 hover:bg-navy-700 hover:text-amber-400'
         "
         @click="setFilter('events')"
@@ -329,7 +329,7 @@ const submitLabel = computed(() => {
         class="flex justify-center rounded-lg h-10 sm:h-12 py-2 w-24 sm:w-48 cursor-pointer sm:text-lg transition-colors font-medium"
         :class="
           activeFilter === 'general-assemblies'
-            ? 'bg-amber-500 text-navy-950'
+            ? 'bg-amber-600 text-navy-950'
             : 'bg-navy-800 text-slate-200 hover:bg-navy-700 hover:text-amber-400'
         "
         @click="setFilter('general-assemblies')"
@@ -598,7 +598,7 @@ const submitLabel = computed(() => {
                   <div class="mt-4">
                     <button
                       type="submit"
-                      class="inline-flex justify-center rounded-md border border-transparent bg-amber-500 text-navy-950 px-4 py-2 text-md font-semibold hover:bg-amber-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 shadow-lg shadow-amber-500/20 transition-colors"
+                      class="inline-flex justify-center rounded-md border border-transparent bg-amber-600 text-navy-950 px-4 py-2 text-md font-semibold hover:bg-amber-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 shadow-lg shadow-amber-600/20 transition-colors"
                       :disabled="isLoading"
                     >
                       <span v-if="isLoading" class="flex items-center">

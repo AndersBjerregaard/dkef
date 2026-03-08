@@ -121,7 +121,7 @@ import NewsLetterComponent from './NewsLetterComponent.vue'
         </p>
 
         <button
-          class="rounded-lg bg-amber-500 h-12 py-2 px-6 cursor-pointer hover:bg-amber-400 active:bg-amber-600 text-navy-950 font-semibold text-base shadow-lg shadow-amber-500/20 transition-all"
+          class="rounded-lg bg-amber-600 h-12 py-2 px-6 cursor-pointer hover:bg-amber-500 active:bg-amber-700 text-navy-950 font-semibold text-base shadow-lg shadow-amber-600/20 transition-all"
         >
           Medlemsfordele
         </button>
@@ -140,7 +140,7 @@ import NewsLetterComponent from './NewsLetterComponent.vue'
         </p>
 
         <button
-          class="rounded-lg bg-amber-500 h-12 py-2 px-6 cursor-pointer hover:bg-amber-400 active:bg-amber-600 text-navy-950 font-semibold text-base shadow-lg shadow-amber-500/20 transition-all"
+          class="rounded-lg bg-amber-600 h-12 py-2 px-6 cursor-pointer hover:bg-amber-500 active:bg-amber-700 text-navy-950 font-semibold text-base shadow-lg shadow-amber-600/20 transition-all"
         >
           Bliv medlem
         </button>
@@ -163,7 +163,7 @@ import NewsLetterComponent from './NewsLetterComponent.vue'
 
         <div class="pt-4">
           <button
-            class="rounded-lg bg-amber-500 h-12 py-2 px-6 cursor-pointer hover:bg-amber-400 active:bg-amber-600 text-navy-950 font-semibold text-base shadow-lg shadow-amber-500/20 transition-all"
+            class="rounded-lg bg-amber-600 h-12 py-2 px-6 cursor-pointer hover:bg-amber-500 active:bg-amber-700 text-navy-950 font-semibold text-base shadow-lg shadow-amber-600/20 transition-all"
           >
             Bliv medlem
           </button>
@@ -227,7 +227,7 @@ import NewsLetterComponent from './NewsLetterComponent.vue'
           Deltag i studieture, del ud af din viden og styrk dit arbejdsnetværk.
         </p>
         <button
-          class="flex justify-center rounded-lg bg-amber-500 h-12 py-2 w-full cursor-pointer hover:bg-amber-400 active:bg-amber-600 text-navy-950 font-semibold text-base shadow-lg shadow-amber-500/20 transition-all"
+          class="flex justify-center rounded-lg bg-amber-600 h-12 py-2 w-full cursor-pointer hover:bg-amber-500 active:bg-amber-700 text-navy-950 font-semibold text-base shadow-lg shadow-amber-600/20 transition-all"
         >
           Bliv medlem
         </button>
