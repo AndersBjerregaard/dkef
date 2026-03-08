@@ -209,6 +209,7 @@ const hasAccess = ref(true)
     :is-open="isOpen"
     :title="'Medlem Information'"
     :is-loading="isLoading"
+    max-width="max-w-5xl"
     @close="closeModal"
   >
     <div class="pb-4 h-14 flex justify-between" v-if="hasAccess">

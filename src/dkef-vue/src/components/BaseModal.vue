@@ -14,6 +14,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  maxWidth: {
+    type: String,
+    default: 'max-w-2xl',
+  },
 })
 
 const emit = defineEmits(['close'])
@@ -52,7 +56,10 @@ const closeModal = () => {
             leave-to="opacity-0 scale-95"
           >
             <DialogPanel
-              class="relative w-full max-w-2xl transform overflow-hidden rounded-2xl bg-theme-mute border border-theme-border p-6 text-left align-middle shadow-xl transition-all origin-center"
+              :class="[
+                'relative w-full transform overflow-hidden rounded-2xl bg-theme-mute border border-theme-border p-6 text-left align-middle shadow-xl transition-all origin-center',
+                props.maxWidth,
+              ]"
             >
               <button
                 type="button"
