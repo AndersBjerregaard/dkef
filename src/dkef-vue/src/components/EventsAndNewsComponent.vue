@@ -9,9 +9,13 @@ import apiservice from '@/services/apiservice'
 import urlservice from '@/services/urlservice'
 import type { AxiosResponse } from 'axios'
 import axios from 'axios'
-import { type EventDto, type PublishedEvent } from '@/types/events'
-import type { NewsDto, PublishedNews } from '@/types/news'
-import type { GeneralAssemblyDto, PublishedGeneralAssembly } from '@/types/generalAssembly'
+import { type EventDto, type PublishedEvent, type EventsCollection } from '@/types/events'
+import type { NewsDto, PublishedNews, NewsCollection } from '@/types/news'
+import type {
+  GeneralAssemblyDto,
+  PublishedGeneralAssembly,
+  GeneralAssemblyCollection,
+} from '@/types/generalAssembly'
 import type { FeedItem } from '@/types/feed'
 import { useFeedStore } from '@/stores/feedStore'
 import { useAuthStore } from '@/stores/authStore'
@@ -23,7 +27,13 @@ const feedStore = useFeedStore()
 const authStore = useAuthStore()
 
 const isFetching = ref(true)
+const isFilterFetching = ref(false)
 const activeFilter = ref<FilterType>('all')
+
+// Per-type result caches for specific filter views
+const filteredEvents = ref<PublishedEvent[]>([])
+const filteredNews = ref<PublishedNews[]>([])
+const filteredAssemblies = ref<PublishedGeneralAssembly[]>([])
 
 const isOpen: Ref<boolean> = ref(false)
 const isLoading: Ref<boolean> = ref(false)
@@ -45,26 +55,84 @@ const itemAuthor: Ref<string> = ref('')
 const fileUploadError: Ref<boolean> = ref(false)
 const submitError: Ref<boolean> = ref(false)
 
-const kindFilterMap: Record<FilterType, FeedItem['kind'] | null> = {
-  all: null,
-  events: 'event',
-  news: 'news',
-  'general-assemblies': 'general-assembly',
-}
-
-// Flat list in server sort order (createdAt desc), filtered by active kind
-const displayedItems = computed(() => {
-  const kindFilter = kindFilterMap[activeFilter.value]
-  if (kindFilter === null) return feedStore.items
-  return feedStore.items.filter((item) => item.kind === kindFilter)
+// Flat list in server sort order (createdAt desc)
+const displayedItems = computed<FeedItem[]>(() => {
+  switch (activeFilter.value) {
+    case 'events':
+      return filteredEvents.value.map((e) => ({
+        id: e.id,
+        kind: 'event' as const,
+        title: e.title,
+        section: e.section,
+        description: e.description,
+        thumbnailUrl: e.thumbnailUrl,
+        createdAt: e.createdAt,
+        address: e.address,
+        dateTime: e.dateTime,
+      }))
+    case 'news':
+      return filteredNews.value.map((n) => ({
+        id: n.id,
+        kind: 'news' as const,
+        title: n.title,
+        section: n.section,
+        description: n.description,
+        thumbnailUrl: n.thumbnailUrl,
+        createdAt: n.createdAt,
+        author: n.author,
+        publishedAt: n.publishedAt,
+      }))
+    case 'general-assemblies':
+      return filteredAssemblies.value.map((g) => ({
+        id: g.id,
+        kind: 'general-assembly' as const,
+        title: g.title,
+        section: g.section,
+        description: g.description,
+        thumbnailUrl: g.thumbnailUrl,
+        createdAt: g.createdAt,
+        address: g.address,
+        dateTime: g.dateTime,
+      }))
+    default:
+      return feedStore.items
+  }
 })
 
-const isAnyFetching = computed(() => isFetching.value || feedStore.isFetching)
+const isAnyFetching = computed(() => isFetching.value || feedStore.isFetching || isFilterFetching.value)
 
 async function fetchAll() {
   isFetching.value = true
   await feedStore.fetchFeed(9)
   isFetching.value = false
+}
+
+async function fetchFiltered(filter: FilterType) {
+  if (filter === 'all') return
+  isFilterFetching.value = true
+  try {
+    if (filter === 'events') {
+      const response = await apiservice.get<EventsCollection>(urlservice.getEvents(), {
+        params: { take: 9 },
+      })
+      filteredEvents.value = response.data.collection
+    } else if (filter === 'news') {
+      const response = await apiservice.get<NewsCollection>(urlservice.getNews(), {
+        params: { take: 9 },
+      })
+      filteredNews.value = response.data.collection
+    } else if (filter === 'general-assemblies') {
+      const response = await apiservice.get<GeneralAssemblyCollection>(
+        urlservice.getGeneralAssemblies(),
+        { params: { take: 9 } },
+      )
+      filteredAssemblies.value = response.data.collection
+    }
+  } catch (err: unknown) {
+    console.error('Error fetching filtered items:', err)
+  } finally {
+    isFilterFetching.value = false
+  }
 }
 
 onMounted(async () => {
@@ -73,6 +141,9 @@ onMounted(async () => {
 
 function setFilter(filter: FilterType) {
   activeFilter.value = filter
+  if (filter !== 'all') {
+    fetchFiltered(filter)
+  }
 }
 
 function closeModal() {
@@ -159,7 +230,11 @@ async function createItem() {
     }
     resetFields()
     isOpen.value = false
-    await fetchAll()
+    if (activeFilter.value === 'all') {
+      await fetchAll()
+    } else {
+      await fetchFiltered(activeFilter.value)
+    }
   } catch (err: unknown) {
     const axiosError = err as { response?: { data?: { message?: string } }; message?: string }
     const message =
