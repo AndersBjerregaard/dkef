@@ -12,6 +12,7 @@ import axios from 'axios'
 import { type EventDto, type PublishedEvent } from '@/types/events'
 import type { NewsDto, PublishedNews } from '@/types/news'
 import type { GeneralAssemblyDto, PublishedGeneralAssembly } from '@/types/generalAssembly'
+import type { FeedItem } from '@/types/feed'
 import { useFeedStore } from '@/stores/feedStore'
 import { useAuthStore } from '@/stores/authStore'
 
@@ -44,71 +45,25 @@ const itemAuthor: Ref<string> = ref('')
 const fileUploadError: Ref<boolean> = ref(false)
 const submitError: Ref<boolean> = ref(false)
 
-// Derive typed buckets from the flat feed, preserving CreatedAt sort order
-const allEvents = computed(() =>
-  feedStore.items
-    .filter((item) => item.kind === 'event')
-    .map((item) => ({
-      id: item.id,
-      title: item.title,
-      section: item.section,
-      address: item.address ?? '',
-      dateTime: item.dateTime ?? '',
-      description: item.description,
-      thumbnailUrl: item.thumbnailUrl,
-      createdAt: item.createdAt,
-    })) satisfies PublishedEvent[],
-)
+const kindFilterMap: Record<FilterType, FeedItem['kind'] | null> = {
+  all: null,
+  events: 'event',
+  news: 'news',
+  'general-assemblies': 'general-assembly',
+}
 
-const allNews = computed(() =>
-  feedStore.items
-    .filter((item) => item.kind === 'news')
-    .map((item) => ({
-      id: item.id,
-      title: item.title,
-      section: item.section,
-      author: item.author ?? '',
-      description: item.description,
-      thumbnailUrl: item.thumbnailUrl,
-      publishedAt: item.publishedAt ?? '',
-      createdAt: item.createdAt,
-    })) satisfies PublishedNews[],
-)
-
-const allAssemblies = computed(() =>
-  feedStore.items
-    .filter((item) => item.kind === 'general-assembly')
-    .map((item) => ({
-      id: item.id,
-      title: item.title,
-      section: item.section,
-      address: item.address ?? '',
-      dateTime: item.dateTime ?? '',
-      description: item.description,
-      thumbnailUrl: item.thumbnailUrl,
-      createdAt: item.createdAt,
-    })) satisfies PublishedGeneralAssembly[],
-)
-
-// Computed: items to display based on active filter
+// Flat list in server sort order (createdAt desc), filtered by active kind
 const displayedItems = computed(() => {
-  switch (activeFilter.value) {
-    case 'events':
-      return { events: allEvents.value, news: [], assemblies: [] }
-    case 'news':
-      return { events: [], news: allNews.value, assemblies: [] }
-    case 'general-assemblies':
-      return { events: [], news: [], assemblies: allAssemblies.value }
-    default:
-      return { events: allEvents.value, news: allNews.value, assemblies: allAssemblies.value }
-  }
+  const kindFilter = kindFilterMap[activeFilter.value]
+  if (kindFilter === null) return feedStore.items
+  return feedStore.items.filter((item) => item.kind === kindFilter)
 })
 
 const isAnyFetching = computed(() => isFetching.value || feedStore.isFetching)
 
 async function fetchAll() {
   isFetching.value = true
-  await feedStore.fetchFeed(9)
+  await feedStore.fetchFeed(3)
   isFetching.value = false
 }
 
@@ -390,17 +345,47 @@ const submitLabel = computed(() => {
 
     <!-- Items grid -->
     <div v-else class="flex flex-wrap justify-center items-start gap-6 px-4">
-      <EventComponent
-        v-for="item in displayedItems.events"
-        :key="item.id"
-        :published-event="item"
-      />
-      <NewsComponent v-for="item in displayedItems.news" :key="item.id" :published-news="item" />
-      <GeneralAssemblyComponent
-        v-for="item in displayedItems.assemblies"
-        :key="item.id"
-        :published-general-assembly="item"
-      />
+      <template v-for="item in displayedItems" :key="item.id">
+        <EventComponent
+          v-if="item.kind === 'event'"
+          :published-event="{
+            id: item.id,
+            title: item.title,
+            section: item.section,
+            address: item.address ?? '',
+            dateTime: item.dateTime ?? '',
+            description: item.description,
+            thumbnailUrl: item.thumbnailUrl,
+            createdAt: item.createdAt,
+          }"
+        />
+        <NewsComponent
+          v-else-if="item.kind === 'news'"
+          :published-news="{
+            id: item.id,
+            title: item.title,
+            section: item.section,
+            author: item.author ?? '',
+            description: item.description,
+            thumbnailUrl: item.thumbnailUrl,
+            publishedAt: item.publishedAt ?? '',
+            createdAt: item.createdAt,
+          }"
+        />
+        <GeneralAssemblyComponent
+          v-else-if="item.kind === 'general-assembly'"
+          :published-general-assembly="{
+            id: item.id,
+            title: item.title,
+            section: item.section,
+            address: item.address ?? '',
+            dateTime: item.dateTime ?? '',
+            description: item.description,
+            thumbnailUrl: item.thumbnailUrl,
+            createdAt: item.createdAt,
+          }"
+        />
+      </template>
     </div>
 
     <!-- Admin create button -->
