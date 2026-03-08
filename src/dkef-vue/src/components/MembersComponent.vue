@@ -115,7 +115,7 @@ function matchContactProperty(contact: Contact, propertyName: string): string {
   }
 }
 
-const takeAmount = 25
+const takeAmount = 200
 let initialFetch = true
 let total = Number.MAX_SAFE_INTEGER
 

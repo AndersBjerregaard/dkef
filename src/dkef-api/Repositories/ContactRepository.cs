@@ -59,6 +59,52 @@ public class ContactRepository(ContactContext _context, IMapper _mapper) : ICont
         return updated;
     }
 
+    public async Task<DomainCollection<ContactListDto>> GetMultipleListAsync(int take = 10, int skip = 0)
+    {
+        var totalItems = await _context.Contacts.CountAsync();
+        var contacts = await _context.Contacts.AsNoTracking()
+            .OrderBy(x => x.Id)
+            .Skip(skip)
+            .Take(take)
+            .Select(x => new ContactListDto
+            {
+                Id = x.Id,
+                Email = x.Email ?? string.Empty,
+                CreatedAt = x.CreatedAt,
+                FirstName = x.FirstName,
+                LastName = x.LastName,
+                Title = x.Title,
+                Occupation = x.Occupation,
+                WorkTasks = x.WorkTasks,
+                PrivateAddress = x.PrivateAddress,
+                PrivateZIP = x.PrivateZIP,
+                PrivateCity = x.PrivateCity,
+                PrivatePhone = x.PrivatePhone,
+                CompanyName = x.CompanyName,
+                CompanyAddress = x.CompanyAddress,
+                CompanyZIP = x.CompanyZIP,
+                CompanyCity = x.CompanyCity,
+                CVRNumber = x.CVRNumber,
+                CompanyPhone = x.CompanyPhone,
+                CompanyEmail = x.CompanyEmail,
+                ElTeknikDelivery = x.ElTeknikDelivery,
+                EANNumber = x.EANNumber,
+                Invoice = x.Invoice,
+                HelpToStudents = x.HelpToStudents,
+                Mentor = x.Mentor,
+                PrimarySection = x.PrimarySection,
+                SecondarySection = x.SecondarySection,
+                InvoiceEmail = x.InvoiceEmail,
+                OldMemberNumber = x.OldMemberNumber,
+                RegistrationDate = x.RegistrationDate,
+                ATTInvoice = x.ATTInvoice,
+                Source = x.Source,
+                ExpectedEndDateOfBeingStudent = x.ExpectedEndDateOfBeingStudent,
+            })
+            .ToListAsync();
+        return new DomainCollection<ContactListDto>(contacts, totalItems);
+    }
+
     public async Task SeedAsync() => await ContactContext.SeedAsync(_context);
 
     public Task<Contact?> GetByEmailAsync(string email)
