@@ -18,7 +18,7 @@ const publishedAt = computed(() => {
 <template>
   <RouterLink :to="`/news/${props.publishedNews.id}`" class="block w-full h-full">
     <div
-      class="h-full min-h-[360px] border border-theme-border rounded-2xl overflow-hidden flex flex-col cursor-pointer hover:border-amber-500/40 bg-theme-mute transition-colors"
+      class="h-full min-h-[360px] border-2 border-theme-border rounded-2xl overflow-hidden flex flex-col cursor-pointer hover:border-amber-500 hover:shadow-[0_0_16px_2px_rgba(245,158,11,0.25)] bg-theme-mute transition-all duration-200 ease-out hover:scale-[1.02] will-change-transform"
     >
       <!-- Thumbnail -->
       <div class="h-44 shrink-0 bg-theme-soft">
