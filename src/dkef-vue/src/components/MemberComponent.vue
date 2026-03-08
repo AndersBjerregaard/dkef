@@ -193,7 +193,7 @@ const hasAccess = ref(true)
 
 <template>
   <div
-    class="border-x-2 border-theme-border w-full justify-between flex hover:bg-theme-border hover:text-amber-400 cursor-pointer transition-colors"
+    class="border-x-2 border-theme-border w-full justify-between flex hover:bg-theme-border hover:text-theme-accent cursor-pointer transition-colors"
     @click="openModal"
     :class="{ 'bg-theme-base': index % 2 == 0, 'bg-theme-soft': index % 2 == 1 }"
   >
@@ -585,7 +585,7 @@ const hasAccess = ref(true)
                 'cursor-not-allowed': isLoading,
                 'hover:bg-gray-400': !isLoading,
               }"
-              class="inline-flex justify-center rounded-md border border-transparent bg-theme-mute px-4 py-2 font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 text-theme-heading hover:bg-theme-border hover:text-amber-400 focus-visible:ring-offset-2 transition-colors"
+              class="inline-flex justify-center rounded-md border border-transparent bg-theme-mute px-4 py-2 font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-theme-accent text-theme-heading hover:bg-theme-border hover:text-theme-accent focus-visible:ring-offset-2 transition-colors"
               @click="closeModal"
             >
               <span>Fortryd</span>
@@ -604,7 +604,7 @@ const hasAccess = ref(true)
               'cursor-not-allowed': isLoading,
               'hover:bg-gray-400': !isLoading,
             }"
-            class="inline-flex justify-center rounded-md border border-transparent bg-theme-mute px-4 py-2 font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 text-theme-heading hover:bg-theme-border hover:text-amber-400 focus-visible:ring-offset-2 transition-colors"
+            class="inline-flex justify-center rounded-md border border-transparent bg-theme-mute px-4 py-2 font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-theme-accent text-theme-heading hover:bg-theme-border hover:text-theme-accent focus-visible:ring-offset-2 transition-colors"
             @click="closeModal"
           >
             <span>Luk</span>
@@ -625,7 +625,7 @@ const hasAccess = ref(true)
 }
 .inputField:focus {
   outline: none;
-  box-shadow: 0 0 0 2px #f59e0b;
-  border-color: #f59e0b;
+  box-shadow: 0 0 0 2px var(--color-accent);
+  border-color: var(--color-accent);
 }
 </style>

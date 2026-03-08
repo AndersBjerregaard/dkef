@@ -5,7 +5,7 @@
     <label for="name_input">Navn</label>
     <br />
     <input
-      class="w-full bg-theme-soft border border-theme-border rounded-xl p-2 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+      class="w-full bg-theme-soft border border-theme-border rounded-xl p-2 focus:outline-none focus:ring-2 focus:ring-theme-accent focus:border-theme-accent"
       id="name_input"
       name="name_input"
       placeholder="Navn"
@@ -15,7 +15,7 @@
     <label for="phone_input">Telefon</label>
     <br />
     <input
-      class="w-full bg-theme-soft border border-theme-border rounded-xl p-2 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+      class="w-full bg-theme-soft border border-theme-border rounded-xl p-2 focus:outline-none focus:ring-2 focus:ring-theme-accent focus:border-theme-accent"
       id="phone_input"
       name="phone_input"
       placeholder="Telefon"
@@ -25,7 +25,7 @@
     <label for="email_input">Email</label>
     <br />
     <input
-      class="w-full bg-theme-soft border border-theme-border rounded-xl p-2 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+      class="w-full bg-theme-soft border border-theme-border rounded-xl p-2 focus:outline-none focus:ring-2 focus:ring-theme-accent focus:border-theme-accent"
       id="email_input"
       name="email_input"
       placeholder="Email"
@@ -36,7 +36,7 @@
       <label class="text-xl" for="message_input">Besked</label>
       <br />
       <textarea
-        class="w-full h-32 bg-theme-soft border border-theme-border rounded-2xl p-2 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+        class="w-full h-32 bg-theme-soft border border-theme-border rounded-2xl p-2 focus:outline-none focus:ring-2 focus:ring-theme-accent focus:border-theme-accent"
         id="message_input"
         name="message_input"
         placeholder="Skriv din besked her"

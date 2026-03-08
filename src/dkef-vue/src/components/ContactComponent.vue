@@ -33,7 +33,7 @@ import NewsLetterComponent from './NewsLetterComponent.vue'
           </div>
         </div>
         <div class="flex-row">
-          <h1 class="text-xl text-amber-400">Email</h1>
+          <h1 class="text-xl text-theme-accent">Email</h1>
           <h3 class="text-lg">info@dkef.dk</h3>
         </div>
       </div>
@@ -47,7 +47,7 @@ import NewsLetterComponent from './NewsLetterComponent.vue'
           </div>
         </div>
         <div class="flex-row">
-          <h1 class="text-xl text-amber-400">Telefon</h1>
+          <h1 class="text-xl text-theme-accent">Telefon</h1>
           <h3 class="text-lg">+45 42 57 70 69</h3>
         </div>
       </div>
@@ -61,7 +61,7 @@ import NewsLetterComponent from './NewsLetterComponent.vue'
           </div>
         </div>
         <div class="flex-row">
-          <h1 class="text-xl text-amber-400">Adresse</h1>
+          <h1 class="text-xl text-theme-accent">Adresse</h1>
           <h3 class="text-lg">Elleholmvej 28C</h3>
           <h3 class="text-lg">5250 Odense SV</h3>
         </div>

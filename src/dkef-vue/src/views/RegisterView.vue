@@ -74,7 +74,7 @@ async function handleRegister() {
               name="first-name"
               type="text"
               required
-              class="w-full bg-theme-soft border border-theme-border rounded-xl p-2 text-theme-heading placeholder-theme-muted focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+              class="w-full bg-theme-soft border border-theme-border rounded-xl p-2 text-theme-heading placeholder-theme-muted focus:outline-none focus:ring-2 focus:ring-theme-accent focus:border-theme-accent"
               placeholder="Fornavn"
             />
           </div>
@@ -87,7 +87,7 @@ async function handleRegister() {
               name="last-name"
               type="text"
               required
-              class="w-full bg-theme-soft border border-theme-border rounded-xl p-2 text-theme-heading placeholder-theme-muted focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+              class="w-full bg-theme-soft border border-theme-border rounded-xl p-2 text-theme-heading placeholder-theme-muted focus:outline-none focus:ring-2 focus:ring-theme-accent focus:border-theme-accent"
               placeholder="Efternavn"
             />
           </div>
@@ -101,7 +101,7 @@ async function handleRegister() {
               type="email"
               autocomplete="email"
               required
-              class="w-full bg-theme-soft border border-theme-border rounded-xl p-2 text-theme-heading placeholder-theme-muted focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+              class="w-full bg-theme-soft border border-theme-border rounded-xl p-2 text-theme-heading placeholder-theme-muted focus:outline-none focus:ring-2 focus:ring-theme-accent focus:border-theme-accent"
               placeholder="Email"
             />
           </div>
@@ -115,7 +115,7 @@ async function handleRegister() {
               type="password"
               autocomplete="new-password"
               required
-              class="w-full bg-theme-soft border border-theme-border rounded-xl p-2 text-theme-heading placeholder-theme-muted focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+              class="w-full bg-theme-soft border border-theme-border rounded-xl p-2 text-theme-heading placeholder-theme-muted focus:outline-none focus:ring-2 focus:ring-theme-accent focus:border-theme-accent"
               placeholder="Adgangskode (min 8 tegn)"
             />
           </div>
@@ -131,7 +131,7 @@ async function handleRegister() {
               type="password"
               autocomplete="new-password"
               required
-              class="w-full bg-theme-soft border border-theme-border rounded-xl p-2 text-theme-heading placeholder-theme-muted focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+              class="w-full bg-theme-soft border border-theme-border rounded-xl p-2 text-theme-heading placeholder-theme-muted focus:outline-none focus:ring-2 focus:ring-theme-accent focus:border-theme-accent"
               placeholder="Bekræft adgangskode"
             />
           </div>

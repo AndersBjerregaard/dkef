@@ -245,7 +245,7 @@ function sort(by: string, order: Sort): void {
         <label class="p-1">Søg: </label>
         <input
           type="text"
-          class="bg-theme-soft border border-theme-border rounded p-1 w-[50%] focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+          class="bg-theme-soft border border-theme-border rounded p-1 w-[50%] focus:outline-none focus:ring-2 focus:ring-theme-accent focus:border-theme-accent"
           placeholder="Minimum 3 bogstaver..."
           v-model="filterString"
         />

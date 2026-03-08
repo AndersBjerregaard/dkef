@@ -48,7 +48,7 @@ const handleClick = () => {
 
 <template>
   <div
-    class="border-x-2 border-theme-border w-full py-1 cursor-pointer hover:bg-theme-mute hover:text-amber-400 select-none transition-colors"
+    class="border-x-2 border-theme-border w-full py-1 cursor-pointer hover:bg-theme-mute hover:text-theme-accent select-none transition-colors"
     @click="handleClick"
   >
     <h2 class="text-lg overflow-ellipsis flex items-center justify-center">

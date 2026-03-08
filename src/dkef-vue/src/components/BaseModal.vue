@@ -56,7 +56,7 @@ const closeModal = () => {
             >
               <button
                 type="button"
-                class="cursor-pointer absolute top-3 right-3 text-theme-muted hover:text-amber-400 transition-colors"
+                class="cursor-pointer absolute top-3 right-3 text-theme-muted hover:text-theme-accent transition-colors"
                 @click="closeModal"
                 :disabled="isLoading"
               >

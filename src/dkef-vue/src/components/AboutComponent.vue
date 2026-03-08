@@ -45,19 +45,19 @@ import ContactFormularComponent from '@/components/ContactFormularComponent.vue'
         <h2 class="text-xl">Medlemmer</h2>
       </div>
       <div class="flex justify-center items-center text-center pb-8">
-        <h1 class="text-6xl text-amber-400">+550</h1>
+        <h1 class="text-6xl text-theme-accent">+550</h1>
       </div>
       <div class="flex justify-center items-center text-center pb-2">
         <h2 class="text-xl">Sektioner</h2>
       </div>
       <div class="flex justify-center items-center text-center pb-8">
-        <h1 class="text-6xl text-amber-400">5</h1>
+        <h1 class="text-6xl text-theme-accent">5</h1>
       </div>
       <div class="flex justify-center items-center text-center pb-2">
         <h2 class="text-xl">Siden</h2>
       </div>
       <div class="flex justify-center items-center text-center pb-8">
-        <h1 class="text-6xl text-amber-400">1903</h1>
+        <h1 class="text-6xl text-theme-accent">1903</h1>
       </div>
       <div class="flex-row py-12">
         <div class="flex justify-center items-center text-center">

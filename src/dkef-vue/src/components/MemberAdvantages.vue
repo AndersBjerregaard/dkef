@@ -6,7 +6,9 @@
     class="flex flex-col md:flex-row justify-center items-center gap-x-12 px-4 py-12 sm:py-20 mx-auto"
   >
     <div class="gap-4 w-full md:w-96 px-2 pb-8 md:pb-0 mx-auto">
-      <p class="text-amber-400 text-sm font-semibold uppercase tracking-widest pb-3">Medlemskab</p>
+      <p class="text-theme-accent text-sm font-semibold uppercase tracking-widest pb-3">
+        Medlemskab
+      </p>
       <h1 class="text-3xl md:text-4xl pb-6 text-theme-heading leading-tight">
         Bliv medlem af Elektroteknisk forening i dag
       </h1>
@@ -28,7 +30,7 @@
         <!-- Amber top accent bar -->
         <div class="h-1 w-16 bg-amber-500 rounded-full mb-6"></div>
         <div class="flex justify-center mb-2">
-          <h2 class="text-xl font-semibold text-amber-400">Medlemskab</h2>
+          <h2 class="text-xl font-semibold text-theme-accent">Medlemskab</h2>
         </div>
         <div class="border-t border-theme-border pt-4 pb-4">
           <p class="py-2 text-theme-text">✅ Faglig udvikling</p>
@@ -38,7 +40,7 @@
           <p class="pb-2 text-theme-text">✅ Modtag EL + Energi bladet</p>
         </div>
         <div class="flex justify-center mb-2">
-          <h2 class="text-xl font-semibold text-amber-400">Tilbud til studerende</h2>
+          <h2 class="text-xl font-semibold text-theme-accent">Tilbud til studerende</h2>
         </div>
         <div class="border-t border-theme-border pt-4">
           <p class="py-2 flex items-start gap-2 text-theme-text">
@@ -69,7 +71,7 @@
     class="bg-theme-soft flex flex-col md:flex-row justify-center items-center gap-x-12 px-4 py-12 sm:py-20 mx-auto"
   >
     <div class="gap-4 w-full md:w-96 px-2 pb-8 md:pb-0 mx-auto">
-      <p class="text-amber-400 text-sm font-semibold uppercase tracking-widest pb-3">Netværk</p>
+      <p class="text-theme-accent text-sm font-semibold uppercase tracking-widest pb-3">Netværk</p>
       <h1 class="text-2xl sm:text-4xl pb-6 text-theme-heading leading-tight">
         Få adgang til netværksdatabase
       </h1>
@@ -97,7 +99,7 @@
     class="flex flex-col md:flex-row justify-center items-center gap-x-12 px-4 py-12 sm:py-20 mx-auto"
   >
     <div class="gap-4 w-full md:w-96 px-2 pb-8 md:pb-0 mx-auto">
-      <p class="text-amber-400 text-sm font-semibold uppercase tracking-widest pb-3">
+      <p class="text-theme-accent text-sm font-semibold uppercase tracking-widest pb-3">
         Arrangementer
       </p>
       <h1 class="text-2xl sm:text-4xl pb-6 text-theme-heading leading-tight">
@@ -125,7 +127,7 @@
   <!-- Fourth section -->
   <div class="bg-theme-soft px-4 py-16">
     <div class="text-center mb-10">
-      <p class="text-amber-400 text-sm font-semibold uppercase tracking-widest pb-3">Fordele</p>
+      <p class="text-theme-accent text-sm font-semibold uppercase tracking-widest pb-3">Fordele</p>
       <h1 class="text-2xl sm:text-3xl text-theme-heading">
         Andre gode grunde til at være med i Elektroteknisk forening
       </h1>

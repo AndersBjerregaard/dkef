@@ -8,7 +8,7 @@ import NewsLetterComponent from './NewsLetterComponent.vue'
     <div class="flex flex-col md:flex-row justify-center items-center gap-x-12 mx-auto">
       <!-- Left Column -->
       <div class="w-full md:w-96 px-2 pb-8 md:pb-0 mx-auto">
-        <p class="text-amber-400 text-sm font-semibold uppercase tracking-widest pb-4">
+        <p class="text-theme-accent text-sm font-semibold uppercase tracking-widest pb-4">
           Elektroteknisk forening
         </p>
         <h1 class="text-4xl pb-8 text-theme-heading leading-tight">Dit netværk i elbranchen</h1>
@@ -18,7 +18,7 @@ import NewsLetterComponent from './NewsLetterComponent.vue'
           hænder.
         </p>
 
-        <p class="text-lg pb-4 text-amber-400 font-medium">
+        <p class="text-lg pb-4 text-theme-accent font-medium">
           ⭐ 4.8/5 stjerner af vores 100+ anmeldelser.
         </p>
       </div>
@@ -30,7 +30,9 @@ import NewsLetterComponent from './NewsLetterComponent.vue'
   </div>
 
   <!-- Member companies strip -->
-  <div class="bg-theme-soft border-y border-amber-500/15 px-4 py-12 flex justify-center items-center">
+  <div
+    class="bg-theme-soft border-y border-amber-500/15 px-4 py-12 flex justify-center items-center"
+  >
     <div class="max-w-4xl mx-auto">
       <div class="pb-8 flex items-center justify-center">
         <h2 class="text-theme-text font-medium text-lg uppercase tracking-widest">
@@ -137,7 +139,9 @@ import NewsLetterComponent from './NewsLetterComponent.vue'
       </div>
 
       <div class="w-full md:w-96 px-2 pb-8 md:pb-0 mx-auto">
-        <p class="text-amber-400 text-sm font-semibold uppercase tracking-widest pb-3">Netværk</p>
+        <p class="text-theme-accent text-sm font-semibold uppercase tracking-widest pb-3">
+          Netværk
+        </p>
         <h2 class="text-3xl text-theme-heading leading-tight pb-4">
           Sparring og relationer på tværs af branchen
         </h2>
@@ -160,7 +164,9 @@ import NewsLetterComponent from './NewsLetterComponent.vue'
   <div class="px-4 py-12 sm:py-20">
     <div class="flex flex-col md:flex-row justify-center items-center gap-x-12 mx-auto">
       <div class="w-full md:w-96 px-2 pb-8 md:pb-0 mx-auto">
-        <p class="text-amber-400 text-sm font-semibold uppercase tracking-widest pb-3">Udvikling</p>
+        <p class="text-theme-accent text-sm font-semibold uppercase tracking-widest pb-3">
+          Udvikling
+        </p>
         <h2 class="text-3xl text-theme-heading leading-tight pb-4">Fokus på faglig udvikling</h2>
 
         <p class="text-lg text-theme-text leading-relaxed pb-6">
@@ -185,8 +191,12 @@ import NewsLetterComponent from './NewsLetterComponent.vue'
   <div class="bg-theme-soft border-y border-amber-500/10 px-4 py-12 sm:py-20">
     <div class="flex flex-col md:flex-row justify-center items-center gap-x-12 mx-auto">
       <div class="w-full md:w-96 px-2 pb-8 md:pb-0 mx-auto">
-        <p class="text-amber-400 text-sm font-semibold uppercase tracking-widest pb-3">Hvorfor?</p>
-        <h2 class="text-3xl text-theme-heading leading-tight pb-4">3 gode grunde til at være medlem</h2>
+        <p class="text-theme-accent text-sm font-semibold uppercase tracking-widest pb-3">
+          Hvorfor?
+        </p>
+        <h2 class="text-3xl text-theme-heading leading-tight pb-4">
+          3 gode grunde til at være medlem
+        </h2>
 
         <p class="text-lg text-theme-text leading-relaxed pb-6">
           Stadig i tvivl? Lad os lige skitsere, hvad du får ud af et medlemskab.
@@ -225,7 +235,9 @@ import NewsLetterComponent from './NewsLetterComponent.vue'
   </div>
 
   <!-- Member plans -->
-  <div class="flex justify-center items-center py-16 bg-theme-soft border-y border-amber-500/10 px-4">
+  <div
+    class="flex justify-center items-center py-16 bg-theme-soft border-y border-amber-500/10 px-4"
+  >
     <div class="max-w-3xl mx-auto">
       <div class="flex justify-center pb-12">
         <h2 class="text-4xl text-theme-heading">Vores medlemstyper</h2>
@@ -239,7 +251,7 @@ import NewsLetterComponent from './NewsLetterComponent.vue'
             <h3 class="text-2xl text-theme-heading">Bliv medlem</h3>
           </div>
           <div class="flex items-end pb-2">
-            <p class="text-4xl text-amber-400 font-bold">700,-</p>
+            <p class="text-4xl text-theme-accent font-bold">700,-</p>
             <span class="px-3 pb-1 text-theme-text text-sm">inkl. moms pr. år</span>
           </div>
           <p class="pt-4 text-theme-text">
@@ -269,7 +281,7 @@ import NewsLetterComponent from './NewsLetterComponent.vue'
   <div class="flex justify-center items-center py-16 border-b border-amber-500/10 px-4">
     <div class="max-w-3xl mx-auto">
       <div class="text-center pb-12">
-        <p class="text-amber-400 text-sm font-semibold uppercase tracking-widest pb-4">
+        <p class="text-theme-accent text-sm font-semibold uppercase tracking-widest pb-4">
           Aktiviteter
         </p>
         <h2 class="text-4xl text-theme-heading pb-4">Nyheder og aktiviteter</h2>

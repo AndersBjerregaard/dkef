@@ -154,7 +154,7 @@ async function saveEvent() {
         <br />
         <input
           id="edit_event_title"
-          class="w-full bg-theme-soft border border-theme-border rounded-xl p-2 text-theme-heading placeholder-theme-muted focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+          class="w-full bg-theme-soft border border-theme-border rounded-xl p-2 text-theme-heading placeholder-theme-muted focus:outline-none focus:ring-2 focus:ring-theme-accent focus:border-theme-accent"
           type="text"
           placeholder="Titel"
           v-model="itemTitle"
@@ -169,7 +169,7 @@ async function saveEvent() {
           <br />
           <input
             id="edit_event_section"
-            class="w-full bg-theme-soft border border-theme-border rounded-xl p-2 text-theme-heading placeholder-theme-muted focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+            class="w-full bg-theme-soft border border-theme-border rounded-xl p-2 text-theme-heading placeholder-theme-muted focus:outline-none focus:ring-2 focus:ring-theme-accent focus:border-theme-accent"
             type="text"
             placeholder="Sektion"
             v-model="itemSection"
@@ -181,7 +181,7 @@ async function saveEvent() {
           <br />
           <input
             id="edit_event_address"
-            class="w-full bg-theme-soft border border-theme-border rounded-xl p-2 text-theme-heading placeholder-theme-muted focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+            class="w-full bg-theme-soft border border-theme-border rounded-xl p-2 text-theme-heading placeholder-theme-muted focus:outline-none focus:ring-2 focus:ring-theme-accent focus:border-theme-accent"
             type="text"
             placeholder="Adresse"
             v-model="itemAddress"
@@ -193,7 +193,7 @@ async function saveEvent() {
           <br />
           <input
             id="edit_event_date"
-            class="w-full bg-theme-soft border border-theme-border rounded-xl p-2 text-theme-heading cursor-pointer focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+            class="w-full bg-theme-soft border border-theme-border rounded-xl p-2 text-theme-heading cursor-pointer focus:outline-none focus:ring-2 focus:ring-theme-accent focus:border-theme-accent"
             :class="{ '[color-scheme:dark]': themeStore.isDark() }"
             type="datetime-local"
             v-model="itemDate"
@@ -208,7 +208,7 @@ async function saveEvent() {
         <br />
         <textarea
           id="edit_event_description"
-          class="w-full bg-theme-soft border border-theme-border rounded-xl p-2 h-96 text-theme-heading placeholder-theme-muted focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+          class="w-full bg-theme-soft border border-theme-border rounded-xl p-2 h-96 text-theme-heading placeholder-theme-muted focus:outline-none focus:ring-2 focus:ring-theme-accent focus:border-theme-accent"
           placeholder="Beskrivelse"
           v-model="itemDescription"
           :disabled="isLoading"
@@ -221,7 +221,7 @@ async function saveEvent() {
         <br />
         <input
           id="edit_event_file"
-          class="w-full bg-theme-soft border border-theme-border rounded-xl p-2 cursor-pointer hover:bg-theme-mute text-theme-text focus:outline-none focus:ring-2 focus:ring-amber-500"
+          class="w-full bg-theme-soft border border-theme-border rounded-xl p-2 cursor-pointer hover:bg-theme-mute text-theme-text focus:outline-none focus:ring-2 focus:ring-theme-accent"
           type="file"
           accept="image/*"
           @change="handleFileUpload"
@@ -240,7 +240,7 @@ async function saveEvent() {
       <div class="mt-4 flex gap-3">
         <button
           type="submit"
-          class="cursor-pointer inline-flex justify-center rounded-md border border-transparent bg-amber-600 px-4 py-2 text-md font-semibold hover:bg-amber-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 text-navy-950 focus-visible:ring-offset-2 shadow-lg shadow-amber-600/20 disabled:opacity-50"
+          class="cursor-pointer inline-flex justify-center rounded-md border border-transparent bg-amber-600 px-4 py-2 text-md font-semibold hover:bg-amber-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-theme-accent text-navy-950 focus-visible:ring-offset-2 shadow-lg shadow-amber-600/20 disabled:opacity-50"
           :disabled="isLoading"
         >
           <span v-if="isLoading" class="flex items-center">
@@ -270,7 +270,7 @@ async function saveEvent() {
         </button>
         <button
           type="button"
-          class="cursor-pointer inline-flex justify-center rounded-md border border-transparent bg-theme-mute px-4 py-2 text-md font-medium hover:bg-theme-border hover:text-amber-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 text-theme-heading focus-visible:ring-offset-2 disabled:opacity-50"
+          class="cursor-pointer inline-flex justify-center rounded-md border border-transparent bg-theme-mute px-4 py-2 text-md font-medium hover:bg-theme-border hover:text-theme-accent focus:outline-none focus-visible:ring-2 focus-visible:ring-theme-accent text-theme-heading focus-visible:ring-offset-2 disabled:opacity-50"
           :disabled="isLoading"
           @click="emit('close')"
         >

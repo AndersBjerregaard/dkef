@@ -34,7 +34,7 @@ const dateTime = computed(() => {
       <!-- Content -->
       <div class="flex flex-col flex-1 p-4 gap-2">
         <!-- Type badge -->
-        <span class="text-xs font-semibold uppercase tracking-wide text-amber-400"
+        <span class="text-xs font-semibold uppercase tracking-wide text-theme-accent"
           >Generalforsamling</span
         >
 
