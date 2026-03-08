@@ -352,7 +352,7 @@ const submitLabel = computed(() => {
         :class="
           activeFilter === 'all'
             ? 'bg-amber-600 text-navy-950'
-            : 'bg-navy-800 text-slate-200 hover:bg-navy-700 hover:text-amber-400'
+            : 'bg-theme-mute text-theme-heading hover:bg-theme-border hover:text-amber-400'
         "
         @click="setFilter('all')"
       >
@@ -363,7 +363,7 @@ const submitLabel = computed(() => {
         :class="
           activeFilter === 'news'
             ? 'bg-amber-600 text-navy-950'
-            : 'bg-navy-800 text-slate-200 hover:bg-navy-700 hover:text-amber-400'
+            : 'bg-theme-mute text-theme-heading hover:bg-theme-border hover:text-amber-400'
         "
         @click="setFilter('news')"
       >
@@ -374,7 +374,7 @@ const submitLabel = computed(() => {
         :class="
           activeFilter === 'events'
             ? 'bg-amber-600 text-navy-950'
-            : 'bg-navy-800 text-slate-200 hover:bg-navy-700 hover:text-amber-400'
+            : 'bg-theme-mute text-theme-heading hover:bg-theme-border hover:text-amber-400'
         "
         @click="setFilter('events')"
       >
@@ -385,7 +385,7 @@ const submitLabel = computed(() => {
         :class="
           activeFilter === 'general-assemblies'
             ? 'bg-amber-600 text-navy-950'
-            : 'bg-navy-800 text-slate-200 hover:bg-navy-700 hover:text-amber-400'
+            : 'bg-theme-mute text-theme-heading hover:bg-theme-border hover:text-amber-400'
         "
         @click="setFilter('general-assemblies')"
       >
@@ -473,7 +473,7 @@ const submitLabel = computed(() => {
     <!-- Admin create button -->
     <div class="flex justify-center items-center py-12 gap-x-8" v-if="authStore.isAdmin">
       <button
-        class="flex justify-center rounded-lg bg-navy-800 text-slate-200 h-10 sm:h-12 py-2 w-24 sm:w-48 cursor-pointer hover:bg-navy-700 hover:text-amber-400 sm:text-lg transition-colors"
+        class="flex justify-center rounded-lg bg-theme-mute text-theme-heading h-10 sm:h-12 py-2 w-24 sm:w-48 cursor-pointer hover:bg-theme-border hover:text-amber-400 sm:text-lg transition-colors"
         @click="openModal"
       >
         Opret ny...
@@ -507,7 +507,7 @@ const submitLabel = computed(() => {
               leave-to="opacity-0 scale-95"
             >
               <DialogPanel
-                class="w-full transform overflow-hidden rounded-2xl bg-navy-800 border border-navy-700 p-6 text-left align-middle shadow-xl transition-all origin-center translate-z-0"
+                class="w-full transform overflow-hidden rounded-2xl bg-theme-mute border border-theme-border p-6 text-left align-middle shadow-xl transition-all origin-center translate-z-0"
               >
                 <button
                   type="button"
@@ -543,7 +543,7 @@ const submitLabel = computed(() => {
                     <br />
                     <select
                       id="type_select"
-                      class="w-full bg-navy-900 border border-navy-700 rounded-xl p-2 cursor-pointer focus:outline-none focus:ring-2 focus:ring-amber-500"
+                      class="w-full bg-theme-soft border border-theme-border rounded-xl p-2 cursor-pointer focus:outline-none focus:ring-2 focus:ring-amber-500"
                       v-model="createType"
                       :disabled="isLoading"
                       @change="handleFieldChange"
@@ -559,7 +559,7 @@ const submitLabel = computed(() => {
                     <label for="title_input">Titel</label>
                     <br />
                     <input
-                      class="w-full bg-navy-900 border border-navy-700 rounded-xl p-2 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                      class="w-full bg-theme-soft border border-theme-border rounded-xl p-2 focus:outline-none focus:ring-2 focus:ring-amber-500"
                       id="title_input"
                       placeholder="Titel"
                       type="text"
@@ -576,7 +576,7 @@ const submitLabel = computed(() => {
                         <label for="section_input">Sektion</label>
                         <br />
                         <input
-                          class="w-full bg-navy-900 border border-navy-700 rounded-xl p-2 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                          class="w-full bg-theme-soft border border-theme-border rounded-xl p-2 focus:outline-none focus:ring-2 focus:ring-amber-500"
                           id="section_input"
                           placeholder="Sektion"
                           type="text"
@@ -589,7 +589,7 @@ const submitLabel = computed(() => {
                         <label for="address_input">Adresse</label>
                         <br />
                         <input
-                          class="w-full bg-navy-900 border border-navy-700 rounded-xl p-2 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                          class="w-full bg-theme-soft border border-theme-border rounded-xl p-2 focus:outline-none focus:ring-2 focus:ring-amber-500"
                           id="address_input"
                           placeholder="Adresse"
                           type="text"
@@ -602,7 +602,7 @@ const submitLabel = computed(() => {
                         <label for="date_input">Dato</label>
                         <br />
                         <input
-                          class="w-full bg-navy-900 border border-navy-700 rounded-xl p-2 cursor-pointer focus:outline-none focus:ring-2 focus:ring-amber-500"
+                          class="w-full bg-theme-soft border border-theme-border rounded-xl p-2 cursor-pointer focus:outline-none focus:ring-2 focus:ring-amber-500"
                           id="date_input"
                           type="datetime-local"
                           v-model="itemDate"
@@ -620,7 +620,7 @@ const submitLabel = computed(() => {
                         <label for="section_input_news">Sektion (valgfri)</label>
                         <br />
                         <input
-                          class="w-full bg-navy-900 border border-navy-700 rounded-xl p-2 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                          class="w-full bg-theme-soft border border-theme-border rounded-xl p-2 focus:outline-none focus:ring-2 focus:ring-amber-500"
                           id="section_input_news"
                           placeholder="Sektion"
                           type="text"
@@ -633,7 +633,7 @@ const submitLabel = computed(() => {
                         <label for="author_input">Forfatter (valgfri)</label>
                         <br />
                         <input
-                          class="w-full bg-navy-900 border border-navy-700 rounded-xl p-2 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                          class="w-full bg-theme-soft border border-theme-border rounded-xl p-2 focus:outline-none focus:ring-2 focus:ring-amber-500"
                           id="author_input"
                           placeholder="Forfatter"
                           type="text"
@@ -650,7 +650,7 @@ const submitLabel = computed(() => {
                     <label for="description_input">Beskrivelse</label>
                     <br />
                     <textarea
-                      class="w-full bg-navy-900 border border-navy-700 rounded-xl p-2 h-96 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                      class="w-full bg-theme-soft border border-theme-border rounded-xl p-2 h-96 focus:outline-none focus:ring-2 focus:ring-amber-500"
                       id="description_input"
                       placeholder="Beskrivelse"
                       v-model="itemDescription"
@@ -666,7 +666,7 @@ const submitLabel = computed(() => {
                     </label>
                     <br />
                     <input
-                      class="w-full bg-navy-900 border border-navy-700 rounded-xl p-2 cursor-pointer hover:bg-navy-800 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                      class="w-full bg-theme-soft border border-theme-border rounded-xl p-2 cursor-pointer hover:bg-theme-mute focus:outline-none focus:ring-2 focus:ring-amber-500"
                       id="file_input"
                       type="file"
                       accept="image/*"

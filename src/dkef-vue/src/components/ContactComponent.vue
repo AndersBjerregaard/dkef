@@ -21,7 +21,7 @@ import NewsLetterComponent from './NewsLetterComponent.vue'
   <!-- Contact info -->
   <div class="pb-20 flex">
     <div
-      class="flex w-full justify-between items-center text-center px-8 bg-navy-900 border-t border-amber-500/10 h-40"
+      class="flex w-full justify-between items-center text-center px-8 bg-theme-soft border-t border-amber-500/10 h-40"
     >
       <!-- Email -->
       <div class="flex gap-x-4">

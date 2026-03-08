@@ -18,10 +18,10 @@ const publishedAt = computed(() => {
 <template>
   <RouterLink :to="`/news/${props.publishedNews.id}`" class="block w-full">
     <div
-      class="h-full border border-navy-700 rounded-2xl overflow-hidden flex flex-col cursor-pointer hover:border-amber-500/40 bg-navy-800 transition-colors"
+      class="h-full border border-theme-border rounded-2xl overflow-hidden flex flex-col cursor-pointer hover:border-amber-500/40 bg-theme-mute transition-colors"
     >
       <!-- Thumbnail -->
-      <div class="h-44 shrink-0 bg-navy-900">
+      <div class="h-44 shrink-0 bg-theme-soft">
         <img
           v-if="props.publishedNews?.thumbnailUrl"
           class="h-full w-full object-cover"
@@ -29,7 +29,7 @@ const publishedAt = computed(() => {
           alt="news picture"
         />
         <div v-else class="h-full w-full flex items-center justify-center">
-          <span class="text-slate-500 text-sm">Ingen billede</span>
+          <span class="text-theme-muted text-sm">Ingen billede</span>
         </div>
       </div>
 
@@ -39,7 +39,7 @@ const publishedAt = computed(() => {
         <span class="text-xs font-semibold uppercase tracking-wide text-emerald-400">Nyhed</span>
 
         <!-- Section -->
-        <p class="text-xs text-slate-400 line-clamp-1">{{ props.publishedNews?.section }}</p>
+        <p class="text-xs text-theme-text line-clamp-1">{{ props.publishedNews?.section }}</p>
 
         <!-- Title -->
         <p class="font-semibold line-clamp-2 leading-snug h-10 overflow-hidden">
@@ -47,10 +47,10 @@ const publishedAt = computed(() => {
         </p>
 
         <!-- Metadata -->
-        <div class="mt-auto flex flex-col gap-1 text-sm text-slate-300">
+        <div class="mt-auto flex flex-col gap-1 text-sm text-theme-text">
           <div class="flex items-center gap-1 h-10 overflow-hidden">
             <svg
-              class="h-4 w-4 shrink-0 text-slate-400"
+              class="h-4 w-4 shrink-0 text-theme-muted"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -66,7 +66,7 @@ const publishedAt = computed(() => {
           </div>
           <div class="flex items-center gap-1">
             <svg
-              class="h-4 w-4 shrink-0 text-slate-400"
+              class="h-4 w-4 shrink-0 text-theme-muted"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"

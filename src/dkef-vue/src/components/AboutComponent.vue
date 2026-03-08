@@ -32,7 +32,7 @@ import ContactFormularComponent from '@/components/ContactFormularComponent.vue'
         <div class="flex justify-center items-center pb-4">
           <h2 class="text-xl">Sektioner</h2>
         </div>
-        <div class="h-80 bg-navy-800 rounded-xl overflow-hidden">
+        <div class="h-80 bg-theme-mute rounded-xl overflow-hidden">
           <img
             style="width: 100%; height: 100%; object-fit: contain"
             src="@/assets/dkef-sections.png"

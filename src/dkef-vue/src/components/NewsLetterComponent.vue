@@ -18,7 +18,7 @@
               id="name_input"
               name="name_input"
               placeholder="Navn"
-              class="rounded-xl bg-navy-900 border border-navy-700 p-2 w-full focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+              class="rounded-xl bg-theme-soft border border-theme-border p-2 w-full focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
               type="text"
             />
           </div>
@@ -27,7 +27,7 @@
               id="email_input"
               name="email_input"
               placeholder="Email"
-              class="rounded-xl bg-navy-900 border border-navy-700 p-2 w-full focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+              class="rounded-xl bg-theme-soft border border-theme-border p-2 w-full focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
               type="email"
             />
           </div>

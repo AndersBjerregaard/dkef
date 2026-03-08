@@ -11,9 +11,9 @@ import NewsLetterComponent from './NewsLetterComponent.vue'
         <p class="text-amber-400 text-sm font-semibold uppercase tracking-widest pb-4">
           Elektroteknisk forening
         </p>
-        <h1 class="text-4xl pb-8 text-slate-100 leading-tight">Dit netværk i elbranchen</h1>
+        <h1 class="text-4xl pb-8 text-theme-heading leading-tight">Dit netværk i elbranchen</h1>
 
-        <p class="text-lg pb-8 text-slate-400 leading-relaxed">
+        <p class="text-lg pb-8 text-theme-text leading-relaxed">
           Udvid din faglige horisont, bliv en del af fællesskabet og modtag sparring fra erfarne
           hænder.
         </p>
@@ -30,10 +30,10 @@ import NewsLetterComponent from './NewsLetterComponent.vue'
   </div>
 
   <!-- Member companies strip -->
-  <div class="bg-navy-900 border-y border-amber-500/15 px-4 py-12 flex justify-center items-center">
+  <div class="bg-theme-soft border-y border-amber-500/15 px-4 py-12 flex justify-center items-center">
     <div class="max-w-4xl mx-auto">
       <div class="pb-8 flex items-center justify-center">
-        <h2 class="text-slate-400 font-medium text-lg uppercase tracking-widest">
+        <h2 class="text-theme-text font-medium text-lg uppercase tracking-widest">
           Vores medlemsvirksomheder
         </h2>
       </div>
@@ -82,18 +82,18 @@ import NewsLetterComponent from './NewsLetterComponent.vue'
   <div class="py-16 px-4 flex justify-center items-center">
     <div class="max-w-3xl mx-auto">
       <div class="flex justify-center pb-8">
-        <h2 class="text-4xl text-slate-100">Kommende begivenheder</h2>
+        <h2 class="text-4xl text-theme-heading">Kommende begivenheder</h2>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
         <div>
-          <h3 class="text-3xl text-slate-100 pb-4">Arrangementer</h3>
+          <h3 class="text-3xl text-theme-heading pb-4">Arrangementer</h3>
 
           <div class="py-4">
-            <div class="border border-navy-700 rounded-2xl p-4 bg-navy-800">
-              <h4 class="text-xl pb-4 text-slate-100">Arrangement titel</h4>
+            <div class="border border-theme-border rounded-2xl p-4 bg-theme-mute">
+              <h4 class="text-xl pb-4 text-theme-heading">Arrangement titel</h4>
               <div
-                class="p-4 items-center flex justify-between bg-navy-900 rounded-xl text-sm md:text-base lg:text-lg text-slate-400"
+                class="p-4 items-center flex justify-between bg-theme-soft rounded-xl text-sm md:text-base lg:text-lg text-theme-text"
               >
                 <span>Dato</span>
                 <span>Sektion</span>
@@ -103,10 +103,10 @@ import NewsLetterComponent from './NewsLetterComponent.vue'
           </div>
 
           <div class="py-4">
-            <div class="border border-navy-700 rounded-2xl p-4 bg-navy-800">
-              <h4 class="text-xl pb-4 text-slate-100">Arrangement titel</h4>
+            <div class="border border-theme-border rounded-2xl p-4 bg-theme-mute">
+              <h4 class="text-xl pb-4 text-theme-heading">Arrangement titel</h4>
               <div
-                class="p-4 items-center flex justify-between bg-navy-900 rounded-xl text-sm md:text-base lg:text-lg text-slate-400"
+                class="p-4 items-center flex justify-between bg-theme-soft rounded-xl text-sm md:text-base lg:text-lg text-theme-text"
               >
                 <span>Dato</span>
                 <span>Sektion</span>
@@ -117,10 +117,10 @@ import NewsLetterComponent from './NewsLetterComponent.vue'
         </div>
 
         <div>
-          <h3 class="text-3xl text-slate-100 pb-4">Generalforsamlinger</h3>
+          <h3 class="text-3xl text-theme-heading pb-4">Generalforsamlinger</h3>
 
           <div class="pt-8">
-            <p class="text-xl text-slate-400">
+            <p class="text-xl text-theme-text">
               Der er ingen planlagte generalforsamlinger foreløbigt.
             </p>
           </div>
@@ -130,7 +130,7 @@ import NewsLetterComponent from './NewsLetterComponent.vue'
   </div>
 
   <!-- Info section 1 -->
-  <div class="bg-navy-900 border-y border-amber-500/10 px-4 py-12 sm:py-20">
+  <div class="bg-theme-soft border-y border-amber-500/10 px-4 py-12 sm:py-20">
     <div class="flex flex-col md:flex-row justify-center items-center gap-x-12 mx-auto">
       <div class="hidden sm:flex w-full md:w-96 px-2 mx-auto">
         <img class="rounded-xl w-full" src="@/assets/man-studying.png" alt="Man studying" />
@@ -138,11 +138,11 @@ import NewsLetterComponent from './NewsLetterComponent.vue'
 
       <div class="w-full md:w-96 px-2 pb-8 md:pb-0 mx-auto">
         <p class="text-amber-400 text-sm font-semibold uppercase tracking-widest pb-3">Netværk</p>
-        <h2 class="text-3xl text-slate-100 leading-tight pb-4">
+        <h2 class="text-3xl text-theme-heading leading-tight pb-4">
           Sparring og relationer på tværs af branchen
         </h2>
 
-        <p class="text-lg text-slate-400 leading-relaxed pb-6">
+        <p class="text-lg text-theme-text leading-relaxed pb-6">
           Med over 550 medlemmer er du garanteret nye forbindelser og indsigter inden for
           forskellige eltekniske områder.
         </p>
@@ -161,9 +161,9 @@ import NewsLetterComponent from './NewsLetterComponent.vue'
     <div class="flex flex-col md:flex-row justify-center items-center gap-x-12 mx-auto">
       <div class="w-full md:w-96 px-2 pb-8 md:pb-0 mx-auto">
         <p class="text-amber-400 text-sm font-semibold uppercase tracking-widest pb-3">Udvikling</p>
-        <h2 class="text-3xl text-slate-100 leading-tight pb-4">Fokus på faglig udvikling</h2>
+        <h2 class="text-3xl text-theme-heading leading-tight pb-4">Fokus på faglig udvikling</h2>
 
-        <p class="text-lg text-slate-400 leading-relaxed pb-6">
+        <p class="text-lg text-theme-text leading-relaxed pb-6">
           Bliv klogere på de nyeste tendenser og andre specialeområder ved at deltage i
           arrangementer og virksomhedsbesøg.
         </p>
@@ -182,13 +182,13 @@ import NewsLetterComponent from './NewsLetterComponent.vue'
   </div>
 
   <!-- Reasons to become a member -->
-  <div class="bg-navy-900 border-y border-amber-500/10 px-4 py-12 sm:py-20">
+  <div class="bg-theme-soft border-y border-amber-500/10 px-4 py-12 sm:py-20">
     <div class="flex flex-col md:flex-row justify-center items-center gap-x-12 mx-auto">
       <div class="w-full md:w-96 px-2 pb-8 md:pb-0 mx-auto">
         <p class="text-amber-400 text-sm font-semibold uppercase tracking-widest pb-3">Hvorfor?</p>
-        <h2 class="text-3xl text-slate-100 leading-tight pb-4">3 gode grunde til at være medlem</h2>
+        <h2 class="text-3xl text-theme-heading leading-tight pb-4">3 gode grunde til at være medlem</h2>
 
-        <p class="text-lg text-slate-400 leading-relaxed pb-6">
+        <p class="text-lg text-theme-text leading-relaxed pb-6">
           Stadig i tvivl? Lad os lige skitsere, hvad du får ud af et medlemskab.
         </p>
 
@@ -201,51 +201,51 @@ import NewsLetterComponent from './NewsLetterComponent.vue'
 
       <div class="flex flex-col gap-4 w-full md:w-96 px-2 mx-auto">
         <div
-          class="bg-navy-800 border border-navy-700 hover:border-amber-500/40 rounded-2xl p-4 transition-colors"
+          class="bg-theme-mute border border-theme-border hover:border-amber-500/40 rounded-2xl p-4 transition-colors"
         >
           <h3 class="text-xl text-amber-300 pb-2 font-semibold">Sparring</h3>
-          <p class="text-slate-400">Diskuter og udveksl ideer med andre</p>
+          <p class="text-theme-text">Diskuter og udveksl ideer med andre</p>
         </div>
 
         <div
-          class="bg-navy-800 border border-navy-700 hover:border-amber-500/40 rounded-2xl p-4 transition-colors"
+          class="bg-theme-mute border border-theme-border hover:border-amber-500/40 rounded-2xl p-4 transition-colors"
         >
           <h3 class="text-xl text-amber-300 pb-2 font-semibold">Netværk</h3>
-          <p class="text-slate-400">Få nye forbindelser — og måske venskaber</p>
+          <p class="text-theme-text">Få nye forbindelser — og måske venskaber</p>
         </div>
 
         <div
-          class="bg-navy-800 border border-navy-700 hover:border-amber-500/40 rounded-2xl p-4 transition-colors"
+          class="bg-theme-mute border border-theme-border hover:border-amber-500/40 rounded-2xl p-4 transition-colors"
         >
           <h3 class="text-xl text-amber-300 pb-2 font-semibold">Faglig udvikling</h3>
-          <p class="text-slate-400">Styrk kompetencer og opnå ny viden</p>
+          <p class="text-theme-text">Styrk kompetencer og opnå ny viden</p>
         </div>
       </div>
     </div>
   </div>
 
   <!-- Member plans -->
-  <div class="flex justify-center items-center py-16 bg-navy-900 border-y border-amber-500/10 px-4">
+  <div class="flex justify-center items-center py-16 bg-theme-soft border-y border-amber-500/10 px-4">
     <div class="max-w-3xl mx-auto">
       <div class="flex justify-center pb-12">
-        <h2 class="text-4xl text-slate-100">Vores medlemstyper</h2>
+        <h2 class="text-4xl text-theme-heading">Vores medlemstyper</h2>
       </div>
       <div class="flex justify-center">
         <div
-          class="p-6 border border-amber-500/30 rounded-2xl bg-navy-800 shadow-xl shadow-amber-500/5 w-80"
+          class="p-6 border border-amber-500/30 rounded-2xl bg-theme-mute shadow-xl shadow-amber-500/5 w-80"
         >
           <div class="h-1 w-12 bg-amber-500 rounded-full mb-6"></div>
           <div class="pb-6">
-            <h3 class="text-2xl text-slate-100">Bliv medlem</h3>
+            <h3 class="text-2xl text-theme-heading">Bliv medlem</h3>
           </div>
           <div class="flex items-end pb-2">
             <p class="text-4xl text-amber-400 font-bold">700,-</p>
-            <span class="px-3 pb-1 text-slate-400 text-sm">inkl. moms pr. år</span>
+            <span class="px-3 pb-1 text-theme-text text-sm">inkl. moms pr. år</span>
           </div>
-          <p class="pt-4 text-slate-400">
+          <p class="pt-4 text-theme-text">
             Giv dig selv de bedste betingelser for et stærkt uddannelsesforløb.
           </p>
-          <p class="pt-2 pb-6 text-slate-400">
+          <p class="pt-2 pb-6 text-theme-text">
             Deltag i studieture, del ud af din viden og styrk dit arbejdsnetværk.
           </p>
           <button
@@ -253,12 +253,12 @@ import NewsLetterComponent from './NewsLetterComponent.vue'
           >
             Bliv medlem
           </button>
-          <div class="pt-6 border-t border-navy-700 mt-4">
-            <p class="py-2 text-slate-300">✅ Faglig udvikling</p>
-            <p class="pb-2 text-slate-300">✅ Styrk dit netværk</p>
-            <p class="pb-2 text-slate-300">✅ Mentorordning</p>
-            <p class="pb-2 text-slate-300">✅ Studieture og arrangementer</p>
-            <p class="text-slate-300">✅ Modtag EL + Energi bladet</p>
+          <div class="pt-6 border-t border-theme-border mt-4">
+            <p class="py-2 text-theme-text">✅ Faglig udvikling</p>
+            <p class="pb-2 text-theme-text">✅ Styrk dit netværk</p>
+            <p class="pb-2 text-theme-text">✅ Mentorordning</p>
+            <p class="pb-2 text-theme-text">✅ Studieture og arrangementer</p>
+            <p class="text-theme-text">✅ Modtag EL + Energi bladet</p>
           </div>
         </div>
       </div>
@@ -272,13 +272,13 @@ import NewsLetterComponent from './NewsLetterComponent.vue'
         <p class="text-amber-400 text-sm font-semibold uppercase tracking-widest pb-4">
           Aktiviteter
         </p>
-        <h2 class="text-4xl text-slate-100 pb-4">Nyheder og aktiviteter</h2>
-        <h3 class="text-xl text-slate-400">Følg med i de seneste nyheder og aktiviteter</h3>
+        <h2 class="text-4xl text-theme-heading pb-4">Nyheder og aktiviteter</h2>
+        <h3 class="text-xl text-theme-text">Følg med i de seneste nyheder og aktiviteter</h3>
       </div>
 
       <div class="flex flex-wrap justify-center gap-6">
         <div
-          class="bg-navy-800 border border-navy-700 hover:border-amber-500/40 rounded-2xl overflow-hidden transition-all hover:-translate-y-1 shadow-lg w-72"
+          class="bg-theme-mute border border-theme-border hover:border-amber-500/40 rounded-2xl overflow-hidden transition-all hover:-translate-y-1 shadow-lg w-72"
         >
           <img
             class="w-full object-cover h-48"
@@ -286,14 +286,14 @@ import NewsLetterComponent from './NewsLetterComponent.vue'
             alt="activity picture"
           />
           <div class="p-4">
-            <h3 class="pt-4 pb-2 text-xl text-slate-100">Arrangement titel</h3>
+            <h3 class="pt-4 pb-2 text-xl text-theme-heading">Arrangement titel</h3>
             <p class="text-lg pb-2 text-amber-300">Arrangement undertitel</p>
-            <p class="text-sm text-slate-400">Dato</p>
-            <span class="text-sm text-slate-400">Lokation</span>
+            <p class="text-sm text-theme-text">Dato</p>
+            <span class="text-sm text-theme-text">Lokation</span>
           </div>
         </div>
         <div
-          class="bg-navy-800 border border-navy-700 hover:border-amber-500/40 rounded-2xl overflow-hidden transition-all hover:-translate-y-1 shadow-lg w-72"
+          class="bg-theme-mute border border-theme-border hover:border-amber-500/40 rounded-2xl overflow-hidden transition-all hover:-translate-y-1 shadow-lg w-72"
         >
           <img
             class="w-full object-cover h-48"
@@ -301,14 +301,14 @@ import NewsLetterComponent from './NewsLetterComponent.vue'
             alt="activity picture"
           />
           <div class="p-4">
-            <h3 class="pt-4 pb-2 text-xl text-slate-100">Arrangement titel</h3>
+            <h3 class="pt-4 pb-2 text-xl text-theme-heading">Arrangement titel</h3>
             <p class="text-lg pb-2 text-amber-300">Arrangement undertitel</p>
-            <p class="text-sm text-slate-400">Dato</p>
-            <span class="text-sm text-slate-400">Lokation</span>
+            <p class="text-sm text-theme-text">Dato</p>
+            <span class="text-sm text-theme-text">Lokation</span>
           </div>
         </div>
         <div
-          class="bg-navy-800 border border-navy-700 hover:border-amber-500/40 rounded-2xl overflow-hidden transition-all hover:-translate-y-1 shadow-lg w-72"
+          class="bg-theme-mute border border-theme-border hover:border-amber-500/40 rounded-2xl overflow-hidden transition-all hover:-translate-y-1 shadow-lg w-72"
         >
           <img
             class="w-full object-cover h-48"
@@ -316,10 +316,10 @@ import NewsLetterComponent from './NewsLetterComponent.vue'
             alt="activity picture"
           />
           <div class="p-4">
-            <h3 class="pt-4 pb-2 text-xl text-slate-100">Arrangement titel</h3>
+            <h3 class="pt-4 pb-2 text-xl text-theme-heading">Arrangement titel</h3>
             <p class="text-lg pb-2 text-amber-300">Arrangement undertitel</p>
-            <p class="text-sm text-slate-400">Dato</p>
-            <span class="text-sm text-slate-400">Lokation</span>
+            <p class="text-sm text-theme-text">Dato</p>
+            <span class="text-sm text-theme-text">Lokation</span>
           </div>
         </div>
       </div>

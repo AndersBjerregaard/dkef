@@ -193,14 +193,14 @@ const hasAccess = ref(true)
 
 <template>
   <div
-    class="border-x-2 border-navy-700 w-full justify-between flex hover:bg-navy-700 hover:text-amber-400 cursor-pointer transition-colors"
+    class="border-x-2 border-theme-border w-full justify-between flex hover:bg-theme-border hover:text-amber-400 cursor-pointer transition-colors"
     @click="openModal"
-    :class="{ 'bg-navy-950': index % 2 == 0, 'bg-navy-900': index % 2 == 1 }"
+    :class="{ 'bg-theme-base': index % 2 == 0, 'bg-theme-soft': index % 2 == 1 }"
   >
     <div
       v-for="(field, i) in fields"
       :key="i"
-      class="border-2 border-navy-700 h-10 py-1 px-1 flex-1 min-w-0 flex justify-center"
+      class="border-2 border-theme-border h-10 py-1 px-1 flex-1 min-w-0 flex justify-center"
     >
       <span class="truncate">{{ field }}</span>
     </div>
@@ -585,7 +585,7 @@ const hasAccess = ref(true)
                 'cursor-not-allowed': isLoading,
                 'hover:bg-gray-400': !isLoading,
               }"
-              class="inline-flex justify-center rounded-md border border-transparent bg-navy-800 px-4 py-2 font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 text-slate-200 hover:bg-navy-700 hover:text-amber-400 focus-visible:ring-offset-2 transition-colors"
+              class="inline-flex justify-center rounded-md border border-transparent bg-theme-mute px-4 py-2 font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 text-theme-heading hover:bg-theme-border hover:text-amber-400 focus-visible:ring-offset-2 transition-colors"
               @click="closeModal"
             >
               <span>Fortryd</span>
@@ -604,7 +604,7 @@ const hasAccess = ref(true)
               'cursor-not-allowed': isLoading,
               'hover:bg-gray-400': !isLoading,
             }"
-            class="inline-flex justify-center rounded-md border border-transparent bg-navy-800 px-4 py-2 font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 text-slate-200 hover:bg-navy-700 hover:text-amber-400 focus-visible:ring-offset-2 transition-colors"
+            class="inline-flex justify-center rounded-md border border-transparent bg-theme-mute px-4 py-2 font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 text-theme-heading hover:bg-theme-border hover:text-amber-400 focus-visible:ring-offset-2 transition-colors"
             @click="closeModal"
           >
             <span>Luk</span>
@@ -618,8 +618,8 @@ const hasAccess = ref(true)
 <style lang="css" scoped>
 .inputField {
   width: 100%;
-  background-color: #0d1526; /* navy-900 */
-  border: 1px solid #1e2d4a; /* navy-700 */
+  background-color: var(--color-theme-soft);
+  border: 1px solid var(--color-theme-border);
   border-radius: 0.75rem;
   padding: 0.5rem;
 }

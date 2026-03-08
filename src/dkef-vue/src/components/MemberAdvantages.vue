@@ -7,10 +7,10 @@
   >
     <div class="gap-4 w-full md:w-96 px-2 pb-8 md:pb-0 mx-auto">
       <p class="text-amber-400 text-sm font-semibold uppercase tracking-widest pb-3">Medlemskab</p>
-      <h1 class="text-3xl md:text-4xl pb-6 text-slate-100 leading-tight">
+      <h1 class="text-3xl md:text-4xl pb-6 text-theme-heading leading-tight">
         Bliv medlem af Elektroteknisk forening i dag
       </h1>
-      <p class="pb-8 text-slate-400 leading-relaxed">
+      <p class="pb-8 text-theme-text leading-relaxed">
         Udvid dit netværk, opnå nye kompetencer, og accelerér din udvikling som studerende i
         elbranchen med overskuelige priser
       </p>
@@ -23,37 +23,37 @@
 
     <div class="w-full md:w-96 px-2 mx-auto">
       <div
-        class="bg-navy-800 border border-amber-500/30 rounded-2xl p-6 shadow-xl shadow-amber-500/5"
+        class="bg-theme-mute border border-amber-500/30 rounded-2xl p-6 shadow-xl shadow-amber-500/5"
       >
         <!-- Amber top accent bar -->
         <div class="h-1 w-16 bg-amber-500 rounded-full mb-6"></div>
         <div class="flex justify-center mb-2">
           <h2 class="text-xl font-semibold text-amber-400">Medlemskab</h2>
         </div>
-        <div class="border-t border-navy-700 pt-4 pb-4">
-          <p class="py-2 text-slate-300">✅ Faglig udvikling</p>
-          <p class="pb-2 text-slate-300">✅ Styrk dit netværk</p>
-          <p class="pb-2 text-slate-300">✅ Mentorordning</p>
-          <p class="pb-2 text-slate-300">✅ Studieture og arrangementer</p>
-          <p class="pb-2 text-slate-300">✅ Modtag EL + Energi bladet</p>
+        <div class="border-t border-theme-border pt-4 pb-4">
+          <p class="py-2 text-theme-text">✅ Faglig udvikling</p>
+          <p class="pb-2 text-theme-text">✅ Styrk dit netværk</p>
+          <p class="pb-2 text-theme-text">✅ Mentorordning</p>
+          <p class="pb-2 text-theme-text">✅ Studieture og arrangementer</p>
+          <p class="pb-2 text-theme-text">✅ Modtag EL + Energi bladet</p>
         </div>
         <div class="flex justify-center mb-2">
           <h2 class="text-xl font-semibold text-amber-400">Tilbud til studerende</h2>
         </div>
-        <div class="border-t border-navy-700 pt-4">
-          <p class="py-2 flex items-start gap-2 text-slate-300">
+        <div class="border-t border-theme-border pt-4">
+          <p class="py-2 flex items-start gap-2 text-theme-text">
             <span class="text-amber-500 mt-1">•</span> Mentorordning
           </p>
-          <p class="pb-2 flex items-start gap-2 text-slate-300">
+          <p class="pb-2 flex items-start gap-2 text-theme-text">
             <span class="text-amber-500 mt-1">•</span> Fagligt aktuelle netværksmøder
           </p>
-          <p class="pb-2 flex items-start gap-2 text-slate-300">
+          <p class="pb-2 flex items-start gap-2 text-theme-text">
             <span class="text-amber-500 mt-1">•</span> Netværksdatabase til projektskrivning
           </p>
-          <p class="pb-2 flex items-start gap-2 text-slate-300">
+          <p class="pb-2 flex items-start gap-2 text-theme-text">
             <span class="text-amber-500 mt-1">•</span> Måske det er her du finder dit kommende job
           </p>
-          <p class="pb-2 flex items-start gap-2 text-slate-300">
+          <p class="pb-2 flex items-start gap-2 text-theme-text">
             <span class="text-amber-500 mt-1">•</span> Inkl. alle fordele som andre medlemmer
           </p>
         </div>
@@ -66,14 +66,14 @@
 
   <!-- Second section -->
   <div
-    class="bg-navy-900 flex flex-col md:flex-row justify-center items-center gap-x-12 px-4 py-12 sm:py-20 mx-auto"
+    class="bg-theme-soft flex flex-col md:flex-row justify-center items-center gap-x-12 px-4 py-12 sm:py-20 mx-auto"
   >
     <div class="gap-4 w-full md:w-96 px-2 pb-8 md:pb-0 mx-auto">
       <p class="text-amber-400 text-sm font-semibold uppercase tracking-widest pb-3">Netværk</p>
-      <h1 class="text-2xl sm:text-4xl pb-6 text-slate-100 leading-tight">
+      <h1 class="text-2xl sm:text-4xl pb-6 text-theme-heading leading-tight">
         Få adgang til netværksdatabase
       </h1>
-      <p class="pb-6 text-slate-400 leading-relaxed">
+      <p class="pb-6 text-theme-text leading-relaxed">
         Søger du specifikke kompetencer og indsigter i elbranchen? Som medlem i Elektroteknisk
         forening har du adgang til en komplet oversigt over andre medlemmer, som du kan søge
         sparring og ekspertise hos.
@@ -100,10 +100,10 @@
       <p class="text-amber-400 text-sm font-semibold uppercase tracking-widest pb-3">
         Arrangementer
       </p>
-      <h1 class="text-2xl sm:text-4xl pb-6 text-slate-100 leading-tight">
+      <h1 class="text-2xl sm:text-4xl pb-6 text-theme-heading leading-tight">
         Deltag i arrangementer og studieture
       </h1>
-      <p class="pb-6 text-slate-400 leading-relaxed">
+      <p class="pb-6 text-theme-text leading-relaxed">
         Vil du styrke din faglighed og få et bredt kendskab til elbranchen? I Elektroteknisk
         forening afholder vi studieture og besøger virksomheder, så du kan udvikle dine kompetencer
         og opnå ny viden.
@@ -123,10 +123,10 @@
   <div class="w-full border-t border-amber-500/10"></div>
 
   <!-- Fourth section -->
-  <div class="bg-navy-900 px-4 py-16">
+  <div class="bg-theme-soft px-4 py-16">
     <div class="text-center mb-10">
       <p class="text-amber-400 text-sm font-semibold uppercase tracking-widest pb-3">Fordele</p>
-      <h1 class="text-2xl sm:text-3xl text-slate-100">
+      <h1 class="text-2xl sm:text-3xl text-theme-heading">
         Andre gode grunde til at være med i Elektroteknisk forening
       </h1>
     </div>
@@ -134,7 +134,7 @@
     <div class="flex flex-wrap justify-center gap-6 py-4">
       <!-- First column -->
       <div
-        class="w-72 bg-navy-800 rounded-2xl border border-navy-700 hover:border-amber-500/40 transition-all duration-300 shadow-lg hover:-translate-y-1 overflow-hidden"
+        class="w-72 bg-theme-mute rounded-2xl border border-theme-border hover:border-amber-500/40 transition-all duration-300 shadow-lg hover:-translate-y-1 overflow-hidden"
       >
         <div class="h-44 overflow-hidden">
           <img
@@ -147,7 +147,7 @@
           <h2 class="text-lg font-semibold text-amber-300 pb-3">
             Bliv en del af vores mentorordning
           </h2>
-          <p class="text-slate-400 text-sm leading-relaxed">
+          <p class="text-theme-text text-sm leading-relaxed">
             Som erfarent medlem i Elektroteknisk forening kan du dele ud af din viden ved at tage en
             studerende i elbranchen under dine vinger — og som studerende kan du sætte skub på din
             faglige udvikling med en personlig mentor.
@@ -157,7 +157,7 @@
 
       <!-- Second column -->
       <div
-        class="w-72 bg-navy-800 rounded-2xl border border-navy-700 hover:border-amber-500/40 transition-all duration-300 shadow-lg hover:-translate-y-1 overflow-hidden"
+        class="w-72 bg-theme-mute rounded-2xl border border-theme-border hover:border-amber-500/40 transition-all duration-300 shadow-lg hover:-translate-y-1 overflow-hidden"
       >
         <div class="h-44 overflow-hidden">
           <img
@@ -170,7 +170,7 @@
           <h2 class="text-lg font-semibold text-amber-300 pb-3">
             Søg sparring på tværs af branchen
           </h2>
-          <p class="text-slate-400 text-sm leading-relaxed">
+          <p class="text-theme-text text-sm leading-relaxed">
             Lad dig inspirere af andre, og lad andre inspirere af dig. Elektroteknisk forening giver
             dig den ideelle platform til at udveksle og diskutere faglige indsigter med
             branchekollegaer fordelt over et væld af fagnicher.
@@ -180,7 +180,7 @@
 
       <!-- Third column -->
       <div
-        class="w-72 bg-navy-800 rounded-2xl border border-navy-700 hover:border-amber-500/40 transition-all duration-300 shadow-lg hover:-translate-y-1 overflow-hidden"
+        class="w-72 bg-theme-mute rounded-2xl border border-theme-border hover:border-amber-500/40 transition-all duration-300 shadow-lg hover:-translate-y-1 overflow-hidden"
       >
         <div class="h-44 overflow-hidden">
           <img
@@ -193,7 +193,7 @@
           <h2 class="text-lg font-semibold text-amber-300 pb-3">
             Få gratis abonnement på EL+ENERGI
           </h2>
-          <p class="text-slate-400 text-sm leading-relaxed">
+          <p class="text-theme-text text-sm leading-relaxed">
             Som medlem i Elektroteknisk forening modtager du hvert kvartal gratis den seneste udgave
             af fagbladet EL+ENERGI hvori du kan finde nyheder og faglige informationer om alt, der
             rør sig inden for el, energi og installation.

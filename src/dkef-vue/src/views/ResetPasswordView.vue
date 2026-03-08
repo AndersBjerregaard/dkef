@@ -87,7 +87,7 @@ async function handleResetPassword() {
               type="password"
               autocomplete="new-password"
               required
-              class="w-full bg-navy-900 border border-navy-700 rounded-xl p-2 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+              class="w-full bg-theme-soft border border-theme-border rounded-xl p-2 text-theme-heading placeholder-theme-muted focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
               placeholder="Ny adgangskode (min 8 tegn)"
             />
           </div>
@@ -103,7 +103,7 @@ async function handleResetPassword() {
               type="password"
               autocomplete="new-password"
               required
-              class="w-full bg-navy-900 border border-navy-700 rounded-xl p-2 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+              class="w-full bg-theme-soft border border-theme-border rounded-xl p-2 text-theme-heading placeholder-theme-muted focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
               placeholder="Bekræft ny adgangskode"
             />
           </div>

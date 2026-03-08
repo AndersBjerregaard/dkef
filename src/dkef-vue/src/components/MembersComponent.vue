@@ -231,12 +231,12 @@ function sort(by: string, order: Sort): void {
         <h1 class="text-4xl py-8">Alle medlemmer</h1>
       </div>
       <div v-if="loadingProgress < 100" class="pb-4">
-        <div class="w-full bg-navy-700 rounded-full h-4 mb-4">
+        <div class="w-full bg-theme-border rounded-full h-4 mb-4">
           <div
             class="bg-amber-500 h-4 rounded-full transition-all"
             :style="{ width: loadingProgress + '%' }"
           ></div>
-          <p class="text-sm text-slate-400 mt-1">
+          <p class="text-sm text-theme-muted mt-1">
             {{ fetchedCount }} / {{ totalCount }} Medlemmer hentet
           </p>
         </div>
@@ -245,7 +245,7 @@ function sort(by: string, order: Sort): void {
         <label class="p-1">Søg: </label>
         <input
           type="text"
-          class="bg-navy-900 border border-navy-700 rounded p-1 w-[50%] focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+          class="bg-theme-soft border border-theme-border rounded p-1 w-[50%] focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
           placeholder="Minimum 3 bogstaver..."
           v-model="filterString"
         />
@@ -277,7 +277,7 @@ function sort(by: string, order: Sort): void {
         </button>
       </div>
       <div class="py-4">
-        <div class="flex w-full justify-between border-2 border-navy-700">
+        <div class="flex w-full justify-between border-2 border-theme-border">
           <MemberHeaderComponent
             :header="'Navn'"
             :currentSort="columnSortStates.name"
@@ -304,7 +304,7 @@ function sort(by: string, order: Sort): void {
             @update:sort="(newValue: Sort) => handleSortUpdate('address', newValue)"
           />
         </div>
-        <div class="w-full justify-between border-2 border-navy-700">
+        <div class="w-full justify-between border-2 border-theme-border">
           <MemberComponent
             v-for="(item, index) in filteredItems"
             :key="item.id"

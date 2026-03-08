@@ -52,11 +52,11 @@ const closeModal = () => {
             leave-to="opacity-0 scale-95"
           >
             <DialogPanel
-              class="relative w-full max-w-2xl transform overflow-hidden rounded-2xl bg-navy-800 border border-navy-700 p-6 text-left align-middle shadow-xl transition-all origin-center"
+              class="relative w-full max-w-2xl transform overflow-hidden rounded-2xl bg-theme-mute border border-theme-border p-6 text-left align-middle shadow-xl transition-all origin-center"
             >
               <button
                 type="button"
-                class="cursor-pointer absolute top-3 right-3 text-slate-400 hover:text-amber-400 transition-colors"
+                class="cursor-pointer absolute top-3 right-3 text-theme-muted hover:text-amber-400 transition-colors"
                 @click="closeModal"
                 :disabled="isLoading"
               >
