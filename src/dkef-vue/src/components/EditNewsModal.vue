@@ -209,7 +209,7 @@ async function saveNews() {
       <div class="mt-4 flex gap-3">
         <button
           type="submit"
-          class="inline-flex justify-center rounded-md border border-transparent bg-amber-600 px-4 py-2 text-md font-semibold hover:bg-amber-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 text-navy-950 focus-visible:ring-offset-2 shadow-lg shadow-amber-600/20 disabled:opacity-50"
+          class="cursor-pointer inline-flex justify-center rounded-md border border-transparent bg-amber-600 px-4 py-2 text-md font-semibold hover:bg-amber-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 text-navy-950 focus-visible:ring-offset-2 shadow-lg shadow-amber-600/20 disabled:opacity-50"
           :disabled="isLoading"
         >
           <span v-if="isLoading" class="flex items-center">
@@ -239,7 +239,7 @@ async function saveNews() {
         </button>
         <button
           type="button"
-          class="inline-flex justify-center rounded-md border border-transparent bg-navy-800 px-4 py-2 text-md font-medium hover:bg-navy-700 hover:text-amber-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 text-slate-200 focus-visible:ring-offset-2 disabled:opacity-50"
+          class="cursor-pointer inline-flex justify-center rounded-md border border-transparent bg-navy-800 px-4 py-2 text-md font-medium hover:bg-navy-700 hover:text-amber-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 text-slate-200 focus-visible:ring-offset-2 disabled:opacity-50"
           :disabled="isLoading"
           @click="emit('close')"
         >
