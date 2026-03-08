@@ -19,9 +19,9 @@ const dateTime = computed(() => {
 </script>
 
 <template>
-  <RouterLink :to="`/events-and-news/${props.publishedEvent.id}`" class="block w-full">
+  <RouterLink :to="`/events-and-news/${props.publishedEvent.id}`" class="block w-full h-full">
     <div
-      class="h-full border border-theme-border rounded-2xl overflow-hidden flex flex-col cursor-pointer hover:border-amber-500/40 bg-theme-mute transition-colors"
+      class="h-full min-h-[360px] border border-theme-border rounded-2xl overflow-hidden flex flex-col cursor-pointer hover:border-amber-500/40 bg-theme-mute transition-colors"
     >
       <!-- Thumbnail -->
       <div class="h-44 shrink-0 bg-theme-soft">

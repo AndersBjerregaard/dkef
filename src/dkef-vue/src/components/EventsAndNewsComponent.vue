@@ -425,7 +425,7 @@ const submitLabel = computed(() => {
     <!-- Items grid -->
     <div
       v-else
-      class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-4 max-w-5xl mx-auto w-full"
+      class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 auto-rows-fr gap-6 px-4 max-w-5xl mx-auto w-full"
     >
       <template v-for="item in displayedItems" :key="item.id">
         <EventComponent
