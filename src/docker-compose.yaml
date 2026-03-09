@@ -11,7 +11,8 @@ services:
     environment:
       ASPNETCORE_URLS: http://*:8080
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     networks:
       - dkef-network
   dkef-frontend:
@@ -35,6 +36,12 @@ services:
       - postgres_data:/var/lib/postgresql
     networks:
       - dkef-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dkef -d dkef"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
   pgadmin:
     container_name: dkef-pgadmin1
     image: dpage/pgadmin4
@@ -46,7 +53,8 @@ services:
       - ./config/pgadmin/pgpassfile:/pgadmin4/pgpassfile
       - ./config/pgadmin/servers.json:/pgadmin4/servers.json
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     ports:
       - "8080:80"
     networks:
