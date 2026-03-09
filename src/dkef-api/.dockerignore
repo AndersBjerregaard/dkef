@@ -6,3 +6,5 @@ appsettings.Development.json
 denero_contacts.csv
 Dockerfile
 .env
+RBAC-GUIDE.md
+set-admin-rle.sql

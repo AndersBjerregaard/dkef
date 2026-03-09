@@ -1,4 +1,4 @@
-FROM oven/bun:1.2.18 AS build
+FROM oven/bun:1.3.10 AS build
 
 ENV VITE_API_BASE_URL=http://localhost:5275
 ENV VITE_MODE=Docker
@@ -14,7 +14,7 @@ COPY . .
 
 RUN bun run build:docker
 
-FROM nginx:1.29.0-alpine AS final
+FROM nginx:1.29.5-alpine AS final
 
 RUN rm -rf /usr/share/nginx/html/*
 
