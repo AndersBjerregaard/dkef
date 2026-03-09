@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dkef-frontend
+  labels:
+    app: dkef-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dkef-frontend
+  template:
+    metadata:
+      labels:
+        app: dkef-frontend
+    spec:
+      containers:
+        - name: dkef-frontend
+          image: registry.placeholder.local/dkef-frontend:latest
+          ports:
+            - containerPort: 80
