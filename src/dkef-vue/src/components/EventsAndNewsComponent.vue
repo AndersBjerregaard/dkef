@@ -3,7 +3,7 @@ import { computed, onMounted, ref, type Ref } from 'vue'
 import EventComponent from './EventComponent.vue'
 import NewsComponent from './NewsComponent.vue'
 import GeneralAssemblyComponent from './GeneralAssemblyComponent.vue'
-import { TransitionRoot, TransitionChild, Dialog, DialogPanel, DialogTitle } from '@headlessui/vue'
+import BaseModal from '@/components/BaseModal.vue'
 import { v4 as uuidv4 } from 'uuid'
 import apiservice from '@/services/apiservice'
 import urlservice from '@/services/urlservice'
@@ -481,247 +481,188 @@ const submitLabel = computed(() => {
     </div>
 
     <!-- Creation modal -->
-    <TransitionRoot appear :show="isOpen" as="template">
-      <Dialog as="div" @close="closeModal" class="relative z-10">
-        <TransitionChild
-          as="template"
-          enter="duration-300 ease-out"
-          enter-from="opacity-0"
-          enter-to="opacity-100"
-          leave="duration-200 ease-in"
-          leave-from="opacity-100"
-          leave-to="opacity-0"
-        >
-          <div class="fixed inset-0 bg-black/50"></div>
-        </TransitionChild>
-
-        <div class="fixed inset-0 overflow-y-auto">
-          <div class="flex min-h-full items-center justify-center p-8 text-center">
-            <TransitionChild
-              as="template"
-              enter="duration-300 ease-out"
-              enter-from="opacity-0 scale-95"
-              enter-to="opacity-100 scale-100"
-              leave="duration-200 ease-in"
-              leave-from="opacity-100 scale-100"
-              leave-to="opacity-0 scale-95"
-            >
-              <DialogPanel
-                class="w-full transform overflow-hidden rounded-2xl bg-theme-mute border border-theme-border p-6 text-left align-middle shadow-xl transition-all origin-center translate-z-0"
-              >
-                <button
-                  type="button"
-                  class="cursor-pointer absolute top-3 right-3 text-slate-400 hover:text-theme-accent transition-colors"
-                  @click="closeModal"
-                  :disabled="isLoading"
-                >
-                  <span class="sr-only">Luk</span>
-                  <svg
-                    class="h-6 w-6"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    aria-hidden="true"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
-                </button>
-
-                <DialogTitle as="h3" class="text-lg font-medium leading-6 pb-4">
-                  {{ modalTitle }}
-                </DialogTitle>
-
-                <form @submit.prevent="createItem">
-                  <!-- Type selector -->
-                  <div class="pb-4">
-                    <label for="type_select">Type</label>
-                    <br />
-                    <select
-                      id="type_select"
-                      class="w-full bg-theme-soft border border-theme-border rounded-xl p-2 cursor-pointer focus:outline-none focus:ring-2 focus:ring-theme-accent"
-                      v-model="createType"
-                      :disabled="isLoading"
-                      @change="handleFieldChange"
-                    >
-                      <option value="event">Arrangement</option>
-                      <option value="news">Nyhed</option>
-                      <option value="general-assembly">Generalforsamling</option>
-                    </select>
-                  </div>
-
-                  <!-- Shared: Title -->
-                  <div class="pb-4">
-                    <label for="title_input">Titel</label>
-                    <br />
-                    <input
-                      class="w-full bg-theme-soft border border-theme-border rounded-xl p-2 focus:outline-none focus:ring-2 focus:ring-theme-accent"
-                      id="title_input"
-                      placeholder="Titel"
-                      type="text"
-                      v-model="itemTitle"
-                      @keypress="handleFieldChange"
-                      :disabled="isLoading"
-                    />
-                  </div>
-
-                  <!-- Event + General Assembly fields -->
-                  <template v-if="createType === 'event' || createType === 'general-assembly'">
-                    <div class="flex justify-between gap-4 pb-4">
-                      <div class="flex-1">
-                        <label for="section_input">Sektion</label>
-                        <br />
-                        <input
-                          class="w-full bg-theme-soft border border-theme-border rounded-xl p-2 focus:outline-none focus:ring-2 focus:ring-theme-accent"
-                          id="section_input"
-                          placeholder="Sektion"
-                          type="text"
-                          v-model="itemSection"
-                          @keypress="handleFieldChange"
-                          :disabled="isLoading"
-                        />
-                      </div>
-                      <div class="flex-1">
-                        <label for="address_input">Adresse</label>
-                        <br />
-                        <input
-                          class="w-full bg-theme-soft border border-theme-border rounded-xl p-2 focus:outline-none focus:ring-2 focus:ring-theme-accent"
-                          id="address_input"
-                          placeholder="Adresse"
-                          type="text"
-                          v-model="itemAddress"
-                          @keypress="handleFieldChange"
-                          :disabled="isLoading"
-                        />
-                      </div>
-                      <div class="flex-1">
-                        <label for="date_input">Dato</label>
-                        <br />
-                        <input
-                          class="w-full bg-theme-soft border border-theme-border rounded-xl p-2 cursor-pointer focus:outline-none focus:ring-2 focus:ring-theme-accent"
-                          id="date_input"
-                          type="datetime-local"
-                          v-model="itemDate"
-                          @click="handleFieldChange"
-                          :disabled="isLoading"
-                        />
-                      </div>
-                    </div>
-                  </template>
-
-                  <!-- News-specific optional fields -->
-                  <template v-if="createType === 'news'">
-                    <div class="flex gap-4 pb-4">
-                      <div class="flex-1">
-                        <label for="section_input_news">Sektion (valgfri)</label>
-                        <br />
-                        <input
-                          class="w-full bg-theme-soft border border-theme-border rounded-xl p-2 focus:outline-none focus:ring-2 focus:ring-theme-accent"
-                          id="section_input_news"
-                          placeholder="Sektion"
-                          type="text"
-                          v-model="itemSection"
-                          @keypress="handleFieldChange"
-                          :disabled="isLoading"
-                        />
-                      </div>
-                      <div class="flex-1">
-                        <label for="author_input">Forfatter (valgfri)</label>
-                        <br />
-                        <input
-                          class="w-full bg-theme-soft border border-theme-border rounded-xl p-2 focus:outline-none focus:ring-2 focus:ring-theme-accent"
-                          id="author_input"
-                          placeholder="Forfatter"
-                          type="text"
-                          v-model="itemAuthor"
-                          @keypress="handleFieldChange"
-                          :disabled="isLoading"
-                        />
-                      </div>
-                    </div>
-                  </template>
-
-                  <!-- Shared: Description -->
-                  <div class="pb-4">
-                    <label for="description_input">Beskrivelse</label>
-                    <br />
-                    <textarea
-                      class="w-full bg-theme-soft border border-theme-border rounded-xl p-2 h-96 focus:outline-none focus:ring-2 focus:ring-theme-accent"
-                      id="description_input"
-                      placeholder="Beskrivelse"
-                      v-model="itemDescription"
-                      @keypress="handleFieldChange"
-                      :disabled="isLoading"
-                    ></textarea>
-                  </div>
-
-                  <!-- File upload: required for event/general-assembly, optional for news -->
-                  <div class="pb-4">
-                    <label for="file_input">
-                      Billede{{ createType === 'news' ? ' (valgfri)' : '' }}
-                    </label>
-                    <br />
-                    <input
-                      class="w-full bg-theme-soft border border-theme-border rounded-xl p-2 cursor-pointer hover:bg-theme-mute focus:outline-none focus:ring-2 focus:ring-theme-accent"
-                      id="file_input"
-                      type="file"
-                      accept="image/*"
-                      @change="handleFileUpload"
-                      :disabled="isLoading"
-                    />
-                  </div>
-
-                  <div v-show="fileUploadError" class="pb-4 text-red-400">
-                    <span>Kan ikke uploade en fil med filstørrelse på 0 bytes!</span>
-                  </div>
-
-                  <div v-show="submitError" class="pb-4 text-red-400">
-                    <span>Venligst udfyld alle påkrævede felter</span>
-                  </div>
-
-                  <div class="mt-4">
-                    <button
-                      type="submit"
-                      class="inline-flex justify-center rounded-md border border-transparent bg-amber-600 text-navy-950 px-4 py-2 text-md font-semibold hover:bg-amber-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-theme-accent focus-visible:ring-offset-2 shadow-lg shadow-amber-600/20 transition-colors"
-                      :disabled="isLoading"
-                    >
-                      <span v-if="isLoading" class="flex items-center">
-                        <svg
-                          class="animate-spin -ml-1 mr-3 h-5 w-5 text-navy-950"
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                        >
-                          <circle
-                            class="opacity-25"
-                            cx="12"
-                            cy="12"
-                            r="10"
-                            stroke="currentColor"
-                            stroke-width="4"
-                          ></circle>
-                          <path
-                            class="opacity-75"
-                            fill="currentColor"
-                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                          ></path>
-                        </svg>
-                        {{ submitLabel }}
-                      </span>
-                      <span v-else>{{ submitLabel }}</span>
-                    </button>
-                  </div>
-                </form>
-              </DialogPanel>
-            </TransitionChild>
-          </div>
+    <BaseModal :is-open="isOpen" :title="modalTitle" :is-loading="isLoading" @close="closeModal">
+      <form @submit.prevent="createItem">
+        <!-- Type selector -->
+        <div class="pb-4">
+          <label for="type_select">Type</label>
+          <br />
+          <select
+            id="type_select"
+            class="w-full bg-theme-soft border border-theme-border rounded-xl p-2 cursor-pointer focus:outline-none focus:ring-2 focus:ring-theme-accent"
+            v-model="createType"
+            :disabled="isLoading"
+            @change="handleFieldChange"
+          >
+            <option value="event">Arrangement</option>
+            <option value="news">Nyhed</option>
+            <option value="general-assembly">Generalforsamling</option>
+          </select>
         </div>
-      </Dialog>
-    </TransitionRoot>
+
+        <!-- Shared: Title -->
+        <div class="pb-4">
+          <label for="title_input">Titel</label>
+          <br />
+          <input
+            class="w-full bg-theme-soft border border-theme-border rounded-xl p-2 focus:outline-none focus:ring-2 focus:ring-theme-accent"
+            id="title_input"
+            placeholder="Titel"
+            type="text"
+            v-model="itemTitle"
+            @keypress="handleFieldChange"
+            :disabled="isLoading"
+          />
+        </div>
+
+        <!-- Event + General Assembly fields -->
+        <template v-if="createType === 'event' || createType === 'general-assembly'">
+          <div class="flex justify-between gap-4 pb-4">
+            <div class="flex-1">
+              <label for="section_input">Sektion</label>
+              <br />
+              <input
+                class="w-full bg-theme-soft border border-theme-border rounded-xl p-2 focus:outline-none focus:ring-2 focus:ring-theme-accent"
+                id="section_input"
+                placeholder="Sektion"
+                type="text"
+                v-model="itemSection"
+                @keypress="handleFieldChange"
+                :disabled="isLoading"
+              />
+            </div>
+            <div class="flex-1">
+              <label for="address_input">Adresse</label>
+              <br />
+              <input
+                class="w-full bg-theme-soft border border-theme-border rounded-xl p-2 focus:outline-none focus:ring-2 focus:ring-theme-accent"
+                id="address_input"
+                placeholder="Adresse"
+                type="text"
+                v-model="itemAddress"
+                @keypress="handleFieldChange"
+                :disabled="isLoading"
+              />
+            </div>
+            <div class="flex-1">
+              <label for="date_input">Dato</label>
+              <br />
+              <input
+                class="w-full bg-theme-soft border border-theme-border rounded-xl p-2 cursor-pointer focus:outline-none focus:ring-2 focus:ring-theme-accent"
+                id="date_input"
+                type="datetime-local"
+                v-model="itemDate"
+                @click="handleFieldChange"
+                :disabled="isLoading"
+              />
+            </div>
+          </div>
+        </template>
+
+        <!-- News-specific optional fields -->
+        <template v-if="createType === 'news'">
+          <div class="flex gap-4 pb-4">
+            <div class="flex-1">
+              <label for="section_input_news">Sektion (valgfri)</label>
+              <br />
+              <input
+                class="w-full bg-theme-soft border border-theme-border rounded-xl p-2 focus:outline-none focus:ring-2 focus:ring-theme-accent"
+                id="section_input_news"
+                placeholder="Sektion"
+                type="text"
+                v-model="itemSection"
+                @keypress="handleFieldChange"
+                :disabled="isLoading"
+              />
+            </div>
+            <div class="flex-1">
+              <label for="author_input">Forfatter (valgfri)</label>
+              <br />
+              <input
+                class="w-full bg-theme-soft border border-theme-border rounded-xl p-2 focus:outline-none focus:ring-2 focus:ring-theme-accent"
+                id="author_input"
+                placeholder="Forfatter"
+                type="text"
+                v-model="itemAuthor"
+                @keypress="handleFieldChange"
+                :disabled="isLoading"
+              />
+            </div>
+          </div>
+        </template>
+
+        <!-- Shared: Description -->
+        <div class="pb-4">
+          <label for="description_input">Beskrivelse</label>
+          <br />
+          <textarea
+            class="w-full bg-theme-soft border border-theme-border rounded-xl p-2 h-96 focus:outline-none focus:ring-2 focus:ring-theme-accent"
+            id="description_input"
+            placeholder="Beskrivelse"
+            v-model="itemDescription"
+            @keypress="handleFieldChange"
+            :disabled="isLoading"
+          ></textarea>
+        </div>
+
+        <!-- File upload: required for event/general-assembly, optional for news -->
+        <div class="pb-4">
+          <label for="file_input">
+            Billede{{ createType === 'news' ? ' (valgfri)' : '' }}
+          </label>
+          <br />
+          <input
+            class="w-full bg-theme-soft border border-theme-border rounded-xl p-2 cursor-pointer hover:bg-theme-mute focus:outline-none focus:ring-2 focus:ring-theme-accent"
+            id="file_input"
+            type="file"
+            accept="image/*"
+            @change="handleFileUpload"
+            :disabled="isLoading"
+          />
+        </div>
+
+        <div v-show="fileUploadError" class="pb-4 text-red-400">
+          <span>Kan ikke uploade en fil med filstørrelse på 0 bytes!</span>
+        </div>
+
+        <div v-show="submitError" class="pb-4 text-red-400">
+          <span>Venligst udfyld alle påkrævede felter</span>
+        </div>
+
+        <div class="mt-4">
+          <button
+            type="submit"
+            class="cursor-pointer inline-flex justify-center rounded-md border border-transparent bg-amber-600 text-navy-950 px-4 py-2 text-md font-semibold hover:bg-amber-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-theme-accent focus-visible:ring-offset-2 shadow-lg shadow-amber-600/20 transition-colors disabled:opacity-50"
+            :disabled="isLoading"
+          >
+            <span v-if="isLoading" class="flex items-center">
+              <svg
+                class="animate-spin -ml-1 mr-3 h-5 w-5 text-navy-950"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  class="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  stroke-width="4"
+                ></circle>
+                <path
+                  class="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
+              </svg>
+              {{ submitLabel }}
+            </span>
+            <span v-else>{{ submitLabel }}</span>
+          </button>
+        </div>
+      </form>
+    </BaseModal>
   </div>
 </template>
 
