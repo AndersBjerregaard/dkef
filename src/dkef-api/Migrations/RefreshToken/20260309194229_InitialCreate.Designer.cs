@@ -9,11 +9,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace dkef_api.Migrations.ForgotPassword
+namespace dkef_api.Migrations.RefreshToken
 {
-    [DbContext(typeof(ForgotPasswordContext))]
-    [Migration("20251026180207_AddResetPassword")]
-    partial class AddResetPassword
+    [DbContext(typeof(RefreshTokenContext))]
+    [Migration("20260309194229_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -193,10 +193,13 @@ namespace dkef_api.Migrations.ForgotPassword
 
                     b.HasKey("Id");
 
-                    b.ToTable("Contact");
+                    b.ToTable("AspNetUsers", null, t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
                 });
 
-            modelBuilder.Entity("Dkef.Domain.ForgotPassword", b =>
+            modelBuilder.Entity("Dkef.Domain.RefreshToken", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -206,20 +209,33 @@ namespace dkef_api.Migrations.ForgotPassword
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<bool>("IsUsed")
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("ExpiresAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsRevoked")
                         .HasColumnType("boolean");
 
-                    b.Property<DateTime>("RequestedAt")
+                    b.Property<DateTime?>("RevokedAt")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ContactId");
 
-                    b.ToTable("ForgotPasswords");
+                    b.HasIndex("Token")
+                        .IsUnique();
+
+                    b.ToTable("RefreshTokens");
                 });
 
-            modelBuilder.Entity("Dkef.Domain.ForgotPassword", b =>
+            modelBuilder.Entity("Dkef.Domain.RefreshToken", b =>
                 {
                     b.HasOne("Dkef.Domain.Contact", "Contact")
                         .WithMany()

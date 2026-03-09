@@ -8,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace dkef_api.Migrations
+namespace dkef_api.Migrations.Contact
 {
     [DbContext(typeof(ContactContext))]
     partial class ContactContextModelSnapshot : ModelSnapshot

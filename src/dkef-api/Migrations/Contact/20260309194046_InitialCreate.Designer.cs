@@ -9,11 +9,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace dkef_api.Migrations
+namespace dkef_api.Migrations.Contact
 {
     [DbContext(typeof(ContactContext))]
-    [Migration("20251012194509_AddIdentityTables")]
-    partial class AddIdentityTables
+    [Migration("20260309194046_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

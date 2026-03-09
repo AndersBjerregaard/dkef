@@ -190,7 +190,10 @@ namespace dkef_api.Migrations.RefreshToken
 
                     b.HasKey("Id");
 
-                    b.ToTable("AspNetUsers", (string)null);
+                    b.ToTable("AspNetUsers", null, t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
                 });
 
             modelBuilder.Entity("Dkef.Domain.RefreshToken", b =>

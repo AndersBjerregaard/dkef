@@ -7,7 +7,6 @@ public class GeneralAssemblyContext : DbContext
 {
     public GeneralAssemblyContext(DbContextOptions<GeneralAssemblyContext> options) : base(options)
     {
-        Database.EnsureCreated();
     }
 
     public DbSet<GeneralAssembly> GeneralAssemblies { get; set; }

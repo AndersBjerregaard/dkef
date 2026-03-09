@@ -7,7 +7,6 @@ public class NewsContext : DbContext
 {
     public NewsContext(DbContextOptions<NewsContext> options) : base(options)
     {
-        Database.EnsureCreated();
     }
 
     public DbSet<News> News { get; set; }

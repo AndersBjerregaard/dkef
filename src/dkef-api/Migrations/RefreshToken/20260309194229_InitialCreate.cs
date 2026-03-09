@@ -6,12 +6,11 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace dkef_api.Migrations.RefreshToken
 {
     /// <inheritdoc />
-    public partial class AddRefreshTokens : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            // AspNetUsers table already exists from ContactContext migrations
             migrationBuilder.CreateTable(
                 name: "RefreshTokens",
                 columns: table => new
@@ -52,8 +51,6 @@ namespace dkef_api.Migrations.RefreshToken
         {
             migrationBuilder.DropTable(
                 name: "RefreshTokens");
-            
-            // AspNetUsers table is managed by ContactContext, not this migration
         }
     }
 }

@@ -9,23 +9,23 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace dkef_api.Migrations.Events
+namespace dkef_api.Migrations.GeneralAssembly
 {
-    [DbContext(typeof(EventsContext))]
-    [Migration("20250704172254_EventsRefactor")]
-    partial class EventsRefactor
+    [DbContext(typeof(GeneralAssemblyContext))]
+    [Migration("20260309194134_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.2")
+                .HasAnnotation("ProductVersion", "9.0.9")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Dkef.Domain.Event", b =>
+            modelBuilder.Entity("Dkef.Domain.GeneralAssembly", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -35,8 +35,15 @@ namespace dkef_api.Migrations.Events
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<DateTime>("DateTime")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("Section")
                         .IsRequired()
@@ -46,9 +53,13 @@ namespace dkef_api.Migrations.Events
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.HasKey("Id");
 
-                    b.ToTable("Events");
+                    b.ToTable("GeneralAssemblies");
                 });
 #pragma warning restore 612, 618
         }

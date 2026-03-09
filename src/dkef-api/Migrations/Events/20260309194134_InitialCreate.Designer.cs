@@ -9,11 +9,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace dkef_api.Migrations.GeneralAssembly
+namespace dkef_api.Migrations.Events
 {
-    [DbContext(typeof(GeneralAssemblyContext))]
-    [Migration("20260307155204_AddGeneralAssembly")]
-    partial class AddGeneralAssembly
+    [DbContext(typeof(EventsContext))]
+    [Migration("20260309194134_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,7 +25,7 @@ namespace dkef_api.Migrations.GeneralAssembly
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Dkef.Domain.GeneralAssembly", b =>
+            modelBuilder.Entity("Dkef.Domain.Event", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -59,7 +59,7 @@ namespace dkef_api.Migrations.GeneralAssembly
 
                     b.HasKey("Id");
 
-                    b.ToTable("GeneralAssemblies");
+                    b.ToTable("Events");
                 });
 #pragma warning restore 612, 618
         }

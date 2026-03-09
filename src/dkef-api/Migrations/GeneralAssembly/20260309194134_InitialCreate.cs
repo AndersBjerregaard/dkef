@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace dkef_api.Migrations.GeneralAssembly
 {
     /// <inheritdoc />
-    public partial class AddGeneralAssembly : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
