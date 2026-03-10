@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
         - name: dkef-frontend
-          image: registry.placeholder.local/dkef-frontend:latest
+          image: anders97/dkef-frontend:latest
           ports:
             - containerPort: 80
