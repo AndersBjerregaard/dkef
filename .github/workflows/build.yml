@@ -26,11 +26,17 @@ jobs:
         with:
           context: src/dkef-api/
           push: true
-          tags: ${{ vars.DOCKERHUB_USERNAME }}/dkef-api:0.${{ github.run_id }}
+          platforms: linux/amd64,linux/arm64
+          tags: |
+            ${{ vars.DOCKERHUB_USERNAME }}/dkef-api:0.${{ github.run_id }}
+            ${{ vars.DOCKERHUB_USERNAME }}/dkef-api:latest
 
       - name: Build and push frontend
         uses: docker/build-push-action@v6
         with:
           context: src/dkef-vue/
           push: true
-          tags: ${{ vars.DOCKERHUB_USERNAME }}/dkef-frontend:0.${{ github.run_number }}
+          platforms: linux/amd64,linux/arm64
+          tags: |
+            ${{ vars.DOCKERHUB_USERNAME }}/dkef-frontend:0.${{ github.run_number }}
+            ${{ vars.DOCKERHUB_USERNAME }}/dkef-frontend:latest
