@@ -1,0 +1,53 @@
+- name: Check if 'kind-dkef' cluster exists
+  ansible.builtin.command: kubectl cluster-info --context kind-dkef
+  register: cluster_info_result
+  ignore_errors: true # Expected to fail if cluster doesn't exist
+  changed_when: false
+
+- name: Debug cluster info result (if it failed)
+  ansible.builtin.debug:
+    var: cluster_info_result
+  when: cluster_info_result.failed
+
+- name: Copy KinD cluster config to remote host
+  ansible.builtin.copy:
+    src: kind-config.yaml
+    dest: /tmp/kind-config.yaml
+    mode: '0644'
+  when: "'does not exist' in cluster_info_result.stderr or cluster_info_result.rc != 0"
+
+- name: Create 'kind-dkef' cluster if it doesn't exist
+  ansible.builtin.command: >
+    kind create cluster
+    --name dkef
+    --image kindest/node:{{ kubernetes_version }}
+    --config /tmp/kind-config.yaml
+  when: "'does not exist' in cluster_info_result.stderr or cluster_info_result.rc != 0"
+
+- name: Remove temporary KinD cluster config
+  ansible.builtin.file:
+    path: /tmp/kind-config.yaml
+    state: absent
+
+- name: Deploy nginx ingress controller for KinD
+  ansible.builtin.command: >
+    kubectl apply -f
+    https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
+  register: ingress_deploy_result
+  changed_when: "'created' in ingress_deploy_result.stdout or 'configured' in ingress_deploy_result.stdout"
+
+- name: Wait for nginx ingress controller to be ready
+  ansible.builtin.command: >
+    kubectl rollout status deployment/ingress-nginx-controller
+    -n ingress-nginx
+    --timeout=120s
+  changed_when: false
+
+- name: Get current kubectl config view
+  ansible.builtin.command: kubectl config view
+  register: kubectl_config_view
+  changed_when: false
+
+- name: Display kubectl config view
+  ansible.builtin.debug:
+    msg: "{{ kubectl_config_view.stdout }}"

@@ -5,7 +5,7 @@ metadata:
   labels:
     app: dkef-frontend
 spec:
-  type: NodePort
+  type: ClusterIP
   selector:
     app: dkef-frontend
   ports:
