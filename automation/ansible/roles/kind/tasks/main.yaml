@@ -1,7 +1,16 @@
-- name: Check if kind is already installed
-  ansible.builtin.stat:
-    path: /usr/local/bin/kind
-  register: kind_executable_check
+- name: Check installed kind version
+  ansible.builtin.command: kind --version
+  register: kind_installed_version
+  changed_when: false
+  failed_when: false
+
+- name: Set kind needs install fact
+  ansible.builtin.set_fact:
+    kind_needs_install: >-
+      {{
+        kind_installed_version.rc != 0 or
+        kind_version not in kind_installed_version.stdout
+      }}
 
 - name: Set kind download URL based on architecture
   ansible.builtin.set_fact:
@@ -9,25 +18,25 @@
       https://kind.sigs.k8s.io/dl/{{ kind_version }}/kind-linux-{{
       'arm64' if ansible_architecture == 'aarch64' else 'amd64'
       }}
-  become: yes
 
-- name: Download kind executable (if not installed)
+- name: Download kind executable (if not installed or version mismatch)
   ansible.builtin.get_url:
     url: "{{ kind_download_url }}"
     dest: /tmp/kind
-    mode: '0755' # Set executable permissions directly upon download
-  when: not kind_executable_check.stat.exists
+    mode: '0755'
+    force: yes
+  when: kind_needs_install
   become: yes
 
-- name: Move kind to /usr/local/bin (if not installed)
+- name: Install kind to /usr/local/bin (if not installed or version mismatch)
   ansible.builtin.copy:
     src: /tmp/kind
     dest: /usr/local/bin/kind
     owner: root
     group: root
     mode: '0755'
-    remote_src: yes # This is important as the source is on the remote machine
-  when: not kind_executable_check.stat.exists
+    remote_src: yes
+  when: kind_needs_install
   notify: Clean up downloaded kind file
   become: yes
 

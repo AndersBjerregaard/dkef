@@ -2,3 +2,4 @@
   ansible.builtin.file:
     path: /tmp/kind
     state: absent
+    become: yes
