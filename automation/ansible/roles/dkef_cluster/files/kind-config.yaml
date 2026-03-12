@@ -15,3 +15,8 @@ nodes:
       - containerPort: 443
         hostPort: 443
         protocol: TCP
+      # NOTE: Changing extraPortMappings requires destroying and recreating the cluster.
+      # Run `kind delete cluster --name dkef` before re-running the playbook if this section changes.
+      - containerPort: 30432
+        hostPort: 5432
+        protocol: TCP

@@ -1,0 +1,45 @@
+- name: Create Postgres secret
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: postgres-secret
+        namespace: "{{ postgres_namespace }}"
+      type: Opaque
+      stringData:
+        postgres_user: "{{ postgres_user }}"
+        postgres_password: "{{ postgres_password }}"
+        postgres_db: "{{ postgres_db }}"
+
+- name: Apply Postgres StatefulSet
+  kubernetes.core.k8s:
+    state: present
+    namespace: "{{ postgres_namespace }}"
+    src: "{{ playbook_dir }}/../k8s/postgres/statefulset.yaml"
+
+- name: Apply Postgres ClusterIP service
+  kubernetes.core.k8s:
+    state: present
+    namespace: "{{ postgres_namespace }}"
+    src: "{{ playbook_dir }}/../k8s/postgres/service.yaml"
+
+- name: Apply Postgres NodePort service
+  kubernetes.core.k8s:
+    state: present
+    namespace: "{{ postgres_namespace }}"
+    src: "{{ playbook_dir }}/../k8s/postgres/nodeport-service.yaml"
+
+- name: Wait for Postgres StatefulSet to be ready
+  kubernetes.core.k8s_info:
+    kind: StatefulSet
+    name: postgres
+    namespace: "{{ postgres_namespace }}"
+  register: postgres_statefulset
+  until: >
+    postgres_statefulset.resources | length > 0 and
+    postgres_statefulset.resources[0].status.readyReplicas is defined and
+    postgres_statefulset.resources[0].status.readyReplicas == 1
+  retries: 24
+  delay: 5
