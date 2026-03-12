@@ -5,3 +5,5 @@ src/dkef-data/db/data/*
 src/dkef-data/db/backups/*
 .vscode/
 src/dkef-vue/AUTH_IMPLEMENTATION.md
+automation/ansible/vars/secrets.yaml
+automation/ansible/.vault_pass

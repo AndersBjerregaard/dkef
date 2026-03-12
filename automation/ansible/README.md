@@ -26,7 +26,8 @@ Use ssh key-based authentication to have ansible's ssh connection be fully autom
 
 ## Example Run
 
-Use `-K` flag to prompt for sudo password
+Use `-K` flag to prompt for sudo password.
+Use `J` to prompt for the vault password.
 ```bash
-ansible-playbook -i inventory.ini site.yaml -K
+ansible-playbook -i inventory.ini site.yaml -K -J
 ```

@@ -1,8 +1,13 @@
 - name: Configure systems with Docker, Kind and Kubectl
   hosts: hosts
 
+  vars_files:
+    - vars/secrets.yaml
+
   roles:
-    - docker
-    - kind
-    - kubectl
-    - dkef_cluster
+    - role: kubernetes_python
+      tags: kubernetes_python
+    - role: dkef_cluster
+      tags: dkef_cluster
+    - role: postgres_k8s
+      tags: postgres_k8s
