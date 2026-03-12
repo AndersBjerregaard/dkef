@@ -1,75 +1,102 @@
 <script setup lang="ts">
-import NewsLetterComponent from './NewsLetterComponent.vue';
-
+import NewsLetterComponent from './NewsLetterComponent.vue'
 </script>
 
 <template>
-  <div>
-    <div class="grid grid-cols-2 justify-center gap-x-8">
+  <!-- Hero -->
+  <div class="py-12 sm:py-20 px-4">
+    <div class="flex flex-col md:flex-row justify-center items-center gap-x-12 mx-auto">
       <!-- Left Column -->
-      <div class="flex flex-col gap-4 items-end">
-        <div class="w-5/6">
-          <h1 class="text-4xl py-12">Dit netværk i elbranchen</h1>
+      <div class="w-full md:w-96 px-2 pb-8 md:pb-0 mx-auto">
+        <p class="text-theme-accent text-lg font-bold uppercase tracking-widest pb-4">
+          Elektroteknisk forening
+        </p>
+        <h1 class="text-4xl pb-8 text-theme-heading leading-tight">Dit netværk i elbranchen</h1>
 
-          <h2 class="text-xl py-12">Udvid din faglige horisont, bliv en del af fællesskabet og modtaging sparring fra
-            erfarne hænder.</h2>
+        <p class="text-lg pb-8 text-theme-text leading-relaxed">
+          Udvid din faglige horisont, bliv en del af fællesskabet og modtag sparring fra erfarne
+          hænder.
+        </p>
 
-          <h2 class="text-xl py-12">⭐ 4.8/5 stjerner af vores 100+ anmeldelser.</h2>
-        </div>
+        <p class="text-lg pb-4 text-theme-accent font-medium">
+          ⭐ 4.8/5 stjerner af vores 100+ anmeldelser.
+        </p>
       </div>
-      <!--Right Column -->
-      <div class="flex flex-col gap-4 items-start">
-        <div class="w-5/6">
-          <img src="@/assets/el-mast.jpeg" alt="An electrical mast">
+
+      <div class="w-full md:w-96 px-2 mx-auto">
+        <img class="rounded-xl w-full" src="@/assets/el-mast.jpeg" alt="An electrical mast" />
+      </div>
+    </div>
+  </div>
+
+  <!-- Member companies strip -->
+  <div
+    class="bg-theme-mute border-y border-amber-500/15 px-4 py-12 flex justify-center items-center"
+  >
+    <div class="max-w-4xl mx-auto">
+      <div class="pb-8 flex items-center justify-center">
+        <h2 class="text-theme-text font-medium text-lg uppercase tracking-widest">
+          Vores medlemsvirksomheder
+        </h2>
+      </div>
+
+      <div class="flex flex-wrap justify-center items-center gap-4">
+        <div
+          class="flex items-center justify-center w-24 h-24 lg:w-32 lg:h-32 opacity-70 hover:opacity-100 transition-opacity"
+        >
+          <img src="@/assets/cubic.png" alt="CUBIC" />
+        </div>
+
+        <div
+          class="flex items-center justify-center w-24 h-24 lg:w-32 lg:h-32 opacity-70 hover:opacity-100 transition-opacity"
+        >
+          <img src="@/assets/ledvance.png" alt="LEDVANCE" />
+        </div>
+
+        <div
+          class="flex items-center justify-center w-24 h-24 lg:w-32 lg:h-32 opacity-70 hover:opacity-100 transition-opacity"
+        >
+          <img src="@/assets/wexoe.svg" alt="WEXOE" />
+        </div>
+
+        <div
+          class="flex items-center justify-center w-24 h-24 lg:w-32 lg:h-32 opacity-70 hover:opacity-100 transition-opacity"
+        >
+          <img src="@/assets/schneider.png" alt="Schneider" />
+        </div>
+
+        <div
+          class="flex items-center justify-center w-24 h-24 lg:w-32 lg:h-32 opacity-70 hover:opacity-100 transition-opacity"
+        >
+          <img src="@/assets/lauritz.svg" alt="Lauritz Knudsen" />
+        </div>
+
+        <div
+          class="flex items-center justify-center w-24 h-24 lg:w-32 lg:h-32 opacity-70 hover:opacity-100 transition-opacity"
+        >
+          <img src="@/assets/solar.png" alt="Solar" />
         </div>
       </div>
     </div>
+  </div>
 
-    <div class="bg-gray-600 px-8 py-16">
-      <div class="text-4xl pb-8 flex items-center justify-center">
-        <h1>Vores medlemsvirksomheder</h1>
-      </div>
-
-      <div class="flex justify-between">
-        <div class="flex items-center justify-center w-24 h-24 lg:w-32 lg:h-32">
-          <img src="@/assets/cubic.png" alt="CUBIC">
-        </div>
-
-        <div class="flex items-center justify-center w-24 h-24 lg:w-32 lg:h-32">
-          <img src="@/assets/ledvance.png" alt="LEDVANCE">
-        </div>
-
-        <div class="flex items-center justify-center w-24 h-24 lg:w-32 lg:h-32">
-          <img src="@/assets/wexoe.svg" alt="WEXOE">
-        </div>
-
-        <div class="flex items-center justify-center w-24 h-24 lg:w-32 lg:h-32">
-          <img src="@/assets/schneider.png" alt="Schneider">
-        </div>
-
-        <div class="flex items-center justify-center w-24 h-24 lg:w-32 lg:h-32">
-          <img src="@/assets/lauritz.svg" alt="Lauritz Knudsen">
-        </div>
-
-        <div class="flex items-center justify-center w-24 h-24 lg:w-32 lg:h-32">
-          <img src="@/assets/solar.png" alt="Solar">
-        </div>
-      </div>
-    </div>
-
-    <div class="py-16 px-8">
+  <!-- Upcoming events -->
+  <div class="py-16 px-4 flex justify-center items-center">
+    <div class="max-w-3xl mx-auto">
       <div class="flex justify-center pb-8">
-        <h1 class="text-4xl">Kommende begivenheder</h1>
+        <h2 class="text-4xl text-theme-heading">Kommende begivenheder</h2>
       </div>
 
-      <div class="grid grid-cols-2 gap-10 px-24">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
         <div>
-          <h2 class="text-3xl">Arrangementer</h2>
+          <h3 class="text-3xl text-theme-heading pb-4">Arrangementer</h3>
 
           <div class="py-4">
-            <div class="border-1 border-gray-400 rounded-2xl p-4">
-              <h3 class="text-xl pb-4">Arrangement titel</h3>
-              <div class="p-4 items-center flex justify-between bg-gray-700 text-sm md:text-base lg:text-lg">
+            <div class="border border-theme-border rounded-2xl p-4 bg-theme-mute">
+              <h4 class="text-xl pb-4 text-theme-heading">Arrangement titel</h4>
+              <div
+                class="p-4 items-center flex justify-between bg-theme-soft rounded-xl text-sm md:text-base lg:text-lg text-theme-text"
+              >
                 <span>Dato</span>
                 <span>Sektion</span>
                 <span>Lokation</span>
@@ -78,113 +105,25 @@ import NewsLetterComponent from './NewsLetterComponent.vue';
           </div>
 
           <div class="py-4">
-            <div class="border-1 border-gray-400 rounded-2xl p-4">
-              <h3 class="text-xl pb-4">Arrangement titel</h3>
-              <div class="p-4 items-center flex justify-between bg-gray-700 text-sm lg:text-lg">
+            <div class="border border-theme-border rounded-2xl p-4 bg-theme-mute">
+              <h4 class="text-xl pb-4 text-theme-heading">Arrangement titel</h4>
+              <div
+                class="p-4 items-center flex justify-between bg-theme-soft rounded-xl text-sm md:text-base lg:text-lg text-theme-text"
+              >
                 <span>Dato</span>
                 <span>Sektion</span>
                 <span>Lokation</span>
               </div>
             </div>
           </div>
-          <!-- <p>
-            Der er ingen planlagte arrangementer foreløbigt.
-          </p> -->
         </div>
 
         <div>
-          <h2 class="text-3xl">Generalforsamlinger</h2>
+          <h3 class="text-3xl text-theme-heading pb-4">Generalforsamlinger</h3>
 
           <div class="pt-8">
-            <p class="text-xl">
+            <p class="text-xl text-theme-text">
               Der er ingen planlagte generalforsamlinger foreløbigt.
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Info section 1 -->
-    <div class="py-24 px-8 grid grid-cols-2 justify-center gap-x-8">
-      <div class="flex flex-col gap-4 items-end">
-        <img src="@/assets/man-studying.png" alt="Man studying">
-      </div>
-
-      <div class="flex flex-col gap-4 items-start">
-        <h1 class="text-3xl py-4 md:py-8 lg:py-16">Sparring og relationer på tværs af branchen</h1>
-
-        <p class="text-xl pb-4 md:pb-6 lg:pb-8">
-          Med over 550 medlemmer er du garanteret nye forbindelser og indsigter inden for forskellige eltekniske
-          områder.
-        </p>
-
-        <button
-          class="rounded bg-gray-600 h-12 py-2 px-4 cursor-pointer hover:bg-gray-800 text-lg">Medlemsfordele</button>
-      </div>
-    </div>
-
-    <!-- Info section 2 -->
-    <div class="py-16 px-8 grid grid-cols-2 justify-center gap-x-8">
-      <div class="flex flex-col gap-4 items-start">
-        <h1 class="text-3xl py-16">Fokus på faglig udvikling</h1>
-
-        <p class="text-xl pb-8">Bliv klogere på de nyeste tendenser og andre specialeområder ved at deltage i
-          arrangementer og
-          virksomhedsbesøg.
-        </p>
-
-        <button class="rounded bg-gray-600 h-12 py-2 px-4 cursor-pointer hover:bg-gray-800 text-lg">Bliv
-          medlem</button>
-      </div>
-
-      <div class="flex flex-col gap-4 items-start">
-        <img src="@/assets/corporate-woman.png" alt="Corporate woman">
-      </div>
-    </div>
-
-    <!-- Reasons to become a member -->
-    <div class="py-16 px-8 grid grid-cols-2 justify-center gap-x-8">
-      <div class="flex flex-col gap-4 items-start">
-        <h1 class="text-3xl py-8">3 gode grunde til at være medlem</h1>
-
-        <p class="text-lg py-12">
-          Stadig i tvivl? Lad os lige skitsere, hvad du får ud af et medlemskab.
-        </p>
-
-        <div class="pt-8">
-          <button class="rounded bg-gray-600 h-12 py-2 px-4 cursor-pointer hover:bg-gray-800 text-lg">Bliv
-            medlem</button>
-        </div>
-      </div>
-
-      <div class="flex flex-col gap-4 items-start">
-        <div class="pb-4">
-          <div class="border-gray-500 border-1 rounded-2xl flex justify-center p-2">
-            <div class="py-4">
-              <h2 class="text-2xl pb-4">Sparring</h2>
-              <p class="text-lg">
-                Diskuter og udveksl ideer med andre
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div class="pb-4">
-          <div class="border-gray-500 border-1 rounded-2xl flex justify-center p-2">
-            <div class="py-4">
-              <h2 class="text-2xl pb-4">Netværk</h2>
-              <p class="text-lg">
-                Få nye forbindelser - og måske venskaber
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div class="border-gray-500 border-1 rounded-2xl flex justify-center p-2">
-          <div class="py-4">
-            <h2 class="text-2xl pb-4">Faglig udvikling</h2>
-            <p class="text-lg">
-              Styrk kompetencer og opnå ny viden
             </p>
           </div>
         </div>
@@ -192,70 +131,202 @@ import NewsLetterComponent from './NewsLetterComponent.vue';
     </div>
   </div>
 
-  <!-- Member plans -->
-  <div class="py-16">
-    <div class="flex justify-center">
-      <h1 class="text-4xl">Vores medlemstyper</h1>
-    </div>
-    <div class="flex justify-center py-16">
-      <div class="p-4 border-1 rounded-2xl border-gray-500">
-        <div class="pb-8">
-          <h2 class="text-2xl">Bliv medlem</h2>
-        </div>
-        <div class="flex">
-          <h1 class="text-4xl">700,-</h1><span class="px-4 self-center">inkl. moms pr. år</span>
-        </div>
-        <p class="pt-8">
-          Giv dig selv de bedste betingelser for et stærkt uddannelsesforløb.
+  <!-- Info section 1 -->
+  <div class="bg-theme-soft border-y border-amber-500/10 px-4 py-12 sm:py-20">
+    <div class="flex flex-col md:flex-row justify-center items-center gap-x-12 mx-auto">
+      <div class="hidden sm:flex w-full md:w-96 px-2 mx-auto">
+        <img class="rounded-xl w-full" src="@/assets/man-studying.png" alt="Man studying" />
+      </div>
+
+      <div class="w-full md:w-96 px-2 pb-8 md:pb-0 mx-auto">
+        <p class="text-theme-accent text-lg font-bold uppercase tracking-widest pb-3">Netværk</p>
+        <h2 class="text-3xl text-theme-heading leading-tight pb-4">
+          Sparring og relationer på tværs af branchen
+        </h2>
+
+        <p class="text-lg text-theme-text leading-relaxed pb-6">
+          Med over 550 medlemmer er du garanteret nye forbindelser og indsigter inden for
+          forskellige eltekniske områder.
         </p>
-        <p class="pt-4 pb-8">
-          Deltag i studieture, del ud af din viden og styrk dit arbejdsnetværk.
-        </p>
+
         <button
-          class="flex justify-center rounded bg-gray-600 h-12 py-2 w-full cursor-pointer hover:bg-gray-800 text-lg">Bliv
-          medlem</button>
-        <div class="pt-4">
-          <p class="py-4">✅ Faglig udvikling</p>
-          <p class="pb-4">✅ Styrk dit netværk</p>
-          <p class="pb-4">✅ Mentorordning</p>
-          <p class="pb-4">✅ Studieture og arrangementer</p>
-          <p>✅ Modtag EL + Energi bladet</p>
+          class="rounded-lg bg-amber-600 h-12 py-2 px-6 cursor-pointer hover:bg-amber-500 active:bg-amber-700 text-navy-950 font-semibold text-base shadow-lg shadow-amber-600/20 transition-all"
+        >
+          Medlemsfordele
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Info section 2 -->
+  <div class="px-4 py-12 sm:py-20">
+    <div class="flex flex-col md:flex-row justify-center items-center gap-x-12 mx-auto">
+      <div class="w-full md:w-96 px-2 pb-8 md:pb-0 mx-auto">
+        <p class="text-theme-accent text-lg font-bold uppercase tracking-widest pb-3">Udvikling</p>
+        <h2 class="text-3xl text-theme-heading leading-tight pb-4">Fokus på faglig udvikling</h2>
+
+        <p class="text-lg text-theme-text leading-relaxed pb-6">
+          Bliv klogere på de nyeste tendenser og andre specialeområder ved at deltage i
+          arrangementer og virksomhedsbesøg.
+        </p>
+
+        <button
+          class="rounded-lg bg-amber-600 h-12 py-2 px-6 cursor-pointer hover:bg-amber-500 active:bg-amber-700 text-navy-950 font-semibold text-base shadow-lg shadow-amber-600/20 transition-all"
+        >
+          Bliv medlem
+        </button>
+      </div>
+
+      <div class="hidden sm:flex w-full md:w-96 px-2 mx-auto">
+        <img class="rounded-xl w-full" src="@/assets/corporate-woman.png" alt="Corporate woman" />
+      </div>
+    </div>
+  </div>
+
+  <!-- Reasons to become a member -->
+  <div class="bg-theme-soft border-y border-amber-500/10 px-4 py-12 sm:py-20">
+    <div class="flex flex-col md:flex-row justify-center items-center gap-x-12 mx-auto">
+      <div class="w-full md:w-96 px-2 pb-8 md:pb-0 mx-auto">
+        <p class="text-theme-accent text-lg font-bold uppercase tracking-widest pb-3">Hvorfor?</p>
+        <h2 class="text-3xl text-theme-heading leading-tight pb-4">
+          3 gode grunde til at være medlem
+        </h2>
+
+        <p class="text-lg text-theme-text leading-relaxed pb-6">
+          Stadig i tvivl? Lad os lige skitsere, hvad du får ud af et medlemskab.
+        </p>
+
+        <button
+          class="rounded-lg bg-amber-600 h-12 py-2 px-6 cursor-pointer hover:bg-amber-500 active:bg-amber-700 text-navy-950 font-semibold text-base shadow-lg shadow-amber-600/20 transition-all"
+        >
+          Bliv medlem
+        </button>
+      </div>
+
+      <div class="flex flex-col gap-4 w-full md:w-96 px-2 mx-auto">
+        <div
+          class="bg-theme-mute border border-theme-border hover:border-amber-500/40 rounded-2xl p-4 transition-colors"
+        >
+          <h3 class="text-xl text-amber-300 pb-2 font-semibold">Sparring</h3>
+          <p class="text-theme-text">Diskuter og udveksl ideer med andre</p>
+        </div>
+
+        <div
+          class="bg-theme-mute border border-theme-border hover:border-amber-500/40 rounded-2xl p-4 transition-colors"
+        >
+          <h3 class="text-xl text-amber-300 pb-2 font-semibold">Netværk</h3>
+          <p class="text-theme-text">Få nye forbindelser — og måske venskaber</p>
+        </div>
+
+        <div
+          class="bg-theme-mute border border-theme-border hover:border-amber-500/40 rounded-2xl p-4 transition-colors"
+        >
+          <h3 class="text-xl text-amber-300 pb-2 font-semibold">Faglig udvikling</h3>
+          <p class="text-theme-text">Styrk kompetencer og opnå ny viden</p>
         </div>
       </div>
     </div>
+  </div>
 
-    <!-- News -->
-    <div class="py-16">
+  <!-- Member plans -->
+  <div
+    class="flex justify-center items-center py-16 bg-theme-soft border-y border-amber-500/10 px-4"
+  >
+    <div class="max-w-3xl mx-auto">
+      <div class="flex justify-center pb-12">
+        <h2 class="text-4xl text-theme-heading">Vores medlemstyper</h2>
+      </div>
       <div class="flex justify-center">
-        <div>
-          <div class="flex justify-center pb-8">
-            <h1 class="text-4xl">Nyheder og aktiviteter</h1>
+        <div
+          class="p-6 border border-amber-500/30 rounded-2xl bg-theme-mute shadow-xl shadow-amber-500/5 w-80"
+        >
+          <div class="h-1 w-12 bg-amber-500 rounded-full mb-6"></div>
+          <div class="pb-6">
+            <h3 class="text-2xl text-theme-heading">Bliv medlem</h3>
           </div>
-          <h2 class="text-2xl">Følg med i de seneste nyheder og aktiviteter</h2>
+          <div class="flex items-end pb-2">
+            <p class="text-4xl text-theme-accent font-bold">700,-</p>
+            <span class="px-3 pb-1 text-theme-text text-sm">inkl. moms pr. år</span>
+          </div>
+          <p class="pt-4 text-theme-text">
+            Giv dig selv de bedste betingelser for et stærkt uddannelsesforløb.
+          </p>
+          <p class="pt-2 pb-6 text-theme-text">
+            Deltag i studieture, del ud af din viden og styrk dit arbejdsnetværk.
+          </p>
+          <button
+            class="flex justify-center rounded-lg bg-amber-600 h-12 py-2 w-full cursor-pointer hover:bg-amber-500 active:bg-amber-700 text-navy-950 font-semibold text-base shadow-lg shadow-amber-600/20 transition-all"
+          >
+            Bliv medlem
+          </button>
+          <div class="pt-6 border-t border-theme-border mt-4">
+            <p class="py-2 text-theme-text">✅ Faglig udvikling</p>
+            <p class="pb-2 text-theme-text">✅ Styrk dit netværk</p>
+            <p class="pb-2 text-theme-text">✅ Mentorordning</p>
+            <p class="pb-2 text-theme-text">✅ Studieture og arrangementer</p>
+            <p class="text-theme-text">✅ Modtag EL + Energi bladet</p>
+          </div>
         </div>
       </div>
+    </div>
+  </div>
 
-      <div class="py-16 px-32 gap-10 grid grid-cols-3">
-        <div class="border-1 border-gray-600 rounded-2xl p-4">
-          <img width="300" src="@/assets/stickman-bowling.jpeg" alt="activity picture">
-          <h1 class="pt-8 pb-4 text-2xl">Arrangement titel</h1>
-          <h2 class="text-xl pb-4">Arrangement undertitel</h2>
-          <p class="text-lg">Dato</p>
-          <span class="text-lg">Lokation</span>
+  <!-- News -->
+  <div class="flex justify-center items-center py-16 border-b border-amber-500/10 px-4">
+    <div class="max-w-3xl mx-auto">
+      <div class="text-center pb-12">
+        <p class="text-theme-accent text-lg font-bold uppercase tracking-widest pb-4">
+          Aktiviteter
+        </p>
+        <h2 class="text-4xl text-theme-heading pb-4">Nyheder og aktiviteter</h2>
+        <h3 class="text-xl text-theme-text">Følg med i de seneste nyheder og aktiviteter</h3>
+      </div>
+
+      <div class="flex flex-wrap justify-center gap-6">
+        <div
+          class="bg-theme-mute border border-theme-border hover:border-amber-500/40 rounded-2xl overflow-hidden transition-all hover:-translate-y-1 shadow-lg w-72"
+        >
+          <img
+            class="w-full object-cover h-48"
+            src="@/assets/stickman-bowling.jpeg"
+            alt="activity picture"
+          />
+          <div class="p-4">
+            <h3 class="pt-4 pb-2 text-xl text-theme-heading">Arrangement titel</h3>
+            <p class="text-lg pb-2 text-theme-accent">Arrangement undertitel</p>
+            <p class="text-sm text-theme-text">Dato</p>
+            <span class="text-sm text-theme-text">Lokation</span>
+          </div>
         </div>
-        <div class="border-1 border-gray-600 rounded-2xl p-4">
-          <img width="300" src="@/assets/stickman-party.jpeg" alt="activity picture">
-          <h1 class="pt-8 pb-4 text-2xl">Arrangement titel</h1>
-          <h2 class="text-xl pb-4">Arrangement undertitel</h2>
-          <p class="text-lg">Dato</p>
-          <span class="text-lg">Lokation</span>
+        <div
+          class="bg-theme-mute border border-theme-border hover:border-amber-500/40 rounded-2xl overflow-hidden transition-all hover:-translate-y-1 shadow-lg w-72"
+        >
+          <img
+            class="w-full object-cover h-48"
+            src="@/assets/stickman-party.jpeg"
+            alt="activity picture"
+          />
+          <div class="p-4">
+            <h3 class="pt-4 pb-2 text-xl text-theme-heading">Arrangement titel</h3>
+            <p class="text-lg pb-2 text-theme-accent">Arrangement undertitel</p>
+            <p class="text-sm text-theme-text">Dato</p>
+            <span class="text-sm text-theme-text">Lokation</span>
+          </div>
         </div>
-        <div class="border-1 border-gray-600 rounded-2xl p-4">
-          <img width="300" src="@/assets/stickmen-driving.jpeg" alt="activity picture">
-          <h1 class="pt-8 pb-4 text-2xl">Arrangement titel</h1>
-          <h2 class="text-xl pb-4">Arrangement undertitel</h2>
-          <p class="text-lg">Dato</p>
-          <span class="text-lg">Lokation</span>
+        <div
+          class="bg-theme-mute border border-theme-border hover:border-amber-500/40 rounded-2xl overflow-hidden transition-all hover:-translate-y-1 shadow-lg w-72"
+        >
+          <img
+            class="w-full object-cover h-48"
+            src="@/assets/stickmen-driving.jpeg"
+            alt="activity picture"
+          />
+          <div class="p-4">
+            <h3 class="pt-4 pb-2 text-xl text-theme-heading">Arrangement titel</h3>
+            <p class="text-lg pb-2 text-theme-accent">Arrangement undertitel</p>
+            <p class="text-sm text-theme-text">Dato</p>
+            <span class="text-sm text-theme-text">Lokation</span>
+          </div>
         </div>
       </div>
     </div>
@@ -264,16 +335,4 @@ import NewsLetterComponent from './NewsLetterComponent.vue';
   <NewsLetterComponent />
 </template>
 
-<style lang="css" scoped>
-.header1 {
-  font-size: 2.25rem;
-}
-
-.bold {
-  font-weight: 800;
-}
-
-.semi-bold {
-  font-weight: 500;
-}
-</style>
+<style lang="css" scoped></style>

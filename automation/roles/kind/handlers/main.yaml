@@ -1,4 +1,0 @@
-- name: Clean up downloaded kind file
-  ansible.builtin.file:
-    path: /tmp/kind
-    state: absent

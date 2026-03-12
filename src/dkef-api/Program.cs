@@ -79,6 +79,8 @@ try
     // Contexts
     builder.Services.AddDbContext<ContactContext>(options => options.UseNpgsql(dbConString));
     builder.Services.AddDbContext<EventsContext>(options => options.UseNpgsql(dbConString));
+    builder.Services.AddDbContext<NewsContext>(options => options.UseNpgsql(dbConString));
+    builder.Services.AddDbContext<GeneralAssemblyContext>(options => options.UseNpgsql(dbConString));
     builder.Services.AddDbContext<ForgotPasswordContext>(options => options.UseNpgsql(dbConString));
     builder.Services.AddDbContext<RefreshTokenContext>(options => options.UseNpgsql(dbConString));
 
@@ -88,6 +90,12 @@ try
     builder.Services.AddTransient<DbSet<Event>>(x =>
         x.GetRequiredService<EventsContext>()
         .Events);
+    builder.Services.AddTransient<DbSet<News>>(x =>
+        x.GetRequiredService<NewsContext>()
+        .News);
+    builder.Services.AddTransient<DbSet<GeneralAssembly>>(x =>
+        x.GetRequiredService<GeneralAssemblyContext>()
+        .GeneralAssemblies);
 
     // Identity
     builder.Services.AddIdentity<Contact, IdentityRole>(options =>
@@ -176,6 +184,14 @@ try
         cfg.CreateMap<EventDto, Event>()
             .ForMember(dest => dest.ThumbnailUrl, opt => opt.MapFrom(src => $"{thumbnailPrefix}/events/{src.ThumbnailId}"))
             .ForMember(dest => dest.DateTime, opt => opt.MapFrom(src => DateTime.Parse(src.DateTime, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal).ToUniversalTime()));
+        cfg.CreateMap<News, News>();
+        cfg.CreateMap<NewsDto, News>()
+            .ForMember(dest => dest.ThumbnailUrl, opt => opt.MapFrom(src =>
+                string.IsNullOrWhiteSpace(src.ThumbnailId) ? string.Empty : $"{thumbnailPrefix}/news/{src.ThumbnailId}"));
+        cfg.CreateMap<GeneralAssembly, GeneralAssembly>();
+        cfg.CreateMap<GeneralAssemblyDto, GeneralAssembly>()
+            .ForMember(dest => dest.ThumbnailUrl, opt => opt.MapFrom(src => $"{thumbnailPrefix}/general-assemblies/{src.ThumbnailId}"))
+            .ForMember(dest => dest.DateTime, opt => opt.MapFrom(src => DateTime.Parse(src.DateTime, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal).ToUniversalTime()));
     }).CreateMapper();
 
     builder.Services.AddSingleton<IMapper>(mapper);
@@ -183,6 +199,8 @@ try
     // Repositories
     builder.Services.AddScoped<IContactRepository, ContactRepository>();
     builder.Services.AddScoped<IEventsRepository, EventsRepository>();
+    builder.Services.AddScoped<INewsRepository, NewsRepository>();
+    builder.Services.AddScoped<IGeneralAssemblyRepository, GeneralAssemblyRepository>();
     builder.Services.AddScoped<ForgotPasswordRepository>();
     builder.Services.AddScoped<RefreshTokenRepository>();
 
@@ -193,6 +211,8 @@ try
     // Security
     builder.Services.AddSingleton<HtmlSanitizer>(x => new());
     builder.Services.AddTransient<QueryableService<Event>>();
+    builder.Services.AddTransient<QueryableService<News>>();
+    builder.Services.AddTransient<QueryableService<GeneralAssembly>>();
     builder.Services.AddTransient<QueryableService<Contact>>();
 
     // Configuration
@@ -210,6 +230,10 @@ try
         contactContext!.Database.Migrate();
         var eventsContext = scope.ServiceProvider.GetService<EventsContext>();
         eventsContext!.Database.Migrate();
+        var newsContext = scope.ServiceProvider.GetService<NewsContext>();
+        newsContext!.Database.Migrate();
+        var generalAssemblyContext = scope.ServiceProvider.GetService<GeneralAssemblyContext>();
+        generalAssemblyContext!.Database.Migrate();
         var forgotPasswordContext = scope.ServiceProvider.GetService<ForgotPasswordContext>();
         forgotPasswordContext!.Database.Migrate();
         var refreshTokenContext = scope.ServiceProvider.GetService<RefreshTokenContext>();

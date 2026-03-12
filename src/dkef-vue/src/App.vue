@@ -1,14 +1,22 @@
 <script setup lang="ts">
 import { RouterView, RouterLink } from 'vue-router'
 import {
-  Menu, MenuButton, MenuItems, MenuItem,
-  TransitionRoot, TransitionChild,
-  Dialog, DialogPanel, DialogTitle
+  Menu,
+  MenuButton,
+  MenuItems,
+  MenuItem,
+  TransitionRoot,
+  TransitionChild,
+  Dialog,
+  DialogPanel,
+  DialogTitle,
 } from '@headlessui/vue'
 import { ref } from 'vue'
 import { useAuthStore } from '@/stores/authStore'
+import { useThemeStore } from '@/stores/themeStore'
 
 const authStore = useAuthStore()
+const themeStore = useThemeStore()
 const isOpen = ref(false)
 const email = ref('')
 const password = ref('')
@@ -38,13 +46,14 @@ async function handleLogin() {
   try {
     await authStore.login({
       email: email.value,
-      password: password.value
+      password: password.value,
     })
     closeModal()
   } catch (error: unknown) {
-    const errorMessage = error && typeof error === 'object' && 'response' in error
-      ? (error as { response?: { data?: { message?: string } } }).response?.data?.message
-      : undefined
+    const errorMessage =
+      error && typeof error === 'object' && 'response' in error
+        ? (error as { response?: { data?: { message?: string } } }).response?.data?.message
+        : undefined
     loginError.value = errorMessage || 'Login fejlede. Tjek dine oplysninger og prøv igen.'
   } finally {
     isLoggingIn.value = false
@@ -63,84 +72,135 @@ async function handleLogout() {
 <template>
   <header>
     <div>
-      <nav class="flex bg-gray-700 p-1 sm:p-4">
+      <nav class="flex bg-theme-soft border-b border-amber-500/20 p-1 sm:p-4">
         <RouterLink to="/">
           <div class="w-10 sm:w-20">
-            <img src="@/assets/dkef-logo.png" alt="DKEF logo">
+            <img src="@/assets/dkef-logo.png" alt="DKEF logo" />
           </div>
         </RouterLink>
 
         <!-- Inline buttons (visible on larger screens ) -->
         <div class="hidden lg:flex lg:w-full">
-          <div class="flex p-4 w-full justify-end items-center">
-            <div class="p-3" v-if="authStore.isAdmin">
+          <div class="flex p-4 w-full justify-end items-center gap-1">
+            <div class="p-1" v-if="authStore.isAdmin">
               <RouterLink to="/members">
-                <button class="rounded bg-gray-600 h-12 w-36 p-2 cursor-pointer hover:bg-gray-800">Medlemmer</button>
+                <button
+                  class="rounded-lg bg-theme-mute h-10 px-4 cursor-pointer text-theme-text hover:bg-theme-mute hover:text-theme-accent transition-colors text-sm font-medium"
+                >
+                  Medlemmer
+                </button>
               </RouterLink>
             </div>
-            <div class="p-3">
+            <div class="p-1">
               <RouterLink to="/advantages">
                 <button
-                  class="rounded bg-gray-600 h-12 w-36 p-2 cursor-pointer hover:bg-gray-800">Medlemsfordele</button>
+                  class="rounded-lg bg-theme-mute h-10 px-4 cursor-pointer text-theme-text hover:bg-theme-mute hover:text-theme-accent transition-colors text-sm font-medium"
+                >
+                  Medlemsfordele
+                </button>
               </RouterLink>
             </div>
-            <div class="p-3">
+            <div class="p-1">
               <RouterLink to="/events-and-news">
-                <button class="rounded bg-gray-600 h-12 w-52 p-2 cursor-pointer hover:bg-gray-800">Arrangementer og
-                  nyheder</button>
+                <button
+                  class="rounded-lg bg-theme-mute h-10 px-4 cursor-pointer text-theme-text hover:bg-theme-mute hover:text-theme-accent transition-colors text-sm font-medium"
+                >
+                  Arrangementer og nyheder
+                </button>
               </RouterLink>
             </div>
-            <div class="p-3">
+            <div class="p-1">
               <RouterLink to="/about">
-                <button class="rounded bg-gray-600 h-12 w-32 p-2 cursor-pointer hover:bg-gray-800">Om
-                  foreningen</button>
+                <button
+                  class="rounded-lg bg-theme-mute h-10 px-4 cursor-pointer text-theme-text hover:bg-theme-mute hover:text-theme-accent transition-colors text-sm font-medium"
+                >
+                  Om foreningen
+                </button>
               </RouterLink>
             </div>
-            <div class="p-3">
+            <div class="p-1">
               <RouterLink to="/contact">
-                <button class="rounded bg-gray-600 h-12 w-24 p-2 cursor-pointer hover:bg-gray-800">Kontakt os</button>
+                <button
+                  class="rounded-lg bg-theme-mute h-10 px-4 cursor-pointer text-theme-text hover:bg-theme-mute hover:text-theme-accent transition-colors text-sm font-medium"
+                >
+                  Kontakt os
+                </button>
               </RouterLink>
             </div>
-            <div class="p-3" v-if="!authStore.isAuthenticated">
-              <button class="rounded bg-gray-600 h-12 w-20 p-2 cursor-pointer hover:bg-gray-800" @click="openModal">
+            <div class="p-1" v-if="!authStore.isAuthenticated">
+              <button
+                class="rounded-lg bg-amber-600 h-10 px-4 cursor-pointer text-navy-950 font-semibold hover:bg-amber-500 active:bg-amber-700 transition-colors text-sm shadow-lg shadow-amber-600/20"
+                @click="openModal"
+              >
                 Log på
               </button>
             </div>
-            <div class="p-3 flex items-center gap-3" v-else>
-              <span class="text-white">Hej, {{ authStore.user?.firstName }}</span>
-              <button class="rounded bg-gray-600 h-12 w-24 p-2 cursor-pointer hover:bg-gray-800" @click="handleLogout">
+            <div class="p-1 flex items-center gap-3" v-else>
+              <span class="text-theme-accent font-medium text-sm"
+                >Hej, {{ authStore.user?.firstName }}</span
+              >
+              <button
+                class="rounded-lg bg-theme-mute h-10 px-4 cursor-pointer text-theme-text hover:bg-theme-mute hover:text-theme-accent transition-colors text-sm font-medium"
+                @click="handleLogout"
+              >
                 Log ud
               </button>
             </div>
-            <div class="p-3" v-if="!authStore.isAuthenticated">
+            <div class="p-1" v-if="!authStore.isAuthenticated">
               <RouterLink to="/register">
-                <button class="rounded bg-gray-600 h-12 w-32 p-2 cursor-pointer hover:bg-gray-800">
+                <button
+                  class="rounded-lg border border-amber-500/40 h-10 px-4 cursor-pointer text-theme-accent hover:bg-amber-500/10 transition-colors text-sm font-medium"
+                >
                   Nyt medlem?
                 </button>
               </RouterLink>
+            </div>
+            <!-- Theme toggle -->
+            <div class="p-1">
+              <button
+                class="rounded-lg bg-theme-mute h-10 w-10 cursor-pointer text-theme-text hover:text-theme-accent transition-colors text-lg flex items-center justify-center"
+                @click="themeStore.toggleTheme()"
+                :title="themeStore.isDark() ? 'Skift til lyst tema' : 'Skift til mørkt tema'"
+              >
+                {{ themeStore.isDark() ? '☀️' : '🌙' }}
+              </button>
             </div>
           </div>
         </div>
         <TransitionRoot appear :show="isOpen" as="template">
           <Dialog as="div" @close="closeModal" class="relative z-10">
-            <TransitionChild as="template" enter="duration-300 ease-out" enter-from="opacity-0" enter-to="opacity-100"
-              leave="duration-200 ease-in" leave-from="opacity-100" leave-to="opacity-0">
-              <div class="fixed inset-0 bg-black/25"></div>
+            <TransitionChild
+              as="template"
+              enter="duration-300 ease-out"
+              enter-from="opacity-0"
+              enter-to="opacity-100"
+              leave="duration-200 ease-in"
+              leave-from="opacity-100"
+              leave-to="opacity-0"
+            >
+              <div class="fixed inset-0 bg-black/50"></div>
             </TransitionChild>
 
             <div class="fixed inset-0 overflow-y-auto">
               <div class="flex min-h-full items-center justify-center p-4 text-center">
-                <TransitionChild as="template" enter="duration-300 ease-out" enter-from="opacity-0 scale-95"
-                  enter-to="opacity-100 scale-100" leave="duration-200 ease-in" leave-from="opacity-100 scale-100"
-                  leave-to="opacity-0 scale-95">
+                <TransitionChild
+                  as="template"
+                  enter="duration-300 ease-out"
+                  enter-from="opacity-0 scale-95"
+                  enter-to="opacity-100 scale-100"
+                  leave="duration-200 ease-in"
+                  leave-from="opacity-100 scale-100"
+                  leave-to="opacity-0 scale-95"
+                >
                   <DialogPanel
-                    class="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
-                    <DialogTitle as="h3" class="text-lg font-medium leading-6 text-gray-900">
+                    class="w-full max-w-md transform overflow-hidden rounded-2xl bg-theme-mute border border-theme-border p-6 text-left align-middle shadow-2xl transition-all"
+                  >
+                    <DialogTitle as="h3" class="text-lg leading-6 text-theme-heading">
                       Log på
                     </DialogTitle>
                     <form @submit.prevent="handleLogin" class="mt-4">
                       <div class="mb-4">
-                        <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
+                        <label for="email" class="block text-sm font-medium text-theme-text mb-2">
                           Email
                         </label>
                         <input
@@ -148,12 +208,15 @@ async function handleLogout() {
                           v-model="email"
                           type="email"
                           required
-                          class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-gray-900"
+                          class="w-full px-3 py-2 bg-theme-soft border border-theme-border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-theme-accent focus:border-theme-accent text-theme-heading placeholder-slate-500"
                           placeholder="din@email.dk"
                         />
                       </div>
                       <div class="mb-4">
-                        <label for="password" class="block text-sm font-medium text-gray-700 mb-2">
+                        <label
+                          for="password"
+                          class="block text-sm font-medium text-theme-text mb-2"
+                        >
                           Adgangskode
                         </label>
                         <input
@@ -161,7 +224,7 @@ async function handleLogout() {
                           v-model="password"
                           type="password"
                           required
-                          class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-gray-900"
+                          class="w-full px-3 py-2 bg-theme-soft border border-theme-border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-theme-accent focus:border-theme-accent text-theme-heading placeholder-slate-500"
                           placeholder="••••••••"
                         />
                       </div>
@@ -170,13 +233,16 @@ async function handleLogout() {
                         <RouterLink
                           to="/forgot-password"
                           @click="closeModal"
-                          class="text-sm text-blue-600 hover:text-blue-800 cursor-pointer"
+                          class="text-sm text-theme-accent hover:text-amber-300 cursor-pointer"
                         >
                           Glemt adgangskode?
                         </RouterLink>
                       </div>
 
-                      <div v-if="loginError" class="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+                      <div
+                        v-if="loginError"
+                        class="mb-4 p-3 bg-red-900/50 border border-red-700 text-red-300 rounded-lg"
+                      >
                         {{ loginError }}
                       </div>
 
@@ -184,13 +250,13 @@ async function handleLogout() {
                         <button
                           type="submit"
                           :disabled="isLoggingIn"
-                          class="inline-flex justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                          class="inline-flex justify-center rounded-lg bg-amber-600 px-4 py-2 text-sm font-semibold text-navy-950 hover:bg-amber-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-theme-accent focus-visible:ring-offset-2 focus-visible:ring-offset-theme-mute cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-lg shadow-amber-600/20"
                         >
                           {{ isLoggingIn ? 'Logger på...' : 'Log på' }}
                         </button>
                         <button
                           type="button"
-                          class="inline-flex justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 cursor-pointer"
+                          class="inline-flex justify-center rounded-lg border border-theme-border bg-theme-soft px-4 py-2 text-sm font-medium text-theme-text hover:bg-theme-mute focus:outline-none focus-visible:ring-2 focus-visible:ring-theme-accent focus-visible:ring-offset-2 focus-visible:ring-offset-theme-mute cursor-pointer transition-colors"
                           @click="closeModal"
                         >
                           Annuller
@@ -207,75 +273,118 @@ async function handleLogout() {
         <!-- Burger menu (visible on small screens) -->
         <div class="lg:hidden flex w-full sm:p-4 justify-end items-center">
           <div class="text-right">
+            <!-- Theme toggle (mobile) -->
+            <button
+              class="rounded-lg bg-theme-mute border border-theme-border h-8 sm:h-12 w-10 sm:w-12 cursor-pointer hover:text-theme-accent transition-colors text-theme-text inline-flex items-center justify-center mr-1"
+              @click="themeStore.toggleTheme()"
+              :title="themeStore.isDark() ? 'Skift til lyst tema' : 'Skift til mørkt tema'"
+            >
+              {{ themeStore.isDark() ? '☀️' : '🌙' }}
+            </button>
             <Menu>
               <MenuButton
-                class="text-lg sm:text-2xl rounded bg-gray-600 h-8 sm:h-12 w-10 sm:w-20 sm:p-2 cursor-pointer hover:bg-gray-800">
-                ≡</MenuButton>
-              <transition enter-active-class="transition duration-100 ease-out"
-                enter-from-class="transform scale-95 opacity-0" enter-to-class="transform scale-100 opacity-100"
-                leave-active-class="transition duration-75 ease-in" leave-from-class="transform scale-100 opacity-100"
-                leave-to-class="transform scale-95 opacity-0">
+                class="text-lg sm:text-2xl rounded-lg bg-theme-mute border border-theme-border h-8 sm:h-12 w-10 sm:w-20 sm:p-2 cursor-pointer hover:bg-theme-mute hover:text-theme-accent transition-colors text-theme-text"
+              >
+                ≡</MenuButton
+              >
+              <transition
+                enter-active-class="transition duration-100 ease-out"
+                enter-from-class="transform scale-95 opacity-0"
+                enter-to-class="transform scale-100 opacity-100"
+                leave-active-class="transition duration-75 ease-in"
+                leave-from-class="transform scale-100 opacity-100"
+                leave-to-class="transform scale-95 opacity-0"
+              >
                 <MenuItems
-                  class="absolute right-8 mt-2 w-56 origin-top-right divide-y divide-gray-600 rounded-md bg-gray-700 shadow-lg ring-1 ring-black/5 focus:outline-none">
+                  class="absolute right-8 mt-2 w-56 origin-top-right divide-y divide-theme-border rounded-xl bg-theme-mute border border-theme-border shadow-2xl ring-1 ring-black/20 focus:outline-none"
+                >
                   <div class="px-1 py-1">
                     <MenuItem v-if="authStore.isAdmin" v-slot="{ active, close }">
-                    <RouterLink to="/members">
-                      <button
-                        :class="[active ? 'bg-gray-800' : 'bg-gray-600', 'group flex w-full items-center rounded-md px-2 py-2 text-sm cursor-pointer']"
-                        @click="close">
-                        Medlemmer
-                      </button>
-                    </RouterLink>
+                      <RouterLink to="/members">
+                        <button
+                          :class="[
+                            active ? 'bg-theme-border text-theme-accent' : 'text-theme-text',
+                            'group flex w-full items-center rounded-lg px-2 py-2 text-sm cursor-pointer transition-colors',
+                          ]"
+                          @click="close"
+                        >
+                          Medlemmer
+                        </button>
+                      </RouterLink>
                     </MenuItem>
                     <MenuItem v-slot="{ active, close }">
-                    <RouterLink to="/advantages">
-                      <button
-                        :class="[active ? 'bg-gray-800' : 'bg-gray-600', 'group flex w-full items-center rounded-md px-2 py-2 text-sm cursor-pointer']"
-                        @click="close">
-                        Medlemsfordele
-                      </button>
-                    </RouterLink>
+                      <RouterLink to="/advantages">
+                        <button
+                          :class="[
+                            active ? 'bg-theme-border text-theme-accent' : 'text-theme-text',
+                            'group flex w-full items-center rounded-lg px-2 py-2 text-sm cursor-pointer transition-colors',
+                          ]"
+                          @click="close"
+                        >
+                          Medlemsfordele
+                        </button>
+                      </RouterLink>
                     </MenuItem>
                     <MenuItem v-slot="{ active, close }">
-                    <RouterLink to="/events-and-news">
-                      <button
-                        :class="[active ? 'bg-gray-800' : 'bg-gray-600', 'group flex w-full items-center rounded-md px-2 py-2 text-sm cursor-pointer']"
-                        @click="close">
-                        Arrangementer og nyheder
-                      </button>
-                    </RouterLink>
+                      <RouterLink to="/events-and-news">
+                        <button
+                          :class="[
+                            active ? 'bg-theme-border text-theme-accent' : 'text-theme-text',
+                            'group flex w-full items-center rounded-lg px-2 py-2 text-sm cursor-pointer transition-colors',
+                          ]"
+                          @click="close"
+                        >
+                          Arrangementer og nyheder
+                        </button>
+                      </RouterLink>
                     </MenuItem>
                     <MenuItem v-slot="{ active, close }">
-                    <RouterLink to="/about">
-                      <button
-                        :class="[active ? 'bg-gray-800' : 'bg-gray-600', 'group flex w-full items-center rounded-md px-2 py-2 text-sm cursor-pointer']"
-                        @click="close">
-                        Om foreningen
-                      </button>
-                    </RouterLink>
+                      <RouterLink to="/about">
+                        <button
+                          :class="[
+                            active ? 'bg-theme-border text-theme-accent' : 'text-theme-text',
+                            'group flex w-full items-center rounded-lg px-2 py-2 text-sm cursor-pointer transition-colors',
+                          ]"
+                          @click="close"
+                        >
+                          Om foreningen
+                        </button>
+                      </RouterLink>
                     </MenuItem>
                     <MenuItem v-slot="{ active, close }">
-                    <RouterLink to="/contact">
-                      <button
-                        :class="[active ? 'bg-gray-800' : 'bg-gray-600', 'group flex w-full items-center rounded-md px-2 py-2 text-sm cursor-pointer']"
-                        @click="close">
-                        Kontakt os
-                      </button>
-                    </RouterLink>
+                      <RouterLink to="/contact">
+                        <button
+                          :class="[
+                            active ? 'bg-theme-border text-theme-accent' : 'text-theme-text',
+                            'group flex w-full items-center rounded-lg px-2 py-2 text-sm cursor-pointer transition-colors',
+                          ]"
+                          @click="close"
+                        >
+                          Kontakt os
+                        </button>
+                      </RouterLink>
                     </MenuItem>
                     <MenuItem v-if="!authStore.isAuthenticated" v-slot="{ active }">
-                    <button
-                      :class="[active ? 'bg-gray-800' : 'bg-gray-600', 'group flex w-full items-center rounded-md px-2 py-2 text-sm cursor-pointer']"
-                      @click="openModal">
-                      Log på
-                    </button>
+                      <button
+                        :class="[
+                          active ? 'bg-amber-500/20 text-theme-accent' : 'text-theme-accent',
+                          'group flex w-full items-center rounded-lg px-2 py-2 text-sm cursor-pointer font-semibold transition-colors',
+                        ]"
+                        @click="openModal"
+                      >
+                        Log på
+                      </button>
                     </MenuItem>
                     <MenuItem v-else v-slot="{ active }">
-                    <button
-                      :class="[active ? 'bg-gray-800' : 'bg-gray-600', 'group flex w-full items-center rounded-md px-2 py-2 text-sm cursor-pointer']"
-                      @click="handleLogout">
-                      Log ud ({{ authStore.user?.firstName }})
-                    </button>
+                      <button
+                        :class="[
+                          active ? 'bg-theme-border text-theme-accent' : 'text-theme-text',
+                          'group flex w-full items-center rounded-lg px-2 py-2 text-sm cursor-pointer transition-colors',
+                        ]"
+                        @click="handleLogout"
+                      >
+                        Log ud ({{ authStore.user?.firstName }})
+                      </button>
                     </MenuItem>
                   </div>
                 </MenuItems>
@@ -294,60 +403,87 @@ async function handleLogout() {
   </div>
 
   <footer>
-    <div class="bg-gray-700 pt-8">
+    <div class="bg-theme-soft border-t border-amber-500/20 pt-8">
       <div class="flex justify-center">
         <div class="grid grid-cols-4 gap-x-4">
           <!-- First column -->
           <div class="flex flex-col">
             <div class="w-48 h-60 p-2">
-              <h1 class="text-2xl pb-4">Elektroteknisk forening</h1>
-              <h2 class="text-lg">Sparring, faglighed og fællesskab. Vi sætter strøm til elteknik-branchen</h2>
+              <h1 class="text-2xl pb-4 text-theme-heading">Elektroteknisk forening</h1>
+              <p class="text-theme-text text-sm leading-relaxed">
+                Sparring, faglighed og fællesskab. Vi sætter strøm til elteknik-branchen
+              </p>
             </div>
           </div>
           <!-- Second column -->
           <div class="flex flex-col">
             <div class="w-48 h-60 p-2">
-              <h2 class="text-xl pb-4">Priser</h2>
-              <button class="text-lg text-gray-300 hover:text-gray-500 cursor-pointer">Bliv medlem</button>
+              <h2 class="text-xl pb-4 text-theme-accent">Priser</h2>
+              <button
+                class="text-sm text-theme-text hover:text-theme-accent cursor-pointer transition-colors"
+              >
+                Bliv medlem
+              </button>
             </div>
           </div>
           <!-- Third column -->
           <div class="flex flex-col">
             <div class="w-48 h-60 p-2">
-              <h2 class="text-xl pb-4">Om foreningen</h2>
+              <h2 class="text-xl pb-4 text-theme-accent">Om foreningen</h2>
               <div>
-                <button class="block text-lg text-gray-300 hover:text-gray-500 cursor-pointer pb-2">Nyheder</button>
-                <button class="block text-lg text-gray-300 hover:text-gray-500 cursor-pointer pb-2">Om os</button>
-                <button class="block text-lg text-gray-300 hover:text-gray-500 cursor-pointer pb-2">Kontakt</button>
-                <button class="block text-lg text-gray-300 hover:text-gray-500 cursor-pointer pb-2">Vedtægter</button>
                 <button
-                  class="block text-lg text-gray-300 hover:text-gray-500 cursor-pointer pb-2">Databeskyttelse</button>
+                  class="block text-sm text-theme-text hover:text-theme-accent cursor-pointer pb-2 transition-colors"
+                >
+                  Nyheder
+                </button>
+                <button
+                  class="block text-sm text-theme-text hover:text-theme-accent cursor-pointer pb-2 transition-colors"
+                >
+                  Om os
+                </button>
+                <button
+                  class="block text-sm text-theme-text hover:text-theme-accent cursor-pointer pb-2 transition-colors"
+                >
+                  Kontakt
+                </button>
+                <button
+                  class="block text-sm text-theme-text hover:text-theme-accent cursor-pointer pb-2 transition-colors"
+                >
+                  Vedtægter
+                </button>
+                <button
+                  class="block text-sm text-theme-text hover:text-theme-accent cursor-pointer pb-2 transition-colors"
+                >
+                  Databeskyttelse
+                </button>
               </div>
             </div>
           </div>
           <!-- Fourth column -->
           <div class="flex flex-col">
             <div class="w-48 h-60 p-2">
-              <h2 class="text-xl pb-4">Medlemmer</h2>
+              <h2 class="text-xl pb-4 text-theme-accent">Medlemmer</h2>
               <button
                 v-if="!authStore.isAuthenticated"
                 @click="openModal"
-                class="block text-lg text-gray-300 hover:text-gray-500 cursor-pointer pb-2">
+                class="block text-sm text-theme-text hover:text-theme-accent cursor-pointer pb-2 transition-colors"
+              >
                 Log på
               </button>
               <button
                 v-else
                 @click="handleLogout"
-                class="block text-lg text-gray-300 hover:text-gray-500 cursor-pointer pb-2">
+                class="block text-sm text-theme-text hover:text-theme-accent cursor-pointer pb-2 transition-colors"
+              >
                 Log ud
               </button>
             </div>
           </div>
         </div>
       </div>
-      <div class="flex items-center pt-4 pb-8">
-        <img width="100" src="@/assets/dkef-logo.png" alt="dkef logo">
-        <h1 class="px-4">| © Elektroteknisk forening 2025</h1>
+      <div class="flex items-center pt-4 pb-6 px-8 border-t border-theme-border mt-4">
+        <img width="80" src="@/assets/dkef-logo.png" alt="dkef logo" />
+        <p class="px-4 text-theme-muted text-sm">| © Elektroteknisk forening 2025</p>
       </div>
     </div>
   </footer>

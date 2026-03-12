@@ -35,6 +35,18 @@ const router = createRouter({
       props: true,
     },
     {
+      path: '/news/:id',
+      name: 'SpecificNews',
+      component: () => import('@/views/SpecificNewsView.vue'),
+      props: true,
+    },
+    {
+      path: '/general-assemblies/:id',
+      name: 'SpecificGeneralAssembly',
+      component: () => import('@/views/SpecificGeneralAssemblyView.vue'),
+      props: true,
+    },
+    {
       path: '/contact',
       name: 'contact',
       component: () => import('@/views/ContactView.vue'),

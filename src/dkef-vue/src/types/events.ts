@@ -1,9 +1,9 @@
 export interface EventDto {
-  title: string,
-  section: string,
-  address: string,
-  dateTime: string,
-  description: string,
+  title: string
+  section: string
+  address: string
+  dateTime: string
+  description: string
   thumbnailId: string
 }
 
@@ -18,17 +18,17 @@ export interface EventDto {
  * @prop createdAt: string
  */
 export interface PublishedEvent {
-  id: string,
-  title: string,
-  section: string,
-  address: string,
-  dateTime: string,
-  description: string,
-  thumbnailUrl: string,
+  id: string
+  title: string
+  section: string
+  address: string
+  dateTime: string
+  description: string
+  thumbnailUrl: string
   createdAt: string
 }
 
 export interface EventsCollection {
-  total: number,
+  total: number
   collection: PublishedEvent[]
 }

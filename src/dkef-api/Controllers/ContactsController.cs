@@ -16,8 +16,8 @@ public class ContactsController(IContactRepository _repository, HtmlSanitizer _s
     [HttpGet]
     public async Task<IActionResult> GetMultiple([FromQuery] int take = 20, [FromQuery] int skip = 0)
     {
-        if (take > 50) take = 50;
-        return Ok(await _repository.GetMultipleAsync(take, skip));
+        if (take > 200) take = 200;
+        return Ok(await _repository.GetMultipleListAsync(take, skip));
     }
 
     [HttpGet]

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import MembersComponent from '@/components/MembersComponent.vue';
+import MembersComponent from '@/components/MembersComponent.vue'
 </script>
 
 <template>

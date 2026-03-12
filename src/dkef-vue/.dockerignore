@@ -5,3 +5,10 @@
 .prettierrc.json
 eslint.config.ts
 README.md
+.env.development
+.env.staging
+AUTH_IMPLEMENTATION.md
+.opencode/
+.vscode/
+dist/
+node_modules/

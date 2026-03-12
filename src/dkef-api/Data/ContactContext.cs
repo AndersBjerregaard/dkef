@@ -11,7 +11,6 @@ public class ContactContext: IdentityDbContext<Contact> {
     private const string RELATION_NAME = "AspNetUsers";
     
     public ContactContext(DbContextOptions<ContactContext> options) : base(options) {
-        Database.EnsureCreated();
     }
 
     public DbSet<Contact> Contacts { get; set; }

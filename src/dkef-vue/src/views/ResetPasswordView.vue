@@ -50,7 +50,9 @@ async function handleResetPassword() {
   } catch (err) {
     const axiosError = err as { response?: { data?: { message?: string } }; message?: string }
     error.value =
-      axiosError.response?.data?.message || axiosError.message || 'Kunne ikke nulstille adgangskoden. Prøv igen.'
+      axiosError.response?.data?.message ||
+      axiosError.message ||
+      'Kunne ikke nulstille adgangskoden. Prøv igen.'
   } finally {
     loading.value = false
   }
@@ -77,9 +79,7 @@ async function handleResetPassword() {
 
         <div class="space-y-4">
           <div>
-            <label for="password" class="block text-sm font-medium mb-1">
-              Ny adgangskode
-            </label>
+            <label for="password" class="block text-sm font-medium mb-1"> Ny adgangskode </label>
             <input
               id="password"
               v-model="password"
@@ -87,7 +87,7 @@ async function handleResetPassword() {
               type="password"
               autocomplete="new-password"
               required
-              class="w-full bg-gray-800 border-0 rounded-xl p-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-600"
+              class="w-full bg-theme-soft border border-theme-border rounded-xl p-2 text-theme-heading placeholder-theme-muted focus:outline-none focus:ring-2 focus:ring-theme-accent focus:border-theme-accent"
               placeholder="Ny adgangskode (min 8 tegn)"
             />
           </div>
@@ -103,7 +103,7 @@ async function handleResetPassword() {
               type="password"
               autocomplete="new-password"
               required
-              class="w-full bg-gray-800 border-0 rounded-xl p-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-600"
+              class="w-full bg-theme-soft border border-theme-border rounded-xl p-2 text-theme-heading placeholder-theme-muted focus:outline-none focus:ring-2 focus:ring-theme-accent focus:border-theme-accent"
               placeholder="Bekræft ny adgangskode"
             />
           </div>
@@ -113,7 +113,7 @@ async function handleResetPassword() {
           <button
             type="submit"
             :disabled="loading || !token"
-            class="w-full flex justify-center items-center rounded-xl bg-gray-600 h-12 px-8 cursor-pointer hover:bg-gray-800 text-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            class="w-full flex justify-center items-center rounded-xl bg-amber-600 h-12 px-8 cursor-pointer hover:bg-amber-500 text-navy-950 font-semibold text-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-lg shadow-amber-600/20"
           >
             {{ loading ? 'Nulstiller adgangskode...' : 'Nulstil adgangskode' }}
           </button>

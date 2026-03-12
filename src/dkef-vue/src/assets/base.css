@@ -1,16 +1,57 @@
 @import 'tailwindcss';
 
-/* color palette from <https://github.com/vuejs/theme> */
+@theme {
+  --color-navy-950: #0a0f1e;
+  --color-navy-900: #0f172a;
+  --color-navy-800: #1e2a45;
+  --color-navy-700: #2d3f6b;
+  --color-navy-600: #3d5499;
+
+  /* Semantic theme tokens — dark mode defaults */
+  --color-theme-base: var(--color-background);
+  --color-theme-soft: var(--color-background-soft);
+  --color-theme-mute: var(--color-background-mute);
+  --color-theme-border: var(--color-border);
+  --color-theme-heading: var(--color-heading);
+  --color-theme-text: var(--color-text);
+  --color-theme-muted: var(--color-muted);
+  --color-theme-accent: var(--color-accent);
+}
+
+/* Deep navy + amber/gold design system — dark mode (default) */
 :root {
-  --color-background: #181818;
-  --color-background-soft: #222222;
-  --color-background-mute: #282828;
+  --color-background: #0a0f1e;
+  --color-background-soft: #0f172a;
+  --color-background-mute: #1e2a45;
 
-  --color-border: rgba(235, 235, 235, 0.64);
-  --color-border-hover: #ffffff;
+  --color-border: rgba(148, 163, 208, 0.2);
+  --color-border-hover: #d97706;
 
-  --color-heading: #ffffff;
-  --color-text: rgba(235, 235, 235, 0.64);
+  --color-heading: #f1f5f9;
+  --color-text: rgba(203, 213, 225, 0.85);
+  --color-muted: #64748b;
+
+  --color-accent: #fbbf24; /* amber-400 — dark mode accent */
+  --color-accent-hover: #f59e0b;
+  --color-accent-muted: rgba(217, 119, 6, 0.12);
+}
+
+/* Light mode overrides */
+.light {
+  --color-background: #f8fafc;
+  --color-background-soft: #f1f5f9;
+  --color-background-mute: #e2e8f0;
+
+  --color-border: rgba(100, 116, 139, 0.25);
+  --color-border-hover: #d97706;
+
+  --color-heading: #0f172a;
+  --color-text: rgba(30, 42, 69, 0.85);
+  --color-muted: #94a3b8;
+
+  --color-accent: #d97706; /* amber-600 — light mode accent, better contrast on white */
+  --color-accent-hover: #f59e0b;
+  --color-accent-muted: rgba(217, 119, 6, 0.12);
 }
 
 *,
@@ -18,16 +59,28 @@
 *::after {
   box-sizing: border-box;
   margin: 0;
-  font-weight: normal;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 700;
+  color: var(--color-heading);
+}
+
+p {
+  font-weight: 400;
 }
 
 body {
-  /* min-height: 100vh; */
   color: var(--color-text);
   background: var(--color-background);
   transition:
-    color 0.5s,
-    background-color 0.5s;
+    color 0.3s,
+    background-color 0.3s;
   line-height: 1.6;
   font-family:
     Inter,

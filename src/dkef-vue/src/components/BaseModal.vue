@@ -1,11 +1,5 @@
 <script setup lang="ts">
-import {
-  TransitionRoot,
-  TransitionChild,
-  Dialog,
-  DialogPanel,
-  DialogTitle,
-} from "@headlessui/vue";
+import { TransitionRoot, TransitionChild, Dialog, DialogPanel, DialogTitle } from '@headlessui/vue'
 
 const props = defineProps({
   isOpen: {
@@ -14,21 +8,25 @@ const props = defineProps({
   },
   title: {
     type: String,
-    default: "",
+    default: '',
   },
   isLoading: {
     type: Boolean,
     default: false,
   },
-});
+  maxWidth: {
+    type: String,
+    default: 'max-w-2xl',
+  },
+})
 
-const emit = defineEmits(["close"]);
+const emit = defineEmits(['close'])
 
 const closeModal = () => {
   if (!props.isLoading) {
-    emit("close");
+    emit('close')
   }
-};
+}
 </script>
 
 <template>
@@ -43,7 +41,7 @@ const closeModal = () => {
         leave-from="opacity-100"
         leave-to="opacity-0"
       >
-        <div class="fixed inset-0 bg-black/25"></div>
+        <div class="fixed inset-0 bg-black/50"></div>
       </TransitionChild>
 
       <div class="fixed inset-0 overflow-y-auto">
@@ -58,11 +56,14 @@ const closeModal = () => {
             leave-to="opacity-0 scale-95"
           >
             <DialogPanel
-              class="w-full transform overflow-hidden rounded-2xl bg-gray-700 p-6 text-left align-middle shadow-xl transition-all origin-center translate-z-0 border"
+              :class="[
+                'relative w-full transform overflow-hidden rounded-2xl bg-theme-mute border border-theme-border p-6 text-left align-middle shadow-xl transition-all origin-center',
+                props.maxWidth,
+              ]"
             >
               <button
                 type="button"
-                class="cursor-pointer absolute top-3 right-3 text-gray-400 hover:text-gray-500"
+                class="cursor-pointer absolute top-3 right-3 text-theme-muted hover:text-theme-accent transition-colors"
                 @click="closeModal"
                 :disabled="isLoading"
               >

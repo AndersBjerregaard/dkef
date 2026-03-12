@@ -107,10 +107,13 @@ export const useAuthStore = defineStore(
           let roles: string[] = []
           if (payload.role) {
             // Single role or array of roles
-            roles = Array.isArray(payload.role) ? (payload.role as string[]) : [payload.role as string]
+            roles = Array.isArray(payload.role)
+              ? (payload.role as string[])
+              : [payload.role as string]
           } else if (payload['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']) {
             // ASP.NET Core default role claim
-            const roleClaim = payload['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']
+            const roleClaim =
+              payload['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']
             roles = Array.isArray(roleClaim) ? (roleClaim as string[]) : [roleClaim as string]
           }
 

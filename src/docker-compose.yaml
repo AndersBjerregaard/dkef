@@ -4,13 +4,15 @@ services:
     build:
       context: ./dkef-api
       dockerfile: Dockerfile
-    restart: on-failure
     ports:
       - "5275:8080"
     env_file:
       - ./dkef-api/.env
     environment:
       ASPNETCORE_URLS: http://*:8080
+    depends_on:
+      db:
+        condition: service_healthy
     networks:
       - dkef-network
   dkef-frontend:
@@ -18,12 +20,63 @@ services:
     build:
       context: ./dkef-vue
       dockerfile: Dockerfile
-    restart: on-failure
     ports:
       - "5173:80"
     networks:
       - dkef-network
+  db:
+    container_name: dkef-db1
+    image: postgres:18.3
+    shm_size: 128mb
+    environment:
+      POSTGRES_USER: dkef
+      POSTGRES_PASSWORD: mysecretpassword
+      POSTGRES_DB: dkef
+    volumes:
+      - postgres_data:/var/lib/postgresql
+    networks:
+      - dkef-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dkef -d dkef"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+  pgadmin:
+    container_name: dkef-pgadmin1
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: don-sbn@hotmail.com
+      PGADMIN_DEFAULT_PASSWORD: mysecretpassword
+      PGADMIN_LISTEN_PORT: 80
+    volumes:
+      - ./config/pgadmin/pgpassfile:/pgadmin4/pgpassfile
+      - ./config/pgadmin/servers.json:/pgadmin4/servers.json
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8080:80"
+    networks:
+      - dkef-network
+  minio:
+    container_name: dkef-minio1
+    image: quay.io/minio/minio:RELEASE.2025-09-07T16-13-09Z
+    environment:
+      MINIO_ACCESS_KEY: dkef
+      MINIO_SECRET_KEY: mysecretpassword
+    volumes:
+      - minio_data:/data
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    networks:
+      - dkef-network
+    command: server /data --console-address ":9001"
+
+volumes:
+  postgres_data:
+  minio_data:
 
 networks:
   dkef-network:
-    external: true

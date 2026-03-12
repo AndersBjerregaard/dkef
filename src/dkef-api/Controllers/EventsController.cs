@@ -1,9 +1,12 @@
 using AutoMapper;
+
 using Dkef.Contracts;
 using Dkef.Domain;
 using Dkef.Repositories;
 using Dkef.Services;
+
 using Ganss.Xss;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -27,11 +30,6 @@ public class EventsController(IEventsRepository _repository, IMapper _mapper, Ht
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Post([FromBody] EventDto dto)
     {
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(ModelState);
-        }
-
         dto.Sanitize(_sanitizer);
 
         var mappedEvent = _mapper.Map<Event>(dto);
@@ -53,5 +51,27 @@ public class EventsController(IEventsRepository _repository, IMapper _mapper, Ht
         }
         var existingEvent = await _repository.GetByIdAsync(parsedId);
         return existingEvent is not null ? Ok(existingEvent) : NotFound();
+    }
+
+    [HttpPut("{id}")]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> Put([FromRoute] string id, [FromBody] EventDto dto)
+    {
+        if (!Guid.TryParse(id, out var parsedId))
+        {
+            return BadRequest($"Could not parse {id} as a guid");
+        }
+
+        dto.Sanitize(_sanitizer);
+
+        try
+        {
+            var updatedEvent = await _repository.UpdateAsync(parsedId, dto);
+            return Ok(updatedEvent);
+        }
+        catch (KeyNotFoundException)
+        {
+            return NotFound();
+        }
     }
 }

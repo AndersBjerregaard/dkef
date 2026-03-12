@@ -8,7 +8,6 @@ public sealed class ForgotPasswordContext : DbContext
 {
     public ForgotPasswordContext(DbContextOptions<ForgotPasswordContext> options) : base(options)
     {
-        Database.EnsureCreated();
     }
 
     public DbSet<ForgotPassword> ForgotPasswords { get; set; }
@@ -25,6 +24,7 @@ public sealed class ForgotPasswordContext : DbContext
             .HasPrincipalKey(c => c.Id);
             
         // Tell EF Core that Contact entity is actually stored in AspNetUsers table
-        modelBuilder.Entity<Contact>().ToTable("AspNetUsers");
+        // but is owned/migrated by ContactContext — exclude from this context's migrations
+        modelBuilder.Entity<Contact>().ToTable("AspNetUsers", t => t.ExcludeFromMigrations());
     }
 }
