@@ -1,0 +1,7 @@
+- name: Install core utility packages
+  ansible.builtin.apt:
+    name:
+      - jq
+    state: present
+    update_cache: yes
+  become: yes

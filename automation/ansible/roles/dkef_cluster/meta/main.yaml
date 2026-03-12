@@ -2,3 +2,4 @@ dependencies:
   - docker
   - kind
   - kubectl
+  - core_utils

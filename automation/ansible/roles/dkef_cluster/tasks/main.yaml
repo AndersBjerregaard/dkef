@@ -1,34 +1,109 @@
-- name: Check if 'kind-dkef' cluster exists
-  ansible.builtin.command: kubectl cluster-info --context kind-dkef
-  register: cluster_info_result
-  ignore_errors: true # Expected to fail if cluster doesn't exist
-  changed_when: false
-
-- name: Debug cluster info result (if it failed)
-  ansible.builtin.debug:
-    var: cluster_info_result
-  when: cluster_info_result.failed
-
+# ─── Step 1: Copy kind-config.yaml to the remote host (always — idempotent) ──
 - name: Copy KinD cluster config to remote host
   ansible.builtin.copy:
     src: kind-config.yaml
     dest: /tmp/kind-config.yaml
     mode: '0644'
-  when: "'does not exist' in cluster_info_result.stderr or cluster_info_result.rc != 0"
 
-- name: Create 'kind-dkef' cluster if it doesn't exist
+# ─── Step 2: Parse desired port mappings from the config ─────────────────────
+- name: Slurp kind-config.yaml from remote host
+  ansible.builtin.slurp:
+    src: /tmp/kind-config.yaml
+  register: kind_config_slurp
+
+# Desired port set: list of "hostPort:containerPort/PROTO" strings, e.g. ["80:80/TCP", "5432:30432/TCP"]
+- name: Compute desired port set from kind-config.yaml
+  ansible.builtin.set_fact:
+    kind_desired_port_set: >-
+      {%- set mappings = (kind_config_slurp.content | b64decode | from_yaml).nodes[0].extraPortMappings -%}
+      {%- set result = [] -%}
+      {%- for m in mappings -%}
+        {%- set _ = result.append(m.hostPort | string + ':' + m.containerPort | string + '/' + m.protocol | upper) -%}
+      {%- endfor -%}
+      {{ result }}
+
+# ─── Step 3: Query Docker for a running KinD control-plane container ─────────
+# Stopped containers are intentionally excluded — treat stopped = absent.
+# docker inspect returns rc=1 when the container does not exist.
+- name: Inspect running KinD control-plane container
+  ansible.builtin.command: docker inspect dkef-control-plane
+  register: docker_inspect_result
+  changed_when: false
+  failed_when: false
+
+- name: Set cluster_running fact
+  ansible.builtin.set_fact:
+    cluster_running: "{{ docker_inspect_result.rc == 0 and
+      (docker_inspect_result.stdout | from_json)[0].State.Running | bool }}"
+
+# ─── Step 4: Parse actual ports from the running container ───────────────────
+# NetworkSettings.Ports is a map of "containerPort/proto" -> [{HostIp, HostPort}].
+# We pipe docker inspect directly into jq — no Ansible data marshalling — to avoid
+# control-character escaping issues. Output is one "hostPort:containerPort/PROTO"
+# line per binding, matching the format used by kind_desired_port_set.
+- name: Extract actual port set from docker inspect via jq
+  ansible.builtin.shell: |
+    docker inspect dkef-control-plane | jq -r '
+      .[0].NetworkSettings.Ports
+      | to_entries[]
+      | .key as $cp
+      | .value[]?
+      | select(.HostIp == "0.0.0.0")
+      | (.HostPort + ":" + ($cp | split("/")[0]) + "/" + ($cp | split("/")[1] | ascii_upcase))
+    '
+  register: jq_ports_result
+  changed_when: false
+  when: cluster_running | bool
+
+- name: Set actual port set from jq output
+  ansible.builtin.set_fact:
+    kind_actual_port_set: "{{ jq_ports_result.stdout_lines }}"
+  when: cluster_running | bool
+
+- name: Set actual port set to empty (no cluster running)
+  ansible.builtin.set_fact:
+    kind_actual_port_set: []
+  when: not (cluster_running | bool)
+
+# ─── Step 5: Compare and decide ──────────────────────────────────────────────
+- name: Determine if port mappings match desired configuration
+  ansible.builtin.set_fact:
+    ports_match: "{{ (kind_actual_port_set | sort) == (kind_desired_port_set | sort) }}"
+
+- name: Determine if cluster needs to be recreated due to port drift
+  ansible.builtin.set_fact:
+    cluster_needs_recreation: "{{ (cluster_running | bool) and not (ports_match | bool) }}"
+
+- name: Report cluster port comparison result
+  ansible.builtin.debug:
+    msg: >-
+      Cluster running: {{ cluster_running }}.
+      Desired ports: {{ kind_desired_port_set | sort }}.
+      Actual ports:  {{ kind_actual_port_set | sort }}.
+      Ports match: {{ ports_match }}.
+      Needs recreation: {{ cluster_needs_recreation }}.
+
+# ─── Step 6: Tear down cluster if port mappings have drifted ─────────────────
+- name: Delete KinD cluster due to port mapping drift
+  ansible.builtin.command: kind delete cluster --name dkef
+  when: cluster_needs_recreation | bool
+
+# ─── Step 7: Create cluster if absent or just deleted ────────────────────────
+- name: Create 'dkef' KinD cluster
   ansible.builtin.command: >
     kind create cluster
     --name dkef
     --image kindest/node:{{ kubernetes_version }}
     --config /tmp/kind-config.yaml
-  when: "'does not exist' in cluster_info_result.stderr or cluster_info_result.rc != 0"
+  when: (not (cluster_running | bool)) or (cluster_needs_recreation | bool)
 
+# ─── Step 8: Clean up ────────────────────────────────────────────────────────
 - name: Remove temporary KinD cluster config
   ansible.builtin.file:
     path: /tmp/kind-config.yaml
     state: absent
 
+# ─── Step 9: Deploy and verify nginx ingress controller ──────────────────────
 - name: Deploy nginx ingress controller for KinD
   kubernetes.core.k8s:
     state: present

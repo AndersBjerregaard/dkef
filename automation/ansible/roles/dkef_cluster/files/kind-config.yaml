@@ -8,8 +8,6 @@ nodes:
         nodeRegistration:
           kubeletExtraArgs:
             node-labels: "ingress-ready=true"
-    # NOTE: Changing extraPortMappings requires destroying and recreating the cluster.
-    # Run `kind delete cluster --name dkef` before re-running the playbook if this section changes.
     extraPortMappings:
       - containerPort: 80
         hostPort: 80
