@@ -8,5 +8,6 @@
     - docker
     - kind
     - kubectl
+    - kubernetes_python
     - dkef_cluster
     - postgres_k8s

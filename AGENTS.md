@@ -15,7 +15,7 @@ Monorepo with three components:
 - `src/dkef-vue/` — Vue 3 SPA (TypeScript, Vite, Tailwind CSS)
 - `src/dkef-api/` — ASP.NET Core Web API (C#, .NET 10, EF Core, PostgreSQL)
 - `src/dkef-data/` — .NET 9 console utility (CSV import)
-- `automation/` — Ansible playbooks for Kubernetes/KinD cluster provisioning
+- `automation/` — Ansible playbooks and Kubernetes manifests for Kubernetes/KinD cluster provisioning
 
 ---
 

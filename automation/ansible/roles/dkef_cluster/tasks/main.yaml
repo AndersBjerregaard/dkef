@@ -30,11 +30,9 @@
     state: absent
 
 - name: Deploy nginx ingress controller for KinD
-  ansible.builtin.command: >
-    kubectl apply -f
-    https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
-  register: ingress_deploy_result
-  changed_when: "'created' in ingress_deploy_result.stdout or 'configured' in ingress_deploy_result.stdout"
+  kubernetes.core.k8s:
+    state: present
+    src: https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
 
 - name: Wait for nginx ingress controller to be ready
   ansible.builtin.command: >
