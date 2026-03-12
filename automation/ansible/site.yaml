@@ -5,14 +5,6 @@
     - vars/secrets.yaml
 
   roles:
-    - role: docker
-      tags: docker
-    - role: kind
-      tags: kind
-    - role: kubectl
-      tags: kubectl
-    - role: core_utils
-      tags: core_utils
     - role: kubernetes_python
       tags: kubernetes_python
     - role: dkef_cluster
