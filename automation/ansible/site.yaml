@@ -11,3 +11,5 @@
       tags: dkef_cluster
     - role: postgres_k8s
       tags: postgres_k8s
+    - role: frontend_k8s
+      tags: frontend_k8s
