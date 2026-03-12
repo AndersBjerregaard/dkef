@@ -17,19 +17,19 @@
   kubernetes.core.k8s:
     state: present
     namespace: "{{ postgres_namespace }}"
-    src: "{{ playbook_dir }}/../k8s/postgres/statefulset.yaml"
+    definition: "{{ lookup('file', playbook_dir + '/../k8s/postgres/statefulset.yaml') | from_yaml }}"
 
 - name: Apply Postgres ClusterIP service
   kubernetes.core.k8s:
     state: present
     namespace: "{{ postgres_namespace }}"
-    src: "{{ playbook_dir }}/../k8s/postgres/service.yaml"
+    definition: "{{ lookup('file', playbook_dir + '/../k8s/postgres/service.yaml') | from_yaml }}"
 
 - name: Apply Postgres NodePort service
   kubernetes.core.k8s:
     state: present
     namespace: "{{ postgres_namespace }}"
-    src: "{{ playbook_dir }}/../k8s/postgres/nodeport-service.yaml"
+    definition: "{{ lookup('file', playbook_dir + '/../k8s/postgres/nodeport-service.yaml') | from_yaml }}"
 
 - name: Wait for Postgres StatefulSet to be ready
   kubernetes.core.k8s_info:
