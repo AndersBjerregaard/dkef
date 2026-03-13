@@ -9,6 +9,8 @@
       tags: kubernetes_python
     - role: dkef_cluster
       tags: dkef_cluster
+    - role: cert_manager
+      tags: cert_manager
     - role: postgres_k8s
       tags: postgres_k8s
     - role: frontend_k8s
