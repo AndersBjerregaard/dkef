@@ -1,7 +1,7 @@
 FROM oven/bun:1.3.10 AS build
 
-ENV VITE_API_BASE_URL=http://localhost:5275
-ENV VITE_MODE=Docker
+ENV VITE_API_BASE_URL=https://api.andersbjerregaard.com
+ENV VITE_MODE=k8s
 
 WORKDIR /app
 
@@ -12,7 +12,7 @@ RUN bun install --frozen-lockfile
 
 COPY . .
 
-RUN bun run build:docker
+RUN bun run build:k8s
 
 FROM nginx:1.29.5-alpine AS final
 
