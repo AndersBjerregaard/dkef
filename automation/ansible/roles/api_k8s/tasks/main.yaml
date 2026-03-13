@@ -1,0 +1,53 @@
+- name: Create API ConfigMap
+  kubernetes.core.k8s:
+    state: present
+    namespace: "{{ api_namespace }}"
+    definition: "{{ lookup('file', playbook_dir + '/../k8s/api/configmap.yaml') | from_yaml }}"
+
+- name: Create API secret
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: dkef-api-secret
+        namespace: "{{ api_namespace }}"
+      type: Opaque
+      stringData:
+        ConnectionStrings__PostgresDb: "{{ api_postgres_connection_string }}"
+        ConnectionStrings__Minio: "{{ api_minio_connection_string }}"
+        Minio__AccessKey: "{{ minio_access_key }}"
+        Minio__SecretKey: "{{ minio_secret_key }}"
+        JwtSettings__Key: "{{ jwt_key }}"
+
+- name: Apply API Deployment
+  kubernetes.core.k8s:
+    state: present
+    namespace: "{{ api_namespace }}"
+    definition: "{{ lookup('file', playbook_dir + '/../k8s/api/deployment.yaml') | from_yaml }}"
+
+- name: Apply API ClusterIP service
+  kubernetes.core.k8s:
+    state: present
+    namespace: "{{ api_namespace }}"
+    definition: "{{ lookup('file', playbook_dir + '/../k8s/api/service.yaml') | from_yaml }}"
+
+- name: Apply API Ingress
+  kubernetes.core.k8s:
+    state: present
+    namespace: "{{ api_namespace }}"
+    definition: "{{ lookup('file', playbook_dir + '/../k8s/api/ingress.yaml') | from_yaml }}"
+
+- name: Wait for API Deployment to be ready
+  kubernetes.core.k8s_info:
+    kind: Deployment
+    name: dkef-api
+    namespace: "{{ api_namespace }}"
+  register: api_deployment
+  until: >
+    api_deployment.resources | length > 0 and
+    api_deployment.resources[0].status.readyReplicas is defined and
+    api_deployment.resources[0].status.readyReplicas == 1
+  retries: 24
+  delay: 5

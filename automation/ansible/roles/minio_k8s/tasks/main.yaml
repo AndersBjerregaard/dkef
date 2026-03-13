@@ -1,0 +1,44 @@
+- name: Create MinIO secret
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: minio-secret
+        namespace: "{{ minio_namespace }}"
+      type: Opaque
+      stringData:
+        minio_access_key: "{{ minio_access_key }}"
+        minio_secret_key: "{{ minio_secret_key }}"
+
+- name: Apply MinIO StatefulSet
+  kubernetes.core.k8s:
+    state: present
+    namespace: "{{ minio_namespace }}"
+    definition: "{{ lookup('file', playbook_dir + '/../k8s/minio/statefulset.yaml') | from_yaml }}"
+
+- name: Apply MinIO ClusterIP service
+  kubernetes.core.k8s:
+    state: present
+    namespace: "{{ minio_namespace }}"
+    definition: "{{ lookup('file', playbook_dir + '/../k8s/minio/service.yaml') | from_yaml }}"
+
+- name: Apply MinIO Ingress
+  kubernetes.core.k8s:
+    state: present
+    namespace: "{{ minio_namespace }}"
+    definition: "{{ lookup('file', playbook_dir + '/../k8s/minio/ingress.yaml') | from_yaml }}"
+
+- name: Wait for MinIO StatefulSet to be ready
+  kubernetes.core.k8s_info:
+    kind: StatefulSet
+    name: minio
+    namespace: "{{ minio_namespace }}"
+  register: minio_statefulset
+  until: >
+    minio_statefulset.resources | length > 0 and
+    minio_statefulset.resources[0].status.readyReplicas is defined and
+    minio_statefulset.resources[0].status.readyReplicas == 1
+  retries: 24
+  delay: 5

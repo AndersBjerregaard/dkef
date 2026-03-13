@@ -1,0 +1,29 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: minio
+  labels:
+    app: minio
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "https://andersbjerregaard.com"
+    nginx.ingress.kubernetes.io/cors-allow-methods: "GET, PUT, OPTIONS"
+    nginx.ingress.kubernetes.io/cors-allow-headers: "*"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - storage.andersbjerregaard.com
+      secretName: minio-tls
+  rules:
+    - host: storage.andersbjerregaard.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: minio
+                port:
+                  number: 9000

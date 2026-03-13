@@ -173,8 +173,17 @@ try
         .Build());
 
     // AutoMapper
-    var thumbnailHttpProtocol = minioSecure ? "https" : "http";
-    var thumbnailPrefix = $"{thumbnailHttpProtocol}://{minioConString}";
+    // Use a dedicated public endpoint for browser-facing thumbnail URLs when configured
+    // (e.g. https://storage.andersbjerregaard.com in k8s). Falls back to the internal
+    // connection string so local/Docker behaviour is unchanged.
+    var minioPublicEndpoint = builder.Configuration.GetSection("Minio")["PublicEndpoint"];
+    var thumbnailHttpProtocol = string.IsNullOrWhiteSpace(minioPublicEndpoint)
+        ? (minioSecure ? "https" : "http")
+        : "https";
+    var thumbnailBase = string.IsNullOrWhiteSpace(minioPublicEndpoint)
+        ? minioConString
+        : minioPublicEndpoint;
+    var thumbnailPrefix = $"{thumbnailHttpProtocol}://{thumbnailBase}";
 
     var mapper = new MapperConfiguration(cfg =>
     {

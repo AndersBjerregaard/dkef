@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dkef-api-config
+  labels:
+    app: dkef-api
+data:
+  ASPNETCORE_ENVIRONMENT: "Production"
+  ASPNETCORE_URLS: "http://*:8080"
+  Minio__Secure: "false"
+  Minio__PublicEndpoint: "storage.andersbjerregaard.com"
+  JwtSettings__Issuer: "https://api.andersbjerregaard.com"
+  JwtSettings__Audience: "https://andersbjerregaard.com"
+  JwtSettings__AccessTokenLifetimeMinutes: "15"
+  JwtSettings__RefreshTokenLifetimeDays: "7"
+  JwtSettings__ExpiryMinutes: "60"
+  Logging__LogLevel__Default: "Information"
+  Logging__LogLevel__Microsoft.AspNetCore: "Warning"
