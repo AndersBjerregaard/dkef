@@ -1,0 +1,30 @@
+- name: Apply Frontend Deployment
+  kubernetes.core.k8s:
+    state: present
+    namespace: "{{ frontend_namespace }}"
+    definition: "{{ lookup('file', playbook_dir + '/../k8s/frontend/deployment.yaml') | from_yaml }}"
+
+- name: Apply Frontend ClusterIP service
+  kubernetes.core.k8s:
+    state: present
+    namespace: "{{ frontend_namespace }}"
+    definition: "{{ lookup('file', playbook_dir + '/../k8s/frontend/service.yaml') | from_yaml }}"
+
+- name: Apply Frontend Ingress
+  kubernetes.core.k8s:
+    state: present
+    namespace: "{{ frontend_namespace }}"
+    definition: "{{ lookup('file', playbook_dir + '/../k8s/frontend/ingress.yaml') | from_yaml }}"
+
+- name: Wait for Frontend Deployment to be ready
+  kubernetes.core.k8s_info:
+    kind: Deployment
+    name: dkef-frontend
+    namespace: "{{ frontend_namespace }}"
+  register: frontend_deployment
+  until: >
+    frontend_deployment.resources | length > 0 and
+    frontend_deployment.resources[0].status.readyReplicas is defined and
+    frontend_deployment.resources[0].status.readyReplicas == 1
+  retries: 24
+  delay: 5
