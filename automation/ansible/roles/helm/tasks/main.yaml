@@ -1,0 +1,51 @@
+- name: Update apt cache and install necessary packages for Helm
+  ansible.builtin.apt:
+    name:
+      - curl
+      - gpg
+      - apt-transport-https
+    state: present
+    update_cache: yes
+  become: yes
+
+- name: Ensure /usr/share/keyrings directory exists
+  ansible.builtin.file:
+    path: /usr/share/keyrings
+    state: directory
+    mode: '0755'
+  become: yes
+
+- name: Download and dearmor Helm GPG key
+  ansible.builtin.shell:
+    cmd: >-
+      curl -fsSL https://packages.buildkite.com/helm-linux/helm-debian/gpgkey
+      | gpg --dearmor
+      | tee /usr/share/keyrings/helm.gpg > /dev/null
+    creates: /usr/share/keyrings/helm.gpg
+  become: yes
+
+- name: Add Helm APT repository
+  ansible.builtin.apt_repository:
+    repo: >-
+      deb [signed-by=/usr/share/keyrings/helm.gpg]
+      https://packages.buildkite.com/helm-linux/helm-debian/any/
+      any main
+    state: present
+    filename: helm-stable-debian
+  become: yes
+
+- name: Update apt cache and install Helm
+  ansible.builtin.apt:
+    name: helm
+    state: present
+    update_cache: yes
+  become: yes
+
+- name: Verify Helm installation
+  ansible.builtin.command: helm version
+  register: helm_version_check
+  changed_when: false
+
+- name: Display Helm version
+  ansible.builtin.debug:
+    msg: "{{ helm_version_check.stdout }}"
