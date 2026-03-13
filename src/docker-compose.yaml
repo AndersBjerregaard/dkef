@@ -3,7 +3,7 @@ services:
     container_name: dkef-api1
     build:
       context: ./dkef-api
-      dockerfile: Dockerfile
+      dockerfile: amd64.Dockerfile
     ports:
       - "5275:8080"
     env_file:
