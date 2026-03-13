@@ -20,6 +20,8 @@ services:
     build:
       context: ./dkef-vue
       dockerfile: Dockerfile
+      args:
+        BUILD_MODE: docker
     ports:
       - "5173:80"
     networks:
