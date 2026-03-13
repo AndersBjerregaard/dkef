@@ -4,10 +4,17 @@ metadata:
   name: dkef-frontend
   labels:
     app: dkef-frontend
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
 spec:
   ingressClassName: nginx
+  tls:
+    - hosts:
+        - andersbjerregaard.com
+      secretName: dkef-frontend-tls
   rules:
-    - http:
+    - host: andersbjerregaard.com
+      http:
         paths:
           - path: /
             pathType: Prefix
