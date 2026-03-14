@@ -219,7 +219,7 @@ try
     builder.Services.AddScoped<RefreshTokenRepository>();
 
     // Services
-    builder.Services.AddTransient<IBucketService, MinioBucketService>();
+    builder.Services.AddSingleton<IBucketService, MinioBucketService>(); // Same lifetime scope as the IMinioClient
     builder.Services.AddScoped<IJwtService, JwtService>();
 
     // Security

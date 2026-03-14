@@ -7,3 +7,4 @@ src/dkef-data/db/backups/*
 src/dkef-vue/AUTH_IMPLEMENTATION.md
 automation/ansible/vars/secrets.yaml
 automation/ansible/.vault_pass
+**/dinero_contacts.csv
