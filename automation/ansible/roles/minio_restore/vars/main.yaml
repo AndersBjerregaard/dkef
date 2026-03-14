@@ -1,0 +1,6 @@
+minio_namespace: "default"
+minio_backup_dir: "/opt/dkef-backups/minio"
+minio_host_port: "9000"
+mc_version: "RELEASE.2025-04-03T17-07-56Z"
+mc_install_path: "/usr/local/bin/mc"
+mc_alias: "minio-local"

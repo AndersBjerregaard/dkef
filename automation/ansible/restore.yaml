@@ -1,0 +1,38 @@
+- name: Restore stateful cluster data (Postgres and MinIO) from host backup
+  hosts: hosts
+
+  vars_files:
+    - vars/secrets.yaml
+
+  pre_tasks:
+    - name: Check Postgres backup file exists
+      ansible.builtin.stat:
+        path: /opt/dkef-backups/postgres/dkef-dump.sql
+      register: postgres_backup_stat
+      become: true
+
+    - name: Check MinIO backup directory exists
+      ansible.builtin.stat:
+        path: /opt/dkef-backups/minio
+      register: minio_backup_stat
+      become: true
+
+    - name: Fail if Postgres backup is missing
+      ansible.builtin.fail:
+        msg: >
+          No Postgres backup found at /opt/dkef-backups/postgres/dkef-dump.sql.
+          Run backup.yaml before attempting a restore.
+      when: not postgres_backup_stat.stat.exists
+
+    - name: Fail if MinIO backup directory is missing
+      ansible.builtin.fail:
+        msg: >
+          No MinIO backup found at /opt/dkef-backups/minio.
+          Run backup.yaml before attempting a restore.
+      when: not minio_backup_stat.stat.exists
+
+  roles:
+    - role: postgres_restore
+      tags: postgres
+    - role: minio_restore
+      tags: minio

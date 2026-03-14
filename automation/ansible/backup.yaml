@@ -1,0 +1,11 @@
+- name: Back up stateful cluster data (Postgres and MinIO) to host
+  hosts: hosts
+
+  vars_files:
+    - vars/secrets.yaml
+
+  roles:
+    - role: postgres_backup
+      tags: postgres
+    - role: minio_backup
+      tags: minio
