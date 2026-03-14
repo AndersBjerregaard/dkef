@@ -172,6 +172,11 @@ try
         .WithSSL(minioSecure)
         .Build());
 
+    // Internal MinIO endpoint for server-side admin operations (BucketExistsAsync, MakeBucketAsync, etc.)
+    // Falls back to the primary connection string so Docker/Development behaviour is unchanged.
+    var minioInternalConString = builder.Configuration.GetConnectionString("MinioInternal") ?? minioConString!;
+    builder.Services.AddKeyedSingleton<string>("MinioInternal", minioInternalConString);
+
     // AutoMapper
     // Use a dedicated public endpoint for browser-facing thumbnail URLs when configured
     // (e.g. https://storage.andersbjerregaard.com in k8s). Falls back to the internal

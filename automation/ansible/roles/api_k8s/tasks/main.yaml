@@ -17,6 +17,7 @@
       stringData:
         ConnectionStrings__PostgresDb: "{{ api_postgres_connection_string }}"
         ConnectionStrings__Minio: "{{ api_minio_connection_string }}"
+        ConnectionStrings__MinioInternal: "{{ api_minio_internal_connection_string }}"
         Minio__AccessKey: "{{ minio_access_key }}"
         Minio__SecretKey: "{{ minio_secret_key }}"
         JwtSettings__Key: "{{ jwt_key }}"
