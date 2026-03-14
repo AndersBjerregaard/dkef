@@ -24,6 +24,12 @@
     namespace: "{{ minio_namespace }}"
     definition: "{{ lookup('file', playbook_dir + '/../k8s/minio/service.yaml') | from_yaml }}"
 
+- name: Apply MinIO NodePort service
+  kubernetes.core.k8s:
+    state: present
+    namespace: "{{ minio_namespace }}"
+    definition: "{{ lookup('file', playbook_dir + '/../k8s/minio/service-nodeport.yaml') | from_yaml }}"
+
 - name: Apply MinIO Ingress
   kubernetes.core.k8s:
     state: present
