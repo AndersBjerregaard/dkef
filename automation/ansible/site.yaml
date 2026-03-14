@@ -13,5 +13,9 @@
       tags: cert_manager
     - role: postgres_k8s
       tags: postgres_k8s
+    - role: minio_k8s
+      tags: minio_k8s
+    - role: api_k8s
+      tags: api_k8s
     - role: frontend_k8s
       tags: frontend_k8s

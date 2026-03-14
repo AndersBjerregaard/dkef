@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dkef-api
+  labels:
+    app: dkef-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dkef-api
+  template:
+    metadata:
+      labels:
+        app: dkef-api
+    spec:
+      containers:
+        - name: dkef-api
+          image: anders97/dkef-api:latest
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: dkef-api-config
+            - secretRef:
+                name: dkef-api-secret
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 6
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 5
+            failureThreshold: 3

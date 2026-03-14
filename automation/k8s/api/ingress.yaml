@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: dkef-api
+  labels:
+    app: dkef-api
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - api.andersbjerregaard.com
+      secretName: dkef-api-tls
+  rules:
+    - host: api.andersbjerregaard.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: dkef-api
+                port:
+                  number: 80

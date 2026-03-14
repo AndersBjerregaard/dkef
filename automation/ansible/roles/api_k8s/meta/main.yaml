@@ -1,0 +1,3 @@
+dependencies:
+  - minio_k8s
+  - postgres_k8s

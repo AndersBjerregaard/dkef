@@ -172,9 +172,23 @@ try
         .WithSSL(minioSecure)
         .Build());
 
+    // Internal MinIO endpoint for server-side admin operations (BucketExistsAsync, MakeBucketAsync, etc.)
+    // Falls back to the primary connection string so Docker/Development behaviour is unchanged.
+    var minioInternalConString = builder.Configuration.GetConnectionString("MinioInternal") ?? minioConString!;
+    builder.Services.AddKeyedSingleton<string>("MinioInternal", minioInternalConString);
+
     // AutoMapper
-    var thumbnailHttpProtocol = minioSecure ? "https" : "http";
-    var thumbnailPrefix = $"{thumbnailHttpProtocol}://{minioConString}";
+    // Use a dedicated public endpoint for browser-facing thumbnail URLs when configured
+    // (e.g. https://storage.andersbjerregaard.com in k8s). Falls back to the internal
+    // connection string so local/Docker behaviour is unchanged.
+    var minioPublicEndpoint = builder.Configuration.GetSection("Minio")["PublicEndpoint"];
+    var thumbnailHttpProtocol = string.IsNullOrWhiteSpace(minioPublicEndpoint)
+        ? (minioSecure ? "https" : "http")
+        : "https";
+    var thumbnailBase = string.IsNullOrWhiteSpace(minioPublicEndpoint)
+        ? minioConString
+        : minioPublicEndpoint;
+    var thumbnailPrefix = $"{thumbnailHttpProtocol}://{thumbnailBase}";
 
     var mapper = new MapperConfiguration(cfg =>
     {
@@ -205,7 +219,7 @@ try
     builder.Services.AddScoped<RefreshTokenRepository>();
 
     // Services
-    builder.Services.AddTransient<IBucketService, MinioBucketService>();
+    builder.Services.AddSingleton<IBucketService, MinioBucketService>(); // Same lifetime scope as the IMinioClient
     builder.Services.AddScoped<IJwtService, JwtService>();
 
     // Security

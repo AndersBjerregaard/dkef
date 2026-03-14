@@ -1,37 +1,69 @@
 
 using System.Text.Json;
 
+using Microsoft.Extensions.DependencyInjection;
+
 using Minio;
 using Minio.DataModel.Args;
 
 namespace Dkef.Services;
 
-public class MinioBucketService(IMinioClient _minioClient) : IBucketService
+public class MinioBucketService(
+    IMinioClient _minioClient,
+    [FromKeyedServices("MinioInternal")] string _internalEndpoint,
+    IConfiguration _config) : IBucketService
 {
+    // Cache credentials and flags read from config so we don't re-read on every request.
+    private readonly string _accessKey = _config.GetSection("Minio")["AccessKey"]!;
+    private readonly string _secretKey = _config.GetSection("Minio")["SecretKey"]!;
+    private readonly bool _secure = bool.Parse(_config.GetSection("Minio")["Secure"] ?? "false");
+    private readonly string? _publicEndpoint = _config.GetSection("Minio")["PublicEndpoint"];
+
+    // Builds a short-lived client pointed at the internal cluster endpoint.
+    // Used for admin operations so they bypass the public ingress.
+    private IMinioClient BuildInternalClient() =>
+        new MinioClient()
+            .WithEndpoint(_internalEndpoint)
+            .WithCredentials(_accessKey, _secretKey)
+            .WithSSL(_secure)
+            .Build();
+
     public async Task<string> GetPresignedUrlAsync(string bucket, string objectName, bool isPublic = false)
     {
-        // Make a bucket on the server, if not already present
-        var beArgs = new BucketExistsArgs()
-            .WithBucket(bucket);
-        var found = await _minioClient.BucketExistsAsync(beArgs);
+        // Admin operations use the internal client so they reach MinIO directly
+        // without routing through the public ingress (which would deny HEAD/POST requests).
+        var internalClient = BuildInternalClient();
 
+        var beArgs = new BucketExistsArgs().WithBucket(bucket);
+        var found = await internalClient.BucketExistsAsync(beArgs);
 
         if (!found)
         {
-            var mbArgs = new MakeBucketArgs()
-                .WithBucket(bucket);
-            await _minioClient.MakeBucketAsync(mbArgs);
+            await internalClient.MakeBucketAsync(new MakeBucketArgs().WithBucket(bucket));
 
             if (isPublic)
             {
-                await SetPublicReadPolicy(bucket);
+                await SetPublicReadPolicy(internalClient, bucket);
             }
         }
+
+        // Presigned URL is generated using the public-facing client so the URL
+        // it returns contains the public hostname, making it browser-accessible.
         var psPutArgs = new PresignedPutObjectArgs()
             .WithBucket(bucket)
             .WithObject(objectName)
             .WithExpiry(3600); // Expiry in seconds
-        return await _minioClient.PresignedPutObjectAsync(psPutArgs);
+        var presignedUrl = await _minioClient.PresignedPutObjectAsync(psPutArgs);
+
+        // When an external reverse proxy terminates TLS for the public endpoint but
+        // MinIO itself runs over plain HTTP, the SDK generates an http:// URL — which
+        // browsers block as mixed content when the app is served over HTTPS.
+        // Rewriting the scheme is safe: the HMAC signature covers the path and query,
+        // not the scheme, so MinIO's ingress will accept the request over HTTPS.
+        if (!_secure && !string.IsNullOrWhiteSpace(_publicEndpoint))
+            presignedUrl = "https" + presignedUrl[4..];
+
+        return presignedUrl;
     }
 
 
@@ -41,7 +73,7 @@ public class MinioBucketService(IMinioClient _minioClient) : IBucketService
     /// You can directly construct a public URL for an existing object like: 
     /// http://MinIO_Endpoint/BucketName/ObjectName
     /// </summary>
-    private async Task SetPublicReadPolicy(string bucket)
+    private async Task SetPublicReadPolicy(IMinioClient client, string bucket)
     {
         // The AWS S3 compatible JSON for public read access.
         // There is no struct or constant that the MinIO .NET SDK provides
@@ -67,6 +99,6 @@ public class MinioBucketService(IMinioClient _minioClient) : IBucketService
             .WithBucket(bucket)
             .WithPolicy(policyString);
 
-        await _minioClient.SetPolicyAsync(setPolicyArgs);
+        await client.SetPolicyAsync(setPolicyArgs);
     }
 }
