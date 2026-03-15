@@ -5,11 +5,13 @@ import BaseModal from '@/components/BaseModal.vue'
 import LoadingButton from '@/components/LoadingButton.vue'
 import apiservice from '@/services/apiservice'
 import urlservice from '@/services/urlservice'
+import DeleteMemberModal from '@/components/DeleteMemberModal.vue'
 
 // Modal state
 const isOpen = ref(false)
 const isLoading = ref(false)
 const editState = ref(0) // -1 for error, 0 for none, 1 for update
+const isDeleteOpen = ref(false)
 
 const localDateTime = computed(() => {
   const now = new Date()
@@ -37,7 +39,10 @@ function resetFields() {
 }
 
 const props = defineProps<{ contact: Contact; index: number }>()
-const emit = defineEmits<{ (e: 'contact-updated', contact: Contact): void }>()
+const emit = defineEmits<{
+  (e: 'contact-updated', contact: Contact): void
+  (e: 'contact-deleted', id: string): void
+}>()
 
 // Shown fields
 const fields = computed(() => [
@@ -596,6 +601,21 @@ const hasAccess = ref(true)
               <span>Fortryd</span>
             </button>
           </div>
+          <div class="mt-4">
+            <button
+              type="button"
+              :disabled="isLoading"
+              :class="{
+                'cursor-pointer': !isLoading,
+                'cursor-not-allowed': isLoading,
+                'hover:bg-gray-400': !isLoading,
+              }"
+              class="inline-flex justify-center rounded-md border border-transparent bg-red-400 px-4 py-2 font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-theme-accent text-theme-heading hover:bg-red-900 hover:text-theme-accent focus-visible:ring-offset-2 transition-colors"
+              @click="isDeleteOpen = true"
+            >
+              Slet
+            </button>
+          </div>
           <div v-if="editState != 0" class="w-80 pt-2">
             <span class="text-green-600">Opdateret: {{ localDateTime }}</span>
           </div>
@@ -618,6 +638,12 @@ const hasAccess = ref(true)
       </div>
     </form>
   </BaseModal>
+  <DeleteMemberModal
+    :is-open="isDeleteOpen"
+    :id="contact.id"
+    @close="isDeleteOpen = false"
+    @deleted="(id) => emit('contact-deleted', id)"
+  />
 </template>
 
 <style lang="css" scoped>

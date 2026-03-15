@@ -20,6 +20,15 @@ function updateContact(guid: string) {
   }
 }
 
+function deleteContact(guid: string) {
+  switch (mode) {
+    case 'Development':
+      throw 'Unimplemented!'
+    default:
+      return `/contacts/${guid}`
+  }
+}
+
 function getContactAuthorize(guid: string) {
   switch (mode) {
     case 'Development':
@@ -203,6 +212,7 @@ function getFeed() {
 export default {
   getContacts,
   updateContact,
+  deleteContact,
   getContactAuthorize,
   getEventPresignedUrl,
   postEvent,

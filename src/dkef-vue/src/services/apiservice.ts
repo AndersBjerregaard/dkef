@@ -4,6 +4,7 @@ import axios, {
   type InternalAxiosRequestConfig,
   AxiosError,
 } from 'axios'
+import { useAuthStore } from '@/stores/authStore'
 
 export interface ApiRequestConfig extends AxiosRequestConfig {
   skipAuth?: boolean
@@ -126,22 +127,14 @@ axiosInstance.interceptors.response.use(
   },
 )
 
-// Helper function to get auth store (avoids circular dependency)
-let authStoreInstance: ReturnType<typeof import('@/stores/authStore').useAuthStore> | null = null
-
+// Helper function to get auth store
 function getAuthStore() {
-  // Lazy load to avoid circular dependency
-  if (!authStoreInstance) {
-    try {
-      // Dynamic import using import() instead of require()
-      import('@/stores/authStore').then(({ useAuthStore }) => {
-        authStoreInstance = useAuthStore()
-      })
-    } catch (error) {
-      console.error('Failed to get auth store:', error)
-    }
+  try {
+    return useAuthStore()
+  } catch (error) {
+    console.error('Failed to get auth store:', error)
+    return null
   }
-  return authStoreInstance
 }
 
 function get<T = unknown>(url: string, config?: ApiRequestConfig): Promise<AxiosResponse<T>> {

@@ -54,6 +54,20 @@ public class ContactsController(IContactRepository _repository, HtmlSanitizer _s
 
         return Ok(updatedContact);
     }
+    
+    [HttpDelete]
+    [Route("{id}")]
+    public async Task<IActionResult> Delete([FromRoute] string id)
+    {
+        if (!Guid.TryParse(id, out var parsedId))
+        {
+            return BadRequest($"Could not parse {id} as a guid");
+        }
+
+        await _repository.DeleteAsync(parsedId);
+        
+        return NoContent();
+    }
 
     [HttpGet]
     [Route("{id}/authorize")]
