@@ -110,11 +110,11 @@ axiosInstance.interceptors.response.use(
           refreshError instanceof Error ? refreshError : new Error('Token refresh failed'),
           null,
         )
-        // Refresh failed, clear auth and redirect to login
+        // Refresh failed, clear auth and redirect to home page
         authStore?.clearAuth()
         // Optionally redirect to login page
         if (typeof window !== 'undefined') {
-          window.location.href = '/login'
+          window.location.href = '/'
         }
         return Promise.reject(refreshError)
       } finally {
