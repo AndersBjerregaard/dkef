@@ -88,13 +88,11 @@ export const useNewsStore = defineStore('news', () => {
 
   async function deleteNewsItem(id: string): Promise<void> {
     isFetching.value = true
-    error.value = null
     try {
       await apiservice.delete(urlservice.deleteNews(id))
       delete news.value[id]
     } catch (err: unknown) {
       const errorMessage = `Error attempting to delete news item ${id}: ${err}`
-      error.value = errorMessage
       console.error(errorMessage)
       throw err
     } finally {

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, type Ref } from 'vue'
+import { useRouter } from 'vue-router'
 import BaseModal from '@/components/BaseModal.vue'
 import type { PublishedNews } from '@/types/news'
 import { useNewsStore } from '@/stores/newsStore'
@@ -13,16 +14,22 @@ const emit = defineEmits<{
   (e: 'close'): void
 }>()
 
+const router = useRouter()
 const newsStore = useNewsStore()
 
 const isLoading: Ref<boolean> = ref(false)
+const deleteError: Ref<string | null> = ref(null)
 
 async function deleteNews() {
   isLoading.value = true
+  deleteError.value = null
   try {
     await newsStore.deleteNewsItem(props.news.id)
+    await router.push({ name: 'events-and-news' })
     emit('close')
   } catch (err: unknown) {
+    const errorMessage = err instanceof Error ? err.message : 'Kunne ikke slette nyhed'
+    deleteError.value = errorMessage
     console.error(err)
   } finally {
     isLoading.value = false
@@ -50,6 +57,14 @@ async function deleteNews() {
       >
         Annuller
       </button>
+    </div>
+    <div
+      class="pt-4 text-theme-accent"
+      v-if="deleteError"
+    >
+      <p>
+        Der skete en fejl under sletningen.
+      </p>
     </div>
   </BaseModal>
 </template>
