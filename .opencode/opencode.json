@@ -1,7 +1,3 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "instructions": [
-    "src/dkef-vue/.opencode/AGENTS.md",
-    "src/dkef-api/.opencode/AGENTS.md"
-  ]
 }

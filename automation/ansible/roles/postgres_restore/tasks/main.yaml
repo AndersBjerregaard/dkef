@@ -1,0 +1,37 @@
+- name: Wait for Postgres StatefulSet to be ready
+  kubernetes.core.k8s_info:
+    kind: StatefulSet
+    name: postgres
+    namespace: "{{ postgres_namespace }}"
+  register: postgres_statefulset
+  until: >
+    postgres_statefulset.resources | length > 0 and
+    postgres_statefulset.resources[0].status.readyReplicas is defined and
+    postgres_statefulset.resources[0].status.readyReplicas == 1
+  retries: 24
+  delay: 5
+
+- name: Copy dump from host to pod
+  ansible.builtin.command:
+    cmd: >
+      kubectl cp
+      {{ postgres_backup_dir }}/{{ postgres_dump_filename }}
+      {{ postgres_namespace }}/postgres-0:/tmp/{{ postgres_dump_filename }}
+  become: true
+
+- name: Restore Postgres databases from dump
+  kubernetes.core.k8s_exec:
+    namespace: "{{ postgres_namespace }}"
+    pod: postgres-0
+    command: >
+      psql -U {{ postgres_user }} -f /tmp/{{ postgres_dump_filename }}
+
+- name: Remove dump file from pod
+  kubernetes.core.k8s_exec:
+    namespace: "{{ postgres_namespace }}"
+    pod: postgres-0
+    command: rm /tmp/{{ postgres_dump_filename }}
+
+- name: Report restore complete
+  ansible.builtin.debug:
+    msg: "Postgres restore complete from {{ postgres_backup_dir }}/{{ postgres_dump_filename }}"

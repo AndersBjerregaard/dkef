@@ -1,0 +1,33 @@
+- name: Ensure Postgres backup directory exists on host
+  ansible.builtin.file:
+    path: "{{ postgres_backup_dir }}"
+    state: directory
+    mode: "0750"
+    owner: root
+    group: root
+  become: true
+
+- name: Dump all Postgres databases inside pod
+  kubernetes.core.k8s_exec:
+    namespace: "{{ postgres_namespace }}"
+    pod: postgres-0
+    command: >
+      pg_dumpall -U {{ postgres_user }} -f /tmp/{{ postgres_dump_filename }}
+
+- name: Copy dump from pod to host
+  ansible.builtin.command:
+    cmd: >
+      kubectl cp
+      {{ postgres_namespace }}/postgres-0:/tmp/{{ postgres_dump_filename }}
+      {{ postgres_backup_dir }}/{{ postgres_dump_filename }}
+  become: true
+
+- name: Remove dump file from pod
+  kubernetes.core.k8s_exec:
+    namespace: "{{ postgres_namespace }}"
+    pod: postgres-0
+    command: rm /tmp/{{ postgres_dump_filename }}
+
+- name: Report backup location
+  ansible.builtin.debug:
+    msg: "Postgres backup written to {{ postgres_backup_dir }}/{{ postgres_dump_filename }}"

@@ -1,0 +1,3 @@
+postgres_namespace: "default"
+postgres_backup_dir: "/opt/dkef-backups/postgres"
+postgres_dump_filename: "dkef-dump.sql"

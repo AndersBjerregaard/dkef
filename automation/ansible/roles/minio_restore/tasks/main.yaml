@@ -1,0 +1,59 @@
+- name: Wait for MinIO StatefulSet to be ready
+  kubernetes.core.k8s_info:
+    kind: StatefulSet
+    name: minio
+    namespace: "{{ minio_namespace }}"
+  register: minio_statefulset
+  until: >
+    minio_statefulset.resources | length > 0 and
+    minio_statefulset.resources[0].status.readyReplicas is defined and
+    minio_statefulset.resources[0].status.readyReplicas == 1
+  retries: 24
+  delay: 5
+
+- name: Check installed mc version
+  ansible.builtin.command:
+    cmd: "{{ mc_install_path }} --version"
+  register: mc_current_version
+  failed_when: false
+  changed_when: false
+  become: true
+
+- name: Install mc binary on host
+  ansible.builtin.get_url:
+    url: "https://dl.min.io/client/mc/release/linux-{{ 'arm64' if ansible_architecture == 'aarch64' else 'amd64' }}/archive/mc.{{ mc_version }}"
+    dest: "{{ mc_install_path }}"
+    mode: "0755"
+    owner: root
+    group: root
+  become: true
+  when: >
+    mc_current_version.rc != 0 or
+    mc_version not in mc_current_version.stdout
+
+- name: Configure mc alias for local MinIO
+  ansible.builtin.command:
+    cmd: >
+      {{ mc_install_path }} alias set {{ mc_alias }}
+      http://localhost:{{ minio_host_port }}
+      {{ minio_access_key }}
+      {{ minio_secret_key }}
+  no_log: true
+  become: true
+
+- name: Mirror backup to MinIO
+  ansible.builtin.command:
+    cmd: >
+      {{ mc_install_path }} mirror --overwrite
+      {{ minio_backup_dir }}/
+      {{ mc_alias }}/
+  become: true
+
+- name: Remove mc alias
+  ansible.builtin.command:
+    cmd: "{{ mc_install_path }} alias rm {{ mc_alias }}"
+  become: true
+
+- name: Report restore complete
+  ansible.builtin.debug:
+    msg: "MinIO restore complete from {{ minio_backup_dir }}"
