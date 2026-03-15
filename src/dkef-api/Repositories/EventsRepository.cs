@@ -3,12 +3,13 @@ using AutoMapper;
 using Dkef.Contracts;
 using Dkef.Data;
 using Dkef.Domain;
+using Dkef.Services;
 
 using Microsoft.EntityFrameworkCore;
 
 namespace Dkef.Repositories;
 
-public class EventsRepository(EventsContext context, IMapper mapper) : IEventsRepository
+public class EventsRepository(EventsContext context, IMapper mapper, IBucketService bucketService) : IEventsRepository
 {
     public async Task<Event> CreateAsync(Event dto)
     {
@@ -19,6 +20,18 @@ public class EventsRepository(EventsContext context, IMapper mapper) : IEventsRe
 
     public async Task<bool> DeleteAsync(Guid id)
     {
+        // Fetch the existing event to get its thumbnail before deletion
+        var existing = await context.Events.FirstOrDefaultAsync(x => x.Id == id);
+        if (existing?.ThumbnailUrl != null)
+        {
+            var imageGuid = ExtractGuidFromUrl(existing.ThumbnailUrl);
+            if (imageGuid != Guid.Empty)
+            {
+                // Fire and forget - don't wait for cleanup, don't block deletion if cleanup fails
+                _ = bucketService.DeleteObjectAsync("events", imageGuid.ToString()).ConfigureAwait(false);
+            }
+        }
+
         return await context.Events.Where(x => x.Id == id).ExecuteDeleteAsync() == 1;
     }
 
@@ -53,8 +66,34 @@ public class EventsRepository(EventsContext context, IMapper mapper) : IEventsRe
     {
         var existing = await context.Events.FirstOrDefaultAsync(x => x.Id == id)
             ?? throw new KeyNotFoundException($"No event found with the id {id}");
+
+        // If thumbnail is changing, delete the old image from MinIO
+        if (existing.ThumbnailUrl != null && Guid.TryParse(dto.ThumbnailId, out var newGuid))
+        {
+            var oldGuid = ExtractGuidFromUrl(existing.ThumbnailUrl);
+            if (oldGuid != Guid.Empty && oldGuid != newGuid)
+            {
+                // Fire and forget - cleanup failure should not block the update
+                _ = bucketService.DeleteObjectAsync("events", oldGuid.ToString()).ConfigureAwait(false);
+            }
+        }
+
         var updated = mapper.Map(dto, existing);
         await context.SaveChangesAsync();
         return updated;
+    }
+
+    private static Guid ExtractGuidFromUrl(string url)
+    {
+        try
+        {
+            var parts = url.Split('/');
+            var lastPart = parts[^1];
+            return Guid.TryParse(lastPart, out var guid) ? guid : Guid.Empty;
+        }
+        catch
+        {
+            return Guid.Empty;
+        }
     }
 }

@@ -221,6 +221,7 @@ try
     // Services
     builder.Services.AddSingleton<IBucketService, MinioBucketService>(); // Same lifetime scope as the IMinioClient
     builder.Services.AddScoped<IJwtService, JwtService>();
+    builder.Services.AddScoped<ImageCleanupService>();
 
     // Security
     builder.Services.AddSingleton<HtmlSanitizer>(x => new());

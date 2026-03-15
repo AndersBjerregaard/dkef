@@ -3,12 +3,13 @@ using AutoMapper;
 using Dkef.Contracts;
 using Dkef.Data;
 using Dkef.Domain;
+using Dkef.Services;
 
 using Microsoft.EntityFrameworkCore;
 
 namespace Dkef.Repositories;
 
-public class GeneralAssemblyRepository(GeneralAssemblyContext context, IMapper mapper) : IGeneralAssemblyRepository
+public class GeneralAssemblyRepository(GeneralAssemblyContext context, IMapper mapper, IBucketService bucketService) : IGeneralAssemblyRepository
 {
     public async Task<GeneralAssembly> CreateAsync(GeneralAssembly dto)
     {
@@ -19,6 +20,18 @@ public class GeneralAssemblyRepository(GeneralAssemblyContext context, IMapper m
 
     public async Task<bool> DeleteAsync(Guid id)
     {
+        // Fetch the existing general assembly to get its thumbnail before deletion
+        var existing = await context.GeneralAssemblies.FirstOrDefaultAsync(x => x.Id == id);
+        if (existing?.ThumbnailUrl != null)
+        {
+            var imageGuid = ExtractGuidFromUrl(existing.ThumbnailUrl);
+            if (imageGuid != Guid.Empty)
+            {
+                // Fire and forget - don't wait for cleanup, don't block deletion if cleanup fails
+                _ = bucketService.DeleteObjectAsync("general-assemblies", imageGuid.ToString()).ConfigureAwait(false);
+            }
+        }
+
         return await context.GeneralAssemblies.Where(x => x.Id == id).ExecuteDeleteAsync() == 1;
     }
 
@@ -53,8 +66,34 @@ public class GeneralAssemblyRepository(GeneralAssemblyContext context, IMapper m
     {
         var existing = await context.GeneralAssemblies.FirstOrDefaultAsync(x => x.Id == id)
             ?? throw new KeyNotFoundException($"No general assembly found with the id {id}");
+
+        // If thumbnail is changing, delete the old image from MinIO
+        if (existing.ThumbnailUrl != null && Guid.TryParse(dto.ThumbnailId, out var newGuid))
+        {
+            var oldGuid = ExtractGuidFromUrl(existing.ThumbnailUrl);
+            if (oldGuid != Guid.Empty && oldGuid != newGuid)
+            {
+                // Fire and forget - cleanup failure should not block the update
+                _ = bucketService.DeleteObjectAsync("general-assemblies", oldGuid.ToString()).ConfigureAwait(false);
+            }
+        }
+
         var updated = mapper.Map(dto, existing);
         await context.SaveChangesAsync();
         return updated;
+    }
+
+    private static Guid ExtractGuidFromUrl(string url)
+    {
+        try
+        {
+            var parts = url.Split('/');
+            var lastPart = parts[^1];
+            return Guid.TryParse(lastPart, out var guid) ? guid : Guid.Empty;
+        }
+        catch
+        {
+            return Guid.Empty;
+        }
     }
 }
