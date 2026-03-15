@@ -17,16 +17,17 @@ public class FeedController(
     QueryableService<GeneralAssembly> _assemblyQueryable) : ControllerBase
 {
     [HttpGet]
-    public async Task<IActionResult> Get([FromQuery] int take = 3)
+    public async Task<IActionResult> Get([FromQuery] int take = 9, [FromQuery] int skip = 0)
     {
         if (take > 50) take = 50;
 
+        // Fetch all items without take/skip to calculate total
         var eventsTask = _eventsRepository.GetMultipleAsync(
-            _eventQueryable.GetQuery("createdAt", "desc"), take, skip: 0);
+            _eventQueryable.GetQuery("createdAt", "desc"), take: int.MaxValue, skip: 0);
         var newsTask = _newsRepository.GetMultipleAsync(
-            _newsQueryable.GetQuery("createdAt", "desc"), take, skip: 0);
+            _newsQueryable.GetQuery("createdAt", "desc"), take: int.MaxValue, skip: 0);
         var assembliesTask = _generalAssemblyRepository.GetMultipleAsync(
-            _assemblyQueryable.GetQuery("createdAt", "desc"), take, skip: 0);
+            _assemblyQueryable.GetQuery("createdAt", "desc"), take: int.MaxValue, skip: 0);
 
         await Task.WhenAll(eventsTask, newsTask, assembliesTask);
 
@@ -69,12 +70,18 @@ public class FeedController(
             DateTime = a.DateTime,
         });
 
-        var feed = events
+        var allFeedItems = events
             .Concat(news)
             .Concat(assemblies)
             .OrderByDescending(x => x.CreatedAt)
-            .Take(take);
+            .ToList();
 
-        return Ok(feed);
+        var total = allFeedItems.Count;
+        var paginatedFeed = allFeedItems
+            .Skip(skip)
+            .Take(take)
+            .ToList();
+
+        return Ok(new { total, collection = paginatedFeed });
     }
 }

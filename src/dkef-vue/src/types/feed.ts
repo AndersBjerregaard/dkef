@@ -14,4 +14,9 @@ export interface FeedItem {
   publishedAt?: string
 }
 
-export type FeedResponse = FeedItem[]
+export interface FeedCollection {
+  total: number
+  collection: FeedItem[]
+}
+
+export type FeedResponse = FeedCollection
