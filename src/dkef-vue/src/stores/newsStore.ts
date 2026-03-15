@@ -100,5 +100,14 @@ export const useNewsStore = defineStore('news', () => {
     }
   }
 
-  return { news, isFetching, error, getNewsById, fetchLatestNews, fetchNewsItem, updateNewsItem, deleteNewsItem }
+  return {
+    news,
+    isFetching,
+    error,
+    getNewsById,
+    fetchLatestNews,
+    fetchNewsItem,
+    updateNewsItem,
+    deleteNewsItem,
+  }
 })

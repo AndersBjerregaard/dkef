@@ -58,13 +58,8 @@ async function deleteNews() {
         Annuller
       </button>
     </div>
-    <div
-      class="pt-4 text-theme-accent"
-      v-if="deleteError"
-    >
-      <p>
-        Der skete en fejl under sletningen.
-      </p>
+    <div class="pt-4 text-theme-accent" v-if="deleteError">
+      <p>Der skete en fejl under sletningen.</p>
     </div>
   </BaseModal>
 </template>
