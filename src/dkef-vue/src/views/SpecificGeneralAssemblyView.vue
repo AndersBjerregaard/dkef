@@ -4,6 +4,7 @@ import { useAuthStore } from '@/stores/authStore'
 import type { PublishedGeneralAssembly } from '@/types/generalAssembly'
 import { computed, onMounted, ref } from 'vue'
 import EditGeneralAssemblyModal from '@/components/EditGeneralAssemblyModal.vue'
+import DeleteGeneralAssemblyModal from '@/components/DeleteGeneralAssemblyModal.vue'
 
 const props = defineProps({
   id: {
@@ -20,6 +21,7 @@ const currentAssembly = computed<PublishedGeneralAssembly | undefined>(() =>
 )
 
 const isEditOpen = ref(false)
+const isDeleteOpen = ref(false)
 
 const dateTime = computed(() => {
   const item = currentAssembly.value
@@ -140,6 +142,12 @@ onMounted(async () => {
     :is-open="isEditOpen"
     :assembly="currentAssembly"
     @close="isEditOpen = false"
+  />
+  <DeleteGeneralAssemblyModal
+    v-if="currentAssembly"
+    :is-open="isDeleteOpen"
+    :generalAssembly="currentAssembly"
+    @close="isDeleteOpen = false"
   />
 </template>
 

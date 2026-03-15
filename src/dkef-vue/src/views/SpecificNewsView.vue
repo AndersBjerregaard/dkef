@@ -19,7 +19,6 @@ const authStore = useAuthStore()
 const currentNews = computed<PublishedNews | undefined>(() => newsStore.getNewsById(props.id))
 
 const isEditOpen = ref(false)
-
 const isDeleteOpen = ref(false)
 
 const publishedAt = computed(() => {

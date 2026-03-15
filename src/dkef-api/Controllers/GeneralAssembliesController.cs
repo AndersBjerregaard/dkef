@@ -74,4 +74,23 @@ public class GeneralAssembliesController(IGeneralAssemblyRepository _repository,
             return NotFound();
         }
     }
+
+    [HttpDelete("{id}")]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> Delete([FromRoute] string id)
+    {
+        if (!Guid.TryParse(id, out var parsedId))
+        {
+            return BadRequest($"Could not parse {id} as a guid");
+        }
+        try
+        {
+            await _repository.DeleteAsync(parsedId);
+            return NoContent();
+        }
+        catch (KeyNotFoundException)
+        {
+            return NotFound();
+        }
+    }
 }

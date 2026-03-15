@@ -85,6 +85,20 @@ export const useGeneralAssemblyStore = defineStore('generalAssembly', () => {
     }
   }
 
+  async function deleteGeneralAssemblyItem(id: string): Promise<void> {
+    isFetching.value = true
+    try {
+      await apiservice.delete(urlservice.deleteGeneralAssembly(id))
+      delete assemblies.value[id]
+    } catch (err: unknown) {
+      const errorMessage = `Error attempting to delete general assembly ${id}: ${err}`
+      console.error(errorMessage)
+      throw err
+    } finally {
+      isFetching.value = false
+    }
+  }
+
   return {
     assemblies,
     isFetching,
@@ -93,5 +107,6 @@ export const useGeneralAssemblyStore = defineStore('generalAssembly', () => {
     fetchLatestGeneralAssemblies,
     fetchGeneralAssembly,
     updateGeneralAssembly,
+    deleteGeneralAssemblyItem,
   }
 })

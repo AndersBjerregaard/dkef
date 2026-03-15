@@ -4,6 +4,7 @@ import { useAuthStore } from '@/stores/authStore'
 import { type PublishedEvent } from '@/types/events'
 import { computed, onMounted, ref } from 'vue'
 import EditEventModal from '@/components/EditEventModal.vue'
+import DeleteEventModal from '@/components/DeleteEventModal.vue'
 
 const props = defineProps({
   id: {
@@ -18,6 +19,7 @@ const authStore = useAuthStore()
 const currentEvent = computed<PublishedEvent | undefined>(() => eventStore.getEventById(props.id))
 
 const isEditOpen = ref(false)
+const isDeleteOpen = ref(false)
 
 const dateTime = computed(() => {
   const event = currentEvent.value
@@ -141,6 +143,12 @@ onMounted(async () => {
     :is-open="isEditOpen"
     :event="currentEvent"
     @close="isEditOpen = false"
+  />
+  <DeleteEventModal
+    v-if="currentEvent"
+    :is-open="isDeleteOpen"
+    :event="currentEvent"
+    @close="isDeleteOpen = false"
   />
 </template>
 
