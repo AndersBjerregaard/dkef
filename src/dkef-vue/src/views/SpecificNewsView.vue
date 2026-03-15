@@ -4,6 +4,7 @@ import { useAuthStore } from '@/stores/authStore'
 import type { PublishedNews } from '@/types/news'
 import { computed, onMounted, ref } from 'vue'
 import EditNewsModal from '@/components/EditNewsModal.vue'
+import DeleteNewsModal from '@/components/DeleteNewsModal.vue'
 
 const props = defineProps({
   id: {
@@ -18,6 +19,8 @@ const authStore = useAuthStore()
 const currentNews = computed<PublishedNews | undefined>(() => newsStore.getNewsById(props.id))
 
 const isEditOpen = ref(false)
+
+const isDeleteOpen = ref(false)
 
 const publishedAt = computed(() => {
   const item = currentNews.value
@@ -47,10 +50,17 @@ onMounted(async () => {
         </RouterLink>
         <button
           v-if="authStore.isAdmin && currentNews"
-          class="flex justify-center items-center rounded-lg bg-theme-mute h-14 w-36 p-2 cursor-pointer hover:bg-theme-border hover:text-theme-accent transition-colors text-theme-heading"
+          class="flex justify-center items-center rounded-lg bg-theme-mute h-14 w-36 p-2 cursor-pointer hover:bg-theme-border hover:text-theme-accent transition-colors text-theme-heading font-bold"
           @click="isEditOpen = true"
         >
           Rediger
+        </button>
+        <button
+          v-if="authStore.isAdmin"
+          class="flex justify-center items-center rounded-lg bg-red-400 h-14 w-36 p-2 cursor-pointer hover:bg-red-900 hover:text-theme-accent transition-colors text-theme-heading font-bold"
+          @click="isDeleteOpen = true"
+        >
+          Slet
         </button>
       </div>
 
@@ -126,6 +136,12 @@ onMounted(async () => {
     :is-open="isEditOpen"
     :news="currentNews"
     @close="isEditOpen = false"
+  />
+  <DeleteNewsModal
+    v-if="currentNews"
+    :is-open="isDeleteOpen"
+    :news="currentNews"
+    @close="isDeleteOpen = false"
   />
 </template>
 

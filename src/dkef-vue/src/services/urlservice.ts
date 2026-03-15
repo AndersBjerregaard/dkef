@@ -101,6 +101,15 @@ function updateNews(guid: string) {
   }
 }
 
+function deleteNews(guid: string) {
+  switch (mode) {
+    case 'Development':
+      throw 'Unimplemented!'
+    default:
+      return `/news/${guid}`
+  }
+}
+
 function getNews() {
   switch (mode) {
     case 'Development':
@@ -185,6 +194,7 @@ export default {
   getNewsPresignedUrl,
   postNews,
   updateNews,
+  deleteNews,
   getNews,
   getNewsItem,
   getGeneralAssemblyPresignedUrl,

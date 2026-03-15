@@ -67,9 +67,8 @@ export const useEventStore = defineStore<'event', EventState, EventGetters, Even
       this.isFetching = true
       this.error = null
       try {
-        const response: AxiosResponse<PublishedEvent, unknown> = await apiservice.get<PublishedEvent>(
-          urlservice.getEvent(id),
-        )
+        const response: AxiosResponse<PublishedEvent, unknown> =
+          await apiservice.get<PublishedEvent>(urlservice.getEvent(id))
         const event: PublishedEvent = response.data
         this.events[id] = event
         return event
