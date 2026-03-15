@@ -86,5 +86,28 @@ export const useNewsStore = defineStore('news', () => {
     }
   }
 
-  return { news, isFetching, error, getNewsById, fetchLatestNews, fetchNewsItem, updateNewsItem }
+  async function deleteNewsItem(id: string): Promise<void> {
+    isFetching.value = true
+    try {
+      await apiservice.delete(urlservice.deleteNews(id))
+      delete news.value[id]
+    } catch (err: unknown) {
+      const errorMessage = `Error attempting to delete news item ${id}: ${err}`
+      console.error(errorMessage)
+      throw err
+    } finally {
+      isFetching.value = false
+    }
+  }
+
+  return {
+    news,
+    isFetching,
+    error,
+    getNewsById,
+    fetchLatestNews,
+    fetchNewsItem,
+    updateNewsItem,
+    deleteNewsItem,
+  }
 })

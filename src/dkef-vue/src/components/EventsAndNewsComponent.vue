@@ -607,9 +607,7 @@ const submitLabel = computed(() => {
 
         <!-- File upload: required for event/general-assembly, optional for news -->
         <div class="pb-4">
-          <label for="file_input">
-            Billede{{ createType === 'news' ? ' (valgfri)' : '' }}
-          </label>
+          <label for="file_input"> Billede{{ createType === 'news' ? ' (valgfri)' : '' }} </label>
           <br />
           <input
             class="w-full bg-theme-soft border border-theme-border rounded-xl p-2 cursor-pointer hover:bg-theme-mute focus:outline-none focus:ring-2 focus:ring-theme-accent"

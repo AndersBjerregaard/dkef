@@ -4,6 +4,7 @@ import { useAuthStore } from '@/stores/authStore'
 import type { PublishedGeneralAssembly } from '@/types/generalAssembly'
 import { computed, onMounted, ref } from 'vue'
 import EditGeneralAssemblyModal from '@/components/EditGeneralAssemblyModal.vue'
+import DeleteGeneralAssemblyModal from '@/components/DeleteGeneralAssemblyModal.vue'
 
 const props = defineProps({
   id: {
@@ -20,6 +21,7 @@ const currentAssembly = computed<PublishedGeneralAssembly | undefined>(() =>
 )
 
 const isEditOpen = ref(false)
+const isDeleteOpen = ref(false)
 
 const dateTime = computed(() => {
   const item = currentAssembly.value
@@ -51,10 +53,17 @@ onMounted(async () => {
         </RouterLink>
         <button
           v-if="authStore.isAdmin && currentAssembly"
-          class="flex justify-center items-center rounded-lg bg-theme-mute h-14 w-36 p-2 cursor-pointer hover:bg-theme-border hover:text-theme-accent transition-colors text-theme-heading"
+          class="flex justify-center items-center rounded-lg bg-theme-mute h-14 w-36 p-2 cursor-pointer hover:bg-theme-border hover:text-theme-accent transition-colors text-theme-heading font-bold"
           @click="isEditOpen = true"
         >
           Rediger
+        </button>
+        <button
+          v-if="authStore.isAdmin"
+          class="flex justify-center items-center rounded-lg bg-red-400 h-14 w-36 p-2 cursor-pointer hover:bg-red-900 hover:text-theme-accent transition-colors text-theme-heading font-bold"
+          @click="isDeleteOpen = true"
+        >
+          Slet
         </button>
       </div>
 
@@ -133,6 +142,12 @@ onMounted(async () => {
     :is-open="isEditOpen"
     :assembly="currentAssembly"
     @close="isEditOpen = false"
+  />
+  <DeleteGeneralAssemblyModal
+    v-if="currentAssembly"
+    :is-open="isDeleteOpen"
+    :generalAssembly="currentAssembly"
+    @close="isDeleteOpen = false"
   />
 </template>
 

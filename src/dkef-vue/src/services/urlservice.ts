@@ -56,6 +56,15 @@ function updateEvent(guid: string) {
   }
 }
 
+function deleteEvent(guid: string) {
+  switch (mode) {
+    case 'Development':
+      throw 'Unimplemented!'
+    default:
+      return `/events/${guid}`
+  }
+}
+
 function getEvents() {
   switch (mode) {
     case 'Development':
@@ -93,6 +102,15 @@ function postNews() {
 }
 
 function updateNews(guid: string) {
+  switch (mode) {
+    case 'Development':
+      throw 'Unimplemented!'
+    default:
+      return `/news/${guid}`
+  }
+}
+
+function deleteNews(guid: string) {
   switch (mode) {
     case 'Development':
       throw 'Unimplemented!'
@@ -146,6 +164,15 @@ function updateGeneralAssembly(guid: string) {
   }
 }
 
+function deleteGeneralAssembly(guid: string) {
+  switch (mode) {
+    case 'Development':
+      throw 'Unimplemented!'
+    default:
+      return `/general-assemblies/${guid}`
+  }
+}
+
 function getGeneralAssemblies() {
   switch (mode) {
     case 'Development':
@@ -180,16 +207,19 @@ export default {
   getEventPresignedUrl,
   postEvent,
   updateEvent,
+  deleteEvent,
   getEvents,
   getEvent,
   getNewsPresignedUrl,
   postNews,
   updateNews,
+  deleteNews,
   getNews,
   getNewsItem,
   getGeneralAssemblyPresignedUrl,
   postGeneralAssembly,
   updateGeneralAssembly,
+  deleteGeneralAssembly,
   getGeneralAssemblies,
   getGeneralAssembly,
   getFeed,

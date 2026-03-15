@@ -66,6 +66,25 @@ public class MinioBucketService(
         return presignedUrl;
     }
 
+    public async Task<bool> DeleteObjectAsync(string bucket, string objectName)
+    {
+        try
+        {
+            var internalClient = BuildInternalClient();
+            var rmArgs = new RemoveObjectArgs()
+                .WithBucket(bucket)
+                .WithObject(objectName);
+            await internalClient.RemoveObjectAsync(rmArgs);
+            return true;
+        }
+        catch (Exception ex)
+        {
+            // Don't throw - cleanup failures should not block saves.
+            // Log for observability but allow the database change to commit.
+            Console.WriteLine($"Warning: Failed to delete {bucket}/{objectName}: {ex.Message}");
+            return false;
+        }
+    }
 
     /// <summary>
     /// Sets the policy for the given bucket to be "public read".

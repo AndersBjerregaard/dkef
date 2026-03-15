@@ -4,6 +4,7 @@ import { useAuthStore } from '@/stores/authStore'
 import { type PublishedEvent } from '@/types/events'
 import { computed, onMounted, ref } from 'vue'
 import EditEventModal from '@/components/EditEventModal.vue'
+import DeleteEventModal from '@/components/DeleteEventModal.vue'
 
 const props = defineProps({
   id: {
@@ -18,6 +19,7 @@ const authStore = useAuthStore()
 const currentEvent = computed<PublishedEvent | undefined>(() => eventStore.getEventById(props.id))
 
 const isEditOpen = ref(false)
+const isDeleteOpen = ref(false)
 
 const dateTime = computed(() => {
   const event = currentEvent.value
@@ -55,10 +57,17 @@ onMounted(async () => {
         </RouterLink>
         <button
           v-if="authStore.isAdmin && currentEvent"
-          class="flex justify-center items-center rounded-lg bg-theme-mute h-14 w-36 p-2 cursor-pointer hover:bg-theme-border hover:text-theme-accent transition-colors text-theme-heading"
+          class="flex justify-center items-center rounded-lg bg-theme-mute h-14 w-36 p-2 cursor-pointer hover:bg-theme-border hover:text-theme-accent transition-colors text-theme-heading font-bold"
           @click="isEditOpen = true"
         >
           Rediger
+        </button>
+        <button
+          v-if="authStore.isAdmin"
+          class="flex justify-center items-center rounded-lg bg-red-400 h-14 w-36 p-2 cursor-pointer hover:bg-red-900 hover:text-theme-accent transition-colors text-theme-heading font-bold"
+          @click="isDeleteOpen = true"
+        >
+          Slet
         </button>
       </div>
 
@@ -134,6 +143,12 @@ onMounted(async () => {
     :is-open="isEditOpen"
     :event="currentEvent"
     @close="isEditOpen = false"
+  />
+  <DeleteEventModal
+    v-if="currentEvent"
+    :is-open="isDeleteOpen"
+    :event="currentEvent"
+    @close="isDeleteOpen = false"
   />
 </template>
 

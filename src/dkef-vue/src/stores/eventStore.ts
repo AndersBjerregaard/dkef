@@ -21,6 +21,7 @@ interface EventActions {
   fetchLatestEvents: () => Promise<PublishedEvent[]>
   fetchEvent: (id: string) => Promise<PublishedEvent | undefined>
   updateEvent: (id: string, dto: EventDto) => Promise<void>
+  deleteEventItem: (id: string) => Promise<void>
 }
 
 export const useEventStore = defineStore<'event', EventState, EventGetters, EventActions>('event', {
@@ -67,9 +68,8 @@ export const useEventStore = defineStore<'event', EventState, EventGetters, Even
       this.isFetching = true
       this.error = null
       try {
-        const response: AxiosResponse<PublishedEvent, unknown> = await apiservice.get<PublishedEvent>(
-          urlservice.getEvent(id),
-        )
+        const response: AxiosResponse<PublishedEvent, unknown> =
+          await apiservice.get<PublishedEvent>(urlservice.getEvent(id))
         const event: PublishedEvent = response.data
         this.events[id] = event
         return event
@@ -94,6 +94,19 @@ export const useEventStore = defineStore<'event', EventState, EventGetters, Even
       } catch (error: unknown) {
         const errorMessage = `Error attempting to update event ${id}: ${error}`
         this.error = errorMessage
+        console.error(errorMessage)
+        throw error
+      } finally {
+        this.isFetching = false
+      }
+    },
+    async deleteEventItem(id: string): Promise<void> {
+      this.isFetching = true
+      try {
+        await apiservice.delete(urlservice.deleteEvent(id))
+        delete this.events[id]
+      } catch (error) {
+        const errorMessage = `Error attempting to delete event ${id}: ${error}`
         console.error(errorMessage)
         throw error
       } finally {
