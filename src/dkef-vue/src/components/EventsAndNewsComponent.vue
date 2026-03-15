@@ -649,7 +649,7 @@ const submitLabel = computed(() => {
       <button
         :disabled="!hasPreviousPage || isAnyFetching"
         @click="previousPage"
-        class="px-4 py-2 rounded-lg bg-theme-mute text-theme-heading hover:bg-theme-border hover:text-theme-accent disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
+        class="px-4 py-2 rounded-lg bg-theme-mute text-theme-heading hover:bg-theme-border hover:text-theme-accent disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium cursor-pointer"
       >
         ← Forrige
       </button>
@@ -667,7 +667,7 @@ const submitLabel = computed(() => {
             }"
             @click="goToPage(page as number)"
             :disabled="isAnyFetching"
-            class="min-w-10 h-10 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+            class="min-w-10 h-10 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium cursor-pointer"
           >
             {{ page }}
           </button>
@@ -677,7 +677,7 @@ const submitLabel = computed(() => {
       <button
         :disabled="!hasNextPage || isAnyFetching"
         @click="nextPage"
-        class="px-4 py-2 rounded-lg bg-theme-mute text-theme-heading hover:bg-theme-border hover:text-theme-accent disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
+        class="px-4 py-2 rounded-lg bg-theme-mute text-theme-heading hover:bg-theme-border hover:text-theme-accent disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium cursor-pointer"
       >
         Næste →
       </button>
