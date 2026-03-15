@@ -1,5 +1,18 @@
 <script setup lang="ts">
 import NewsLetterComponent from './NewsLetterComponent.vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
+async function memberAdvantages() {
+  await router.push({ name: 'advantages' })
+  window.scrollTo({ top: 0, behavior: 'smooth' })
+}
+
+async function register() {
+  await router.push({ name: 'register' })
+  window.scrollTo({ top: 0, behavior: 'smooth' })
+}
 </script>
 
 <template>
@@ -80,57 +93,6 @@ import NewsLetterComponent from './NewsLetterComponent.vue'
     </div>
   </div>
 
-  <!-- Upcoming events -->
-  <div class="py-16 px-4 flex justify-center items-center">
-    <div class="max-w-3xl mx-auto">
-      <div class="flex justify-center pb-8">
-        <h2 class="text-4xl text-theme-heading">Kommende begivenheder</h2>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
-        <div>
-          <h3 class="text-3xl text-theme-heading pb-4">Arrangementer</h3>
-
-          <div class="py-4">
-            <div class="border border-theme-border rounded-2xl p-4 bg-theme-mute">
-              <h4 class="text-xl pb-4 text-theme-heading">Arrangement titel</h4>
-              <div
-                class="p-4 items-center flex justify-between bg-theme-soft rounded-xl text-sm md:text-base lg:text-lg text-theme-text"
-              >
-                <span>Dato</span>
-                <span>Sektion</span>
-                <span>Lokation</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="py-4">
-            <div class="border border-theme-border rounded-2xl p-4 bg-theme-mute">
-              <h4 class="text-xl pb-4 text-theme-heading">Arrangement titel</h4>
-              <div
-                class="p-4 items-center flex justify-between bg-theme-soft rounded-xl text-sm md:text-base lg:text-lg text-theme-text"
-              >
-                <span>Dato</span>
-                <span>Sektion</span>
-                <span>Lokation</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div>
-          <h3 class="text-3xl text-theme-heading pb-4">Generalforsamlinger</h3>
-
-          <div class="pt-8">
-            <p class="text-xl text-theme-text">
-              Der er ingen planlagte generalforsamlinger foreløbigt.
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <!-- Info section 1 -->
   <div class="bg-theme-soft border-y border-amber-500/10 px-4 py-12 sm:py-20">
     <div class="flex flex-col md:flex-row justify-center items-center gap-x-12 mx-auto">
@@ -151,6 +113,7 @@ import NewsLetterComponent from './NewsLetterComponent.vue'
 
         <button
           class="rounded-lg bg-amber-600 h-12 py-2 px-6 cursor-pointer hover:bg-amber-500 active:bg-amber-700 text-navy-950 font-semibold text-base shadow-lg shadow-amber-600/20 transition-all"
+          @click="memberAdvantages"
         >
           Medlemsfordele
         </button>
@@ -172,6 +135,7 @@ import NewsLetterComponent from './NewsLetterComponent.vue'
 
         <button
           class="rounded-lg bg-amber-600 h-12 py-2 px-6 cursor-pointer hover:bg-amber-500 active:bg-amber-700 text-navy-950 font-semibold text-base shadow-lg shadow-amber-600/20 transition-all"
+          @click="register"
         >
           Bliv medlem
         </button>
@@ -196,11 +160,12 @@ import NewsLetterComponent from './NewsLetterComponent.vue'
           Stadig i tvivl? Lad os lige skitsere, hvad du får ud af et medlemskab.
         </p>
 
-        <button
-          class="rounded-lg bg-amber-600 h-12 py-2 px-6 cursor-pointer hover:bg-amber-500 active:bg-amber-700 text-navy-950 font-semibold text-base shadow-lg shadow-amber-600/20 transition-all"
-        >
-          Bliv medlem
-        </button>
+          <button
+            class="rounded-lg bg-amber-600 h-12 py-2 px-6 cursor-pointer hover:bg-amber-500 active:bg-amber-700 text-navy-950 font-semibold text-base shadow-lg shadow-amber-600/20 transition-all"
+            @click="register"
+          >
+            Bliv medlem
+          </button>
       </div>
 
       <div class="flex flex-col gap-4 w-full md:w-96 px-2 mx-auto">
@@ -256,6 +221,7 @@ import NewsLetterComponent from './NewsLetterComponent.vue'
           </p>
           <button
             class="flex justify-center rounded-lg bg-amber-600 h-12 py-2 w-full cursor-pointer hover:bg-amber-500 active:bg-amber-700 text-navy-950 font-semibold text-base shadow-lg shadow-amber-600/20 transition-all"
+            @click="register"
           >
             Bliv medlem
           </button>
@@ -271,68 +237,9 @@ import NewsLetterComponent from './NewsLetterComponent.vue'
     </div>
   </div>
 
-  <!-- News -->
-  <div class="flex justify-center items-center py-16 border-b border-amber-500/10 px-4">
-    <div class="max-w-3xl mx-auto">
-      <div class="text-center pb-12">
-        <p class="text-theme-accent text-lg font-bold uppercase tracking-widest pb-4">
-          Aktiviteter
-        </p>
-        <h2 class="text-4xl text-theme-heading pb-4">Nyheder og aktiviteter</h2>
-        <h3 class="text-xl text-theme-text">Følg med i de seneste nyheder og aktiviteter</h3>
-      </div>
-
-      <div class="flex flex-wrap justify-center gap-6">
-        <div
-          class="bg-theme-mute border border-theme-border hover:border-amber-500/40 rounded-2xl overflow-hidden transition-all hover:-translate-y-1 shadow-lg w-72"
-        >
-          <img
-            class="w-full object-cover h-48"
-            src="@/assets/stickman-bowling.jpeg"
-            alt="activity picture"
-          />
-          <div class="p-4">
-            <h3 class="pt-4 pb-2 text-xl text-theme-heading">Arrangement titel</h3>
-            <p class="text-lg pb-2 text-theme-accent">Arrangement undertitel</p>
-            <p class="text-sm text-theme-text">Dato</p>
-            <span class="text-sm text-theme-text">Lokation</span>
-          </div>
-        </div>
-        <div
-          class="bg-theme-mute border border-theme-border hover:border-amber-500/40 rounded-2xl overflow-hidden transition-all hover:-translate-y-1 shadow-lg w-72"
-        >
-          <img
-            class="w-full object-cover h-48"
-            src="@/assets/stickman-party.jpeg"
-            alt="activity picture"
-          />
-          <div class="p-4">
-            <h3 class="pt-4 pb-2 text-xl text-theme-heading">Arrangement titel</h3>
-            <p class="text-lg pb-2 text-theme-accent">Arrangement undertitel</p>
-            <p class="text-sm text-theme-text">Dato</p>
-            <span class="text-sm text-theme-text">Lokation</span>
-          </div>
-        </div>
-        <div
-          class="bg-theme-mute border border-theme-border hover:border-amber-500/40 rounded-2xl overflow-hidden transition-all hover:-translate-y-1 shadow-lg w-72"
-        >
-          <img
-            class="w-full object-cover h-48"
-            src="@/assets/stickmen-driving.jpeg"
-            alt="activity picture"
-          />
-          <div class="p-4">
-            <h3 class="pt-4 pb-2 text-xl text-theme-heading">Arrangement titel</h3>
-            <p class="text-lg pb-2 text-theme-accent">Arrangement undertitel</p>
-            <p class="text-sm text-theme-text">Dato</p>
-            <span class="text-sm text-theme-text">Lokation</span>
-          </div>
-        </div>
-      </div>
-    </div>
+  <div class="pt-16">
+    <NewsLetterComponent />
   </div>
-
-  <NewsLetterComponent />
 </template>
 
 <style lang="css" scoped></style>

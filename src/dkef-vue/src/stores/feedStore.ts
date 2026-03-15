@@ -7,18 +7,20 @@ import type { FeedItem, FeedResponse } from '@/types/feed'
 
 export const useFeedStore = defineStore('feed', () => {
   const items = ref<FeedItem[]>([])
+  const total = ref(0)
   const isFetching = ref(false)
   const error = ref<string | null>(null)
 
-  async function fetchFeed(take: number = 9): Promise<void> {
+  async function fetchFeed(take: number = 9, skip: number = 0): Promise<void> {
     isFetching.value = true
     error.value = null
     try {
       const response: AxiosResponse<FeedResponse> = await apiservice.get<FeedResponse>(
         urlservice.getFeed(),
-        { params: { take }, skipAuth: true },
+        { params: { take, skip }, skipAuth: true },
       )
-      items.value = response.data
+      items.value = response.data.collection
+      total.value = response.data.total
     } catch (err: unknown) {
       const errorMessage = `Error attempting to fetch feed: ${err}`
       error.value = errorMessage
@@ -28,5 +30,5 @@ export const useFeedStore = defineStore('feed', () => {
     }
   }
 
-  return { items, isFetching, error, fetchFeed }
+  return { items, total, isFetching, error, fetchFeed }
 })

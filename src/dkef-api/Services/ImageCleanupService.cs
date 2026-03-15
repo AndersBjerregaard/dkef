@@ -25,10 +25,13 @@ public class ImageCleanupService(
         var result = new ImageCleanupResult();
 
         // Cleanup events bucket
+        var events = await eventsContext.Events
+            .AsNoTracking()
+            .Where(e => !string.IsNullOrEmpty(e.ThumbnailUrl))
+            .ToListAsync(ct);
+        
         var eventsResult = await CleanupBucketAsync("events", "Events",
-            () => eventsContext.Events
-                .AsNoTracking()
-                .Where(e => !string.IsNullOrEmpty(e.ThumbnailUrl))
+            () => events
                 .Select(e => ExtractGuidFromUrl(e.ThumbnailUrl))
                 .Where(g => g != Guid.Empty)
                 .Select(g => g.ToString())
@@ -37,10 +40,13 @@ public class ImageCleanupService(
         result.BucketResults.Add(eventsResult);
 
         // Cleanup news bucket
+        var news = await newsContext.News
+            .AsNoTracking()
+            .Where(n => !string.IsNullOrEmpty(n.ThumbnailUrl))
+            .ToListAsync(ct);
+        
         var newsResult = await CleanupBucketAsync("news", "News",
-            () => newsContext.News
-                .AsNoTracking()
-                .Where(n => !string.IsNullOrEmpty(n.ThumbnailUrl))
+            () => news
                 .Select(n => ExtractGuidFromUrl(n.ThumbnailUrl))
                 .Where(g => g != Guid.Empty)
                 .Select(g => g.ToString())
@@ -49,10 +55,13 @@ public class ImageCleanupService(
         result.BucketResults.Add(newsResult);
 
         // Cleanup general-assemblies bucket
+        var generalAssemblies = await generalAssemblyContext.GeneralAssemblies
+            .AsNoTracking()
+            .Where(ga => !string.IsNullOrEmpty(ga.ThumbnailUrl))
+            .ToListAsync(ct);
+        
         var gaResult = await CleanupBucketAsync("general-assemblies", "General Assemblies",
-            () => generalAssemblyContext.GeneralAssemblies
-                .AsNoTracking()
-                .Where(ga => !string.IsNullOrEmpty(ga.ThumbnailUrl))
+            () => generalAssemblies
                 .Select(ga => ExtractGuidFromUrl(ga.ThumbnailUrl))
                 .Where(g => g != Guid.Empty)
                 .Select(g => g.ToString())

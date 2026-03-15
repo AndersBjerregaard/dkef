@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, type Ref } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 import EventComponent from './EventComponent.vue'
 import NewsComponent from './NewsComponent.vue'
 import GeneralAssemblyComponent from './GeneralAssemblyComponent.vue'
@@ -16,7 +17,7 @@ import type {
   PublishedGeneralAssembly,
   GeneralAssemblyCollection,
 } from '@/types/generalAssembly'
-import type { FeedItem } from '@/types/feed'
+import type { FeedItem, FeedResponse } from '@/types/feed'
 import { useFeedStore } from '@/stores/feedStore'
 import { useAuthStore } from '@/stores/authStore'
 
@@ -25,10 +26,24 @@ type CreateType = 'event' | 'news' | 'general-assembly'
 
 const feedStore = useFeedStore()
 const authStore = useAuthStore()
+const router = useRouter()
+const route = useRoute()
 
 const isFetching = ref(true)
 const isFilterFetching = ref(false)
 const activeFilter = ref<FilterType>('all')
+const pageSize = 9
+
+// Pagination state per filter type
+const currentPageAll = ref(1)
+const currentPageEvents = ref(1)
+const currentPageNews = ref(1)
+const currentPageAssemblies = ref(1)
+
+// Total counts per filter type
+const totalEvents = ref(0)
+const totalNews = ref(0)
+const totalAssemblies = ref(0)
 
 // Per-type result caches for specific filter views
 const filteredEvents = ref<PublishedEvent[]>([])
@@ -55,7 +70,7 @@ const itemAuthor: Ref<string> = ref('')
 const fileUploadError: Ref<boolean> = ref(false)
 const submitError: Ref<boolean> = ref(false)
 
-// Flat list in server sort order (createdAt desc)
+// Flat list in server sort order
 const displayedItems = computed<FeedItem[]>(() => {
   switch (activeFilter.value) {
     case 'events':
@@ -103,34 +118,149 @@ const isAnyFetching = computed(
   () => isFetching.value || feedStore.isFetching || isFilterFetching.value,
 )
 
-async function fetchAll() {
-  isFetching.value = true
-  await feedStore.fetchFeed(9)
-  isFetching.value = false
-}
+const getCurrentPage = computed(() => {
+  switch (activeFilter.value) {
+    case 'events':
+      return currentPageEvents.value
+    case 'news':
+      return currentPageNews.value
+    case 'general-assemblies':
+      return currentPageAssemblies.value
+    default:
+      return currentPageAll.value
+  }
+})
 
-async function fetchFiltered(filter: FilterType) {
-  if (filter === 'all') return
+const getTotalItems = computed(() => {
+  switch (activeFilter.value) {
+    case 'events':
+      return totalEvents.value
+    case 'news':
+      return totalNews.value
+    case 'general-assemblies':
+      return totalAssemblies.value
+    default:
+      return feedStore.total
+  }
+})
+
+const totalPages = computed(() => Math.ceil(getTotalItems.value / pageSize))
+const hasNextPage = computed(() => getCurrentPage.value < totalPages.value)
+const hasPreviousPage = computed(() => getCurrentPage.value > 1)
+
+// Generate page numbers to display with ellipsis
+const pageNumbers = computed(() => {
+  const pages: (number | string)[] = []
+  const maxPagesToShow = 3 // Pages to show on either side of current
+  const total = totalPages.value
+
+  // Always show first page
+  pages.push(1)
+
+  // Add ellipsis and pages before current
+  if (getCurrentPage.value > maxPagesToShow + 2) {
+    pages.push('...')
+  }
+  for (
+    let i = Math.max(2, getCurrentPage.value - maxPagesToShow);
+    i < Math.min(getCurrentPage.value, total);
+    i++
+  ) {
+    pages.push(i)
+  }
+
+  // Add current page
+  if (getCurrentPage.value !== 1 && getCurrentPage.value !== total) {
+    pages.push(getCurrentPage.value)
+  }
+
+  // Add pages after current
+  for (
+    let i = Math.max(getCurrentPage.value + 1, getCurrentPage.value + 1);
+    i <= Math.min(getCurrentPage.value + maxPagesToShow, total - 1);
+    i++
+  ) {
+    pages.push(i)
+  }
+
+  // Add ellipsis and last page
+  if (getCurrentPage.value < total - maxPagesToShow - 1) {
+    pages.push('...')
+  }
+  if (total > 1) {
+    pages.push(total)
+  }
+
+  // Remove duplicates
+  return [...new Set(pages)]
+})
+
+async function fetchFiltered(filter: FilterType, page: number = 1) {
+  if (filter === 'all') {
+    isFilterFetching.value = true
+    try {
+      const skip = (page - 1) * pageSize
+      const response = await apiservice.get<FeedResponse>(urlservice.getFeed(), {
+        params: { take: pageSize, skip },
+        skipAuth: true,
+      })
+      feedStore.items = response.data.collection
+      feedStore.total = response.data.total
+      currentPageAll.value = page
+    } catch (err: unknown) {
+      console.error('Error fetching feed items:', err)
+    } finally {
+      isFilterFetching.value = false
+    }
+    return
+  }
+
   isFilterFetching.value = true
   try {
+    const skip = (page - 1) * pageSize
+
     if (filter === 'events') {
       const response = await apiservice.get<EventsCollection>(urlservice.getEvents(), {
-        params: { take: 9 },
+        params: {
+          take: pageSize,
+          skip,
+          orderBy: 'DateTime',
+          order: 'desc',
+        },
         skipAuth: true,
       })
       filteredEvents.value = response.data.collection
+      totalEvents.value = response.data.total
+      currentPageEvents.value = page
     } else if (filter === 'news') {
       const response = await apiservice.get<NewsCollection>(urlservice.getNews(), {
-        params: { take: 9 },
+        params: {
+          take: pageSize,
+          skip,
+          orderBy: 'PublishedAt',
+          order: 'desc',
+        },
         skipAuth: true,
       })
       filteredNews.value = response.data.collection
+      totalNews.value = response.data.total
+      currentPageNews.value = page
     } else if (filter === 'general-assemblies') {
       const response = await apiservice.get<GeneralAssemblyCollection>(
         urlservice.getGeneralAssemblies(),
-        { params: { take: 9 }, skipAuth: true },
+        {
+          params: {
+            take: pageSize,
+            skip,
+            orderBy: 'DateTime',
+            order: 'desc',
+          },
+          skipAuth: true,
+        },
       )
       filteredAssemblies.value = response.data.collection
+      totalAssemblies.value = response.data.total
+      currentPageAssemblies.value = page
     }
   } catch (err: unknown) {
     console.error('Error fetching filtered items:', err)
@@ -139,15 +269,46 @@ async function fetchFiltered(filter: FilterType) {
   }
 }
 
+function goToPage(page: number) {
+  if (page < 1 || page > totalPages.value) return
+
+  const newPage = Math.max(1, Math.min(page, totalPages.value))
+  router.push({ query: { filter: activeFilter.value, page: newPage } })
+  fetchFiltered(activeFilter.value, newPage)
+  window.scrollTo({ top: 0, behavior: 'smooth' })
+}
+
+function nextPage() {
+  if (hasNextPage.value) {
+    goToPage(getCurrentPage.value + 1)
+  }
+}
+
+function previousPage() {
+  if (hasPreviousPage.value) {
+    goToPage(getCurrentPage.value - 1)
+  }
+}
+
 onMounted(async () => {
-  await fetchAll()
+  const filter = (route.query.filter as FilterType) || 'all'
+  const page = parseInt(route.query.page as string) || 1
+
+  activeFilter.value = filter
+  isFetching.value = true
+
+  try {
+    await fetchFiltered(filter, page)
+  } finally {
+    isFetching.value = false
+  }
 })
 
 function setFilter(filter: FilterType) {
   activeFilter.value = filter
-  if (filter !== 'all') {
-    fetchFiltered(filter)
-  }
+  router.push({ query: { filter, page: 1 } })
+  fetchFiltered(filter, 1)
+  window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 
 function closeModal() {
@@ -234,11 +395,8 @@ async function createItem() {
     }
     resetFields()
     isOpen.value = false
-    if (activeFilter.value === 'all') {
-      await fetchAll()
-    } else {
-      await fetchFiltered(activeFilter.value)
-    }
+    // Refresh current page after creation
+    await fetchFiltered(activeFilter.value, getCurrentPage.value)
   } catch (err: unknown) {
     const axiosError = err as { response?: { data?: { message?: string } }; message?: string }
     const message =
@@ -394,7 +552,23 @@ const submitLabel = computed(() => {
     </div>
 
     <div class="flex justify-center items-center">
-      <h2 class="text-2xl pb-8">Seneste arrangementer og nyheder:</h2>
+      <h2 class="text-2xl pb-4">Seneste arrangementer og nyheder:</h2>
+    </div>
+
+    <!-- Page info -->
+    <div class="flex justify-center items-center pb-8 text-sm">
+      <span class="text-theme-text">
+        Side {{ getCurrentPage }} af {{ totalPages }}
+        {{
+          activeFilter === 'events'
+            ? `(${totalEvents} arrangementer)`
+            : activeFilter === 'news'
+              ? `(${totalNews} nyheder)`
+              : activeFilter === 'general-assemblies'
+                ? `(${totalAssemblies} generalforsamlinger)`
+                : `(${feedStore.total} emner)`
+        }}
+      </span>
     </div>
 
     <!-- Loading spinner -->
@@ -468,6 +642,45 @@ const submitLabel = computed(() => {
           }"
         />
       </template>
+    </div>
+
+    <!-- Pagination controls -->
+    <div v-if="totalPages > 1" class="flex justify-center items-center py-12 gap-2">
+      <button
+        :disabled="!hasPreviousPage || isAnyFetching"
+        @click="previousPage"
+        class="px-4 py-2 rounded-lg bg-theme-mute text-theme-heading hover:bg-theme-border hover:text-theme-accent disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium cursor-pointer"
+      >
+        ← Forrige
+      </button>
+
+      <!-- Page numbers with ellipsis -->
+      <div class="flex gap-1 items-center">
+        <template v-for="(page, idx) in pageNumbers" :key="`page-${idx}`">
+          <span v-if="page === '...'" class="text-theme-text px-2">…</span>
+          <button
+            v-else
+            :class="{
+              'bg-amber-600 text-navy-950 font-bold': page === getCurrentPage,
+              'bg-theme-mute text-theme-heading hover:bg-theme-border hover:text-theme-accent':
+                page !== getCurrentPage,
+            }"
+            @click="goToPage(page as number)"
+            :disabled="isAnyFetching"
+            class="min-w-10 h-10 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium cursor-pointer"
+          >
+            {{ page }}
+          </button>
+        </template>
+      </div>
+
+      <button
+        :disabled="!hasNextPage || isAnyFetching"
+        @click="nextPage"
+        class="px-4 py-2 rounded-lg bg-theme-mute text-theme-heading hover:bg-theme-border hover:text-theme-accent disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium cursor-pointer"
+      >
+        Næste →
+      </button>
     </div>
 
     <!-- Admin create button -->
