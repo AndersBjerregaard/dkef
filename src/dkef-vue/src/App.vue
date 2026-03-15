@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { RouterView, RouterLink } from 'vue-router'
+import { RouterView, RouterLink, useRouter } from 'vue-router'
 import {
   Menu,
   MenuButton,
@@ -22,6 +22,7 @@ const email = ref('')
 const password = ref('')
 const loginError = ref('')
 const isLoggingIn = ref(false)
+const router = useRouter()
 
 function closeModal() {
   isOpen.value = false
@@ -66,6 +67,11 @@ async function handleLogout() {
   } catch (error) {
     console.error('Logout error:', error)
   }
+}
+
+async function goto(view: string) {
+  await router.push({ name: view })
+  window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 </script>
 
@@ -421,6 +427,7 @@ async function handleLogout() {
               <h2 class="text-xl pb-4 text-theme-accent">Priser</h2>
               <button
                 class="text-sm text-theme-text hover:text-theme-accent cursor-pointer transition-colors"
+                @click="goto('register')"
               >
                 Bliv medlem
               </button>
@@ -433,16 +440,19 @@ async function handleLogout() {
               <div>
                 <button
                   class="block text-sm text-theme-text hover:text-theme-accent cursor-pointer pb-2 transition-colors"
+                  @click="goto('events-and-news')"
                 >
                   Nyheder
                 </button>
                 <button
                   class="block text-sm text-theme-text hover:text-theme-accent cursor-pointer pb-2 transition-colors"
+                  @click="goto('about')"
                 >
                   Om os
                 </button>
                 <button
                   class="block text-sm text-theme-text hover:text-theme-accent cursor-pointer pb-2 transition-colors"
+                  @click="goto('contact')"
                 >
                   Kontakt
                 </button>

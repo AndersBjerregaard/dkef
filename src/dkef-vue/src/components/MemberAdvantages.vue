@@ -1,4 +1,13 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
+async function goto(view: string) {
+  await router.push({ name: view })
+  window.scrollTo({ top: 0, behavior: 'smooth' })
+}
+</script>
 
 <template>
   <!-- First section -->
@@ -16,6 +25,7 @@
       </p>
       <button
         class="flex justify-center rounded-lg bg-amber-600 h-12 px-8 py-2 cursor-pointer hover:bg-amber-500 active:bg-amber-700 text-navy-950 font-semibold text-base shadow-lg shadow-amber-600/25 transition-all"
+        @click="goto('register')"
       >
         Bliv medlem
       </button>
