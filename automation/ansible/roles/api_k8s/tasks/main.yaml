@@ -21,6 +21,8 @@
         Minio__AccessKey: "{{ minio_access_key }}"
         Minio__SecretKey: "{{ minio_secret_key }}"
         JwtSettings__Key: "{{ jwt_key }}"
+        Mailgun__ApiKey: "{{ mailgun_apikey }}"
+        Mailgun__Domain: "{{ mailgun_domain }}"
 
 # ─── Step 1: Resolve the current image digest for 'latest' ───────────────────
 - name: Get api image digest from Docker Hub

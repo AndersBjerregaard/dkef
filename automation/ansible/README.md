@@ -105,6 +105,8 @@ The following variables are required:
 | `api_minio_connection_string` | MinIO public hostname for presigned URLs (`storage.andersbjerregaard.com`) |
 | `api_minio_internal_connection_string` | MinIO internal endpoint for server-side ops (`minio:9000`) |
 | `jwt_key` | JWT signing key (minimum 32 characters) |
+| `mailgun_apikey` | Mailgun API Key |
+| `mailgun_domain` | Mailgun Domain |
 
 ### Editing an encrypted file
 
