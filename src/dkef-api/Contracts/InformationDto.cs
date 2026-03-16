@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 using Ganss.Xss;
 
@@ -7,16 +8,20 @@ namespace Dkef.Contracts;
 public sealed class InformationDto : PostObject
 {
     [Required(AllowEmptyStrings = false, ErrorMessage = "Name is required")]
+    [JsonPropertyName("name")]
     public string Name { get; set; } = string.Empty;
-    
+
     [Required(AllowEmptyStrings = false, ErrorMessage = "Phone is required")]
+    [JsonPropertyName("phone")]
     public string Phone { get; set; } = string.Empty;
 
     [Required(AllowEmptyStrings = false, ErrorMessage = "Email is required")]
     [EmailAddress]
+    [JsonPropertyName("email")]
     public string Email { get; set; } = string.Empty;
 
     [Required(AllowEmptyStrings = false, ErrorMessage = "Message is required")]
+    [JsonPropertyName("message")]
     public string Message { get; set; } = string.Empty;
 
     public override void Sanitize(HtmlSanitizer sanitizer)

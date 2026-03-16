@@ -12,6 +12,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  type: {
+    type: String as () => 'button' | 'submit' | 'reset',
+    default: 'button',
+  },
 })
 
 const emit = defineEmits(['loadingButtonClick'])
@@ -27,12 +31,13 @@ function handleClick() {
   <div class="mt-4">
     <button
       class="inline-flex justify-center rounded-md border border-transparent bg-amber-600 text-navy-950 px-4 py-2 font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-theme-accent focus-visible:ring-offset-2 shadow-lg shadow-amber-600/20 transition-colors"
+      :type="type"
       :disabled="isLoading"
       :class="{
         'cursor-pointer hover:bg-amber-500': !isLoading,
         'cursor-not-allowed opacity-70': isLoading,
       }"
-      @click="handleClick"
+      @click="type === 'button' ? handleClick() : undefined"
     >
       <span v-if="isLoading" class="flex items-center">
         {{ loadingText }}

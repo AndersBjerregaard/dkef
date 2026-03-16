@@ -310,7 +310,12 @@ function sort(by: string, order: Sort): void {
             :key="item.id"
             :contact="item"
             :index="index"
-            @contact-deleted="(id) => { const i = items.findIndex(c => c.id === id); if (i !== -1) items.splice(i, 1) }"
+            @contact-deleted="
+              (id) => {
+                const i = items.findIndex((c) => c.id === id)
+                if (i !== -1) items.splice(i, 1)
+              }
+            "
           />
         </div>
       </div>

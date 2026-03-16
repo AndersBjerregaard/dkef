@@ -209,6 +209,15 @@ function getFeed() {
   }
 }
 
+function postContactMessage() {
+  switch (mode) {
+    case 'Development':
+      throw 'Unimplemented!'
+    default:
+      return `/information`
+  }
+}
+
 export default {
   getContacts,
   updateContact,
@@ -233,4 +242,5 @@ export default {
   getGeneralAssemblies,
   getGeneralAssembly,
   getFeed,
+  postContactMessage,
 }

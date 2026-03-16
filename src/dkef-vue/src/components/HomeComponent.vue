@@ -160,12 +160,12 @@ async function register() {
           Stadig i tvivl? Lad os lige skitsere, hvad du får ud af et medlemskab.
         </p>
 
-          <button
-            class="rounded-lg bg-amber-600 h-12 py-2 px-6 cursor-pointer hover:bg-amber-500 active:bg-amber-700 text-navy-950 font-semibold text-base shadow-lg shadow-amber-600/20 transition-all"
-            @click="register"
-          >
-            Bliv medlem
-          </button>
+        <button
+          class="rounded-lg bg-amber-600 h-12 py-2 px-6 cursor-pointer hover:bg-amber-500 active:bg-amber-700 text-navy-950 font-semibold text-base shadow-lg shadow-amber-600/20 transition-all"
+          @click="register"
+        >
+          Bliv medlem
+        </button>
       </div>
 
       <div class="flex flex-col gap-4 w-full md:w-96 px-2 mx-auto">
