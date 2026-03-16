@@ -1,9 +1,11 @@
 using System.Globalization;
+using System.Net.Http.Headers;
 using System.Reflection;
 using System.Text;
 using AutoMapper;
 using Dkef.Configuration;
 using Dkef.Contracts;
+using Dkef.Contracts.Mailgun;
 using Dkef.Data;
 using Dkef.Domain;
 using Dkef.Repositories;
@@ -33,6 +35,7 @@ try
     var builder = WebApplication.CreateBuilder(args);
 
     // builder.Configuration.AddJsonFile(path: "appsettings.json", optional: false, reloadOnChange: true);
+    builder.Configuration.AddJsonFile(path: "appsettings.Local.json", optional: true, reloadOnChange: true);
 
     builder.Services.AddSerilog((services, lc) => lc
         .ReadFrom.Configuration(builder.Configuration)
@@ -206,9 +209,26 @@ try
         cfg.CreateMap<GeneralAssemblyDto, GeneralAssembly>()
             .ForMember(dest => dest.ThumbnailUrl, opt => opt.MapFrom(src => $"{thumbnailPrefix}/general-assemblies/{src.ThumbnailId}"))
             .ForMember(dest => dest.DateTime, opt => opt.MapFrom(src => DateTime.Parse(src.DateTime, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal).ToUniversalTime()));
+        cfg.CreateMap<InformationDto, InformationMessage>();
+        cfg.CreateMap<InformationMessage, ContactInquiryDto>()
+            .ForMember(dest => dest.SenderName, opt => opt.MapFrom(src => src.Name))
+            .ForMember(dest => dest.SenderEmail, opt => opt.MapFrom(src => src.Email))
+            .ForMember(dest => dest.SenderPhone, opt => opt.MapFrom(src => src.Phone))
+            .ForMember(dest => dest.Message, opt => opt.MapFrom(src => src.Message))
+            .ForMember(dest => dest.ReceivedAt, opt => opt.MapFrom(src => DateTime.UtcNow.ToString("R")));
     }).CreateMapper();
 
     builder.Services.AddSingleton<IMapper>(mapper);
+
+    // HttpClients
+    var mailgunApikey = builder.Configuration.GetSection("Mailgun")["ApiKey"] ?? throw new KeyNotFoundException("Mailgun__ApiKey");
+    var mailgunBaseUrl = builder.Configuration.GetSection("Mailgun")["BaseUrl"] ?? throw new KeyNotFoundException("Mailgun__BaseUrl");
+    var mailgunAuth = Convert.ToBase64String(Encoding.ASCII.GetBytes($"api:{mailgunApikey}"));
+    builder.Services.AddHttpClient("Mailgun", client =>
+    {
+        client.BaseAddress = new Uri(mailgunBaseUrl);
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", mailgunAuth);
+    });
 
     // Repositories
     builder.Services.AddScoped<IContactRepository, ContactRepository>();
@@ -222,6 +242,16 @@ try
     builder.Services.AddSingleton<IBucketService, MinioBucketService>(); // Same lifetime scope as the IMinioClient
     builder.Services.AddScoped<IJwtService, JwtService>();
     builder.Services.AddScoped<ImageCleanupService>();
+    
+    bool useSmtp = bool.Parse(builder.Configuration["UseSmtp"] ?? "false");
+    if (useSmtp)
+    {
+        builder.Services.AddScoped<IEmailService, EmailService>();
+    }
+    else
+    {
+        builder.Services.AddSingleton<IEmailService, DevelopmentEmailService>();
+    }
 
     // Security
     builder.Services.AddSingleton<HtmlSanitizer>(x => new());
@@ -232,6 +262,13 @@ try
 
     // Configuration
     builder.Services.AddSingleton<SortablePropertyConfig>(x => new(Assembly.GetExecutingAssembly()));
+    
+    var mailgunDomain = builder.Configuration.GetSection("Mailgun")["Domain"] ?? throw new KeyNotFoundException("Mailgun__Domain");
+    var mailgunTo = builder.Configuration.GetSection("Mailgun")["To"] ?? throw new KeyNotFoundException("Mailgun__To");
+    builder.Services.AddSingleton<MailgunConfiguration>(x => new(
+        Domain: mailgunDomain,
+        To: mailgunTo
+    ));
 
     var app = builder.Build();
 
