@@ -4,6 +4,8 @@ import LoadingButton from '@/components/LoadingButton.vue'
 import type { ContactMessageDto } from '@/types/contactMessage'
 import apiservice from '@/services/apiservice'
 import urlservice from '@/services/urlservice'
+import 'vue-sonner/style.css'
+import { Toaster, toast } from 'vue-sonner'
 
 const contactName: Ref<string> = ref('')
 const contactPhone: Ref<string> = ref('')
@@ -25,18 +27,30 @@ async function submitContactMessage() {
       message: contactMessage.value,
     }
     await apiservice.post<unknown>(urlservice.postContactMessage(), dto, { skipAuth: true })
+    toast.success('Tak for din besked! Vi svarer tilbage hurtigst muligt.')
+    clearForm()
   } catch (err: unknown) {
     const axiosError = err as { response?: { data?: { message?: string } }; message?: string }
     submitError.value =
       axiosError.response?.data?.message || axiosError.message || 'Fejl forsendelse. Prøv igen.'
     console.error(err)
+    toast.error('Der skete en fejl i forsendelsen af beskeden.')
   } finally {
     isLoading.value = false
   }
 }
+
+function clearForm() {
+  contactName.value = ''
+  contactPhone.value = ''
+  contactEmail.value = ''
+  contactMessage.value = ''
+  submitError.value = null
+}
 </script>
 
 <template>
+  <Toaster />
   <form @submit.prevent="submitContactMessage">
     <div class="flex-row h-96">
       <label for="name_input">Navn</label>
