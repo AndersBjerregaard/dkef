@@ -33,4 +33,36 @@ public sealed class DevelopmentEmailService(
 
         return ValueTask.CompletedTask;
     }
+
+    public ValueTask SendChangeEmailAsync(ChangeEmailRequest changeEmailRequest)
+    {
+        ArgumentNullException.ThrowIfNull(changeEmailRequest);
+
+        var changeEmailDto = mapper.Map<ChangeEmailDto>(changeEmailRequest);
+
+        var changeEmailJson = JsonSerializer.Serialize(changeEmailDto);
+
+        logger.Information("Email Sent!\nFrom: {0}\nTo: {1}\nSubject: {2}\nTemplate {3}\nVariables: {4}",
+            $"postmaster@{mailgunConfiguration.Domain}",
+            changeEmailRequest.NewEmail,
+            "Skift Email Adresse",
+            "change-email",
+            changeEmailJson
+        );
+
+        var oldEmailDto = mapper.Map<OldChangeEmailDto>(changeEmailRequest);
+
+        var oldEmailJson = JsonSerializer.Serialize(oldEmailDto);
+
+        logger.Information("Email Sent!\nFrom: {0}\nTo: {1}\nSubject: {2}\nTemplate {3}\nVariables: {4}",
+            $"postmaster@{mailgunConfiguration.Domain}",
+            changeEmailRequest.OldEmail,
+            "Ændring af Email Adresse",
+            "old-change-email",
+            oldEmailJson
+        );
+
+
+        return ValueTask.CompletedTask;
+    }
 }
