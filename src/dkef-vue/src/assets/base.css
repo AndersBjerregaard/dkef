@@ -7,7 +7,7 @@
   --color-navy-700: #2d3f6b;
   --color-navy-600: #3d5499;
 
-  /* Semantic theme tokens — dark mode defaults */
+  /* Semantic theme tokens — light mode defaults */
   --color-theme-base: var(--color-background);
   --color-theme-soft: var(--color-background-soft);
   --color-theme-mute: var(--color-background-mute);
@@ -18,26 +18,8 @@
   --color-theme-accent: var(--color-accent);
 }
 
-/* Deep navy + amber/gold design system — dark mode (default) */
+/* Light mode (default) + amber/gold design system */
 :root {
-  --color-background: #0a0f1e;
-  --color-background-soft: #0f172a;
-  --color-background-mute: #1e2a45;
-
-  --color-border: rgba(148, 163, 208, 0.2);
-  --color-border-hover: #d97706;
-
-  --color-heading: #f1f5f9;
-  --color-text: rgba(203, 213, 225, 0.85);
-  --color-muted: #64748b;
-
-  --color-accent: #fbbf24; /* amber-400 — dark mode accent */
-  --color-accent-hover: #f59e0b;
-  --color-accent-muted: rgba(217, 119, 6, 0.12);
-}
-
-/* Light mode overrides */
-.light {
   --color-background: #f8fafc;
   --color-background-soft: #f1f5f9;
   --color-background-mute: #e2e8f0;
@@ -50,6 +32,24 @@
   --color-muted: #94a3b8;
 
   --color-accent: #d97706; /* amber-600 — light mode accent, better contrast on white */
+  --color-accent-hover: #f59e0b;
+  --color-accent-muted: rgba(217, 119, 6, 0.12);
+}
+
+/* Dark mode overrides */
+.light {
+  --color-background: #0a0f1e;
+  --color-background-soft: #0f172a;
+  --color-background-mute: #1e2a45;
+
+  --color-border: rgba(148, 163, 208, 0.2);
+  --color-border-hover: #d97706;
+
+  --color-heading: #f1f5f9;
+  --color-text: rgba(203, 213, 225, 0.85);
+  --color-muted: #64748b;
+
+  --color-accent: #fbbf24; /* amber-400 — dark mode accent */
   --color-accent-hover: #f59e0b;
   --color-accent-muted: rgba(217, 119, 6, 0.12);
 }

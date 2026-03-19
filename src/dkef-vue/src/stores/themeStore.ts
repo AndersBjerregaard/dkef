@@ -2,12 +2,12 @@ import { ref, watch } from 'vue'
 import { defineStore } from 'pinia'
 
 export const useThemeStore = defineStore('theme', () => {
-  // Determine initial theme: localStorage → system preference → dark
+  // Determine initial theme: localStorage → system preference → light
   function getInitialTheme(): 'dark' | 'light' {
     const stored = localStorage.getItem('theme')
     if (stored === 'light' || stored === 'dark') return stored
-    if (window.matchMedia('(prefers-color-scheme: light)').matches) return 'light'
-    return 'dark'
+    if (window.matchMedia('(prefers-color-scheme: dark)').matches) return 'dark'
+    return 'light'
   }
 
   const theme = ref<'dark' | 'light'>(getInitialTheme())
