@@ -10,6 +10,11 @@ async function goto(view: string) {
 </script>
 
 <template>
+  <!-- Title -->
+  <div class="pt-24 flex justify-center items-center text-center">
+    <h1 class="text-4xl">Medlemsfordele</h1>
+  </div>
+
   <!-- First section -->
   <div
     class="flex flex-col md:flex-row justify-center items-center gap-x-12 px-4 py-12 sm:py-20 mx-auto"

@@ -3,7 +3,7 @@ import ContactFormularComponent from '@/components/ContactFormularComponent.vue'
 </script>
 
 <template>
-  <div class="py-12">
+  <div class="py-24">
     <div class="flex-row">
       <div class="flex justify-center items-center pb-4">
         <h1 class="text-4xl">Om Elektroteknisk forening</h1>

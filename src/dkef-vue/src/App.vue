@@ -161,6 +161,16 @@ async function goto(view: string) {
                 </button>
               </RouterLink>
             </div>
+            <!-- Member Portal -->
+            <div class="p-1" v-if="authStore.isAuthenticated">
+              <RouterLink to="/member-portal">
+                <button
+                  class="rounded-lg bg-theme-mute h-10 px-4 cursor-pointer text-theme-text hover:bg-theme-mute hover:text-theme-accent transition-colors text-sm font-medium"
+                >
+                  Medlemsportal
+                </button>
+              </RouterLink>
+            </div>
             <!-- Theme toggle -->
             <div class="p-1">
               <button
@@ -278,124 +288,139 @@ async function goto(view: string) {
 
         <!-- Burger menu (visible on small screens) -->
         <div class="lg:hidden flex w-full sm:p-4 justify-end items-center">
-          <div class="text-right">
+          <div class="w-24 sm:w-40 flex justify-between">
             <!-- Theme toggle (mobile) -->
             <button
-              class="rounded-lg bg-theme-mute border border-theme-border h-8 sm:h-12 w-10 sm:w-12 cursor-pointer hover:text-theme-accent transition-colors text-theme-text inline-flex items-center justify-center mr-1"
+              class="rounded-lg sm:text-2xl bg-theme-mute border border-theme-border h-8 sm:h-12 w-10 sm:w-12 cursor-pointer hover:text-theme-accent transition-colors text-theme-text inline-flex items-center justify-center mr-3 sm:mr-4"
               @click="themeStore.toggleTheme()"
               :title="themeStore.isDark() ? 'Skift til lyst tema' : 'Skift til mørkt tema'"
             >
               {{ themeStore.isDark() ? '☀️' : '🌙' }}
             </button>
-            <Menu>
-              <MenuButton
-                class="text-lg sm:text-2xl rounded-lg bg-theme-mute border border-theme-border h-8 sm:h-12 w-10 sm:w-20 sm:p-2 cursor-pointer hover:bg-theme-mute hover:text-theme-accent transition-colors text-theme-text"
-              >
-                ≡</MenuButton
-              >
-              <transition
-                enter-active-class="transition duration-100 ease-out"
-                enter-from-class="transform scale-95 opacity-0"
-                enter-to-class="transform scale-100 opacity-100"
-                leave-active-class="transition duration-75 ease-in"
-                leave-from-class="transform scale-100 opacity-100"
-                leave-to-class="transform scale-95 opacity-0"
-              >
-                <MenuItems
-                  class="absolute right-8 mt-2 w-56 origin-top-right divide-y divide-theme-border rounded-xl bg-theme-mute border border-theme-border shadow-2xl ring-1 ring-black/20 focus:outline-none"
+            <div class="relative">
+              <Menu>
+                <MenuButton
+                  class="text-lg sm:text-2xl rounded-lg bg-theme-mute border border-theme-border h-8 sm:h-12 w-10 sm:w-20 sm:p-2 cursor-pointer hover:bg-theme-mute hover:text-theme-accent transition-colors text-theme-text"
                 >
-                  <div class="px-1 py-1">
-                    <MenuItem v-if="authStore.isAdmin" v-slot="{ active, close }">
-                      <RouterLink to="/members">
+                  ≡</MenuButton
+                >
+                <transition
+                  enter-active-class="transition duration-100 ease-out"
+                  enter-from-class="transform scale-95 opacity-0"
+                  enter-to-class="transform scale-100 opacity-100"
+                  leave-active-class="transition duration-75 ease-in"
+                  leave-from-class="transform scale-100 opacity-100"
+                  leave-to-class="transform scale-95 opacity-0"
+                >
+                  <MenuItems
+                    class="absolute right-0 top-full mt-2 w-56 origin-top-right divide-y divide-theme-border rounded-xl bg-theme-mute border border-theme-border shadow-2xl ring-1 ring-black/20 focus:outline-none z-50"
+                  >
+                    <div class="px-1 py-1">
+                      <MenuItem v-if="authStore.isAdmin" v-slot="{ active, close }">
+                        <RouterLink to="/members">
+                          <button
+                            :class="[
+                              active ? 'bg-theme-border text-theme-accent' : 'text-theme-text',
+                              'group flex w-full items-center rounded-lg px-2 py-2 text-sm cursor-pointer transition-colors',
+                            ]"
+                            @click="close"
+                          >
+                            Medlemmer
+                          </button>
+                        </RouterLink>
+                      </MenuItem>
+                      <MenuItem v-slot="{ active, close }">
+                        <RouterLink to="/advantages">
+                          <button
+                            :class="[
+                              active ? 'bg-theme-border text-theme-accent' : 'text-theme-text',
+                              'group flex w-full items-center rounded-lg px-2 py-2 text-sm cursor-pointer transition-colors',
+                            ]"
+                            @click="close"
+                          >
+                            Medlemsfordele
+                          </button>
+                        </RouterLink>
+                      </MenuItem>
+                      <MenuItem v-slot="{ active, close }">
+                        <RouterLink to="/events-and-news">
+                          <button
+                            :class="[
+                              active ? 'bg-theme-border text-theme-accent' : 'text-theme-text',
+                              'group flex w-full items-center rounded-lg px-2 py-2 text-sm cursor-pointer transition-colors',
+                            ]"
+                            @click="close"
+                          >
+                            Arrangementer og nyheder
+                          </button>
+                        </RouterLink>
+                      </MenuItem>
+                      <MenuItem v-slot="{ active, close }">
+                        <RouterLink to="/about">
+                          <button
+                            :class="[
+                              active ? 'bg-theme-border text-theme-accent' : 'text-theme-text',
+                              'group flex w-full items-center rounded-lg px-2 py-2 text-sm cursor-pointer transition-colors',
+                            ]"
+                            @click="close"
+                          >
+                            Om foreningen
+                          </button>
+                        </RouterLink>
+                      </MenuItem>
+                      <MenuItem v-slot="{ active, close }">
+                        <RouterLink to="/contact">
+                          <button
+                            :class="[
+                              active ? 'bg-theme-border text-theme-accent' : 'text-theme-text',
+                              'group flex w-full items-center rounded-lg px-2 py-2 text-sm cursor-pointer transition-colors',
+                            ]"
+                            @click="close"
+                          >
+                            Kontakt os
+                          </button>
+                        </RouterLink>
+                      </MenuItem>
+                      <MenuItem v-if="!authStore.IsAuthenticated" v-slot="{ active, close }">
+                        <RouterLink to="/member-portal">
+                          <button
+                            :class="[
+                              active ? 'bg-theme-border text-theme-accent' : 'text-theme-text',
+                              'group flex w-full items-center rounded-lg px-2 py-2 text-sm cursor-pointer transition-colors',
+                            ]"
+                            @click="close"
+                          >
+                            Medlemsportal
+                          </button>
+                        </RouterLink>
+                      </MenuItem>
+                      <MenuItem v-if="!authStore.isAuthenticated" v-slot="{ active }">
+                        <button
+                          :class="[
+                            active ? 'bg-amber-500/20 text-theme-accent' : 'text-theme-accent',
+                            'group flex w-full items-center rounded-lg px-2 py-2 text-sm cursor-pointer font-semibold transition-colors',
+                          ]"
+                          @click="openModal"
+                        >
+                          Log på
+                        </button>
+                      </MenuItem>
+                      <MenuItem v-else v-slot="{ active }">
                         <button
                           :class="[
                             active ? 'bg-theme-border text-theme-accent' : 'text-theme-text',
                             'group flex w-full items-center rounded-lg px-2 py-2 text-sm cursor-pointer transition-colors',
                           ]"
-                          @click="close"
+                          @click="handleLogout"
                         >
-                          Medlemmer
+                          Log ud ({{ authStore.user?.firstName }})
                         </button>
-                      </RouterLink>
-                    </MenuItem>
-                    <MenuItem v-slot="{ active, close }">
-                      <RouterLink to="/advantages">
-                        <button
-                          :class="[
-                            active ? 'bg-theme-border text-theme-accent' : 'text-theme-text',
-                            'group flex w-full items-center rounded-lg px-2 py-2 text-sm cursor-pointer transition-colors',
-                          ]"
-                          @click="close"
-                        >
-                          Medlemsfordele
-                        </button>
-                      </RouterLink>
-                    </MenuItem>
-                    <MenuItem v-slot="{ active, close }">
-                      <RouterLink to="/events-and-news">
-                        <button
-                          :class="[
-                            active ? 'bg-theme-border text-theme-accent' : 'text-theme-text',
-                            'group flex w-full items-center rounded-lg px-2 py-2 text-sm cursor-pointer transition-colors',
-                          ]"
-                          @click="close"
-                        >
-                          Arrangementer og nyheder
-                        </button>
-                      </RouterLink>
-                    </MenuItem>
-                    <MenuItem v-slot="{ active, close }">
-                      <RouterLink to="/about">
-                        <button
-                          :class="[
-                            active ? 'bg-theme-border text-theme-accent' : 'text-theme-text',
-                            'group flex w-full items-center rounded-lg px-2 py-2 text-sm cursor-pointer transition-colors',
-                          ]"
-                          @click="close"
-                        >
-                          Om foreningen
-                        </button>
-                      </RouterLink>
-                    </MenuItem>
-                    <MenuItem v-slot="{ active, close }">
-                      <RouterLink to="/contact">
-                        <button
-                          :class="[
-                            active ? 'bg-theme-border text-theme-accent' : 'text-theme-text',
-                            'group flex w-full items-center rounded-lg px-2 py-2 text-sm cursor-pointer transition-colors',
-                          ]"
-                          @click="close"
-                        >
-                          Kontakt os
-                        </button>
-                      </RouterLink>
-                    </MenuItem>
-                    <MenuItem v-if="!authStore.isAuthenticated" v-slot="{ active }">
-                      <button
-                        :class="[
-                          active ? 'bg-amber-500/20 text-theme-accent' : 'text-theme-accent',
-                          'group flex w-full items-center rounded-lg px-2 py-2 text-sm cursor-pointer font-semibold transition-colors',
-                        ]"
-                        @click="openModal"
-                      >
-                        Log på
-                      </button>
-                    </MenuItem>
-                    <MenuItem v-else v-slot="{ active }">
-                      <button
-                        :class="[
-                          active ? 'bg-theme-border text-theme-accent' : 'text-theme-text',
-                          'group flex w-full items-center rounded-lg px-2 py-2 text-sm cursor-pointer transition-colors',
-                        ]"
-                        @click="handleLogout"
-                      >
-                        Log ud ({{ authStore.user?.firstName }})
-                      </button>
-                    </MenuItem>
-                  </div>
-                </MenuItems>
-              </transition>
-            </Menu>
+                      </MenuItem>
+                    </div>
+                  </MenuItems>
+                </transition>
+              </Menu>
+            </div>
           </div>
         </div>
       </nav>

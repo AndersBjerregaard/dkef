@@ -75,6 +75,18 @@ const router = createRouter({
       component: () => import('@/views/ResetPasswordView.vue'),
       meta: { guest: true },
     },
+    {
+      path: '/member-portal',
+      name: 'member-portal',
+      component: () => import('@/views/MemberPortalView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/change-profile',
+      name: 'change-profile',
+      component: () => import('@/views/ChangeProfile.vue'),
+      meta: { requiresAuth: true },
+    },
   ],
 })
 

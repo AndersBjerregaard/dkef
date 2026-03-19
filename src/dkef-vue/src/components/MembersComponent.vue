@@ -226,99 +226,97 @@ function sort(by: string, order: Sort): void {
 
 <template>
   <div class="pb-20 justify-center items-center text-center">
-    <div>
-      <div class="py-8">
-        <h1 class="text-4xl py-8">Alle medlemmer</h1>
+    <div class="pt-16">
+      <h1 class="text-4xl py-8">Alle medlemmer</h1>
+    </div>
+    <div v-if="loadingProgress < 100" class="pb-4">
+      <div class="w-full bg-theme-border rounded-full h-4 mb-4">
+        <div
+          class="bg-amber-500 h-4 rounded-full transition-all"
+          :style="{ width: loadingProgress + '%' }"
+        ></div>
+        <p class="text-sm text-theme-muted mt-1">
+          {{ fetchedCount }} / {{ totalCount }} Medlemmer hentet
+        </p>
       </div>
-      <div v-if="loadingProgress < 100" class="pb-4">
-        <div class="w-full bg-theme-border rounded-full h-4 mb-4">
-          <div
-            class="bg-amber-500 h-4 rounded-full transition-all"
-            :style="{ width: loadingProgress + '%' }"
-          ></div>
-          <p class="text-sm text-theme-muted mt-1">
-            {{ fetchedCount }} / {{ totalCount }} Medlemmer hentet
-          </p>
-        </div>
-      </div>
-      <div class="py-4 flex gap-4 items-center justify-center">
-        <label class="p-1">Søg: </label>
-        <input
-          type="text"
-          class="bg-theme-soft border border-theme-border rounded p-1 w-[50%] focus:outline-none focus:ring-2 focus:ring-theme-accent focus:border-theme-accent"
-          placeholder="Minimum 3 bogstaver..."
-          v-model="filterString"
-        />
-        <button
-          @click="copyEmailsToClipboard"
-          class="ml-auto flex items-center gap-2 rounded bg-amber-600 text-navy-950 px-4 py-1.5 text-sm font-semibold transition hover:bg-amber-500 active:bg-amber-700 disabled:opacity-50"
-          :disabled="filteredItems.length === 0"
-          :title="emailsCopied ? 'Kopieret!' : `Kopiér ${filteredItems.length} email-adresser`"
+    </div>
+    <div class="py-4 flex gap-4 items-center justify-center">
+      <label class="p-1">Søg: </label>
+      <input
+        type="text"
+        class="bg-theme-soft border border-theme-border rounded p-1 w-[50%] focus:outline-none focus:ring-2 focus:ring-theme-accent focus:border-theme-accent"
+        placeholder="Minimum 3 bogstaver..."
+        v-model="filterString"
+      />
+      <button
+        @click="copyEmailsToClipboard"
+        class="ml-auto flex items-center gap-2 rounded bg-amber-600 text-navy-950 px-4 py-1.5 text-sm font-semibold transition hover:bg-amber-500 active:bg-amber-700 disabled:opacity-50"
+        :disabled="filteredItems.length === 0"
+        :title="emailsCopied ? 'Kopieret!' : `Kopiér ${filteredItems.length} email-adresser`"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-4 w-4 shrink-0"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-4 w-4 shrink-0"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <template v-if="emailsCopied">
-              <polyline points="20 6 9 17 4 12" />
-            </template>
-            <template v-else>
-              <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
-              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-            </template>
-          </svg>
-          {{ emailsCopied ? 'Kopieret!' : 'Kopiér emails' }}
-        </button>
-      </div>
-      <div class="flex w-full justify-center items-center">
-        <div class="py-4 w-[90%]">
-          <div class="flex w-full border-2 border-theme-border">
-            <MemberHeaderComponent
-              :header="'Navn'"
-              :currentSort="columnSortStates.name"
-              @update:sort="(newValue: Sort) => handleSortUpdate('name', newValue)"
-            />
-            <MemberHeaderComponent
-              :header="'Email'"
-              :currentSort="columnSortStates.email"
-              @update:sort="(newValue: Sort) => handleSortUpdate('email', newValue)"
-            />
-            <MemberHeaderComponent
-              :header="'Telefon Nr.'"
-              :currentSort="columnSortStates.phone"
-              @update:sort="(newValue: Sort) => handleSortUpdate('phone', newValue)"
-            />
-            <MemberHeaderComponent
-              :header="'Primær Sektion'"
-              :currentSort="columnSortStates.section"
-              @update:sort="(newValue: Sort) => handleSortUpdate('section', newValue)"
-            />
-            <MemberHeaderComponent
-              :header="'Addresse'"
-              :currentSort="columnSortStates.address"
-              @update:sort="(newValue: Sort) => handleSortUpdate('address', newValue)"
-            />
-          </div>
-          <div class="border-2 border-theme-border">
-            <MemberComponent
-              v-for="(item, index) in filteredItems"
-              :key="item.id"
-              :contact="item"
-              :index="index"
-              @contact-deleted="
-                (id) => {
-                  const i = items.findIndex((c) => c.id === id)
-                  if (i !== -1) items.splice(i, 1)
-                }
-              "
-            />
-          </div>
+          <template v-if="emailsCopied">
+            <polyline points="20 6 9 17 4 12" />
+          </template>
+          <template v-else>
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+          </template>
+        </svg>
+        {{ emailsCopied ? 'Kopieret!' : 'Kopiér emails' }}
+      </button>
+    </div>
+    <div class="flex w-full justify-center items-center">
+      <div class="py-4 w-[90%]">
+        <div class="flex w-full border-2 border-theme-border">
+          <MemberHeaderComponent
+            :header="'Navn'"
+            :currentSort="columnSortStates.name"
+            @update:sort="(newValue: Sort) => handleSortUpdate('name', newValue)"
+          />
+          <MemberHeaderComponent
+            :header="'Email'"
+            :currentSort="columnSortStates.email"
+            @update:sort="(newValue: Sort) => handleSortUpdate('email', newValue)"
+          />
+          <MemberHeaderComponent
+            :header="'Telefon Nr.'"
+            :currentSort="columnSortStates.phone"
+            @update:sort="(newValue: Sort) => handleSortUpdate('phone', newValue)"
+          />
+          <MemberHeaderComponent
+            :header="'Primær Sektion'"
+            :currentSort="columnSortStates.section"
+            @update:sort="(newValue: Sort) => handleSortUpdate('section', newValue)"
+          />
+          <MemberHeaderComponent
+            :header="'Addresse'"
+            :currentSort="columnSortStates.address"
+            @update:sort="(newValue: Sort) => handleSortUpdate('address', newValue)"
+          />
+        </div>
+        <div class="border-2 border-theme-border">
+          <MemberComponent
+            v-for="(item, index) in filteredItems"
+            :key="item.id"
+            :contact="item"
+            :index="index"
+            @contact-deleted="
+              (id) => {
+                const i = items.findIndex((c) => c.id === id)
+                if (i !== -1) items.splice(i, 1)
+              }
+            "
+          />
         </div>
       </div>
     </div>
