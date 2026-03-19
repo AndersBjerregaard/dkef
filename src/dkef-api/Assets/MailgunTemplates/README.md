@@ -17,3 +17,11 @@
 - `name`
 - `confirm_link`
 - `received_at`
+
+## `old-change-email`
+
+### Properties
+
+- `name`
+- `new_email`
+- `received_at`
