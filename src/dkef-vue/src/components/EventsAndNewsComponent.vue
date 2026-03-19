@@ -597,53 +597,53 @@ const submitLabel = computed(() => {
     </div>
 
     <!-- Items grid -->
-    <div
-      v-else
-      class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 auto-rows-fr gap-6 px-4 max-w-5xl mx-auto w-full"
-    >
-      <template v-for="item in displayedItems" :key="item.id">
-        <EventComponent
-          v-if="item.kind === 'event'"
-          :published-event="{
-            id: item.id,
-            title: item.title,
-            section: item.section,
-            address: item.address ?? '',
-            dateTime: item.dateTime ?? '',
-            description: item.description,
-            thumbnailUrl: item.thumbnailUrl,
-            createdAt: item.createdAt,
-          }"
-        />
-        <NewsComponent
-          v-else-if="item.kind === 'news'"
-          :published-news="{
-            id: item.id,
-            title: item.title,
-            section: item.section,
-            author: item.author ?? '',
-            description: item.description,
-            thumbnailUrl: item.thumbnailUrl,
-            publishedAt: item.publishedAt ?? '',
-            createdAt: item.createdAt,
-          }"
-        />
-        <GeneralAssemblyComponent
-          v-else-if="item.kind === 'general-assembly'"
-          :published-general-assembly="{
-            id: item.id,
-            title: item.title,
-            section: item.section,
-            address: item.address ?? '',
-            dateTime: item.dateTime ?? '',
-            description: item.description,
-            thumbnailUrl: item.thumbnailUrl,
-            createdAt: item.createdAt,
-          }"
-        />
-      </template>
+    <div class="flex justify-center items-center" v-else>
+      <div
+        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 auto-rows-fr gap-6 px-4 max-w-5xl mx-auto w-full"
+      >
+        <template v-for="item in displayedItems" :key="item.id">
+          <EventComponent
+            v-if="item.kind === 'event'"
+            :published-event="{
+              id: item.id,
+              title: item.title,
+              section: item.section,
+              address: item.address ?? '',
+              dateTime: item.dateTime ?? '',
+              description: item.description,
+              thumbnailUrl: item.thumbnailUrl,
+              createdAt: item.createdAt,
+            }"
+          />
+          <NewsComponent
+            v-else-if="item.kind === 'news'"
+            :published-news="{
+              id: item.id,
+              title: item.title,
+              section: item.section,
+              author: item.author ?? '',
+              description: item.description,
+              thumbnailUrl: item.thumbnailUrl,
+              publishedAt: item.publishedAt ?? '',
+              createdAt: item.createdAt,
+            }"
+          />
+          <GeneralAssemblyComponent
+            v-else-if="item.kind === 'general-assembly'"
+            :published-general-assembly="{
+              id: item.id,
+              title: item.title,
+              section: item.section,
+              address: item.address ?? '',
+              dateTime: item.dateTime ?? '',
+              description: item.description,
+              thumbnailUrl: item.thumbnailUrl,
+              createdAt: item.createdAt,
+            }"
+          />
+        </template>
+      </div>
     </div>
-
     <!-- Pagination controls -->
     <div v-if="totalPages > 1" class="flex justify-center items-center py-12 gap-2">
       <button

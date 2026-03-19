@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import NewsLetterComponent from './NewsLetterComponent.vue'
+// import NewsLetterComponent from './NewsLetterComponent.vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
@@ -237,9 +237,10 @@ async function register() {
     </div>
   </div>
 
-  <div class="pt-16">
+  <!-- News Letter temporarily disabled -->
+  <!-- <div class="pt-16">
     <NewsLetterComponent />
-  </div>
+  </div> -->
 </template>
 
 <style lang="css" scoped></style>

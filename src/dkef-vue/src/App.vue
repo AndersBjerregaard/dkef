@@ -402,10 +402,8 @@ async function goto(view: string) {
     </div>
   </header>
 
-  <div class="justify-center flex">
-    <div>
-      <RouterView />
-    </div>
+  <div>
+    <RouterView />
   </div>
 
   <footer>

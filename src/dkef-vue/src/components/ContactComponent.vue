@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import ContactFormularComponent from './ContactFormularComponent.vue'
-import NewsLetterComponent from './NewsLetterComponent.vue'
+// import NewsLetterComponent from './NewsLetterComponent.vue'
 </script>
 
 <template>
@@ -69,7 +69,8 @@ import NewsLetterComponent from './NewsLetterComponent.vue'
     </div>
   </div>
 
-  <NewsLetterComponent />
+  <!-- News Letter temporarily disabled -->
+  <!-- <NewsLetterComponent /> -->
 </template>
 
 <style lang="css" scoped></style>

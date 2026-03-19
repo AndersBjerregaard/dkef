@@ -225,7 +225,7 @@ function sort(by: string, order: Sort): void {
 </script>
 
 <template>
-  <div class="pb-20 justify-center items-center text-center members-list">
+  <div class="pb-20 justify-center items-center text-center">
     <div>
       <div class="py-8">
         <h1 class="text-4xl py-8">Alle medlemmer</h1>
@@ -241,7 +241,7 @@ function sort(by: string, order: Sort): void {
           </p>
         </div>
       </div>
-      <div class="py-4 flex gap-4 items-center">
+      <div class="py-4 flex gap-4 items-center justify-center">
         <label class="p-1">Søg: </label>
         <input
           type="text"
@@ -276,55 +276,53 @@ function sort(by: string, order: Sort): void {
           {{ emailsCopied ? 'Kopieret!' : 'Kopiér emails' }}
         </button>
       </div>
-      <div class="py-4">
-        <div class="flex w-full justify-between border-2 border-theme-border">
-          <MemberHeaderComponent
-            :header="'Navn'"
-            :currentSort="columnSortStates.name"
-            @update:sort="(newValue: Sort) => handleSortUpdate('name', newValue)"
-          />
-          <MemberHeaderComponent
-            :header="'Email'"
-            :currentSort="columnSortStates.email"
-            @update:sort="(newValue: Sort) => handleSortUpdate('email', newValue)"
-          />
-          <MemberHeaderComponent
-            :header="'Telefon Nr.'"
-            :currentSort="columnSortStates.phone"
-            @update:sort="(newValue: Sort) => handleSortUpdate('phone', newValue)"
-          />
-          <MemberHeaderComponent
-            :header="'Primær Sektion'"
-            :currentSort="columnSortStates.section"
-            @update:sort="(newValue: Sort) => handleSortUpdate('section', newValue)"
-          />
-          <MemberHeaderComponent
-            :header="'Addresse'"
-            :currentSort="columnSortStates.address"
-            @update:sort="(newValue: Sort) => handleSortUpdate('address', newValue)"
-          />
-        </div>
-        <div class="w-full justify-between border-2 border-theme-border">
-          <MemberComponent
-            v-for="(item, index) in filteredItems"
-            :key="item.id"
-            :contact="item"
-            :index="index"
-            @contact-deleted="
-              (id) => {
-                const i = items.findIndex((c) => c.id === id)
-                if (i !== -1) items.splice(i, 1)
-              }
-            "
-          />
+      <div class="flex w-full justify-center items-center">
+        <div class="py-4 w-[90%]">
+          <div class="flex w-full border-2 border-theme-border">
+            <MemberHeaderComponent
+              :header="'Navn'"
+              :currentSort="columnSortStates.name"
+              @update:sort="(newValue: Sort) => handleSortUpdate('name', newValue)"
+            />
+            <MemberHeaderComponent
+              :header="'Email'"
+              :currentSort="columnSortStates.email"
+              @update:sort="(newValue: Sort) => handleSortUpdate('email', newValue)"
+            />
+            <MemberHeaderComponent
+              :header="'Telefon Nr.'"
+              :currentSort="columnSortStates.phone"
+              @update:sort="(newValue: Sort) => handleSortUpdate('phone', newValue)"
+            />
+            <MemberHeaderComponent
+              :header="'Primær Sektion'"
+              :currentSort="columnSortStates.section"
+              @update:sort="(newValue: Sort) => handleSortUpdate('section', newValue)"
+            />
+            <MemberHeaderComponent
+              :header="'Addresse'"
+              :currentSort="columnSortStates.address"
+              @update:sort="(newValue: Sort) => handleSortUpdate('address', newValue)"
+            />
+          </div>
+          <div class="border-2 border-theme-border">
+            <MemberComponent
+              v-for="(item, index) in filteredItems"
+              :key="item.id"
+              :contact="item"
+              :index="index"
+              @contact-deleted="
+                (id) => {
+                  const i = items.findIndex((c) => c.id === id)
+                  if (i !== -1) items.splice(i, 1)
+                }
+              "
+            />
+          </div>
         </div>
       </div>
     </div>
   </div>
 </template>
 
-<style lang="css" scoped>
-.members-list {
-  width: 90vw;
-}
-</style>
+<style lang="css" scoped></style>
