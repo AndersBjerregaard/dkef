@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="da">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Ændring af Email</title>
+    <style>
+      /* Reset */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body,
+      html {
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+        background-color: #0a0f1e;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu,
+          Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+        font-size: 15px;
+        line-height: 1.6;
+        color: rgba(203, 213, 225, 0.85);
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      /* Outer wrapper — full-width dark background */
+      .email-outer {
+        width: 100%;
+        background-color: #0a0f1e;
+        padding: 40px 16px;
+      }
+
+      /* Centered card */
+      .email-card {
+        max-width: 600px;
+        margin: 0 auto;
+        background-color: #0f172a;
+        border: 1px solid rgba(148, 163, 208, 0.2);
+        border-radius: 16px;
+        overflow: hidden;
+      }
+
+      /* ── Header ── */
+      .email-header {
+        background-color: #1e2a45;
+        border-bottom: 2px solid rgba(251, 191, 36, 0.25);
+        padding: 32px 40px;
+        text-align: center;
+      }
+
+      .email-header .org-label {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: #fbbf24;
+        margin-bottom: 10px;
+      }
+
+      .email-header h1 {
+        font-size: 22px;
+        font-weight: 700;
+        color: #f1f5f9;
+        margin-bottom: 4px;
+      }
+
+      .email-header .subtitle {
+        font-size: 13px;
+        color: #b1b5b9;
+      }
+
+      /* Accent bar below header */
+      .accent-bar {
+        height: 3px;
+        background: linear-gradient(90deg, #d97706 0%, #fbbf24 50%, #d97706 100%);
+      }
+
+      /* ── Body ── */
+      .email-body {
+        padding: 36px 40px;
+      }
+
+      .intro-text {
+        font-size: 15px;
+        color: rgba(255, 255, 255, 1.0);
+        margin-bottom: 28px;
+        line-height: 1.7;
+      }
+
+      /* ── Info grid ── */
+      .info-grid {
+        margin-bottom: 28px;
+      }
+
+      .info-row {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 14px 16px;
+        border-radius: 10px;
+        margin-bottom: 8px;
+        background-color: #1e2a45;
+        border: 1px solid rgba(148, 163, 208, 0.15);
+      }
+
+      .info-row:last-child {
+        margin-bottom: 0;
+      }
+
+      .info-icon {
+        flex-shrink: 0;
+        width: 36px;
+        height: 36px;
+        background-color: rgba(217, 119, 6, 0.15);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        line-height: 1;
+        /* Fallback for email clients that don't support flex on inline elements */
+        text-align: center;
+        padding-top: 9px;
+      }
+
+      .info-content {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .info-label {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: #fbbf24;
+        margin-bottom: 3px;
+      }
+
+      .info-value {
+        font-size: 15px;
+        color: #f1f5f9;
+        word-break: break-word;
+      }
+
+      /* ── Message block ── */
+      .message-section {
+        margin-bottom: 28px;
+      }
+
+      .message-section-label {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: #fbbf24;
+        margin-bottom: 10px;
+      }
+
+      .message-box {
+        background-color: #1e2a45;
+        border: 1px solid rgba(148, 163, 208, 0.15);
+        border-left: 3px solid #fbbf24;
+        border-radius: 10px;
+        padding: 20px;
+        font-size: 15px;
+        color: rgba(203, 213, 225, 0.9);
+        line-height: 1.75;
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+
+      /* ── Reply CTA ── */
+      .cta-section {
+        text-align: center;
+        margin-bottom: 28px;
+      }
+
+      .cta-button {
+        display: inline-block;
+        background-color: #d97706;
+        color: #0a0f1e !important;
+        font-size: 15px;
+        font-weight: 700;
+        text-decoration: none;
+        padding: 12px 32px;
+        border-radius: 10px;
+        letter-spacing: 0.02em;
+      }
+
+      /* ── Divider ── */
+      .divider {
+        height: 1px;
+        background-color: rgba(148, 163, 208, 0.15);
+        margin: 28px 0;
+      }
+
+      /* ── Metadata strip ── */
+      .meta-strip {
+        background-color: #0a0f1e;
+        border-radius: 8px;
+        padding: 14px 16px;
+        font-size: 12px;
+        color: #b1b5b9;
+        line-height: 1.6;
+      }
+
+      .meta-strip strong {
+          color: #a1a5a9;
+        font-weight: 600;
+      }
+
+      /* ── Footer ── */
+      .email-footer {
+        background-color: #0a0f1e;
+        border-top: 1px solid rgba(148, 163, 208, 0.12);
+        padding: 24px 40px;
+        text-align: center;
+      }
+
+      .footer-org {
+        font-size: 13px;
+        font-weight: 700;
+        color: #fbbf24;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        margin-bottom: 6px;
+      }
+
+      .footer-address {
+        font-size: 12px;
+        color: #b1b5b9;
+        line-height: 1.7;
+      }
+
+      .footer-address a {
+          color: #b1b5b9;
+        text-decoration: none;
+      }
+
+      .footer-note {
+        margin-top: 16px;
+        font-size: 11px;
+        color: #919599;
+        font-style: italic;
+      }
+
+      /* ── Responsive ── */
+      @media only screen and (max-width: 620px) {
+        .email-outer {
+          padding: 20px 8px;
+        }
+
+        .email-header,
+        .email-body,
+        .email-footer {
+          padding-left: 24px;
+          padding-right: 24px;
+        }
+
+        .email-header h1 {
+          font-size: 19px;
+        }
+
+        .info-row {
+          flex-direction: column;
+          gap: 6px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="email-outer">
+      <div class="email-card">
+
+        <!-- Header -->
+        <div class="email-header">
+          <p class="org-label">Elektroteknisk Forening</p>
+          <h1>Bekræft din nye e-mail adresse til Elektroteknisk Forening</h1>
+        </div>
+
+        <!-- Amber accent bar -->
+        <div class="accent-bar"></div>
+
+        <!-- Body -->
+        <div class="email-body">
+
+          <p class="intro-text">
+            Hej, {{name}}<br /><br />
+            Du har anmodet om at ændre din e-mail addresse associeret med din 
+            <strong style="color: #f1f5f9;">dkef.dk</strong> medlemskonto.
+            For at gennemføre processen og opdatere dine oplysninger, klik venligst på knappen nedenfor.
+          </p>
+
+          <!-- Confirm CTA -->
+          <div class="cta-section">
+            <a class="cta-button" href="{{confirm_link}}">
+              Bekræft Ny E-Mail Adresse
+            </a>
+          </div>
+          
+          <!-- Security Concerns -->
+          <p class="intro-text">
+            Efter bekræftelse, vil du kunne bruge denne e-mail adresse til at logge ind på
+            din <strong style="color: #f1f5f9;">dkef.dk</strong> medlemskonto.<br />
+            <strong>Vigtigt:</strong> Dette link vil kun være gyldigt i 60 minutter.
+            Hvis du ikke har anmodet om ændring, kan du ignorere denne besked.<br />
+          </p>
+
+          <div class="divider"></div>
+
+          <!-- Metadata -->
+          <div class="meta-strip">
+            <strong>Tidspunkt:</strong> {{received_at}}<br />
+            <strong>Kilde:</strong> Medlemsportalen på dkef.dk
+          </div>
+
+        </div>
+
+        <!-- Footer -->
+        <div class="email-footer">
+          <p class="footer-org">DKEF</p>
+          <p class="footer-address">
+            Elleholmvej 28C, 5250 Odense SV<br />
+            <a href="mailto:info@dkef.dk">info@dkef.dk</a>
+            &nbsp;·&nbsp;
+            <a href="tel:+4542577069">+45 42 57 70 69</a>
+          </p>
+          <p class="footer-note">
+            Denne e-mail er automatisk genereret af systemet på dkef.dk og kan ikke besvares.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </body>
+</html>
