@@ -225,13 +225,15 @@ public class AuthController(
     [Route("change")]
     public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDto dto)
     {
-        Contact? contact = await contactRepository.GetByEmailAsync(dto.Email);
+        Contact? contact = await userManager.FindByEmailAsync(dto.Email);
+
         if (contact is null)
         {
             return NotFound("No user found with the provided email.");
         }
 
         IdentityResult result = await userManager.ChangePasswordAsync(contact, dto.CurrentPassword, dto.NewPassword);
+
         if (!result.Succeeded)
         {
             return BadRequest(new
