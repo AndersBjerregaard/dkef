@@ -224,6 +224,7 @@ async function goto(view: string) {
                           v-model="email"
                           type="email"
                           required
+                          autocomplete="username"
                           class="w-full px-3 py-2 bg-theme-soft border border-theme-border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-theme-accent focus:border-theme-accent text-theme-heading placeholder-slate-500"
                           placeholder="din@email.dk"
                         />
@@ -240,6 +241,7 @@ async function goto(view: string) {
                           v-model="password"
                           type="password"
                           required
+                          autocomplete="current-password"
                           class="w-full px-3 py-2 bg-theme-soft border border-theme-border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-theme-accent focus:border-theme-accent text-theme-heading placeholder-slate-500"
                           placeholder="••••••••"
                         />

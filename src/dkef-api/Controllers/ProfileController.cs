@@ -23,7 +23,8 @@ public sealed class ProfileController(
     IChangeEmailRepository changeEmailRepository,
     IContactRepository contactRepository,
     HostConfig hostConfig,
-    UserManager<Contact> userManager
+    UserManager<Contact> userManager,
+    Serilog.ILogger logger
 ) : ControllerBase
 {
     [HttpPost]
@@ -96,11 +97,13 @@ public sealed class ProfileController(
 
         if (changeEmail == null)
         {
+            logger.Warning("Change email request not found: {Id}", guid);
             return NotFound();
         }
 
         if (!changeEmail.IsValid)
         {
+            logger.Warning("Change email request is not valid: {Id}", guid);
             return BadRequest(new { Message = "change email request is not valid" });
         }
 

@@ -73,7 +73,6 @@ const router = createRouter({
       path: '/reset-password',
       name: 'reset-password',
       component: () => import('@/views/ResetPasswordView.vue'),
-      meta: { guest: true },
     },
     {
       path: '/member-portal',
@@ -86,6 +85,11 @@ const router = createRouter({
       name: 'change-profile',
       component: () => import('@/views/ChangeProfile.vue'),
       meta: { requiresAuth: true },
+    },
+    {
+      path: '/confirm-change-email',
+      name: 'confirm-change-email',
+      component: () => import('@/views/ConfirmChangeEmailView.vue'),
     },
   ],
 })
