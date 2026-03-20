@@ -2,7 +2,9 @@ using System.Globalization;
 using System.Net.Http.Headers;
 using System.Reflection;
 using System.Text;
+
 using AutoMapper;
+
 using Dkef.Configuration;
 using Dkef.Contracts;
 using Dkef.Contracts.Mailgun;
@@ -11,14 +13,19 @@ using Dkef.Domain;
 using Dkef.Repositories;
 using Dkef.Services;
 using Dkef.Services.Interfaces;
+
 using Ganss.Xss;
+
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+
 using Minio;
 using Minio.AspNetCore;
+
 using Scalar.AspNetCore;
+
 using Serilog;
 using Serilog.Templates;
 using Serilog.Templates.Themes;
@@ -85,6 +92,7 @@ try
     builder.Services.AddDbContext<NewsContext>(options => options.UseNpgsql(dbConString));
     builder.Services.AddDbContext<GeneralAssemblyContext>(options => options.UseNpgsql(dbConString));
     builder.Services.AddDbContext<ForgotPasswordContext>(options => options.UseNpgsql(dbConString));
+    builder.Services.AddDbContext<ChangeEmailContext>(options => options.UseNpgsql(dbConString));
     builder.Services.AddDbContext<RefreshTokenContext>(options => options.UseNpgsql(dbConString));
 
     builder.Services.AddTransient<DbSet<Contact>>(x =>
@@ -118,20 +126,20 @@ try
         // User settings
         options.User.RequireUniqueEmail = true;
         options.SignIn.RequireConfirmedEmail = true; // Set to true if you want email confirmation
-        
+
         // Configure token provider settings
         options.Tokens.PasswordResetTokenProvider = "DatabaseTokenProvider";
     })
         .AddEntityFrameworkStores<ContactContext>()
         .AddDefaultTokenProviders()
         .AddTokenProvider<DatabaseTokenProvider>("DatabaseTokenProvider");
-    
+
     // Register the DatabaseTokenProvider's dependency
     builder.Services.AddScoped<DatabaseTokenProvider>();
 
     // Authentication
     JwtConfig jwtConfig = new(
-    
+
         Key: builder.Configuration.GetSection("JwtSettings")["Key"]!,
         Issuer: builder.Configuration.GetSection("JwtSettings")["Issuer"]!,
         Audience: builder.Configuration.GetSection("JwtSettings")["Audience"]!,
@@ -216,6 +224,15 @@ try
             .ForMember(dest => dest.SenderPhone, opt => opt.MapFrom(src => src.Phone))
             .ForMember(dest => dest.Message, opt => opt.MapFrom(src => src.Message))
             .ForMember(dest => dest.ReceivedAt, opt => opt.MapFrom(src => DateTime.UtcNow.ToString("R")));
+        cfg.CreateMap<ChangeEmailRequest, Dkef.Contracts.Mailgun.ChangeEmailDto>()
+            .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
+            .ForMember(dest => dest.ConfirmLink, opt => opt.MapFrom(src => src.ConfirmLink))
+            .ForMember(dest => dest.ReceivedAt, opt => opt.MapFrom(src => DateTime.UtcNow.ToString("R")));
+        cfg.CreateMap<ChangeEmailRequest, OldChangeEmailDto>()
+            .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
+            .ForMember(dest => dest.NewEmail, opt => opt.MapFrom(src => src.NewEmail))
+            .ForMember(dest => dest.RevokeLink, opt => opt.MapFrom(src => src.RevokeLink))
+            .ForMember(dest => dest.ReceivedAt, opt => opt.MapFrom(src => DateTime.UtcNow.ToString("R")));
     }).CreateMapper();
 
     builder.Services.AddSingleton<IMapper>(mapper);
@@ -236,13 +253,14 @@ try
     builder.Services.AddScoped<INewsRepository, NewsRepository>();
     builder.Services.AddScoped<IGeneralAssemblyRepository, GeneralAssemblyRepository>();
     builder.Services.AddScoped<ForgotPasswordRepository>();
+    builder.Services.AddScoped<IChangeEmailRepository, ChangeEmailRepository>();
     builder.Services.AddScoped<RefreshTokenRepository>();
 
     // Services
     builder.Services.AddSingleton<IBucketService, MinioBucketService>(); // Same lifetime scope as the IMinioClient
     builder.Services.AddScoped<IJwtService, JwtService>();
     builder.Services.AddScoped<ImageCleanupService>();
-    
+
     bool useSmtp = bool.Parse(builder.Configuration["UseSmtp"] ?? "false");
     if (useSmtp)
     {
@@ -262,13 +280,16 @@ try
 
     // Configuration
     builder.Services.AddSingleton<SortablePropertyConfig>(x => new(Assembly.GetExecutingAssembly()));
-    
+
     var mailgunDomain = builder.Configuration.GetSection("Mailgun")["Domain"] ?? throw new KeyNotFoundException("Mailgun__Domain");
     var mailgunTo = builder.Configuration.GetSection("Mailgun")["To"] ?? throw new KeyNotFoundException("Mailgun__To");
     builder.Services.AddSingleton<MailgunConfiguration>(x => new(
         Domain: mailgunDomain,
         To: mailgunTo
     ));
+
+    string hostPrefix = builder.Configuration.GetSection("JwtSettings")["Issuer"]!;
+    builder.Services.AddSingleton<HostConfig>(x => new(hostPrefix));
 
     var app = builder.Build();
 
@@ -288,6 +309,8 @@ try
         generalAssemblyContext!.Database.Migrate();
         var forgotPasswordContext = scope.ServiceProvider.GetService<ForgotPasswordContext>();
         forgotPasswordContext!.Database.Migrate();
+        var changeEmailContext = scope.ServiceProvider.GetService<ChangeEmailContext>();
+        changeEmailContext!.Database.Migrate();
         var refreshTokenContext = scope.ServiceProvider.GetService<RefreshTokenContext>();
         refreshTokenContext!.Database.Migrate();
         // if (app.Environment.IsDevelopment()) {

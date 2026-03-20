@@ -13,7 +13,7 @@ public sealed class EmailService(
     IHttpClientFactory httpClientFactory,
     MailgunConfiguration mailgunConfiguration,
     IMapper mapper,
-    ILogger<EmailService> logger
+    Serilog.ILogger logger
 ) : IEmailService
 {
     public async ValueTask SendContactInquiryAsync(InformationMessage message)
@@ -71,7 +71,7 @@ public sealed class EmailService(
         if (!response.IsSuccessStatusCode)
         {
             var errorContent = await response.Content.ReadAsStringAsync();
-            logger.LogError("Failed to send change email: {StatusCode} - {Error}", response.StatusCode, errorContent);
+            logger.Error("Failed to send change email: {StatusCode} - {Error}", response.StatusCode, errorContent);
         }
 
         // Old email
@@ -96,7 +96,7 @@ public sealed class EmailService(
         if (!response.IsSuccessStatusCode)
         {
             var errorContent = await response.Content.ReadAsStringAsync();
-            logger.LogError("Failed to send old email change: {StatusCode} - {Error}", response.StatusCode, errorContent);
+            logger.Error("Failed to send old email change: {StatusCode} - {Error}", response.StatusCode, errorContent);
         }
     }
 }

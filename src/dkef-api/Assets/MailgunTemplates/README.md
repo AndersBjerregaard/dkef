@@ -24,4 +24,5 @@
 
 - `name`
 - `new_email`
+- `revoke_link`
 - `received_at`
