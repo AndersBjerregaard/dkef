@@ -91,6 +91,11 @@ const router = createRouter({
       name: 'confirm-change-email',
       component: () => import('@/views/ConfirmChangeEmailView.vue'),
     },
+    {
+      path: '/revoke-change-email',
+      name: 'revoke-change-email',
+      component: () => import('@/views/RevokeChangeEmailView.vue'),
+    },
   ],
 })
 
