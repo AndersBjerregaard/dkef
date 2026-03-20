@@ -3,6 +3,7 @@ using Dkef.Contracts;
 using Dkef.Domain;
 using Dkef.Repositories;
 using Dkef.Services.Interfaces;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -12,32 +13,41 @@ namespace Dkef.Controllers;
 [ApiController]
 [Route("[controller]")]
 public class AuthController(
-    ForgotPasswordRepository _forgotPasswordRepository,
-    IContactRepository _contactRepository,
-    UserManager<Contact> _userManager,
-    IJwtService _jwtService
+    ForgotPasswordRepository forgotPasswordRepository,
+    IContactRepository contactRepository,
+    UserManager<Contact> userManager,
+    IJwtService jwtService,
+    IEmailService emailService,
+    HostConfig hostConfig,
+    Serilog.ILogger logger
 ) : ControllerBase
 {
     [HttpPost]
     [Route("forgot")]
     public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDto dto)
     {
-        Contact? contact = await _userManager.FindByEmailAsync(dto.Email);
+        Contact? contact = await userManager.FindByEmailAsync(dto.Email);
+
         if (contact is null)
         {
-            return NotFound("No user found with the provided email.");
+            logger.Warning("Forgot password attempt with invalid email: {Email}", dto.Email);
+            return Ok();
         }
 
         // Generate a password reset token using the custom DatabaseTokenProvider
-        string token = await _userManager.GeneratePasswordResetTokenAsync(contact);
+        string token = await userManager.GeneratePasswordResetTokenAsync(contact);
 
-        // The token is the GUID string that can be used to reset the password
-        // You would typically send this token via email to the user
-        return CreatedAtAction(
-            nameof(GetForgotPasswordRequest),
-            new { id = token },
-            new { message = "Password reset token generated.", token = token }
+        string resetUrl = $"{hostConfig.Audience}/reset-password?token={token}";
+
+        var resetRequest = new ResetPasswordRequest(
+            Email: contact.Email!,
+            Name: contact.FirstName,
+            ChangeLink: resetUrl
         );
+
+        await emailService.SendResetPasswordAsync(resetRequest);
+
+        return Ok();
     }
 
     [HttpGet]
@@ -45,7 +55,7 @@ public class AuthController(
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> GetForgotPasswordRequest(Guid id)
     {
-        ForgotPassword? request = await _forgotPasswordRepository.GetByIdAsync(id);
+        ForgotPassword? request = await forgotPasswordRepository.GetByIdAsync(id);
 
         if (request is null)
         {
@@ -71,7 +81,7 @@ public class AuthController(
         }
 
         // Look up the forgot password request by token
-        ForgotPassword? forgotPasswordRequest = await _forgotPasswordRepository.GetByIdAsync(tokenId);
+        ForgotPassword? forgotPasswordRequest = await forgotPasswordRepository.GetByIdAsync(tokenId);
         if (forgotPasswordRequest is null)
         {
             return BadRequest("Invalid password reset request.");
@@ -84,7 +94,7 @@ public class AuthController(
         }
 
         // Get the contact associated with the token
-        Contact? contact = await _userManager.FindByIdAsync(forgotPasswordRequest.ContactId.ToString());
+        Contact? contact = await userManager.FindByIdAsync(forgotPasswordRequest.ContactId.ToString());
         if (contact is null)
         {
             return BadRequest("Invalid password reset request.");
@@ -92,7 +102,7 @@ public class AuthController(
 
         // Use UserManager's ResetPasswordAsync which will automatically validate the token
         // using our DatabaseTokenProvider
-        IdentityResult result = await _userManager.ResetPasswordAsync(contact, dto.Token, dto.NewPassword);
+        IdentityResult result = await userManager.ResetPasswordAsync(contact, dto.Token, dto.NewPassword);
 
         if (!result.Succeeded)
         {
@@ -104,7 +114,7 @@ public class AuthController(
         }
 
         // Mark the token as used in the database
-        await _forgotPasswordRepository.SetAsUsedAsync(tokenId);
+        await forgotPasswordRepository.SetAsUsedAsync(tokenId);
 
         return Ok(new { message = "Password has been reset successfully." });
     }
@@ -113,22 +123,23 @@ public class AuthController(
     [Route("login")]
     public async Task<IActionResult> Login([FromBody] LoginDto dto)
     {
-        Contact? contact = await _contactRepository.GetByEmailAsync(dto.Email);
+        Contact? contact = await contactRepository.GetByEmailAsync(dto.Email);
         if (contact is null)
         {
             return Unauthorized("Invalid email or password.");
         }
 
-        var passwordValid = await _userManager.CheckPasswordAsync(contact, dto.Password);
+        var passwordValid = await userManager.CheckPasswordAsync(contact, dto.Password);
         if (!passwordValid)
         {
             return Unauthorized("Invalid email or password.");
         }
 
         // Generate JWT token and refresh token for the authenticated user
-        var tokens = await _jwtService.GenerateTokensAsync(contact);
-        
-        return Ok(new { 
+        var tokens = await jwtService.GenerateTokensAsync(contact);
+
+        return Ok(new
+        {
             message = "Login successful.",
             accessToken = tokens.AccessToken,
             refreshToken = tokens.RefreshToken,
@@ -142,8 +153,8 @@ public class AuthController(
     {
         try
         {
-            var tokens = await _jwtService.RefreshTokenAsync(dto.RefreshToken);
-            
+            var tokens = await jwtService.RefreshTokenAsync(dto.RefreshToken);
+
             return Ok(new
             {
                 message = "Token refreshed successfully.",
@@ -167,7 +178,7 @@ public class AuthController(
     public async Task<IActionResult> Register([FromBody] RegisterDto dto)
     {
         // Check if user with email already exists
-        Contact? existingContact = await _contactRepository.GetByEmailAsync(dto.Email);
+        Contact? existingContact = await contactRepository.GetByEmailAsync(dto.Email);
         if (existingContact is not null)
         {
             return BadRequest("A user with this email already exists.");
@@ -184,7 +195,7 @@ public class AuthController(
         };
 
         // Create user with password using UserManager
-        IdentityResult result = await _userManager.CreateAsync(contact, dto.Password);
+        IdentityResult result = await userManager.CreateAsync(contact, dto.Password);
 
         if (!result.Succeeded)
         {
@@ -196,7 +207,7 @@ public class AuthController(
         }
 
         // Generate JWT token and refresh token for the newly registered user
-        var tokens = await _jwtService.GenerateTokensAsync(contact);
+        var tokens = await jwtService.GenerateTokensAsync(contact);
 
         return CreatedAtAction(
             nameof(Register),
@@ -214,13 +225,13 @@ public class AuthController(
     [Route("change")]
     public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDto dto)
     {
-        Contact? contact = await _contactRepository.GetByEmailAsync(dto.Email);
+        Contact? contact = await contactRepository.GetByEmailAsync(dto.Email);
         if (contact is null)
         {
             return NotFound("No user found with the provided email.");
         }
 
-        IdentityResult result = await _userManager.ChangePasswordAsync(contact, dto.CurrentPassword, dto.NewPassword);
+        IdentityResult result = await userManager.ChangePasswordAsync(contact, dto.CurrentPassword, dto.NewPassword);
         if (!result.Succeeded)
         {
             return BadRequest(new
@@ -239,7 +250,7 @@ public class AuthController(
     {
         try
         {
-            await _jwtService.RevokeRefreshTokenAsync(dto.RefreshToken);
+            await jwtService.RevokeRefreshTokenAsync(dto.RefreshToken);
             return Ok(new { message = "Logout successful. Refresh token has been revoked." });
         }
         catch (UnauthorizedAccessException ex)

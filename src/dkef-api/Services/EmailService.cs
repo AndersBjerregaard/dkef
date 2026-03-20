@@ -99,4 +99,30 @@ public sealed class EmailService(
             logger.Error("Failed to send old email change: {StatusCode} - {Error}", response.StatusCode, errorContent);
         }
     }
+
+    public async ValueTask SendResetPasswordAsync(ResetPasswordRequest resetPasswordRequest)
+    {
+        ArgumentNullException.ThrowIfNull(resetPasswordRequest);
+
+        var resetPasswordDto = mapper.Map<ResetPasswordDto>(resetPasswordRequest);
+        var resetPasswordJson = JsonSerializer.Serialize(resetPasswordDto) ?? throw new InvalidOperationException("Could not serialize reset password");
+
+        HttpClient client = httpClientFactory.CreateClient("Mailgun") ?? throw new InvalidOperationException("Mailgun HttpClient not found");
+
+        var request = new HttpRequestMessage(HttpMethod.Post, $"https://api.mailgun.net/v3/{mailgunConfiguration.Domain}/messages")
+        {
+            Content = new FormUrlEncodedContent(new Dictionary<string, string>
+            {
+                { "from", $"Elektroteknisk Forening <postmaster@{mailgunConfiguration.Domain}>" },
+                { "to", resetPasswordRequest.Email },
+                { "subject", "Ændring af Password" },
+                { "template", "reset-password" },
+                { "t:variables", resetPasswordJson }
+            })
+        };
+
+        var response = await client.SendAsync(request);
+
+        response.EnsureSuccessStatusCode();
+    }
 }

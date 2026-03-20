@@ -62,8 +62,8 @@ public sealed class ProfileController(
 
         var newChangeEmail = await changeEmailRepository.CreateAsync(changeEmail);
 
-        string confirmLink = $"{hostConfig.UrlPrefix}/profile/change-email/confirm/{newChangeEmail.Id}";
-        string revokeLink = $"{hostConfig.UrlPrefix}/profile/change-email/revoke/{newChangeEmail.Id}";
+        string confirmLink = $"{hostConfig.Issuer}/profile/change-email/confirm/{newChangeEmail.Id}";
+        string revokeLink = $"{hostConfig.Issuer}/profile/change-email/revoke/{newChangeEmail.Id}";
 
         var changeEmailRequest = new ChangeEmailRequest(
             OldEmail: requestingUserEmail,

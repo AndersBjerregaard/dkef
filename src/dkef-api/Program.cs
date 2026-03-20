@@ -233,6 +233,10 @@ try
             .ForMember(dest => dest.NewEmail, opt => opt.MapFrom(src => src.NewEmail))
             .ForMember(dest => dest.RevokeLink, opt => opt.MapFrom(src => src.RevokeLink))
             .ForMember(dest => dest.ReceivedAt, opt => opt.MapFrom(src => DateTime.UtcNow.ToString("R")));
+        cfg.CreateMap<ResetPasswordRequest, Dkef.Contracts.Mailgun.ResetPasswordDto>()
+            .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
+            .ForMember(dest => dest.ChangeLink, opt => opt.MapFrom(src => src.ChangeLink))
+            .ForMember(dest => dest.ReceivedAt, opt => opt.MapFrom(src => DateTime.UtcNow.ToString("R")));
     }).CreateMapper();
 
     builder.Services.AddSingleton<IMapper>(mapper);
@@ -288,8 +292,9 @@ try
         To: mailgunTo
     ));
 
-    string hostPrefix = builder.Configuration.GetSection("JwtSettings")["Issuer"]!;
-    builder.Services.AddSingleton<HostConfig>(x => new(hostPrefix));
+    string issuer = builder.Configuration.GetSection("JwtSettings")["Issuer"]!;
+    string audience = builder.Configuration.GetSection("JwtSettings")["Audience"]!;
+    builder.Services.AddSingleton<HostConfig>(x => new(audience, issuer));
 
     var app = builder.Build();
 

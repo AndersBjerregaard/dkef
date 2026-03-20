@@ -65,4 +65,23 @@ public sealed class DevelopmentEmailService(
 
         return ValueTask.CompletedTask;
     }
+
+    public ValueTask SendResetPasswordAsync(ResetPasswordRequest request)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+
+        var resetPasswordDto = mapper.Map<ResetPasswordDto>(request);
+
+        var resetPasswordJson = JsonSerializer.Serialize(resetPasswordDto);
+
+        logger.Information("Email Sent!\nFrom: {0}\nTo: {1}\nSubject: {2}\nTemplate {3}\nVariables: {4}",
+            $"postmaster@{mailgunConfiguration.Domain}",
+            request.Email,
+            "Ændring af Password",
+            "reset-password",
+            resetPasswordJson
+        );
+
+        return ValueTask.CompletedTask;
+    }
 }

@@ -26,3 +26,11 @@
 - `new_email`
 - `revoke_link`
 - `received_at`
+
+## `reset-password`
+
+### Properties
+
+- `name`
+- `change_link`
+- `received_at`

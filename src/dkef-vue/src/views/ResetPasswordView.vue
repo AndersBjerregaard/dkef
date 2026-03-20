@@ -60,16 +60,27 @@ async function handleResetPassword() {
 </script>
 
 <template>
-  <div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+  <div class="flex items-center justify-center py-24 px-4 sm:px-6 lg:px-8">
     <div class="max-w-md w-full space-y-6">
-      <div>
+      <div class="pb-12">
         <h2 class="mt-6 text-center text-3xl font-bold">Ny adgangskode</h2>
       </div>
 
-      <div v-if="success" class="rounded-xl bg-green-900 bg-opacity-50 p-4 border border-green-700">
-        <p class="text-sm text-green-200">
-          Din adgangskode er blevet nulstillet! Du kan nu logge ind med din nye adgangskode.
-        </p>
+      <div v-if="success">
+        <div class="rounded-xl bg-green-900 bg-opacity-50 p-4 border border-green-700">
+          <p class="text-sm text-green-200">
+            Din adgangskode er blevet nulstillet! Du kan nu logge ind med din nye adgangskode.
+          </p>
+        </div>
+        <div class="flex justify-center pt-8">
+          <RouterLink to="/">
+            <button
+              class="rounded-lg bg-amber-600 h-12 py-2 px-6 cursor-pointer hover:bg-amber-500 active:bg-amber-700 text-navy-950 font-semibold text-base shadow-lg shadow-amber-600/20 transition-all"
+            >
+              Gå til forsiden
+            </button>
+          </RouterLink>
+        </div>
       </div>
 
       <form v-else class="mt-8 space-y-4" @submit.prevent="handleResetPassword">
@@ -79,7 +90,9 @@ async function handleResetPassword() {
 
         <div class="space-y-4">
           <div>
-            <label for="password" class="block text-sm font-medium mb-1"> Ny adgangskode </label>
+            <label for="password" class="block text-sm font-medium mb-1 py-2">
+              Ny adgangskode
+            </label>
             <input
               id="password"
               v-model="password"
@@ -93,7 +106,7 @@ async function handleResetPassword() {
           </div>
 
           <div>
-            <label for="confirm-password" class="block text-sm font-medium mb-1">
+            <label for="confirm-password" class="block text-sm font-medium mb-1 py-2">
               Bekræft ny adgangskode
             </label>
             <input
@@ -109,7 +122,7 @@ async function handleResetPassword() {
           </div>
         </div>
 
-        <div class="pt-4">
+        <div class="pt-8">
           <button
             type="submit"
             :disabled="loading || !token"
