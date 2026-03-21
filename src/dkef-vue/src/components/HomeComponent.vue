@@ -18,9 +18,9 @@ async function register() {
 <template>
   <!-- Hero -->
   <div class="py-12 sm:py-20 px-4">
-    <div class="flex flex-col md:flex-row justify-center items-center gap-x-12 mx-auto">
+    <div class="flex flex-col md:flex-row justify-center items-center gap-x-12">
       <!-- Left Column -->
-      <div class="w-full md:w-96 px-2 pb-8 md:pb-0 mx-auto">
+      <div class="w-full md:w-96 px-2 pb-8 md:pb-0">
         <p class="text-theme-accent text-lg font-bold uppercase tracking-widest pb-4">
           Elektroteknisk forening
         </p>
@@ -36,7 +36,7 @@ async function register() {
         </p>
       </div>
 
-      <div class="w-full md:w-96 px-2 mx-auto">
+      <div class="w-full md:w-96 px-2">
         <img class="rounded-xl w-full" src="@/assets/el-mast.jpeg" alt="An electrical mast" />
       </div>
     </div>
@@ -67,13 +67,13 @@ async function register() {
         </div>
 
         <div
-          class="flex items-center justify-center w-24 h-24 lg:w-32 lg:h-32 opacity-70 hover:opacity-100 transition-opacity"
+          class="flex items-center justify-center w-24 h-24 lg:w-32 lg:h-32 opacity-100 hover:opacity-100 transition-opacity"
         >
           <img src="@/assets/wexoe.svg" alt="WEXOE" />
         </div>
 
         <div
-          class="flex items-center justify-center w-24 h-24 lg:w-32 lg:h-32 opacity-70 hover:opacity-100 transition-opacity"
+          class="flex items-center justify-center w-24 h-24 lg:w-32 lg:h-32 opacity-100 hover:opacity-100 transition-opacity"
         >
           <img src="@/assets/schneider.png" alt="Schneider" />
         </div>
@@ -95,12 +95,12 @@ async function register() {
 
   <!-- Info section 1 -->
   <div class="bg-theme-soft border-y border-amber-500/10 px-4 py-12 sm:py-20">
-    <div class="flex flex-col md:flex-row justify-center items-center gap-x-12 mx-auto">
-      <div class="hidden sm:flex w-full md:w-96 px-2 mx-auto">
+    <div class="flex flex-col md:flex-row justify-center items-center gap-x-12">
+      <div class="hidden sm:flex w-full md:w-96 px-2">
         <img class="rounded-xl w-full" src="@/assets/man-studying.png" alt="Man studying" />
       </div>
 
-      <div class="w-full md:w-96 px-2 pb-8 md:pb-0 mx-auto">
+      <div class="w-full md:w-96 px-2 pb-8 md:pb-0">
         <p class="text-theme-accent text-lg font-bold uppercase tracking-widest pb-3">Netværk</p>
         <h2 class="text-3xl text-theme-heading leading-tight pb-4">
           Sparring og relationer på tværs af branchen
@@ -123,8 +123,8 @@ async function register() {
 
   <!-- Info section 2 -->
   <div class="px-4 py-12 sm:py-20">
-    <div class="flex flex-col md:flex-row justify-center items-center gap-x-12 mx-auto">
-      <div class="w-full md:w-96 px-2 pb-8 md:pb-0 mx-auto">
+    <div class="flex flex-col md:flex-row justify-center items-center gap-x-12">
+      <div class="w-full md:w-96 px-2 pb-8 md:pb-0">
         <p class="text-theme-accent text-lg font-bold uppercase tracking-widest pb-3">Udvikling</p>
         <h2 class="text-3xl text-theme-heading leading-tight pb-4">Fokus på faglig udvikling</h2>
 
@@ -141,7 +141,7 @@ async function register() {
         </button>
       </div>
 
-      <div class="hidden sm:flex w-full md:w-96 px-2 mx-auto">
+      <div class="hidden sm:flex w-full md:w-96 px-2">
         <img class="rounded-xl w-full" src="@/assets/corporate-woman.png" alt="Corporate woman" />
       </div>
     </div>
@@ -149,8 +149,8 @@ async function register() {
 
   <!-- Reasons to become a member -->
   <div class="bg-theme-soft border-y border-amber-500/10 px-4 py-12 sm:py-20">
-    <div class="flex flex-col md:flex-row justify-center items-center gap-x-12 mx-auto">
-      <div class="w-full md:w-96 px-2 pb-8 md:pb-0 mx-auto">
+    <div class="flex flex-col md:flex-row justify-center items-center gap-x-12">
+      <div class="w-full md:w-96 px-2 pb-8 md:pb-0">
         <p class="text-theme-accent text-lg font-bold uppercase tracking-widest pb-3">Hvorfor?</p>
         <h2 class="text-3xl text-theme-heading leading-tight pb-4">
           3 gode grunde til at være medlem
@@ -168,7 +168,7 @@ async function register() {
         </button>
       </div>
 
-      <div class="flex flex-col gap-4 w-full md:w-96 px-2 mx-auto">
+      <div class="flex flex-col gap-4 w-full md:w-96 px-2">
         <div
           class="bg-theme-mute border border-theme-border hover:border-amber-500/40 rounded-2xl p-4 transition-colors"
         >

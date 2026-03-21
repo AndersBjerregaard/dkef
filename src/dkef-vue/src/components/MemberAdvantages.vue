@@ -16,10 +16,8 @@ async function goto(view: string) {
   </div>
 
   <!-- First section -->
-  <div
-    class="flex flex-col md:flex-row justify-center items-center gap-x-12 px-4 py-12 sm:py-20 mx-auto"
-  >
-    <div class="gap-4 w-full md:w-96 px-2 pb-8 md:pb-0 mx-auto">
+  <div class="flex flex-col md:flex-row justify-center items-center gap-x-12 px-4 py-12 sm:py-20">
+    <div class="gap-4 w-full md:w-96 px-2 pb-8 md:pb-0">
       <p class="text-theme-accent text-lg font-bold uppercase tracking-widest pb-3">Medlemskab</p>
       <h1 class="text-3xl md:text-4xl pb-6 text-theme-heading leading-tight">
         Bliv medlem af Elektroteknisk forening i dag
@@ -36,7 +34,7 @@ async function goto(view: string) {
       </button>
     </div>
 
-    <div class="w-full md:w-96 px-2 mx-auto">
+    <div class="w-full md:w-96 px-2">
       <div
         class="bg-theme-mute border border-amber-500/30 rounded-2xl p-6 shadow-xl shadow-amber-500/5"
       >
@@ -81,9 +79,9 @@ async function goto(view: string) {
 
   <!-- Second section -->
   <div
-    class="bg-theme-soft flex flex-col md:flex-row justify-center items-center gap-x-12 px-4 py-12 sm:py-20 mx-auto"
+    class="bg-theme-soft flex flex-col md:flex-row justify-center items-center gap-x-12 px-4 py-12 sm:py-20"
   >
-    <div class="gap-4 w-full md:w-96 px-2 pb-8 md:pb-0 mx-auto">
+    <div class="gap-4 w-full md:w-96 px-2 pb-8 md:pb-0">
       <p class="text-theme-accent text-lg font-bold uppercase tracking-widest pb-3">Netværk</p>
       <h1 class="text-2xl sm:text-4xl pb-6 text-theme-heading leading-tight">
         Få adgang til netværksdatabase
@@ -108,10 +106,8 @@ async function goto(view: string) {
   <div class="w-full border-t border-amber-500/10"></div>
 
   <!-- Third section -->
-  <div
-    class="flex flex-col md:flex-row justify-center items-center gap-x-12 px-4 py-12 sm:py-20 mx-auto"
-  >
-    <div class="gap-4 w-full md:w-96 px-2 pb-8 md:pb-0 mx-auto">
+  <div class="flex flex-col md:flex-row justify-center items-center gap-x-12 px-4 py-12 sm:py-20">
+    <div class="gap-4 w-full md:w-96 px-2 pb-8 md:pb-0">
       <p class="text-theme-accent text-lg font-bold uppercase tracking-widest pb-3">
         Arrangementer
       </p>
