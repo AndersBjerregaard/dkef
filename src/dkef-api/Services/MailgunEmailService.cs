@@ -9,7 +9,8 @@ using Dkef.Services.Interfaces;
 
 namespace Dkef.Services;
 
-public sealed class EmailService(
+[Obsolete("This application is primarily used in integration with Microsoft Graph using Microsoft Entra ID")]
+public sealed class MailgunEmailService(
     IHttpClientFactory httpClientFactory,
     MailgunConfiguration mailgunConfiguration,
     IMapper mapper,
@@ -126,6 +127,7 @@ public sealed class EmailService(
         response.EnsureSuccessStatusCode();
     }
 
+    [Obsolete("Not supported")]
     public ValueTask SendNewMemberRegisteredAsync(NewMemberRegistered request)
     {
         throw new NotImplementedException();

@@ -5,9 +5,10 @@ using System.Text;
 
 using AutoMapper;
 
+using Azure.Identity;
+
 using Dkef.Configuration;
 using Dkef.Contracts;
-using Dkef.Contracts.Mailgun;
 using Dkef.Data;
 using Dkef.Domain;
 using Dkef.Repositories;
@@ -19,6 +20,8 @@ using Ganss.Xss;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using Microsoft.Graph;
 using Microsoft.IdentityModel.Tokens;
 
 using Minio;
@@ -107,6 +110,23 @@ try
     builder.Services.AddTransient<DbSet<GeneralAssembly>>(x =>
         x.GetRequiredService<GeneralAssemblyContext>()
         .GeneralAssemblies);
+
+    // Microsoft Entra ID
+    builder.Services.AddOptions<AzureAdSettings>()
+        .BindConfiguration("AzureAd")
+        .ValidateDataAnnotations()
+        .ValidateOnStart();
+
+    // Microsoft Graph
+    builder.Services.AddSingleton(sp =>
+    {
+        var azureAdSettings = sp.GetRequiredService<IOptions<AzureAdSettings>>().Value;
+        var credential = new ClientSecretCredential(
+            azureAdSettings.TenantId,
+            azureAdSettings.ClientId,
+            azureAdSettings.ClientSecret);
+        return new GraphServiceClient(credential);
+    });
 
     // Identity
     builder.Services.AddIdentity<Contact, IdentityRole>(options =>
@@ -201,60 +221,42 @@ try
         : minioPublicEndpoint;
     var thumbnailPrefix = $"{thumbnailHttpProtocol}://{thumbnailBase}";
 
-    var mapper = new MapperConfiguration(cfg =>
+    builder.Services.AddSingleton<IMapper>(sp =>
     {
-        cfg.CreateMap<Contact, Contact>();
-        cfg.CreateMap<ContactDto, Contact>();
-        cfg.CreateMap<Event, Event>();
-        cfg.CreateMap<EventDto, Event>()
-            .ForMember(dest => dest.ThumbnailUrl, opt => opt.MapFrom(src => $"{thumbnailPrefix}/events/{src.ThumbnailId}"))
-            .ForMember(dest => dest.DateTime, opt => opt.MapFrom(src => DateTime.Parse(src.DateTime, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal).ToUniversalTime()));
-        cfg.CreateMap<News, News>();
-        cfg.CreateMap<NewsDto, News>()
-            .ForMember(dest => dest.ThumbnailUrl, opt => opt.MapFrom(src =>
-                string.IsNullOrWhiteSpace(src.ThumbnailId) ? string.Empty : $"{thumbnailPrefix}/news/{src.ThumbnailId}"));
-        cfg.CreateMap<GeneralAssembly, GeneralAssembly>();
-        cfg.CreateMap<GeneralAssemblyDto, GeneralAssembly>()
-            .ForMember(dest => dest.ThumbnailUrl, opt => opt.MapFrom(src => $"{thumbnailPrefix}/general-assemblies/{src.ThumbnailId}"))
-            .ForMember(dest => dest.DateTime, opt => opt.MapFrom(src => DateTime.Parse(src.DateTime, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal).ToUniversalTime()));
-        cfg.CreateMap<InformationDto, InformationMessage>();
-        cfg.CreateMap<InformationMessage, ContactInquiryDto>()
-            .ForMember(dest => dest.SenderName, opt => opt.MapFrom(src => src.Name))
-            .ForMember(dest => dest.SenderEmail, opt => opt.MapFrom(src => src.Email))
-            .ForMember(dest => dest.SenderPhone, opt => opt.MapFrom(src => src.Phone))
-            .ForMember(dest => dest.Message, opt => opt.MapFrom(src => src.Message))
-            .ForMember(dest => dest.ReceivedAt, opt => opt.MapFrom(src => DateTime.UtcNow.ToString("R")));
-        cfg.CreateMap<ChangeEmailRequest, Dkef.Contracts.Mailgun.ChangeEmailDto>()
-            .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
-            .ForMember(dest => dest.ConfirmLink, opt => opt.MapFrom(src => src.ConfirmLink))
-            .ForMember(dest => dest.ReceivedAt, opt => opt.MapFrom(src => DateTime.UtcNow.ToString("R")));
-        cfg.CreateMap<ChangeEmailRequest, OldChangeEmailDto>()
-            .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
-            .ForMember(dest => dest.NewEmail, opt => opt.MapFrom(src => src.NewEmail))
-            .ForMember(dest => dest.RevokeLink, opt => opt.MapFrom(src => src.RevokeLink))
-            .ForMember(dest => dest.ReceivedAt, opt => opt.MapFrom(src => DateTime.UtcNow.ToString("R")));
-        cfg.CreateMap<ResetPasswordRequest, Dkef.Contracts.Mailgun.ResetPasswordDto>()
-            .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
-            .ForMember(dest => dest.ChangeLink, opt => opt.MapFrom(src => src.ChangeLink))
-            .ForMember(dest => dest.ReceivedAt, opt => opt.MapFrom(src => DateTime.UtcNow.ToString("R")));
-        cfg.CreateMap<NewMemberRegistered, NewMemberRegisteredDto>()
-            .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.FullName))
-            .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
-            .ForMember(dest => dest.Phone, opt => opt.MapFrom(src => src.Phone))
-            .ForMember(dest => dest.ReceivedAt, opt => opt.MapFrom(src => DateTime.UtcNow.ToString("R")));
-    }).CreateMapper();
-
-    builder.Services.AddSingleton<IMapper>(mapper);
+        var loggerFactory = sp.GetRequiredService<ILoggerFactory>();
+        var mapper = new MapperConfiguration(cfg =>
+        {
+            cfg.CreateMap<Contact, Contact>();
+            cfg.CreateMap<ContactDto, Contact>();
+            cfg.CreateMap<Event, Event>();
+            cfg.CreateMap<EventDto, Event>()
+                .ForMember(dest => dest.ThumbnailUrl, opt => opt.MapFrom(src => $"{thumbnailPrefix}/events/{src.ThumbnailId}"))
+                .ForMember(dest => dest.DateTime, opt => opt.MapFrom(src => DateTime.Parse(src.DateTime, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal).ToUniversalTime()));
+            cfg.CreateMap<News, News>();
+            cfg.CreateMap<NewsDto, News>()
+                .ForMember(dest => dest.ThumbnailUrl, opt => opt.MapFrom(src =>
+                    string.IsNullOrWhiteSpace(src.ThumbnailId) ? string.Empty : $"{thumbnailPrefix}/news/{src.ThumbnailId}"));
+            cfg.CreateMap<GeneralAssembly, GeneralAssembly>();
+            cfg.CreateMap<GeneralAssemblyDto, GeneralAssembly>()
+                .ForMember(dest => dest.ThumbnailUrl, opt => opt.MapFrom(src => $"{thumbnailPrefix}/general-assemblies/{src.ThumbnailId}"))
+                .ForMember(dest => dest.DateTime, opt => opt.MapFrom(src => DateTime.Parse(src.DateTime, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal).ToUniversalTime()));
+            cfg.CreateMap<InformationDto, InformationMessage>();
+            // Optionally call 'cfg.MapMailgunContracts();' to map Mailgun contract types
+        }, loggerFactory).CreateMapper();
+        return mapper;
+    });
 
     // HttpClients
-    var mailgunApikey = builder.Configuration.GetSection("Mailgun")["ApiKey"] ?? throw new KeyNotFoundException("Mailgun__ApiKey");
-    var mailgunBaseUrl = builder.Configuration.GetSection("Mailgun")["BaseUrl"] ?? throw new KeyNotFoundException("Mailgun__BaseUrl");
-    var mailgunAuth = Convert.ToBase64String(Encoding.ASCII.GetBytes($"api:{mailgunApikey}"));
-    builder.Services.AddHttpClient("Mailgun", client =>
-    {
-        client.BaseAddress = new Uri(mailgunBaseUrl);
-        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", mailgunAuth);
-    });
+
+    // Uncomment to add Mailgun client
+    // var mailgunApikey = builder.Configuration.GetSection("Mailgun")["ApiKey"] ?? throw new KeyNotFoundException("Mailgun__ApiKey");
+    // var mailgunBaseUrl = builder.Configuration.GetSection("Mailgun")["BaseUrl"] ?? throw new KeyNotFoundException("Mailgun__BaseUrl");
+    // var mailgunAuth = Convert.ToBase64String(Encoding.ASCII.GetBytes($"api:{mailgunApikey}"));
+    // builder.Services.AddHttpClient("Mailgun", client =>
+    // {
+    //     client.BaseAddress = new Uri(mailgunBaseUrl);
+    //     client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", mailgunAuth);
+    // });
 
     // Repositories
     builder.Services.AddScoped<IContactRepository, ContactRepository>();
@@ -273,7 +275,7 @@ try
     bool useSmtp = bool.Parse(builder.Configuration["UseSmtp"] ?? "false");
     if (useSmtp)
     {
-        builder.Services.AddScoped<IEmailService, EmailService>();
+        builder.Services.AddScoped<IEmailService, MicrosoftGraphEmailService>();
     }
     else
     {
@@ -290,12 +292,13 @@ try
     // Configuration
     builder.Services.AddSingleton<SortablePropertyConfig>(x => new(Assembly.GetExecutingAssembly()));
 
-    var mailgunDomain = builder.Configuration.GetSection("Mailgun")["Domain"] ?? throw new KeyNotFoundException("Mailgun__Domain");
-    var mailgunTo = builder.Configuration.GetSection("Mailgun")["To"] ?? throw new KeyNotFoundException("Mailgun__To");
-    builder.Services.AddSingleton<MailgunConfiguration>(x => new(
-        Domain: mailgunDomain,
-        To: mailgunTo
-    ));
+    // Uncommnet below to add Mailgun configuration
+    // var mailgunDomain = builder.Configuration.GetSection("Mailgun")["Domain"] ?? throw new KeyNotFoundException("Mailgun__Domain");
+    // var mailgunTo = builder.Configuration.GetSection("Mailgun")["To"] ?? throw new KeyNotFoundException("Mailgun__To");
+    // builder.Services.AddSingleton<MailgunConfiguration>(x => new(
+    //     Domain: mailgunDomain,
+    //     To: mailgunTo
+    // ));
 
     string issuer = builder.Configuration.GetSection("JwtSettings")["Issuer"]!;
     string audience = builder.Configuration.GetSection("JwtSettings")["Audience"]!;
