@@ -2,6 +2,9 @@
 import { onMounted, ref, type Ref } from 'vue'
 import { useRoute } from 'vue-router'
 import api from '@/services/apiservice'
+import { useAuthStore } from '@/stores/authStore'
+
+const authStore = useAuthStore()
 
 const route = useRoute()
 
@@ -23,6 +26,7 @@ onMounted(async () => {
   try {
     await api.post('/profile/change-email/confirm/' + token.value)
     success.value = true
+    await authStore.logout()
   } catch (err) {
     success.value = false
     const axiosError = err as { response?: { data?: { message?: string } }; message?: string }

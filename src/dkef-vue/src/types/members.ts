@@ -64,6 +64,30 @@ export interface ContactDto {
   expectedEndDateOfBeingStudent: string
 }
 
+export interface UpdateProfileDto {
+  firstName: string
+  lastName: string
+  title: string
+  occupation: string
+  workTasks: string
+  privateAddress: string
+  privateZIP: string
+  privateCity: string
+  privatePhone: string
+  companyName: string
+  companyAddress: string
+  companyZIP: string
+  companyCity: string
+  cvrNumber: string
+  companyPhone: string
+  companyEmail: string
+  elTeknikDelivery: string
+  eanNumber: string
+  primarySection: string
+  secondarySection: string
+  invoiceEmail: string
+}
+
 export interface ContactCollection {
   collection: Contact[]
   total: number

@@ -222,31 +222,6 @@ public class AuthController(
     }
 
     [HttpPost]
-    [Route("change")]
-    public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDto dto)
-    {
-        Contact? contact = await userManager.FindByEmailAsync(dto.Email);
-
-        if (contact is null)
-        {
-            return NotFound("No user found with the provided email.");
-        }
-
-        IdentityResult result = await userManager.ChangePasswordAsync(contact, dto.CurrentPassword, dto.NewPassword);
-
-        if (!result.Succeeded)
-        {
-            return BadRequest(new
-            {
-                message = "Failed to change password.",
-                errors = result.Errors.Select(e => e.Description)
-            });
-        }
-
-        return Ok(new { message = "Password changed successfully." });
-    }
-
-    [HttpPost]
     [Route("logout")]
     public async Task<IActionResult> Logout([FromBody] RefreshTokenDto dto)
     {
