@@ -69,7 +69,7 @@ async function handleResetPassword() {
       <div v-if="success">
         <div class="rounded-xl bg-green-900 bg-opacity-50 p-4 border border-green-700">
           <p class="text-sm text-green-200">
-            Din adgangskode er blevet nulstillet! Du kan nu logge ind med din nye adgangskode.
+            Din nye adgangskode er blevet bekræftet! Du kan nu logge ind med din nye adgangskode.
           </p>
         </div>
         <div class="flex justify-center pt-8">
@@ -128,7 +128,7 @@ async function handleResetPassword() {
             :disabled="loading || !token"
             class="w-full flex justify-center items-center rounded-xl bg-amber-600 h-12 px-8 cursor-pointer hover:bg-amber-500 text-navy-950 font-semibold text-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-lg shadow-amber-600/20"
           >
-            {{ loading ? 'Nulstiller adgangskode...' : 'Nulstil adgangskode' }}
+            {{ loading ? 'Bekræfter adgangskode...' : 'Bekræft ny adgangskode' }}
           </button>
         </div>
       </form>
