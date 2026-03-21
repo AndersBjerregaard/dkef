@@ -34,3 +34,12 @@
 - `name`
 - `change_link`
 - `received_at`
+
+## `new-member`
+
+### Properties
+
+- `full_name`
+- `email`
+- `phone`
+- `received_at`

@@ -206,6 +206,15 @@ public class AuthController(
             });
         }
 
+        // Send 'new registration' email to secretary
+        var newMemberRegistered = new NewMemberRegistered(
+            FullName: $"{contact.FirstName} {contact.LastName}",
+            Email: contact.Email,
+            Phone: contact.PhoneNumber ?? ""
+        );
+
+        await emailService.SendNewMemberRegisteredAsync(newMemberRegistered);
+
         // Generate JWT token and refresh token for the newly registered user
         var tokens = await jwtService.GenerateTokensAsync(contact);
 

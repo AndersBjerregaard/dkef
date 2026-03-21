@@ -125,4 +125,10 @@ public sealed class EmailService(
 
         response.EnsureSuccessStatusCode();
     }
+
+    public ValueTask SendNewMemberRegisteredAsync(NewMemberRegistered request)
+    {
+        throw new NotImplementedException();
+    }
+
 }

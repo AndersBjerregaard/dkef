@@ -237,6 +237,11 @@ try
             .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
             .ForMember(dest => dest.ChangeLink, opt => opt.MapFrom(src => src.ChangeLink))
             .ForMember(dest => dest.ReceivedAt, opt => opt.MapFrom(src => DateTime.UtcNow.ToString("R")));
+        cfg.CreateMap<NewMemberRegistered, NewMemberRegisteredDto>()
+            .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.FullName))
+            .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
+            .ForMember(dest => dest.Phone, opt => opt.MapFrom(src => src.Phone))
+            .ForMember(dest => dest.ReceivedAt, opt => opt.MapFrom(src => DateTime.UtcNow.ToString("R")));
     }).CreateMapper();
 
     builder.Services.AddSingleton<IMapper>(mapper);

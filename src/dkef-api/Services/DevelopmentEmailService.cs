@@ -84,4 +84,23 @@ public sealed class DevelopmentEmailService(
 
         return ValueTask.CompletedTask;
     }
+
+    public ValueTask SendNewMemberRegisteredAsync(NewMemberRegistered request)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+
+        var newMemberRegisteredDto = mapper.Map<NewMemberRegisteredDto>(request);
+
+        var newMemberJson = JsonSerializer.Serialize(newMemberRegisteredDto);
+
+        logger.Information("Email Sent!\nFrom: {0}\nTo: {1}\nSubject: {2}\nTemplate {3}\nVariables: {4}",
+            $"postmaster@{mailgunConfiguration.Domain}",
+            mailgunConfiguration.To,
+            "Ny medlem registreret",
+            "new-member",
+            newMemberJson
+        );
+
+        return ValueTask.CompletedTask;
+    }
 }
