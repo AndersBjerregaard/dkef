@@ -16,6 +16,5 @@ public record RegisterDto
     [Compare("Password", ErrorMessage = "Password and confirmation password do not match")]
     public required string ConfirmPassword { get; init; }
 
-    public string FirstName { get; init; } = string.Empty;
-    public string LastName { get; init; } = string.Empty;
+    public string Name { get; init; } = string.Empty;
 }

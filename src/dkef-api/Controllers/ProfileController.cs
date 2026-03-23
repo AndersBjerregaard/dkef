@@ -73,27 +73,23 @@ public sealed class ProfileController(
         }
 
         // Update only the editable fields
-        contact.FirstName = dto.FirstName;
-        contact.LastName = dto.LastName;
+        contact.Name = dto.Name;
         contact.Title = dto.Title;
-        contact.Occupation = dto.Occupation;
-        contact.WorkTasks = dto.WorkTasks;
-        contact.PrivateAddress = dto.PrivateAddress;
-        contact.PrivateZIP = dto.PrivateZIP;
-        contact.PrivateCity = dto.PrivateCity;
-        contact.PrivatePhone = dto.PrivatePhone;
+        contact.EmploymentStatus = dto.EmploymentStatus;
+        contact.Address = dto.Address;
+        contact.ZIP = dto.ZIP;
+        contact.City = dto.City;
+        contact.PhoneNumber = dto.PhoneNumber;
         contact.CompanyName = dto.CompanyName;
         contact.CompanyAddress = dto.CompanyAddress;
         contact.CompanyZIP = dto.CompanyZIP;
         contact.CompanyCity = dto.CompanyCity;
         contact.CVRNumber = dto.CVRNumber;
         contact.CompanyPhone = dto.CompanyPhone;
-        contact.CompanyEmail = dto.CompanyEmail;
-        contact.ElTeknikDelivery = dto.ElTeknikDelivery;
+        contact.MagazineDelivery = dto.MagazineDelivery;
         contact.EANNumber = dto.EANNumber;
         contact.PrimarySection = dto.PrimarySection;
         contact.SecondarySection = dto.SecondarySection;
-        contact.InvoiceEmail = dto.InvoiceEmail;
 
         var result = await userManager.UpdateAsync(contact);
 
@@ -183,7 +179,7 @@ public sealed class ProfileController(
         var changeEmailRequest = new ChangeEmailRequest(
             OldEmail: requestingUserEmail,
             NewEmail: dto.NewEmail,
-            Name: contact.FirstName,
+            Name: contact.Name,
             ConfirmLink: confirmLink,
             RevokeLink: revokeLink
         );

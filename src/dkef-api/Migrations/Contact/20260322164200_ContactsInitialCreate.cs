@@ -4,10 +4,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace dkef_api.Migrations.Contact
+namespace Dkef.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class ContactsInitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -32,36 +32,33 @@ namespace dkef_api.Migrations.Contact
                 {
                     Id = table.Column<string>(type: "text", nullable: false),
                     Email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
-                    CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    FirstName = table.Column<string>(type: "text", nullable: false),
-                    LastName = table.Column<string>(type: "text", nullable: false),
-                    Title = table.Column<string>(type: "text", nullable: false),
-                    Occupation = table.Column<string>(type: "text", nullable: false),
-                    WorkTasks = table.Column<string>(type: "text", nullable: false),
-                    PrivateAddress = table.Column<string>(type: "text", nullable: false),
-                    PrivateZIP = table.Column<string>(type: "text", nullable: false),
-                    PrivateCity = table.Column<string>(type: "text", nullable: false),
-                    PrivatePhone = table.Column<string>(type: "text", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Address = table.Column<string>(type: "text", nullable: false),
+                    ZIP = table.Column<string>(type: "text", nullable: false),
+                    City = table.Column<string>(type: "text", nullable: false),
+                    CountryCode = table.Column<string>(type: "text", nullable: false),
+                    CVRNumber = table.Column<string>(type: "text", nullable: false),
+                    EANNumber = table.Column<string>(type: "text", nullable: false),
+                    PrivatePhoneNumber = table.Column<string>(type: "text", nullable: false),
+                    AttPerson = table.Column<string>(type: "text", nullable: false),
+                    PaymentMethod = table.Column<string>(type: "text", nullable: false),
+                    PaymentDeadlineInDays = table.Column<long>(type: "bigint", nullable: false),
+                    TotalSale = table.Column<string>(type: "text", nullable: false),
+                    TotalPurchase = table.Column<string>(type: "text", nullable: false),
+                    EnrollmentDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    Subscription = table.Column<string>(type: "text", nullable: false),
+                    InvoiceName2 = table.Column<string>(type: "text", nullable: false),
                     CompanyName = table.Column<string>(type: "text", nullable: false),
                     CompanyAddress = table.Column<string>(type: "text", nullable: false),
                     CompanyZIP = table.Column<string>(type: "text", nullable: false),
                     CompanyCity = table.Column<string>(type: "text", nullable: false),
-                    CVRNumber = table.Column<string>(type: "text", nullable: false),
                     CompanyPhone = table.Column<string>(type: "text", nullable: false),
-                    CompanyEmail = table.Column<string>(type: "text", nullable: false),
-                    ElTeknikDelivery = table.Column<string>(type: "text", nullable: false),
-                    EANNumber = table.Column<string>(type: "text", nullable: false),
-                    Invoice = table.Column<string>(type: "text", nullable: false),
-                    HelpToStudents = table.Column<string>(type: "text", nullable: false),
-                    Mentor = table.Column<string>(type: "text", nullable: false),
-                    PrimarySection = table.Column<string>(type: "text", nullable: false),
-                    SecondarySection = table.Column<string>(type: "text", nullable: false),
-                    InvoiceEmail = table.Column<string>(type: "text", nullable: false),
-                    OldMemberNumber = table.Column<string>(type: "text", nullable: false),
-                    RegistrationDate = table.Column<string>(type: "text", nullable: false),
-                    ATTInvoice = table.Column<string>(type: "text", nullable: false),
-                    Source = table.Column<string>(type: "text", nullable: false),
-                    ExpectedEndDateOfBeingStudent = table.Column<string>(type: "text", nullable: false),
+                    EmploymentStatus = table.Column<string>(type: "text", nullable: false),
+                    PrimarySection = table.Column<int>(type: "integer", nullable: true),
+                    SecondarySection = table.Column<int>(type: "integer", nullable: true),
+                    MagazineDelivery = table.Column<string>(type: "text", nullable: false),
+                    Title = table.Column<string>(type: "text", nullable: false),
+                    MemberType = table.Column<int>(type: "integer", nullable: false),
                     UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     NormalizedEmail = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),

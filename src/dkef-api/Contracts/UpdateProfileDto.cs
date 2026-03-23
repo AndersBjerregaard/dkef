@@ -7,35 +7,28 @@ namespace Dkef.Contracts;
 
 public sealed class UpdateProfileDto : PostObject
 {
-    [JsonPropertyName("firstName")]
+    [JsonPropertyName("name")]
     [Required(AllowEmptyStrings = false)]
-    public string FirstName { get; set; } = string.Empty;
-
-    [JsonPropertyName("lastName")]
-    [Required(AllowEmptyStrings = false)]
-    public string LastName { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
 
     [JsonPropertyName("title")]
     public string Title { get; set; } = string.Empty;
 
-    [JsonPropertyName("occupation")]
+    [JsonPropertyName("employmentStatus")]
     [Required(AllowEmptyStrings = false)]
-    public string Occupation { get; set; } = string.Empty;
+    public string EmploymentStatus { get; set; } = string.Empty;
 
-    [JsonPropertyName("workTasks")]
-    public string WorkTasks { get; set; } = string.Empty;
+    [JsonPropertyName("address")]
+    public string Address { get; set; } = string.Empty;
 
-    [JsonPropertyName("privateAddress")]
-    public string PrivateAddress { get; set; } = string.Empty;
+    [JsonPropertyName("zip")]
+    public string ZIP { get; set; } = string.Empty;
 
-    [JsonPropertyName("privateZIP")]
-    public string PrivateZIP { get; set; } = string.Empty;
+    [JsonPropertyName("city")]
+    public string City { get; set; } = string.Empty;
 
-    [JsonPropertyName("privateCity")]
-    public string PrivateCity { get; set; } = string.Empty;
-
-    [JsonPropertyName("privatePhone")]
-    public string PrivatePhone { get; set; } = string.Empty;
+    [JsonPropertyName("phone")]
+    public string PhoneNumber { get; set; } = string.Empty;
 
     [JsonPropertyName("companyName")]
     public string CompanyName { get; set; } = string.Empty;
@@ -55,47 +48,35 @@ public sealed class UpdateProfileDto : PostObject
     [JsonPropertyName("companyPhone")]
     public string CompanyPhone { get; set; } = string.Empty;
 
-    [JsonPropertyName("companyEmail")]
-    public string CompanyEmail { get; set; } = string.Empty;
-
-    [JsonPropertyName("elTeknikDelivery")]
-    public string ElTeknikDelivery { get; set; } = string.Empty;
+    [JsonPropertyName("magazineDelivery")]
+    public string MagazineDelivery { get; set; } = string.Empty;
 
     [JsonPropertyName("eanNumber")]
     public string EANNumber { get; set; } = string.Empty;
 
     [JsonPropertyName("primarySection")]
-    [Required(AllowEmptyStrings = false)]
-    public string PrimarySection { get; set; } = string.Empty;
+    [Required]
+    public Dkef.Domain.Section PrimarySection { get; set; }
 
     [JsonPropertyName("secondarySection")]
-    public string SecondarySection { get; set; } = string.Empty;
-
-    [JsonPropertyName("invoiceEmail")]
-    public string InvoiceEmail { get; set; } = string.Empty;
+    public Dkef.Domain.Section? SecondarySection { get; set; }
 
     public override void Sanitize(HtmlSanitizer sanitizer)
     {
-        FirstName = sanitizer.Sanitize(FirstName);
-        LastName = sanitizer.Sanitize(LastName);
+        Name = sanitizer.Sanitize(Name);
         Title = sanitizer.Sanitize(Title);
-        Occupation = sanitizer.Sanitize(Occupation);
-        WorkTasks = sanitizer.Sanitize(WorkTasks);
-        PrivateAddress = sanitizer.Sanitize(PrivateAddress);
-        PrivateZIP = sanitizer.Sanitize(PrivateZIP);
-        PrivateCity = sanitizer.Sanitize(PrivateCity);
-        PrivatePhone = sanitizer.Sanitize(PrivatePhone);
+        EmploymentStatus = sanitizer.Sanitize(EmploymentStatus);
+        Address = sanitizer.Sanitize(Address);
+        ZIP = sanitizer.Sanitize(ZIP);
+        City = sanitizer.Sanitize(City);
+        PhoneNumber = sanitizer.Sanitize(PhoneNumber);
         CompanyName = sanitizer.Sanitize(CompanyName);
         CompanyAddress = sanitizer.Sanitize(CompanyAddress);
         CompanyZIP = sanitizer.Sanitize(CompanyZIP);
         CompanyCity = sanitizer.Sanitize(CompanyCity);
         CVRNumber = sanitizer.Sanitize(CVRNumber);
         CompanyPhone = sanitizer.Sanitize(CompanyPhone);
-        CompanyEmail = sanitizer.Sanitize(CompanyEmail);
-        ElTeknikDelivery = sanitizer.Sanitize(ElTeknikDelivery);
+        MagazineDelivery = sanitizer.Sanitize(MagazineDelivery);
         EANNumber = sanitizer.Sanitize(EANNumber);
-        PrimarySection = sanitizer.Sanitize(PrimarySection);
-        SecondarySection = sanitizer.Sanitize(SecondarySection);
-        InvoiceEmail = sanitizer.Sanitize(InvoiceEmail);
     }
 }

@@ -2,11 +2,13 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+
 using Dkef.Configuration;
 using Dkef.Contracts;
 using Dkef.Domain;
 using Dkef.Repositories;
 using Dkef.Services.Interfaces;
+
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 
@@ -33,14 +35,9 @@ public class JwtService(
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
 
-        if (!string.IsNullOrEmpty(contact.FirstName))
+        if (!string.IsNullOrEmpty(contact.Name))
         {
-            claims.Add(new Claim(ClaimTypes.GivenName, contact.FirstName));
-        }
-
-        if (!string.IsNullOrEmpty(contact.LastName))
-        {
-            claims.Add(new Claim(ClaimTypes.Surname, contact.LastName));
+            claims.Add(new Claim(ClaimTypes.GivenName, contact.Name));
         }
 
         // Add role claims

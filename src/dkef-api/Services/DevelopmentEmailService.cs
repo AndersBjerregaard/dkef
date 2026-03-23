@@ -7,14 +7,18 @@ using Dkef.Contracts.Mailgun;
 using Dkef.Domain;
 using Dkef.Services.Interfaces;
 
+using Microsoft.Extensions.Options;
+
 namespace Dkef.Services;
 
 public sealed class DevelopmentEmailService(
-    MailgunConfiguration mailgunConfiguration,
+    IOptions<MailConfiguration> mailConfigurationOptions,
     IMapper mapper,
     Serilog.ILogger logger
 ) : IEmailService
 {
+    private readonly MailConfiguration _mailConfiguration = mailConfigurationOptions.Value;
+
     public ValueTask SendContactInquiryAsync(InformationMessage message)
     {
         ArgumentNullException.ThrowIfNull(message);
@@ -25,7 +29,7 @@ public sealed class DevelopmentEmailService(
 
         logger.Information("Email Sent!\nFrom: {0}\nTo: {1}\nSubject: {2}\nTemplate {3}\nVariables: {4}",
             contactInquiryDto.SenderEmail,
-            mailgunConfiguration.To,
+            _mailConfiguration.To,
             "Ny Henvendelse Modtaget",
             "contact-inquiry",
             contactInquiryJson
@@ -43,7 +47,7 @@ public sealed class DevelopmentEmailService(
         var changeEmailJson = JsonSerializer.Serialize(changeEmailDto);
 
         logger.Information("Email Sent!\nFrom: {0}\nTo: {1}\nSubject: {2}\nTemplate {3}\nVariables: {4}",
-            $"postmaster@{mailgunConfiguration.Domain}",
+            $"postmaster@{_mailConfiguration.Domain}",
             changeEmailRequest.NewEmail,
             "Skift Email Adresse",
             "change-email",
@@ -55,7 +59,7 @@ public sealed class DevelopmentEmailService(
         var oldEmailJson = JsonSerializer.Serialize(oldEmailDto);
 
         logger.Information("Email Sent!\nFrom: {0}\nTo: {1}\nSubject: {2}\nTemplate {3}\nVariables: {4}",
-            $"postmaster@{mailgunConfiguration.Domain}",
+            $"postmaster@{_mailConfiguration.Domain}",
             changeEmailRequest.OldEmail,
             "Ændring af Email Adresse",
             "old-change-email",
@@ -75,7 +79,7 @@ public sealed class DevelopmentEmailService(
         var resetPasswordJson = JsonSerializer.Serialize(resetPasswordDto);
 
         logger.Information("Email Sent!\nFrom: {0}\nTo: {1}\nSubject: {2}\nTemplate {3}\nVariables: {4}",
-            $"postmaster@{mailgunConfiguration.Domain}",
+            $"postmaster@{_mailConfiguration.Domain}",
             request.Email,
             "Ændring af Password",
             "reset-password",
@@ -94,8 +98,8 @@ public sealed class DevelopmentEmailService(
         var newMemberJson = JsonSerializer.Serialize(newMemberRegisteredDto);
 
         logger.Information("Email Sent!\nFrom: {0}\nTo: {1}\nSubject: {2}\nTemplate {3}\nVariables: {4}",
-            $"postmaster@{mailgunConfiguration.Domain}",
-            mailgunConfiguration.To,
+            $"postmaster@{_mailConfiguration.Domain}",
+            _mailConfiguration.To,
             "Ny medlem registreret",
             "new-member",
             newMemberJson

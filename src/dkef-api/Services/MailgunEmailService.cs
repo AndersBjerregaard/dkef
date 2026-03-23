@@ -12,7 +12,7 @@ namespace Dkef.Services;
 [Obsolete("This application is primarily used in integration with Microsoft Graph using Microsoft Entra ID")]
 public sealed class MailgunEmailService(
     IHttpClientFactory httpClientFactory,
-    MailgunConfiguration mailgunConfiguration,
+    MailConfiguration mailgunConfiguration,
     IMapper mapper,
     Serilog.ILogger logger
 ) : IEmailService

@@ -8,34 +8,31 @@ public class ContactListDto
 {
     public string Id { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
-    public DateTimeOffset CreatedAt { get; set; }
-    public string FirstName { get; set; } = string.Empty;
-    public string LastName { get; set; } = string.Empty;
-    public string Title { get; set; } = string.Empty;
-    public string Occupation { get; set; } = string.Empty;
-    public string WorkTasks { get; set; } = string.Empty;
-    public string PrivateAddress { get; set; } = string.Empty;
-    public string PrivateZIP { get; set; } = string.Empty;
-    public string PrivateCity { get; set; } = string.Empty;
-    public string PrivatePhone { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
+    public string Address { get; set; } = string.Empty;
+    public string ZIP { get; set; } = string.Empty;
+    public string City { get; set; } = string.Empty;
+    public string CountryCode { get; set; } = string.Empty;
+    public string CVRNumber { get; set; } = string.Empty;
+    public string EANNumber { get; set; } = string.Empty;
+    public string PrivatePhoneNumber { get; set; } = string.Empty;
+    public string AttPerson { get; set; } = string.Empty;
+    public string PaymentMethod { get; set; } = string.Empty;
+    public uint PaymentDeadlineInDays { get; set; }
+    public string TotalSale { get; set; } = string.Empty;
+    public string TotalPurchase { get; set; } = string.Empty;
+    public DateTime? EnrollmentDate { get; set; }
+    public string Subscription { get; set; } = string.Empty;
+    public string InvoiceName2 { get; set; } = string.Empty;
     public string CompanyName { get; set; } = string.Empty;
     public string CompanyAddress { get; set; } = string.Empty;
     public string CompanyZIP { get; set; } = string.Empty;
     public string CompanyCity { get; set; } = string.Empty;
-    public string CVRNumber { get; set; } = string.Empty;
     public string CompanyPhone { get; set; } = string.Empty;
-    public string CompanyEmail { get; set; } = string.Empty;
-    public string ElTeknikDelivery { get; set; } = string.Empty;
-    public string EANNumber { get; set; } = string.Empty;
-    public string Invoice { get; set; } = string.Empty;
-    public string HelpToStudents { get; set; } = string.Empty;
-    public string Mentor { get; set; } = string.Empty;
-    public string PrimarySection { get; set; } = string.Empty;
-    public string SecondarySection { get; set; } = string.Empty;
-    public string InvoiceEmail { get; set; } = string.Empty;
-    public string OldMemberNumber { get; set; } = string.Empty;
-    public string RegistrationDate { get; set; } = string.Empty;
-    public string ATTInvoice { get; set; } = string.Empty;
-    public string Source { get; set; } = string.Empty;
-    public string ExpectedEndDateOfBeingStudent { get; set; } = string.Empty;
+    public string EmploymentStatus { get; set; } = string.Empty;
+    public Dkef.Domain.Section? PrimarySection { get; set; }
+    public Dkef.Domain.Section? SecondarySection { get; set; }
+    public string MagazineDelivery { get; set; } = string.Empty;
+    public string Title { get; set; } = string.Empty;
+    public Dkef.Domain.MemberType MemberType { get; set; }
 }

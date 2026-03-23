@@ -41,7 +41,7 @@ public class AuthController(
 
         var resetRequest = new ResetPasswordRequest(
             Email: contact.Email!,
-            Name: contact.FirstName,
+            Name: contact.Name,
             ChangeLink: resetUrl
         );
 
@@ -189,9 +189,7 @@ public class AuthController(
         {
             UserName = dto.Email,
             Email = dto.Email,
-            FirstName = dto.FirstName,
-            LastName = dto.LastName,
-            CreatedAt = DateTimeOffset.UtcNow
+            Name = dto.Name
         };
 
         // Create user with password using UserManager
@@ -208,7 +206,7 @@ public class AuthController(
 
         // Send 'new registration' email to secretary
         var newMemberRegistered = new NewMemberRegistered(
-            FullName: $"{contact.FirstName} {contact.LastName}",
+            FullName: contact.Name,
             Email: contact.Email,
             Phone: contact.PhoneNumber ?? ""
         );

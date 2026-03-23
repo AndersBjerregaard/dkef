@@ -1,7 +1,9 @@
 using AutoMapper;
+
 using Dkef.Contracts;
 using Dkef.Data;
 using Dkef.Domain;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace Dkef.Repositories;
@@ -70,36 +72,33 @@ public class ContactRepository(ContactContext _context, IMapper _mapper) : ICont
             {
                 Id = x.Id,
                 Email = x.Email ?? string.Empty,
-                CreatedAt = x.CreatedAt,
-                FirstName = x.FirstName,
-                LastName = x.LastName,
-                Title = x.Title,
-                Occupation = x.Occupation,
-                WorkTasks = x.WorkTasks,
-                PrivateAddress = x.PrivateAddress,
-                PrivateZIP = x.PrivateZIP,
-                PrivateCity = x.PrivateCity,
-                PrivatePhone = x.PrivatePhone,
+                Name = x.Name,
+                Address = x.Address,
+                ZIP = x.ZIP,
+                City = x.City,
+                CountryCode = x.CountryCode,
+                CVRNumber = x.CVRNumber,
+                EANNumber = x.EANNumber,
+                PrivatePhoneNumber = x.PrivatePhoneNumber,
+                AttPerson = x.AttPerson,
+                PaymentMethod = x.PaymentMethod,
+                PaymentDeadlineInDays = x.PaymentDeadlineInDays,
+                TotalSale = x.TotalSale,
+                TotalPurchase = x.TotalPurchase,
+                EnrollmentDate = x.EnrollmentDate,
+                Subscription = x.Subscription,
+                InvoiceName2 = x.InvoiceName2,
                 CompanyName = x.CompanyName,
                 CompanyAddress = x.CompanyAddress,
                 CompanyZIP = x.CompanyZIP,
                 CompanyCity = x.CompanyCity,
-                CVRNumber = x.CVRNumber,
                 CompanyPhone = x.CompanyPhone,
-                CompanyEmail = x.CompanyEmail,
-                ElTeknikDelivery = x.ElTeknikDelivery,
-                EANNumber = x.EANNumber,
-                Invoice = x.Invoice,
-                HelpToStudents = x.HelpToStudents,
-                Mentor = x.Mentor,
+                EmploymentStatus = x.EmploymentStatus,
                 PrimarySection = x.PrimarySection,
                 SecondarySection = x.SecondarySection,
-                InvoiceEmail = x.InvoiceEmail,
-                OldMemberNumber = x.OldMemberNumber,
-                RegistrationDate = x.RegistrationDate,
-                ATTInvoice = x.ATTInvoice,
-                Source = x.Source,
-                ExpectedEndDateOfBeingStudent = x.ExpectedEndDateOfBeingStudent,
+                MagazineDelivery = x.MagazineDelivery,
+                Title = x.Title,
+                MemberType = x.MemberType
             })
             .ToListAsync();
         return new DomainCollection<ContactListDto>(contacts, totalItems);

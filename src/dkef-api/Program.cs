@@ -279,6 +279,10 @@ try
     }
     else
     {
+        builder.Services.AddOptions<MailConfiguration>()
+            .BindConfiguration("MailConfiguration")
+            .ValidateDataAnnotations()
+            .ValidateOnStart();
         builder.Services.AddSingleton<IEmailService, DevelopmentEmailService>();
     }
 
