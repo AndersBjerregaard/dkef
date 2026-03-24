@@ -21,7 +21,7 @@ onMounted(async () => {
   }
 
   try {
-    await api.post('/profile/change-email/revoke/' + token.value)
+    await api.post('/profile/change-email/revoke/' + token.value, {})
     success.value = true
   } catch (err) {
     success.value = false

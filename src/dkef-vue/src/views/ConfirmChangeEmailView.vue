@@ -24,7 +24,7 @@ onMounted(async () => {
   }
 
   try {
-    await api.post('/profile/change-email/confirm/' + token.value)
+    await api.post('/profile/change-email/confirm/' + token.value, {})
     success.value = true
     await authStore.logout()
   } catch (err) {

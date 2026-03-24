@@ -101,15 +101,15 @@ const filteredItems = computed(() => {
 function matchContactProperty(contact: Contact, propertyName: string): string {
   switch (propertyName) {
     case 'name':
-      return contact.firstName
+      return contact.name
     case 'email':
       return contact.email
     case 'phone':
-      return contact.privatePhone
+      return contact.privatePhoneNumber
     case 'section':
-      return contact.primarySection
+      return contact.primarySection !== null ? String(contact.primarySection) : ''
     case 'address':
-      return contact.privateAddress
+      return contact.address
     default:
       throw `Property with the name of ${propertyName} does not exist on type 'Contact'`
   }

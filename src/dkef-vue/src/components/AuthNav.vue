@@ -23,7 +23,7 @@ async function handleLogout() {
 
         <div class="flex items-center space-x-4">
           <template v-if="authStore.isAuthenticated">
-            <span class="text-sm text-gray-700"> Welcome, {{ authStore.user?.firstName }}! </span>
+            <span class="text-sm text-gray-700"> Welcome, {{ authStore.user?.name }}! </span>
             <button
               @click="handleLogout"
               class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"

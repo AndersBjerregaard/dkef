@@ -46,8 +46,7 @@ export const useAuthStore = defineStore(
         // Set user info from registration data
         user.value = {
           email: registrationData.email,
-          firstName: registrationData.firstName,
-          lastName: registrationData.lastName,
+          name: registrationData.name,
         }
       } catch (error) {
         clearAuth()
@@ -120,8 +119,11 @@ export const useAuthStore = defineStore(
 
           user.value = {
             email: (payload.email as string) || (payload.sub as string) || '',
-            firstName: (payload.given_name as string) || (payload.firstName as string) || '',
-            lastName: (payload.family_name as string) || (payload.lastName as string) || '',
+            name:
+              (payload.given_name as string) ||
+              (payload.family_name as string) ||
+              (payload.name as string) ||
+              '',
             roles,
           }
         } catch (error) {

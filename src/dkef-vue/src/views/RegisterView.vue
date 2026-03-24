@@ -10,8 +10,7 @@ const authStore = useAuthStore()
 const email = ref('')
 const password = ref('')
 const confirmPassword = ref('')
-const firstName = ref('')
-const lastName = ref('')
+const name = ref('')
 const error = ref('')
 const loading = ref(false)
 
@@ -36,8 +35,7 @@ async function handleRegister() {
       email: email.value,
       password: password.value,
       confirmPassword: confirmPassword.value,
-      firstName: firstName.value,
-      lastName: lastName.value,
+      name: name.value,
     }
 
     await authStore.register(registrationData)
@@ -67,28 +65,15 @@ async function handleRegister() {
 
         <div class="space-y-4 flex flex-col gap-4">
           <div>
-            <label for="first-name" class="block text-sm font-medium mb-1"> Fornavn </label>
+            <label for="name" class="block text-sm font-medium mb-1"> Navn </label>
             <input
-              id="first-name"
-              v-model="firstName"
-              name="first-name"
+              id="name"
+              v-model="name"
+              name="name"
               type="text"
               required
               class="w-full bg-theme-soft border border-theme-border rounded-xl p-2 text-theme-heading placeholder-theme-muted focus:outline-none focus:ring-2 focus:ring-theme-accent focus:border-theme-accent"
-              placeholder="Fornavn"
-            />
-          </div>
-
-          <div>
-            <label for="last-name" class="block text-sm font-medium mb-1"> Efternavn </label>
-            <input
-              id="last-name"
-              v-model="lastName"
-              name="last-name"
-              type="text"
-              required
-              class="w-full bg-theme-soft border border-theme-border rounded-xl p-2 text-theme-heading placeholder-theme-muted focus:outline-none focus:ring-2 focus:ring-theme-accent focus:border-theme-accent"
-              placeholder="Efternavn"
+              placeholder="Dit fulde navn"
             />
           </div>
 

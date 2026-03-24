@@ -9,7 +9,6 @@
       <RouterLink to="/change-profile">
         <button
           class="rounded-lg bg-amber-600 h-12 py-2 px-6 cursor-pointer hover:bg-amber-500 active:bg-amber-700 text-navy-950 font-semibold text-base shadow-lg shadow-amber-600/20 transition-all"
-          @click="memberAdvantages"
         >
           Ret Profil
         </button>

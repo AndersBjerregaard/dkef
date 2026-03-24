@@ -1,9 +1,6 @@
 using System.Text.Json;
 
-using AutoMapper;
-
 using Dkef.Configuration;
-using Dkef.Contracts.Mailgun;
 using Dkef.Domain;
 using Dkef.Services.Interfaces;
 
@@ -13,26 +10,23 @@ namespace Dkef.Services;
 
 public sealed class DevelopmentEmailService(
     IOptions<MailConfiguration> mailConfigurationOptions,
-    IMapper mapper,
     Serilog.ILogger logger
 ) : IEmailService
 {
     private readonly MailConfiguration _mailConfiguration = mailConfigurationOptions.Value;
 
-    public ValueTask SendContactInquiryAsync(InformationMessage message)
+    public ValueTask SendContactInquiryAsync(InformationMessage informationMessage)
     {
-        ArgumentNullException.ThrowIfNull(message);
+        ArgumentNullException.ThrowIfNull(informationMessage);
 
-        var contactInquiryDto = mapper.Map<ContactInquiryDto>(message) ?? throw new InvalidOperationException("Could not serialize contact inquiry");
-
-        var contactInquiryJson = JsonSerializer.Serialize(contactInquiryDto);
+        var informationMessageJson = JsonSerializer.Serialize(informationMessage);
 
         logger.Information("Email Sent!\nFrom: {0}\nTo: {1}\nSubject: {2}\nTemplate {3}\nVariables: {4}",
-            contactInquiryDto.SenderEmail,
+            informationMessage.Email,
             _mailConfiguration.To,
             "Ny Henvendelse Modtaget",
             "contact-inquiry",
-            contactInquiryJson
+            informationMessageJson
         );
 
         return ValueTask.CompletedTask;
@@ -42,9 +36,7 @@ public sealed class DevelopmentEmailService(
     {
         ArgumentNullException.ThrowIfNull(changeEmailRequest);
 
-        var changeEmailDto = mapper.Map<ChangeEmailDto>(changeEmailRequest);
-
-        var changeEmailJson = JsonSerializer.Serialize(changeEmailDto);
+        var changeEmailJson = JsonSerializer.Serialize(changeEmailRequest);
 
         logger.Information("Email Sent!\nFrom: {0}\nTo: {1}\nSubject: {2}\nTemplate {3}\nVariables: {4}",
             $"postmaster@{_mailConfiguration.Domain}",
@@ -54,9 +46,7 @@ public sealed class DevelopmentEmailService(
             changeEmailJson
         );
 
-        var oldEmailDto = mapper.Map<OldChangeEmailDto>(changeEmailRequest);
-
-        var oldEmailJson = JsonSerializer.Serialize(oldEmailDto);
+        var oldEmailJson = JsonSerializer.Serialize(changeEmailJson);
 
         logger.Information("Email Sent!\nFrom: {0}\nTo: {1}\nSubject: {2}\nTemplate {3}\nVariables: {4}",
             $"postmaster@{_mailConfiguration.Domain}",
@@ -74,9 +64,7 @@ public sealed class DevelopmentEmailService(
     {
         ArgumentNullException.ThrowIfNull(request);
 
-        var resetPasswordDto = mapper.Map<ResetPasswordDto>(request);
-
-        var resetPasswordJson = JsonSerializer.Serialize(resetPasswordDto);
+        var resetPasswordJson = JsonSerializer.Serialize(request);
 
         logger.Information("Email Sent!\nFrom: {0}\nTo: {1}\nSubject: {2}\nTemplate {3}\nVariables: {4}",
             $"postmaster@{_mailConfiguration.Domain}",
@@ -93,9 +81,7 @@ public sealed class DevelopmentEmailService(
     {
         ArgumentNullException.ThrowIfNull(request);
 
-        var newMemberRegisteredDto = mapper.Map<NewMemberRegisteredDto>(request);
-
-        var newMemberJson = JsonSerializer.Serialize(newMemberRegisteredDto);
+        var newMemberJson = JsonSerializer.Serialize(request);
 
         logger.Information("Email Sent!\nFrom: {0}\nTo: {1}\nSubject: {2}\nTemplate {3}\nVariables: {4}",
             $"postmaster@{_mailConfiguration.Domain}",

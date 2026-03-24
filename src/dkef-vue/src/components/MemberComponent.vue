@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { type Contact, type ContactDto } from '@/types/members'
+import { type Contact, type ContactDto, Section, SECTION_DISPLAY_MAP } from '@/types/members'
 import { computed, ref } from 'vue'
 import BaseModal from '@/components/BaseModal.vue'
 import LoadingButton from '@/components/LoadingButton.vue'
@@ -46,88 +46,62 @@ const emit = defineEmits<{
 
 // Shown fields
 const fields = computed(() => [
-  props.contact?.firstName,
+  props.contact?.name,
   props.contact?.email,
-  props.contact?.privatePhone,
-  props.contact?.primarySection,
-  props.contact?.privateAddress,
+  props.contact?.privatePhoneNumber,
+  props.contact?.primarySection !== null ? SECTION_DISPLAY_MAP[props.contact.primarySection] : '',
+  props.contact?.address,
 ])
 
 // Editable fields (local reactive copies — never mutate props directly)
+const name = ref(props.contact?.name ?? '') // Navn
+const email = ref(props.contact?.email ?? '') // Email
+const title = ref(props.contact?.title ?? '') // Titel
+const employmentStatus = ref(props.contact?.employmentStatus ?? '') // Beskæftigelse
+const address = ref(props.contact?.address ?? '') // Vejnavn og nr.
+const zip = ref(props.contact?.zip ?? '') // Postnummer
+const city = ref(props.contact?.city ?? '') // By
+const privatePhoneNumber = ref(props.contact?.privatePhoneNumber ?? '') // Mobil
+const primarySection = ref(props.contact?.primarySection ?? (Section.Jutland as Section | null)) // Primær sektion
+const secondarySection = ref(props.contact?.secondarySection ?? (null as Section | null)) // Sekundær sektion
 const companyName = ref(props.contact?.companyName ?? '') // Firma navn
 const companyAddress = ref(props.contact?.companyAddress ?? '') // Firma vejnavn og nr.
 const companyCity = ref(props.contact?.companyCity ?? '') // Firma by
 const companyZIP = ref(props.contact?.companyZIP ?? '') // Firma postnummer
 const cvrNumber = ref(props.contact?.cvrNumber ?? '') // CVR nr.
 const companyPhone = ref(props.contact?.companyPhone ?? '') // Firma mobil
-const companyEmail = ref(props.contact?.companyEmail ?? '') // Firma e-mail
-const title = ref(props.contact?.title ?? '') // Titel
-const occupation = ref(props.contact?.occupation ?? '') // Beskæftigelse
-const workTasks = ref(props.contact?.workTasks ?? '') // Arbejds Opgaver
-const email = ref(props.contact?.email ?? '') // Email
-const firstName = ref(props.contact?.firstName ?? '') // Fornavn
-const lastName = ref(props.contact?.lastName ?? '') // Efternavn
-const primarySection = ref(props.contact?.primarySection ?? '') // Primær sektion
-const secondarySection = ref(props.contact?.secondarySection ?? '') // Sekundær sektion
-const privateAddress = ref(props.contact?.privateAddress ?? '') // Privat vejnavn og nr.
-const privateCity = ref(props.contact?.privateCity ?? '') // Privat by
-const privateZIP = ref(props.contact?.privateZIP ?? '') // Privat postnummer
-const privatePhone = ref(props.contact?.privatePhone ?? '') // Privat mobil
-const elTeknikDelivery = ref(props.contact?.elTeknikDelivery ?? '') // El-teknik levering
+const magazineDelivery = ref(props.contact?.magazineDelivery ?? '') // Magasin levering
 const eanNumber = ref(props.contact?.eanNumber ?? '') // EAN nr.
-const invoice = ref(props.contact?.invoice ?? '') // Fakturering
-const invoiceEmail = ref(props.contact?.invoiceEmail ?? '') // Faktura e-mail
-const attInvoice = ref(props.contact?.attInvoice ?? '') // ATT Faktura
-const oldMemberNumber = ref(props.contact?.oldMemberNumber ?? '') // Gammelt Medlemsnummer
-const helpToStudents = ref(props.contact?.helpToStudents ?? '') // Hjælp til studerende
-const mentor = ref(props.contact?.mentor ?? '') // Mentor
-const expectedEndDateOfBeingStudent = ref(props.contact?.expectedEndDateOfBeingStudent ?? '') // Hvornår forventer du at være færdig some studerende?
 
-// Computed fields
-const memberCreatedAt = computed(() => {
-  const date = new Date(props.contact?.createdAt)
-
-  return new Intl.DateTimeFormat(undefined, {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    hour: 'numeric',
-    minute: 'numeric',
-  }).format(date)
-})
+// Enum options
+const sectionOptions = computed(() =>
+  Object.entries(SECTION_DISPLAY_MAP).map(([key, value]) => ({
+    value: Number(key) as Section,
+    label: value,
+  })),
+)
 
 async function editMember() {
   isLoading.value = true
   try {
     const editMemberDto: ContactDto = {
       email: email.value,
-      firstName: firstName.value,
-      lastName: lastName.value,
+      name: name.value,
       title: title.value,
-      occupation: occupation.value,
-      workTasks: workTasks.value,
-      privateAddress: privateAddress.value,
-      privateZIP: privateZIP.value,
-      privateCity: privateCity.value,
-      privatePhone: privatePhone.value,
+      employmentStatus: employmentStatus.value,
+      address: address.value,
+      zip: zip.value,
+      city: city.value,
       companyName: companyName.value,
       companyAddress: companyAddress.value,
       companyZIP: companyZIP.value,
       companyCity: companyCity.value,
       cvrNumber: cvrNumber.value,
       companyPhone: companyPhone.value,
-      companyEmail: companyEmail.value,
-      elTeknikDelivery: elTeknikDelivery.value,
+      magazineDelivery: magazineDelivery.value,
       eanNumber: eanNumber.value,
-      invoice: invoice.value,
-      helpToStudents: helpToStudents.value,
-      mentor: mentor.value,
-      primarySection: primarySection.value,
+      primarySection: primarySection.value ?? Section.Jutland,
       secondarySection: secondarySection.value,
-      invoiceEmail: invoiceEmail.value,
-      oldMemberNumber: oldMemberNumber.value,
-      attInvoice: attInvoice.value,
-      expectedEndDateOfBeingStudent: expectedEndDateOfBeingStudent.value,
     }
     const response = await apiservice.put<Contact>(
       urlservice.updateContact(props.contact?.id),
@@ -137,34 +111,24 @@ async function editMember() {
       editState.value = 1 // Indicate edit success
       // Update local refs to reflect the saved values
       const updatedContact = response.data
+      name.value = updatedContact.name
       email.value = updatedContact.email
-      firstName.value = updatedContact.firstName
-      lastName.value = updatedContact.lastName
       title.value = updatedContact.title
-      occupation.value = updatedContact.occupation
-      workTasks.value = updatedContact.workTasks
-      privateAddress.value = updatedContact.privateAddress
-      privateZIP.value = updatedContact.privateZIP
-      privateCity.value = updatedContact.privateCity
-      privatePhone.value = updatedContact.privatePhone
+      employmentStatus.value = updatedContact.employmentStatus
+      address.value = updatedContact.address
+      zip.value = updatedContact.zip
+      city.value = updatedContact.city
+      privatePhoneNumber.value = updatedContact.privatePhoneNumber
+      primarySection.value = updatedContact.primarySection
+      secondarySection.value = updatedContact.secondarySection
       companyName.value = updatedContact.companyName
       companyAddress.value = updatedContact.companyAddress
       companyZIP.value = updatedContact.companyZIP
       companyCity.value = updatedContact.companyCity
       cvrNumber.value = updatedContact.cvrNumber
       companyPhone.value = updatedContact.companyPhone
-      companyEmail.value = updatedContact.companyEmail
-      elTeknikDelivery.value = updatedContact.elTeknikDelivery
+      magazineDelivery.value = updatedContact.magazineDelivery
       eanNumber.value = updatedContact.eanNumber
-      invoice.value = updatedContact.invoice
-      helpToStudents.value = updatedContact.helpToStudents
-      mentor.value = updatedContact.mentor
-      primarySection.value = updatedContact.primarySection
-      secondarySection.value = updatedContact.secondarySection
-      invoiceEmail.value = updatedContact.invoiceEmail
-      oldMemberNumber.value = updatedContact.oldMemberNumber
-      attInvoice.value = updatedContact.attInvoice
-      expectedEndDateOfBeingStudent.value = updatedContact.expectedEndDateOfBeingStudent
       // Notify parent so the list row stays in sync
       emit('contact-updated', updatedContact)
     } else {
@@ -235,9 +199,6 @@ const hasAccess = ref(true)
           <span>Autoriseret</span>
         </div>
       </div>
-      <div>
-        <span>Oprettet den: {{ memberCreatedAt }}</span>
-      </div>
     </div>
     <form @submit.prevent="editMember">
       <div class="flex justify-between pb-4">
@@ -253,24 +214,24 @@ const hasAccess = ref(true)
           />
         </div>
         <div class="w-[30%]">
-          <label for="firstName_input">Fornavn</label>
+          <label for="name_input">Navn</label>
           <input
             :class="{ 'cursor-not-allowed': !edit }"
             class="inputField"
-            id="firstName_input"
+            id="name_input"
             type="text"
-            v-model="firstName"
+            v-model="name"
             :disabled="isLoading || !edit"
           />
         </div>
         <div class="w-[30%]">
-          <label for="lastName_input">Efternavn</label>
+          <label for="title_input">Titel</label>
           <input
             :class="{ 'cursor-not-allowed': !edit }"
             class="inputField"
-            id="lastName_input"
+            id="title_input"
             type="text"
-            v-model="lastName"
+            v-model="title"
             :disabled="isLoading || !edit"
           />
         </div>
@@ -279,34 +240,41 @@ const hasAccess = ref(true)
       <div class="flex justify-between pb-4">
         <div class="w-[30%]">
           <label for="primarySection_input">Primær Sektion</label>
-          <input
+          <select
             :class="{ 'cursor-not-allowed': !edit }"
             class="inputField"
             id="primarySection_input"
-            type="text"
-            v-model="primarySection"
+            v-model.number="primarySection"
             :disabled="isLoading || !edit"
-          />
+          >
+            <option v-for="section in sectionOptions" :key="section.value" :value="section.value">
+              {{ section.label }}
+            </option>
+          </select>
         </div>
         <div class="w-[30%]">
           <label for="secondarySection_input">Sekundær Sektion</label>
-          <input
+          <select
             :class="{ 'cursor-not-allowed': !edit }"
             class="inputField"
             id="secondarySection_input"
-            type="text"
-            v-model="secondarySection"
+            v-model.number="secondarySection"
             :disabled="isLoading || !edit"
-          />
+          >
+            <option :value="null">Ingen</option>
+            <option v-for="section in sectionOptions" :key="section.value" :value="section.value">
+              {{ section.label }}
+            </option>
+          </select>
         </div>
         <div class="w-[30%]">
-          <label for="privateAddress_input">Privat vejnavn og nr.</label>
+          <label for="employmentStatus_input">Beskæftigelse</label>
           <input
             :class="{ 'cursor-not-allowed': !edit }"
             class="inputField"
-            id="privateAddress_input"
+            id="employmentStatus_input"
             type="text"
-            v-model="privateAddress"
+            v-model="employmentStatus"
             :disabled="isLoading || !edit"
           />
         </div>
@@ -314,41 +282,52 @@ const hasAccess = ref(true)
 
       <div class="flex justify-between pb-4">
         <div class="w-[30%]">
-          <label for="privateCity_input">Privat by</label>
+          <label for="address_input">Vejnavn og nr.</label>
           <input
             :class="{ 'cursor-not-allowed': !edit }"
             class="inputField"
-            id="privateCity_input"
+            id="address_input"
             type="text"
-            v-model="privateCity"
+            v-model="address"
             :disabled="isLoading || !edit"
           />
         </div>
         <div class="w-[30%]">
-          <label for="privateZIP_input">Privat postnummer</label>
+          <label for="city_input">By</label>
           <input
             :class="{ 'cursor-not-allowed': !edit }"
             class="inputField"
-            id="privateZIP_input"
+            id="city_input"
             type="text"
-            v-model="privateZIP"
+            v-model="city"
             :disabled="isLoading || !edit"
           />
         </div>
         <div class="w-[30%]">
-          <label for="privatePhone_input">Privat mobil</label>
+          <label for="zip_input">Postnummer</label>
           <input
             :class="{ 'cursor-not-allowed': !edit }"
             class="inputField"
-            id="privatePhone_input"
+            id="zip_input"
             type="text"
-            v-model="privatePhone"
+            v-model="zip"
             :disabled="isLoading || !edit"
           />
         </div>
       </div>
 
       <div class="flex justify-between pb-4">
+        <div class="w-[30%]">
+          <label for="privatePhoneNumber_input">Mobil</label>
+          <input
+            :class="{ 'cursor-not-allowed': !edit }"
+            class="inputField"
+            id="privatePhoneNumber_input"
+            type="text"
+            v-model="privatePhoneNumber"
+            :disabled="isLoading || !edit"
+          />
+        </div>
         <div class="w-[30%]">
           <label for="companyName_input">Firma navn</label>
           <input
@@ -371,6 +350,9 @@ const hasAccess = ref(true)
             :disabled="isLoading || !edit"
           />
         </div>
+      </div>
+
+      <div class="flex justify-between pb-4">
         <div class="w-[30%]">
           <label for="companyCity_input">Firma by</label>
           <input
@@ -382,9 +364,6 @@ const hasAccess = ref(true)
             :disabled="isLoading || !edit"
           />
         </div>
-      </div>
-
-      <div class="flex justify-between pb-4">
         <div class="w-[30%]">
           <label for="companyZIP_input">Firma postnummer</label>
           <input
@@ -407,6 +386,9 @@ const hasAccess = ref(true)
             :disabled="isLoading || !edit"
           />
         </div>
+      </div>
+
+      <div class="flex justify-between pb-4">
         <div class="w-[30%]">
           <label for="companyPhone_input">Firma mobil</label>
           <input
@@ -418,64 +400,14 @@ const hasAccess = ref(true)
             :disabled="isLoading || !edit"
           />
         </div>
-      </div>
-
-      <div class="flex justify-between pb-4">
         <div class="w-[30%]">
-          <label for="companyEmail_input">Firma e-mail</label>
+          <label for="magazineDelivery_input">Magasin levering</label>
           <input
             :class="{ 'cursor-not-allowed': !edit }"
             class="inputField"
-            id="companyEmail_input"
+            id="magazineDelivery_input"
             type="text"
-            v-model="companyEmail"
-            :disabled="isLoading || !edit"
-          />
-        </div>
-        <div class="w-[30%]">
-          <label for="title_input">Titel</label>
-          <input
-            :class="{ 'cursor-not-allowed': !edit }"
-            class="inputField"
-            id="title_input"
-            type="text"
-            v-model="title"
-            :disabled="isLoading || !edit"
-          />
-        </div>
-        <div class="w-[30%]">
-          <label for="occupation_input">Beskæftigelse</label>
-          <input
-            :class="{ 'cursor-not-allowed': !edit }"
-            class="inputField"
-            id="occupation_input"
-            type="text"
-            v-model="occupation"
-            :disabled="isLoading || !edit"
-          />
-        </div>
-      </div>
-
-      <div class="flex justify-between pb-4">
-        <div class="w-[30%]">
-          <label for="workTasks_input">Arbejdsopgaver</label>
-          <input
-            :class="{ 'cursor-not-allowed': !edit }"
-            class="inputField"
-            id="workTasks_input"
-            type="text"
-            v-model="workTasks"
-            :disabled="isLoading || !edit"
-          />
-        </div>
-        <div class="w-[30%]">
-          <label for="elTeknikDelivery_input">El-teknik levering</label>
-          <input
-            :class="{ 'cursor-not-allowed': !edit }"
-            class="inputField"
-            id="elTeknikDelivery_input"
-            type="text"
-            v-model="elTeknikDelivery"
+            v-model="magazineDelivery"
             :disabled="isLoading || !edit"
           />
         </div>
@@ -487,92 +419,6 @@ const hasAccess = ref(true)
             id="eanNumber_input"
             type="text"
             v-model="eanNumber"
-            :disabled="isLoading || !edit"
-          />
-        </div>
-      </div>
-
-      <div class="flex justify-between pb-4">
-        <div class="w-[30%]">
-          <label for="invoice_input">Fakturering</label>
-          <input
-            :class="{ 'cursor-not-allowed': !edit }"
-            class="inputField"
-            id="invoice_input"
-            type="text"
-            v-model="invoice"
-            :disabled="isLoading || !edit"
-          />
-        </div>
-        <div class="w-[30%]">
-          <label for="invoiceEmail_input">Faktura E-mail</label>
-          <input
-            :class="{ 'cursor-not-allowed': !edit }"
-            class="inputField"
-            id="invoiceEmail_input"
-            type="text"
-            v-model="invoiceEmail"
-            :disabled="isLoading || !edit"
-          />
-        </div>
-        <div class="w-[30%]">
-          <label for="attInvoice_input">ATT Fakutra</label>
-          <input
-            :class="{ 'cursor-not-allowed': !edit }"
-            class="inputField"
-            id="attInvoice_input"
-            type="text"
-            v-model="attInvoice"
-            :disabled="isLoading || !edit"
-          />
-        </div>
-      </div>
-
-      <div class="flex justify-between pb-4">
-        <div class="w-[30%]">
-          <label for="oldMemberNumber_input">Gammelt Medlemsnummer</label>
-          <input
-            :class="{ 'cursor-not-allowed': !edit }"
-            class="inputField"
-            id="oldMemberNumber_input"
-            type="text"
-            v-model="oldMemberNumber"
-            :disabled="isLoading || !edit"
-          />
-        </div>
-        <div class="w-[30%]">
-          <label for="helpToStudents_input">Hjælp til studerende</label>
-          <input
-            :class="{ 'cursor-not-allowed': !edit }"
-            class="inputField"
-            id="helpToStudents_input"
-            type="text"
-            v-model="helpToStudents"
-            :disabled="isLoading || !edit"
-          />
-        </div>
-        <div class="w-[30%]">
-          <label for="mentor_input">Mentor</label>
-          <input
-            :class="{ 'cursor-not-allowed': !edit }"
-            class="inputField"
-            id="mentor_input"
-            type="text"
-            v-model="mentor"
-            :disabled="isLoading || !edit"
-          />
-        </div>
-      </div>
-
-      <div class="flex justify-between pb-4">
-        <div class="w-[30%]">
-          <label for="expectedEndDateOfBeingStudent_input">Sidste dato som studerende</label>
-          <input
-            :class="{ 'cursor-not-allowed': !edit }"
-            class="inputField"
-            id="expectedEndDateOfBeingStudent_input"
-            type="text"
-            v-model="expectedEndDateOfBeingStudent"
             :disabled="isLoading || !edit"
           />
         </div>

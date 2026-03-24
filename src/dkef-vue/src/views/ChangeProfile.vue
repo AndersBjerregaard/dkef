@@ -5,7 +5,8 @@ import { Toaster, toast } from 'vue-sonner'
 import 'vue-sonner/style.css'
 import api from '@/services/apiservice'
 import { useAuthStore } from '@/stores/authStore'
-import type { Contact, UpdateProfileDto } from '@/types/members'
+import type { Contact, UpdateProfileDto, Section } from '@/types/members'
+import { Section as SectionEnum, SECTION_DISPLAY_MAP } from '@/types/members'
 
 const router = useRouter()
 
@@ -20,18 +21,15 @@ const submitError: Ref<string | null> = ref(null)
 const passwordChangeError: Ref<string | null> = ref(null)
 
 // Personal Information tab fields
-const firstName: Ref<string> = ref('')
-const lastName: Ref<string> = ref('')
+const name: Ref<string> = ref('')
 const title: Ref<string> = ref('')
-const occupation: Ref<string> = ref('')
-const workTasks: Ref<string> = ref('')
-const privateAddress: Ref<string> = ref('')
-const privateZIP: Ref<string> = ref('')
-const privateCity: Ref<string> = ref('')
-const privatePhone: Ref<string> = ref('')
-const primarySection: Ref<string> = ref('')
-const secondarySection: Ref<string> = ref('')
-const registrationDate: Ref<string> = ref('')
+const employmentStatus: Ref<string> = ref('')
+const address: Ref<string> = ref('')
+const zip: Ref<string> = ref('')
+const city: Ref<string> = ref('')
+const privatePhoneNumber: Ref<string> = ref('')
+const primarySection: Ref<Section | null> = ref(null)
+const secondarySection: Ref<Section | null> = ref(null)
 
 // Company Information tab fields
 const companyName: Ref<string> = ref('')
@@ -40,10 +38,8 @@ const companyZIP: Ref<string> = ref('')
 const companyCity: Ref<string> = ref('')
 const cvrNumber: Ref<string> = ref('')
 const companyPhone: Ref<string> = ref('')
-const companyEmail: Ref<string> = ref('')
-const elTeknikDelivery: Ref<string> = ref('')
+const magazineDelivery: Ref<string> = ref('')
 const eanNumber: Ref<string> = ref('')
-const invoiceEmail: Ref<string> = ref('')
 
 // Security tab - password change fields
 const currentPassword: Ref<string> = ref('')
@@ -57,13 +53,20 @@ const newEmail: Ref<string> = ref('')
 const emailChangeLoading: Ref<boolean> = ref(false)
 const emailChangeError: Ref<string | null> = ref(null)
 
+// Enum options
+const sectionOptions = computed(() =>
+  Object.entries(SECTION_DISPLAY_MAP).map(([key, value]) => ({
+    value: Number(key) as Section,
+    label: value,
+  })),
+)
+
 // Computed validation
 const personalInfoValid = computed(() => {
   return (
-    firstName.value.trim() !== '' &&
-    lastName.value.trim() !== '' &&
-    occupation.value.trim() !== '' &&
-    primarySection.value.trim() !== ''
+    name.value.trim() !== '' &&
+    employmentStatus.value.trim() !== '' &&
+    primarySection.value !== null
   )
 })
 
@@ -109,18 +112,15 @@ async function fetchProfile() {
 
 function populateFields(contact: Contact) {
   // Personal info
-  firstName.value = contact.firstName
-  lastName.value = contact.lastName
+  name.value = contact.name
   title.value = contact.title
-  occupation.value = contact.occupation
-  workTasks.value = contact.workTasks
-  privateAddress.value = contact.privateAddress
-  privateZIP.value = contact.privateZIP
-  privateCity.value = contact.privateCity
-  privatePhone.value = contact.privatePhone
+  employmentStatus.value = contact.employmentStatus
+  address.value = contact.address
+  zip.value = contact.zip
+  city.value = contact.city
+  privatePhoneNumber.value = contact.privatePhoneNumber
   primarySection.value = contact.primarySection
   secondarySection.value = contact.secondarySection
-  registrationDate.value = contact.registrationDate
 
   // Company info
   companyName.value = contact.companyName
@@ -129,10 +129,8 @@ function populateFields(contact: Contact) {
   companyCity.value = contact.companyCity
   cvrNumber.value = contact.cvrNumber
   companyPhone.value = contact.companyPhone
-  companyEmail.value = contact.companyEmail
-  elTeknikDelivery.value = contact.elTeknikDelivery
+  magazineDelivery.value = contact.magazineDelivery
   eanNumber.value = contact.eanNumber
-  invoiceEmail.value = contact.invoiceEmail
 
   // Email for security tab
   currentEmail.value = contact.email
@@ -143,34 +141,29 @@ async function updateProfile() {
 
   if (!personalInfoValid.value) {
     submitError.value =
-      'Udfyld venligst alle obligatoriske felter: Fornavn, Efternavn, Beskæftigelse og Primær sektion.'
+      'Udfyld venligst alle obligatoriske felter: Navn, Beskæftigelse og Primær sektion.'
     return
   }
 
   isLoading.value = true
   try {
     const updateDto: UpdateProfileDto = {
-      firstName: firstName.value,
-      lastName: lastName.value,
+      name: name.value,
       title: title.value,
-      occupation: occupation.value,
-      workTasks: workTasks.value,
-      privateAddress: privateAddress.value,
-      privateZIP: privateZIP.value,
-      privateCity: privateCity.value,
-      privatePhone: privatePhone.value,
+      employmentStatus: employmentStatus.value,
+      address: address.value,
+      zip: zip.value,
+      city: city.value,
       companyName: companyName.value,
       companyAddress: companyAddress.value,
       companyZIP: companyZIP.value,
       companyCity: companyCity.value,
       cvrNumber: cvrNumber.value,
       companyPhone: companyPhone.value,
-      companyEmail: companyEmail.value,
-      elTeknikDelivery: elTeknikDelivery.value,
+      magazineDelivery: magazineDelivery.value,
       eanNumber: eanNumber.value,
-      primarySection: primarySection.value,
+      primarySection: primarySection.value ?? SectionEnum.Jutland,
       secondarySection: secondarySection.value,
-      invoiceEmail: invoiceEmail.value,
     }
 
     await api.put('/profile', updateDto)
@@ -330,29 +323,14 @@ async function changeEmail() {
         <!-- Tab 0: Personal Information -->
         <div v-if="activeTab === 0" class="space-y-4">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <!-- FirstName -->
+            <!-- Name -->
             <div>
-              <label for="firstName" class="block text-sm font-medium text-theme-heading mb-2">
-                Fornavn <span class="text-red-500">*</span>
+              <label for="name" class="block text-sm font-medium text-theme-heading mb-2">
+                Navn <span class="text-red-500">*</span>
               </label>
               <input
-                id="firstName"
-                v-model="firstName"
-                type="text"
-                class="inputField w-full"
-                required
-                :disabled="isLoading"
-              />
-            </div>
-
-            <!-- LastName -->
-            <div>
-              <label for="lastName" class="block text-sm font-medium text-theme-heading mb-2">
-                Efternavn <span class="text-red-500">*</span>
-              </label>
-              <input
-                id="lastName"
-                v-model="lastName"
+                id="name"
+                v-model="name"
                 type="text"
                 class="inputField w-full"
                 required
@@ -374,14 +352,17 @@ async function changeEmail() {
               />
             </div>
 
-            <!-- Occupation -->
+            <!-- EmploymentStatus -->
             <div>
-              <label for="occupation" class="block text-sm font-medium text-theme-heading mb-2">
+              <label
+                for="employmentStatus"
+                class="block text-sm font-medium text-theme-heading mb-2"
+              >
                 Beskæftigelse <span class="text-red-500">*</span>
               </label>
               <input
-                id="occupation"
-                v-model="occupation"
+                id="employmentStatus"
+                v-model="employmentStatus"
                 type="text"
                 class="inputField w-full"
                 required
@@ -390,28 +371,15 @@ async function changeEmail() {
             </div>
           </div>
 
-          <!-- WorkTasks -->
-          <div>
-            <label for="workTasks" class="block text-sm font-medium text-theme-heading mb-2">
-              Arbejdsopgaver
-            </label>
-            <textarea
-              id="workTasks"
-              v-model="workTasks"
-              class="inputField w-full min-h-[100px]"
-              :disabled="isLoading"
-            ></textarea>
-          </div>
-
-          <!-- Private Address -->
+          <!-- Address -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div>
-              <label for="privateAddress" class="block text-sm font-medium text-theme-heading mb-2">
-                Privat vejnavn og nr.
+              <label for="address" class="block text-sm font-medium text-theme-heading mb-2">
+                Vejnavn og nr.
               </label>
               <input
-                id="privateAddress"
-                v-model="privateAddress"
+                id="address"
+                v-model="address"
                 type="text"
                 class="inputField w-full"
                 :disabled="isLoading"
@@ -420,24 +388,24 @@ async function changeEmail() {
 
             <div class="grid grid-cols-2 gap-6">
               <div>
-                <label for="privateZIP" class="block text-sm font-medium text-theme-heading mb-2">
+                <label for="zip" class="block text-sm font-medium text-theme-heading mb-2">
                   Postnummer
                 </label>
                 <input
-                  id="privateZIP"
-                  v-model="privateZIP"
+                  id="zip"
+                  v-model="zip"
                   type="text"
                   class="inputField w-full"
                   :disabled="isLoading"
                 />
               </div>
               <div>
-                <label for="privateCity" class="block text-sm font-medium text-theme-heading mb-2">
+                <label for="city" class="block text-sm font-medium text-theme-heading mb-2">
                   By
                 </label>
                 <input
-                  id="privateCity"
-                  v-model="privateCity"
+                  id="city"
+                  v-model="city"
                   type="text"
                   class="inputField w-full"
                   :disabled="isLoading"
@@ -446,14 +414,17 @@ async function changeEmail() {
             </div>
           </div>
 
-          <!-- Private Phone -->
+          <!-- Phone Number -->
           <div>
-            <label for="privatePhone" class="block text-sm font-medium text-theme-heading mb-2">
-              Privat mobil
+            <label
+              for="privatePhoneNumber"
+              class="block text-sm font-medium text-theme-heading mb-2"
+            >
+              Mobil
             </label>
             <input
-              id="privatePhone"
-              v-model="privatePhone"
+              id="privatePhoneNumber"
+              v-model="privatePhoneNumber"
               type="tel"
               class="inputField w-full"
               :disabled="isLoading"
@@ -466,14 +437,22 @@ async function changeEmail() {
               <label for="primarySection" class="block text-sm font-medium text-theme-heading mb-2">
                 Primær sektion <span class="text-red-500">*</span>
               </label>
-              <input
+              <select
                 id="primarySection"
-                v-model="primarySection"
-                type="text"
+                v-model.number="primarySection"
                 class="inputField w-full"
                 required
                 :disabled="isLoading"
-              />
+              >
+                <option :value="null">Vælg sektion</option>
+                <option
+                  v-for="section in sectionOptions"
+                  :key="section.value"
+                  :value="section.value"
+                >
+                  {{ section.label }}
+                </option>
+              </select>
             </div>
 
             <div>
@@ -483,22 +462,22 @@ async function changeEmail() {
               >
                 Sekundær sektion
               </label>
-              <input
+              <select
                 id="secondarySection"
-                v-model="secondarySection"
-                type="text"
+                v-model.number="secondarySection"
                 class="inputField w-full"
                 :disabled="isLoading"
-              />
+              >
+                <option :value="null">Ingen</option>
+                <option
+                  v-for="section in sectionOptions"
+                  :key="section.value"
+                  :value="section.value"
+                >
+                  {{ section.label }}
+                </option>
+              </select>
             </div>
-          </div>
-
-          <!-- RegistrationDate (read-only) -->
-          <div class="p-4 rounded-xl bg-theme-soft border border-theme-border">
-            <p class="text-sm text-theme-muted mb-2">Tilmeldingsdato</p>
-            <p class="text-lg text-theme-heading font-medium">
-              {{ registrationDate || 'Ikke angivet' }}
-            </p>
           </div>
         </div>
 
@@ -590,16 +569,19 @@ async function changeEmail() {
             </div>
           </div>
 
-          <!-- Company Email & EAN -->
+          <!-- Magazine Delivery & EAN -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div>
-              <label for="companyEmail" class="block text-sm font-medium text-theme-heading mb-2">
-                Firma e-mail
+              <label
+                for="magazineDelivery"
+                class="block text-sm font-medium text-theme-heading mb-2"
+              >
+                Magasin levering
               </label>
               <input
-                id="companyEmail"
-                v-model="companyEmail"
-                type="email"
+                id="magazineDelivery"
+                v-model="magazineDelivery"
+                type="text"
                 class="inputField w-full"
                 :disabled="isLoading"
               />
@@ -613,38 +595,6 @@ async function changeEmail() {
                 id="eanNumber"
                 v-model="eanNumber"
                 type="text"
-                class="inputField w-full"
-                :disabled="isLoading"
-              />
-            </div>
-          </div>
-
-          <!-- El-teknik Delivery & Invoice Email -->
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div>
-              <label
-                for="elTeknikDelivery"
-                class="block text-sm font-medium text-theme-heading mb-2"
-              >
-                El-teknik levering
-              </label>
-              <input
-                id="elTeknikDelivery"
-                v-model="elTeknikDelivery"
-                type="text"
-                class="inputField w-full"
-                :disabled="isLoading"
-              />
-            </div>
-
-            <div>
-              <label for="invoiceEmail" class="block text-sm font-medium text-theme-heading mb-2">
-                Faktura e-mail
-              </label>
-              <input
-                id="invoiceEmail"
-                v-model="invoiceEmail"
-                type="email"
                 class="inputField w-full"
                 :disabled="isLoading"
               />

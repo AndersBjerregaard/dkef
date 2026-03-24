@@ -143,7 +143,7 @@ async function goto(view: string) {
             </div>
             <div class="p-1 flex items-center gap-3" v-else>
               <span class="text-theme-accent font-medium text-sm"
-                >Hej, {{ authStore.user?.firstName }}</span
+                >Hej, {{ authStore.user?.name }}</span
               >
               <button
                 class="rounded-lg bg-theme-mute h-10 px-4 cursor-pointer text-theme-text hover:bg-theme-mute hover:text-theme-accent transition-colors text-sm font-medium"
@@ -383,7 +383,7 @@ async function goto(view: string) {
                           </button>
                         </RouterLink>
                       </MenuItem>
-                      <MenuItem v-if="!authStore.IsAuthenticated" v-slot="{ active, close }">
+                      <MenuItem v-if="authStore.isAuthenticated" v-slot="{ active, close }">
                         <RouterLink to="/member-portal">
                           <button
                             :class="[
@@ -415,7 +415,7 @@ async function goto(view: string) {
                           ]"
                           @click="handleLogout"
                         >
-                          Log ud ({{ authStore.user?.firstName }})
+                          Log ud ({{ authStore.user?.name }})
                         </button>
                       </MenuItem>
                     </div>

@@ -9,8 +9,7 @@ export interface RegisterDto {
   email: string
   password: string
   confirmPassword: string
-  firstName: string
-  lastName: string
+  name: string
 }
 
 export interface TokenResponse {
@@ -40,8 +39,7 @@ export interface ChangePasswordDto {
 
 export interface User {
   email: string
-  firstName: string
-  lastName: string
+  name: string
   roles?: string[]
 }
 
