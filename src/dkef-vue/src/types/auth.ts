@@ -5,13 +5,6 @@ export interface LoginDto {
   password: string
 }
 
-export interface RegisterDto {
-  email: string
-  password: string
-  confirmPassword: string
-  name: string
-}
-
 export interface TokenResponse {
   message: string
   accessToken: string
@@ -41,6 +34,22 @@ export interface User {
   email: string
   name: string
   roles?: string[]
+}
+
+export interface RegisterDto {
+  email: string
+  password: string
+  confirmPassword: string
+  name: string
+  primarySection: number
+  employmentStatus: string
+  magazineDelivery: string
+  subscription: string
+  companyName: string
+  companyAddress: string
+  companyZIP: string
+  companyCity: string
+  companyPhone: string
 }
 
 export interface AuthState {

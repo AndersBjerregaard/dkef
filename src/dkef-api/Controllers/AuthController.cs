@@ -3,6 +3,7 @@ using Dkef.Contracts;
 using Dkef.Domain;
 using Dkef.Repositories;
 using Dkef.Services.Interfaces;
+using Ganss.Xss;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -18,6 +19,7 @@ public class AuthController(
     IJwtService jwtService,
     IEmailService emailService,
     HostConfig hostConfig,
+    HtmlSanitizer sanitizer,
     Serilog.ILogger logger
 ) : ControllerBase
 {
@@ -188,7 +190,16 @@ public class AuthController(
         {
             UserName = dto.Email,
             Email = dto.Email,
-            Name = dto.Name
+            Name = sanitizer.Sanitize(dto.Name),
+            PrimarySection = dto.PrimarySection,
+            EmploymentStatus = sanitizer.Sanitize(dto.EmploymentStatus),
+            MagazineDelivery = sanitizer.Sanitize(dto.MagazineDelivery),
+            Subscription = sanitizer.Sanitize(dto.Subscription),
+            CompanyName = sanitizer.Sanitize(dto.CompanyName),
+            CompanyAddress = sanitizer.Sanitize(dto.CompanyAddress),
+            CompanyZIP = sanitizer.Sanitize(dto.CompanyZIP),
+            CompanyCity = sanitizer.Sanitize(dto.CompanyCity),
+            CompanyPhone = sanitizer.Sanitize(dto.CompanyPhone)
         };
 
         // Create user with password using UserManager

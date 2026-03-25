@@ -18,4 +18,29 @@ public record RegisterDto
 
     [Required(AllowEmptyStrings = false, ErrorMessage = "Name is required")]
     public string Name { get; init; } = string.Empty;
+
+    [Required(ErrorMessage = "Primary section is required")]
+    public required Dkef.Domain.Section PrimarySection { get; init; }
+
+    public string EmploymentStatus { get; init; } = string.Empty;
+
+    [Required(ErrorMessage = "Magazine delivery is required")]
+    public required string MagazineDelivery { get; init; }
+
+    [Required(ErrorMessage = "Subscription is required")]
+    public required string Subscription { get; init; }
+
+    public string CompanyName { get; init; } = string.Empty;
+
+    public string CompanyAddress { get; init; } = string.Empty;
+
+    public string CompanyZIP { get; init; } = string.Empty;
+
+    public string CompanyCity { get; init; } = string.Empty;
+
+    public string CompanyPhone { get; init; } = string.Empty;
+
+    public string CVRNumber { get; set; } = string.Empty;
+
+    public string EANNUmber { get; set; } = string.Empty;
 }
