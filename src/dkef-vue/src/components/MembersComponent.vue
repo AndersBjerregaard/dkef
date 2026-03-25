@@ -6,6 +6,8 @@ import MemberComponent from './MemberComponent.vue'
 import MemberHeaderComponent from './MemberHeaderComponent.vue'
 import { computed, onMounted, onUnmounted, reactive, ref, type ComputedRef, type Ref } from 'vue'
 import type { AxiosResponse } from 'axios'
+import 'vue-sonner/style.css'
+import { Toaster, toast } from 'vue-sonner'
 
 const emailsCopied = ref(false)
 
@@ -175,6 +177,14 @@ async function fetchItems(skip?: number): Promise<void> {
   }
 }
 
+function onContactUpdated(updatedContact: Contact): void {
+  const index = items.value.findIndex((item) => item.id === updatedContact.id)
+  if (index !== -1) {
+    items.value[index] = reactive(updatedContact)
+    toast.success(`Medlem opdateret!`)
+  }
+}
+
 onUnmounted(() => {
   abortController.abort()
   console.info('Fetching aborted due to component umount.')
@@ -225,6 +235,7 @@ function sort(by: string, order: Sort): void {
 </script>
 
 <template>
+  <Toaster />
   <div class="pb-20 justify-center items-center text-center">
     <div class="pt-16">
       <h1 class="text-4xl py-8">Alle medlemmer</h1>
@@ -316,12 +327,7 @@ function sort(by: string, order: Sort): void {
                 if (i !== -1) items.splice(i, 1)
               }
             "
-            @contact-updated="
-              (updatedContact) => {
-                const i = items.findIndex((c) => c.id === updatedContact.id)
-                if (i !== -1) items[i] = reactive(updatedContact)
-              }
-            "
+            @contact-updated="onContactUpdated"
           />
         </div>
       </div>

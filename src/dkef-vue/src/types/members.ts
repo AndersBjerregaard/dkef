@@ -23,9 +23,9 @@ export const SECTION_DISPLAY_MAP: Record<Section, string> = {
 }
 
 export const MEMBER_TYPE_DISPLAY_MAP: Record<MemberType, string> = {
-  [MemberType.Member]: 'Member',
-  [MemberType.BoardMember]: 'Board Member',
-  [MemberType.Admin]: 'Admin',
+  [MemberType.Member]: 'Medlem',
+  [MemberType.BoardMember]: 'Bestyrelsesmedlem',
+  [MemberType.Admin]: 'Administrator',
 }
 
 export interface Contact {
@@ -63,21 +63,28 @@ export interface Contact {
 export interface ContactDto {
   email: string
   name: string
-  title: string
-  employmentStatus: string
   address: string
   zip: string
   city: string
+  countryCode: string
+  cvrNumber: string
+  eanNumber: string
+  privatePhoneNumber: string
+  attPerson: string
+  enrollmentDate: string | null
+  subscription: string
+  invoiceName2: string
   companyName: string
   companyAddress: string
   companyZIP: string
   companyCity: string
-  cvrNumber: string
   companyPhone: string
-  magazineDelivery: string
-  eanNumber: string
-  primarySection: Section
+  employmentStatus: string
+  primarySection: Section | null
   secondarySection: Section | null
+  magazineDelivery: string
+  title: string
+  memberType: MemberType
 }
 
 export interface UpdateProfileDto {

@@ -32,7 +32,7 @@ public record RegisterDto
 
     public string City { get; init; } = string.Empty;
 
-    public string PrivatePhoneNumber { get; init; } = string.Empty;
+    public string Phone { get; init; } = string.Empty;
 
     public string EmploymentStatus { get; init; } = string.Empty;
 

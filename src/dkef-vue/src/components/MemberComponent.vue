@@ -1,5 +1,12 @@
 <script setup lang="ts">
-import { type Contact, type ContactDto, Section, SECTION_DISPLAY_MAP } from '@/types/members'
+import {
+  type Contact,
+  type ContactDto,
+  Section,
+  SECTION_DISPLAY_MAP,
+  MemberType,
+  MEMBER_TYPE_DISPLAY_MAP,
+} from '@/types/members'
 import { computed, ref } from 'vue'
 import BaseModal from '@/components/BaseModal.vue'
 import LoadingButton from '@/components/LoadingButton.vue'
@@ -54,29 +61,42 @@ const fields = computed(() => [
 ])
 
 // Editable fields (local reactive copies — never mutate props directly)
-const name = ref(props.contact?.name ?? '') // Navn
 const email = ref(props.contact?.email ?? '') // Email
-const title = ref(props.contact?.title ?? '') // Titel
-const employmentStatus = ref(props.contact?.employmentStatus ?? '') // Beskæftigelse
+const name = ref(props.contact?.name ?? '') // Navn
 const address = ref(props.contact?.address ?? '') // Vejnavn og nr.
 const zip = ref(props.contact?.zip ?? '') // Postnummer
 const city = ref(props.contact?.city ?? '') // By
+const countryCode = ref(props.contact?.countryCode ?? '') // Landekode
+const cvrNumber = ref(props.contact?.cvrNumber ?? '') // CVR nr.
+const eanNumber = ref(props.contact?.eanNumber ?? '') // EAN nr.
 const privatePhoneNumber = ref(props.contact?.privatePhoneNumber ?? '') // Mobil
-const primarySection = ref(props.contact?.primarySection ?? (Section.Jutland as Section | null)) // Primær sektion
-const secondarySection = ref(props.contact?.secondarySection ?? (null as Section | null)) // Sekundær sektion
+const attPerson = ref(props.contact?.attPerson ?? '') // Att Person
+const enrollmentDate = ref(props.contact?.enrollmentDate ?? '') // Indmeldingsdato
+const subscription = ref(props.contact?.subscription ?? '') // Kontingent
+const invoiceName2 = ref(props.contact?.invoiceName2 ?? '') // Faktura navn 2
 const companyName = ref(props.contact?.companyName ?? '') // Firma navn
 const companyAddress = ref(props.contact?.companyAddress ?? '') // Firma vejnavn og nr.
-const companyCity = ref(props.contact?.companyCity ?? '') // Firma by
 const companyZIP = ref(props.contact?.companyZIP ?? '') // Firma postnummer
-const cvrNumber = ref(props.contact?.cvrNumber ?? '') // CVR nr.
+const companyCity = ref(props.contact?.companyCity ?? '') // Firma by
 const companyPhone = ref(props.contact?.companyPhone ?? '') // Firma mobil
+const employmentStatus = ref(props.contact?.employmentStatus ?? '') // Beskæftigelse
+const primarySection = ref(props.contact?.primarySection ?? (Section.Jutland as Section | null)) // Primær sektion
+const secondarySection = ref(props.contact?.secondarySection ?? (null as Section | null)) // Sekundær sektion
 const magazineDelivery = ref(props.contact?.magazineDelivery ?? '') // Magasin levering
-const eanNumber = ref(props.contact?.eanNumber ?? '') // EAN nr.
+const title = ref(props.contact?.title ?? '') // Titel
+const memberType = ref(props.contact?.memberType ?? (MemberType.Member as MemberType | null))
 
 // Enum options
 const sectionOptions = computed(() =>
   Object.entries(SECTION_DISPLAY_MAP).map(([key, value]) => ({
     value: Number(key) as Section,
+    label: value,
+  })),
+)
+
+const memberTypeOptions = computed(() =>
+  Object.entries(MEMBER_TYPE_DISPLAY_MAP).map(([key, value]) => ({
+    value: Number(key) as MemberType,
     label: value,
   })),
 )
@@ -87,21 +107,28 @@ async function editMember() {
     const editMemberDto: ContactDto = {
       email: email.value,
       name: name.value,
-      title: title.value,
-      employmentStatus: employmentStatus.value,
       address: address.value,
       zip: zip.value,
       city: city.value,
+      countryCode: countryCode.value,
+      cvrNumber: cvrNumber.value,
+      eanNumber: eanNumber.value,
+      privatePhoneNumber: privatePhoneNumber.value,
+      attPerson: attPerson.value,
+      enrollmentDate: enrollmentDate.value,
+      subscription: subscription.value,
+      invoiceName2: invoiceName2.value,
       companyName: companyName.value,
       companyAddress: companyAddress.value,
       companyZIP: companyZIP.value,
       companyCity: companyCity.value,
-      cvrNumber: cvrNumber.value,
       companyPhone: companyPhone.value,
-      magazineDelivery: magazineDelivery.value,
-      eanNumber: eanNumber.value,
+      employmentStatus: employmentStatus.value,
       primarySection: primarySection.value ?? Section.Jutland,
       secondarySection: secondarySection.value,
+      magazineDelivery: magazineDelivery.value,
+      title: title.value,
+      memberType: memberType.value,
     }
     const response = await apiservice.put<Contact>(
       urlservice.updateContact(props.contact?.id),
@@ -111,24 +138,30 @@ async function editMember() {
       editState.value = 1 // Indicate edit success
       // Update local refs to reflect the saved values
       const updatedContact = response.data
-      name.value = updatedContact.name
       email.value = updatedContact.email
-      title.value = updatedContact.title
-      employmentStatus.value = updatedContact.employmentStatus
+      name.value = updatedContact.name
       address.value = updatedContact.address
       zip.value = updatedContact.zip
       city.value = updatedContact.city
+      countryCode.value = updatedContact.countryCode
+      cvrNumber.value = updatedContact.cvrNumber
+      eanNumber.value = updatedContact.eanNumber
       privatePhoneNumber.value = updatedContact.privatePhoneNumber
-      primarySection.value = updatedContact.primarySection
-      secondarySection.value = updatedContact.secondarySection
+      attPerson.value = updatedContact.attPerson
+      enrollmentDate.value = updatedContact.enrollmentDate
+      subscription.value = updatedContact.subscription
+      invoiceName2.value = updatedContact.invoiceName2
       companyName.value = updatedContact.companyName
       companyAddress.value = updatedContact.companyAddress
       companyZIP.value = updatedContact.companyZIP
       companyCity.value = updatedContact.companyCity
-      cvrNumber.value = updatedContact.cvrNumber
       companyPhone.value = updatedContact.companyPhone
+      employmentStatus.value = updatedContact.employmentStatus
+      primarySection.value = updatedContact.primarySection
+      secondarySection.value = updatedContact.secondarySection
       magazineDelivery.value = updatedContact.magazineDelivery
-      eanNumber.value = updatedContact.eanNumber
+      title.value = updatedContact.title
+      memberType.value = updatedContact.memberType
       // Notify parent so the list row stays in sync
       emit('contact-updated', updatedContact)
     } else {
@@ -422,6 +455,57 @@ const hasAccess = ref(true)
             :disabled="isLoading || !edit"
           />
         </div>
+      </div>
+
+      <div class="flex justify-between pb-4">
+        <div class="w-[30%]">
+          <label for="countryCode_input">Landekode</label>
+          <input
+            :class="{ 'cursor-not-allowed': !edit }"
+            class="inputField"
+            id="countryCode_input"
+            type="text"
+            v-model="countryCode"
+            :disabled="isLoading || !edit"
+          />
+        </div>
+        <div class="w-[30%]">
+          <label for="attPerson_input">Att. Person</label>
+          <input
+            :class="{ 'cursor-not-allowed': !edit }"
+            class="inputField"
+            id="attPerson_input"
+            type="text"
+            v-model="attPerson"
+            :disabled="isLoading || !edit"
+          />
+        </div>
+        <div class="w-[30%]">
+          <label for="subscription_input">Kontingent</label>
+          <input
+            :class="{ 'cursor-not-allowed': !edit }"
+            class="inputField"
+            id="subscription_input"
+            type="text"
+            v-model="subscription"
+            :disabled="isLoading || !edit"
+          />
+        </div>
+      </div>
+
+      <div class="w-[30%]">
+        <label for="memberType_input">Medlemstype</label>
+        <select
+          :class="{ 'cursor-not-allowed': !edit }"
+          class="inputField"
+          id="memberType_input"
+          v-model.number="memberType"
+          :disabled="isLoading || !edit"
+        >
+          <option v-for="type in memberTypeOptions" :key="type.value" :value="type.value">
+            {{ type.label }}
+          </option>
+        </select>
       </div>
 
       <div class="flex">

@@ -186,6 +186,8 @@ public class AuthController(
             return BadRequest("A user with this email already exists.");
         }
 
+        logger.Information("Registered new contact with phone number: {PhoneNumber}", dto.Phone);
+
         // Create new contact
         var contact = new Contact
         {
@@ -193,12 +195,13 @@ public class AuthController(
             Email = dto.Email,
             Name = sanitizer.Sanitize(dto.Name),
             PrimarySection = dto.PrimarySection,
-            SecondarySection= dto.SecondarySection,
+            SecondarySection = dto.SecondarySection,
             Title = sanitizer.Sanitize(dto.Title),
             Address = sanitizer.Sanitize(dto.Address),
             ZIP = sanitizer.Sanitize(dto.ZIP),
             City = sanitizer.Sanitize(dto.City),
-            PrivatePhoneNumber = sanitizer.Sanitize(dto.PrivatePhoneNumber),
+            PrivatePhoneNumber = sanitizer.Sanitize(dto.Phone),
+            PhoneNumber = sanitizer.Sanitize(dto.Phone),
             EmploymentStatus = sanitizer.Sanitize(dto.EmploymentStatus),
             MagazineDelivery = sanitizer.Sanitize(dto.MagazineDelivery),
             Subscription = sanitizer.Sanitize(dto.Subscription),
@@ -211,6 +214,8 @@ public class AuthController(
             EANNumber = sanitizer.Sanitize(dto.EANNumber),
             EnrollmentDate = DateTime.UtcNow
         };
+
+        logger.Information("Contact {Name} registered with phone number: {PhoneNumber}", contact.PrivatePhoneNumber);
 
         // Create user with password using UserManager
         IdentityResult result = await userManager.CreateAsync(contact, dto.Password);
