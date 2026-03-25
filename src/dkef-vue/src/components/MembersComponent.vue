@@ -250,7 +250,7 @@ function sort(by: string, order: Sort): void {
       />
       <button
         @click="copyEmailsToClipboard"
-        class="ml-auto flex items-center gap-2 rounded bg-amber-600 text-navy-950 px-4 py-1.5 text-sm font-semibold transition hover:bg-amber-500 active:bg-amber-700 disabled:opacity-50"
+        class="flex items-center gap-2 rounded bg-amber-600 text-navy-950 px-4 py-1.5 text-sm font-semibold transition hover:bg-amber-500 active:bg-amber-700 disabled:opacity-50"
         :disabled="filteredItems.length === 0"
         :title="emailsCopied ? 'Kopieret!' : `Kopiér ${filteredItems.length} email-adresser`"
       >
@@ -314,6 +314,12 @@ function sort(by: string, order: Sort): void {
               (id) => {
                 const i = items.findIndex((c) => c.id === id)
                 if (i !== -1) items.splice(i, 1)
+              }
+            "
+            @contact-updated="
+              (updatedContact) => {
+                const i = items.findIndex((c) => c.id === updatedContact.id)
+                if (i !== -1) items[i] = reactive(updatedContact)
               }
             "
           />
