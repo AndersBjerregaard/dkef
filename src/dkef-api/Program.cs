@@ -228,6 +228,7 @@ try
         {
             cfg.CreateMap<Contact, Contact>();
             cfg.CreateMap<ContactDto, Contact>();
+            cfg.CreateMap<Contact, ContactListDto>();
             cfg.CreateMap<Event, Event>();
             cfg.CreateMap<EventDto, Event>()
                 .ForMember(dest => dest.ThumbnailUrl, opt => opt.MapFrom(src => $"{thumbnailPrefix}/events/{src.ThumbnailId}"))

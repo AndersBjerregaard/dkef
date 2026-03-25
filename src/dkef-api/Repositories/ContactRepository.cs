@@ -8,16 +8,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Dkef.Repositories;
 
-// TODO: Consider IdentityUser specific properties when updating
-// TODO: Consider foreign key relationship when attempting to delete
-
 public class ContactRepository(ContactContext _context, IMapper _mapper) : IContactRepository
 {
-    public async Task<Contact> CreateAsync(Contact dto)
+    public async Task<ContactListDto> CreateAsync(Contact dto)
     {
         var entityEntry = await _context.Contacts.AddAsync(dto);
         await _context.SaveChangesAsync();
-        return entityEntry.Entity;
+        var newEntry = entityEntry.Entity;
+        return ContactListDto.FromContact(_mapper, newEntry);
     }
 
     public async Task<bool> DeleteAsync(Guid id)
@@ -25,40 +23,44 @@ public class ContactRepository(ContactContext _context, IMapper _mapper) : ICont
         return await _context.Contacts.Where(x => x.Id == id.ToString()).ExecuteDeleteAsync() == 1;
     }
 
-    public async Task<Contact?> GetByIdAsync(Guid id)
+    public async Task<ContactListDto?> GetByIdAsync(Guid id)
     {
-        return await _context.Contacts.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id.ToString());
+        var hit = await _context.Contacts.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id.ToString());
+        return hit is null ? null! : ContactListDto.FromContact(_mapper, hit);
     }
 
-    public async Task<DomainCollection<Contact>> GetMultipleAsync(int take = 10, int skip = 0)
+    public async Task<DomainCollection<ContactListDto>> GetMultipleAsync(int take = 10, int skip = 0)
     {
         var query = _context.Contacts.AsNoTracking()
             .OrderBy(x => x.Id);
         return await GetMultipleAsync(query, take, skip);
     }
 
-    public async Task<DomainCollection<Contact>> GetMultipleAsync(IOrderedQueryable<Contact> orderBy, int take = 10, int skip = 0)
+    public async Task<DomainCollection<ContactListDto>> GetMultipleAsync(IOrderedQueryable<Contact> orderBy, int take = 10, int skip = 0)
     {
         var totalItems = await _context.Contacts.CountAsync();
         var contacts = await orderBy
             .Skip(skip)
             .Take(take)
+            .Select(x => ContactListDto.FromContact(_mapper, x))
             .ToListAsync();
-        return new DomainCollection<Contact>(contacts, totalItems);
+        return new DomainCollection<ContactListDto>(contacts, totalItems);
     }
 
-    public async Task<IEnumerable<Contact>> GetMultipleByIdAsync(IEnumerable<Guid> ids)
+    public async Task<IEnumerable<ContactListDto>> GetMultipleByIdAsync(IEnumerable<Guid> ids)
     {
-        return await _context.Contacts.AsNoTracking().Where(x => ids.Contains(Guid.Parse(x.Id))).ToListAsync();
+        var items = await _context.Contacts.AsNoTracking().Where(x => ids.Contains(Guid.Parse(x.Id))).ToListAsync();
+        return items.Select(x => ContactListDto.FromContact(_mapper, x));
     }
 
-    public async Task<Contact> UpdateAsync(Guid id, ContactDto dto)
+    public async Task<ContactListDto> UpdateAsync(Guid id, ContactDto dto)
     {
         var existing = await _context.Contacts.FirstOrDefaultAsync(x => x.Id == id.ToString())
             ?? throw new KeyNotFoundException($"No contact found with the id {id}");
         var updated = _mapper.Map(dto, existing);
         await _context.SaveChangesAsync();
-        return updated;
+        var dtoUpdated = ContactListDto.FromContact(_mapper, updated);
+        return dtoUpdated;
     }
 
     public async Task<DomainCollection<ContactListDto>> GetMultipleListAsync(int take = 10, int skip = 0)
@@ -68,46 +70,16 @@ public class ContactRepository(ContactContext _context, IMapper _mapper) : ICont
             .OrderBy(x => x.Id)
             .Skip(skip)
             .Take(take)
-            .Select(x => new ContactListDto
-            {
-                Id = x.Id,
-                Email = x.Email ?? string.Empty,
-                Name = x.Name,
-                Address = x.Address,
-                ZIP = x.ZIP,
-                City = x.City,
-                CountryCode = x.CountryCode,
-                CVRNumber = x.CVRNumber,
-                EANNumber = x.EANNumber,
-                PrivatePhoneNumber = x.PrivatePhoneNumber,
-                AttPerson = x.AttPerson,
-                PaymentMethod = x.PaymentMethod,
-                PaymentDeadlineInDays = x.PaymentDeadlineInDays,
-                TotalSale = x.TotalSale,
-                TotalPurchase = x.TotalPurchase,
-                EnrollmentDate = x.EnrollmentDate,
-                Subscription = x.Subscription,
-                InvoiceName2 = x.InvoiceName2,
-                CompanyName = x.CompanyName,
-                CompanyAddress = x.CompanyAddress,
-                CompanyZIP = x.CompanyZIP,
-                CompanyCity = x.CompanyCity,
-                CompanyPhone = x.CompanyPhone,
-                EmploymentStatus = x.EmploymentStatus,
-                PrimarySection = x.PrimarySection,
-                SecondarySection = x.SecondarySection,
-                MagazineDelivery = x.MagazineDelivery,
-                Title = x.Title,
-                MemberType = x.MemberType
-            })
+            .Select(x => ContactListDto.FromContact(_mapper, x))
             .ToListAsync();
         return new DomainCollection<ContactListDto>(contacts, totalItems);
     }
 
     public async Task SeedAsync() => await ContactContext.SeedAsync(_context);
 
-    public Task<Contact?> GetByEmailAsync(string email)
+    public async Task<ContactListDto?> GetByEmailAsync(string email)
     {
-        return _context.Contacts.AsNoTracking().FirstOrDefaultAsync(x => x.Email == email);
+        var hit = await _context.Contacts.AsNoTracking().FirstOrDefaultAsync(x => x.Email == email);
+        return hit is null ? null! : ContactListDto.FromContact(_mapper, hit);
     }
 }

@@ -1,8 +1,11 @@
 using Dkef.Contracts;
 using Dkef.Repositories;
+
 using Ganss.Xss;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+
 using ILogger = Serilog.ILogger;
 
 namespace Dkef.Controllers;
@@ -41,20 +44,13 @@ public class ContactsController(IContactRepository _repository, HtmlSanitizer _s
             return BadRequest($"Could not parse {id} as a guid");
         }
 
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(ModelState);
-        }
-
         dto.Sanitize(_sanitizer);
-
-        // TODO: System properties, logs...
 
         var updatedContact = await _repository.UpdateAsync(parsedId, dto);
 
         return Ok(updatedContact);
     }
-    
+
     [HttpDelete]
     [Route("{id}")]
     public async Task<IActionResult> Delete([FromRoute] string id)
@@ -65,7 +61,7 @@ public class ContactsController(IContactRepository _repository, HtmlSanitizer _s
         }
 
         await _repository.DeleteAsync(parsedId);
-        
+
         return NoContent();
     }
 

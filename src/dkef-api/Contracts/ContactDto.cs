@@ -19,8 +19,8 @@ public class ContactDto : PostObject
     public string CompanyPhone { get; set; } = string.Empty;
     public string MagazineDelivery { get; set; } = string.Empty;
     public string EANNumber { get; set; } = string.Empty;
-    public string PrimarySection { get; set; } = string.Empty;
-    public string SecondarySection { get; set; } = string.Empty;
+    public Dkef.Domain.Section? PrimarySection { get; set; }
+    public Dkef.Domain.Section? SecondarySection { get; set; }
 
     public override void Sanitize(HtmlSanitizer sanitizer)
     {
@@ -39,7 +39,5 @@ public class ContactDto : PostObject
         CompanyPhone = sanitizer.Sanitize(CompanyPhone);
         MagazineDelivery = sanitizer.Sanitize(MagazineDelivery);
         EANNumber = sanitizer.Sanitize(EANNumber);
-        PrimarySection = sanitizer.Sanitize(PrimarySection);
-        SecondarySection = sanitizer.Sanitize(SecondarySection);
     }
 }

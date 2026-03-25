@@ -14,7 +14,6 @@ namespace Dkef.Controllers;
 [Route("[controller]")]
 public class AuthController(
     ForgotPasswordRepository forgotPasswordRepository,
-    IContactRepository contactRepository,
     UserManager<Contact> userManager,
     IJwtService jwtService,
     IEmailService emailService,
@@ -123,7 +122,7 @@ public class AuthController(
     [Route("login")]
     public async Task<IActionResult> Login([FromBody] LoginDto dto)
     {
-        Contact? contact = await contactRepository.GetByEmailAsync(dto.Email);
+        Contact? contact = await userManager.FindByEmailAsync(dto.Email);
         if (contact is null)
         {
             return Unauthorized("Invalid email or password.");
@@ -178,7 +177,7 @@ public class AuthController(
     public async Task<IActionResult> Register([FromBody] RegisterDto dto)
     {
         // Check if user with email already exists
-        Contact? existingContact = await contactRepository.GetByEmailAsync(dto.Email);
+        Contact? existingContact = await userManager.FindByEmailAsync(dto.Email);
         if (existingContact is not null)
         {
             return BadRequest("A user with this email already exists.");

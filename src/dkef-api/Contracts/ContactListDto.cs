@@ -1,10 +1,14 @@
+using AutoMapper;
+
+using Dkef.Domain;
+
 namespace Dkef.Contracts;
 
 /// <summary>
 /// Read-only DTO for the paginated members list endpoint.
 /// Contains only the Contact-specific domain fields — no IdentityUser properties.
 /// </summary>
-public class ContactListDto
+public sealed class ContactListDto
 {
     public string Id { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
@@ -35,4 +39,14 @@ public class ContactListDto
     public string MagazineDelivery { get; set; } = string.Empty;
     public string Title { get; set; } = string.Empty;
     public Dkef.Domain.MemberType MemberType { get; set; }
+
+    public static ContactListDto FromContact(IMapper mapper, Contact source)
+    {
+        ArgumentNullException.ThrowIfNull(mapper);
+        ArgumentNullException.ThrowIfNull(source);
+
+        var dto = new ContactListDto();
+        dto = mapper.Map(source, dto);
+        return dto;
+    }
 }
