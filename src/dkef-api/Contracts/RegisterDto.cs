@@ -22,6 +22,18 @@ public record RegisterDto
     [Required(ErrorMessage = "Primary section is required")]
     public required Dkef.Domain.Section PrimarySection { get; init; }
 
+    public Dkef.Domain.Section? SecondarySection { get; init; }
+
+    public string Title { get; init; } = string.Empty;
+
+    public string Address { get; init; } = string.Empty;
+
+    public string ZIP { get; init; } = string.Empty;
+
+    public string City { get; init; } = string.Empty;
+
+    public string PrivatePhoneNumber { get; init; } = string.Empty;
+
     public string EmploymentStatus { get; init; } = string.Empty;
 
     [Required(ErrorMessage = "Magazine delivery is required")]
@@ -40,7 +52,7 @@ public record RegisterDto
 
     public string CompanyPhone { get; init; } = string.Empty;
 
-    public string CVRNumber { get; set; } = string.Empty;
+    public string CVRNumber { get; init; } = string.Empty;
 
-    public string EANNUmber { get; set; } = string.Empty;
+    public string EANNumber { get; init; } = string.Empty;
 }

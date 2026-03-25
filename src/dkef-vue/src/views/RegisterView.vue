@@ -4,6 +4,8 @@ import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/authStore'
 import type { RegisterDto } from '@/types/auth'
 import { Section, SECTION_DISPLAY_MAP } from '@/types/members'
+import 'vue-sonner/style.css'
+import { Toaster, toast } from 'vue-sonner'
 
 const router = useRouter()
 const authStore = useAuthStore()
@@ -14,6 +16,12 @@ const confirmPassword = ref('')
 const name = ref('')
 const primarySection = ref<Section | ''>('')
 const showAdvanced = ref(false)
+const secondarySection = ref<Section | null>(null)
+const title = ref('')
+const address = ref('')
+const zip = ref('')
+const city = ref('')
+const phone = ref('')
 const employmentStatus = ref('')
 const magazineDelivery = ref('Privat adresse')
 const subscription = ref('Alm.')
@@ -22,6 +30,9 @@ const companyAddress = ref('')
 const companyZIP = ref('')
 const companyCity = ref('')
 const companyPhone = ref('')
+const cvrNumber = ref('')
+const eanNumber = ref('')
+
 const error = ref('')
 const loading = ref(false)
 
@@ -65,6 +76,12 @@ async function handleRegister() {
       confirmPassword: confirmPassword.value,
       name: name.value,
       primarySection: primarySection.value as Section,
+      secondarySection: secondarySection.value as Section | null,
+      title: title.value,
+      address: address.value,
+      zip: zip.value,
+      city: city.value,
+      phone: phone.value,
       employmentStatus: employmentStatus.value,
       magazineDelivery: magazineDelivery.value,
       subscription: subscription.value,
@@ -73,10 +90,13 @@ async function handleRegister() {
       companyZIP: companyZIP.value,
       companyCity: companyCity.value,
       companyPhone: companyPhone.value,
+      cvrNumber: cvrNumber.value,
+      eanNumber: eanNumber.value,
     }
 
     await authStore.register(registrationData)
-    await router.push({ name: view })
+    toast.success('Tak for din registrering. Velkommen til Elektroteknisk Forening!')
+    await router.push({ name: 'home' })
     window.scrollTo({ top: 0, behavior: 'smooth' })
   } catch (err) {
     const axiosError = err as { response?: { data?: { message?: string } }; message?: string }
@@ -91,6 +111,7 @@ async function handleRegister() {
 </script>
 
 <template>
+  <Toaster />
   <div class="flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
     <div class="max-w-md w-full space-y-6">
       <div class="pb-4">
@@ -193,6 +214,83 @@ async function handleRegister() {
 
         <!-- Advanced fields -->
         <div v-if="showAdvanced" class="space-y-4 flex flex-col gap-4 pt-4">
+          <div>
+            <label for="secondary" class="block text-sm font-medium mb-1"> Sekundær sektion </label>
+            <select
+              id="secondary-section"
+              v-model.number="secondarySection"
+              name="secondary-section"
+              required
+              class="w-full bg-theme-soft border border-theme-border rounded-xl p-2 text-theme-heading placeholder-theme-muted focus:outline-none focus:ring-2 focus:ring-theme-accent focus:border-theme-accent cursor-pointer"
+            >
+              <option :value="null">Ingen</option>
+              <option v-for="section in sections" :key="section.value" :value="section.value">
+                {{ section.label }}
+              </option>
+            </select>
+          </div>
+
+          <div>
+            <label for="title" class="block text-sm font-medium mb-1"> Titel </label>
+            <input
+              id="title"
+              v-model="title"
+              name="title"
+              type="text"
+              class="w-full bg-theme-soft border border-theme-border rounded-xl p-2 text-theme-heading placeholder-theme-muted focus:outline-none focus:ring-2 focus:ring-theme-accent focus:border-theme-accent"
+              placeholder="Titel"
+            />
+          </div>
+
+          <div>
+            <label for="address" class="block text-sm font-medium mb-1"> Addresse </label>
+            <input
+              id="address"
+              v-model="address"
+              name="address"
+              type="text"
+              class="w-full bg-theme-soft border border-theme-border rounded-xl p-2 text-theme-heading placeholder-theme-muted focus:outline-none focus:ring-2 focus:ring-theme-accent focus:border-theme-accent"
+              placeholder="Gade og husnummer"
+            />
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label for="zip" class="block text-sm font-medium mb-1"> Postnummer </label>
+              <input
+                id="zip"
+                v-model="zip"
+                name="zip"
+                type="text"
+                class="w-full bg-theme-soft border border-theme-border rounded-xl p-2 text-theme-heading placeholder-theme-muted focus:outline-none focus:ring-2 focus:ring-theme-accent focus:border-theme-accent"
+                placeholder="Postnummer"
+              />
+            </div>
+            <div>
+              <label for="city" class="block text-sm font-medium mb-1"> By </label>
+              <input
+                id="city"
+                v-model="city"
+                name="city"
+                type="text"
+                class="w-full bg-theme-soft border border-theme-border rounded-xl p-2 text-theme-heading placeholder-theme-muted focus:outline-none focus:ring-2 focus:ring-theme-accent focus:border-theme-accent"
+                placeholder="By"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label for="phone" class="block text-sm font-medium mb-1"> Telefonnummer </label>
+            <input
+              id="phone"
+              v-model="phone"
+              name="phone"
+              type="tel"
+              class="w-full bg-theme-soft border border-theme-border rounded-xl p-2 text-theme-heading placeholder-theme-muted focus:outline-none focus:ring-2 focus:ring-theme-accent focus:border-theme-accent"
+              placeholder="Telefonnummer"
+            />
+          </div>
+
           <div>
             <label for="employment-status" class="block text-sm font-medium mb-1">
               Ansættelsestatus
@@ -307,6 +405,30 @@ async function handleRegister() {
                 type="tel"
                 class="w-full bg-theme-soft border border-theme-border rounded-xl p-2 text-theme-heading placeholder-theme-muted focus:outline-none focus:ring-2 focus:ring-theme-accent focus:border-theme-accent"
                 placeholder="Telefonnummer"
+              />
+            </div>
+
+            <div>
+              <label for="cvrNumber" class="block text-sm font-medium mb-1"> CVR-nummer </label>
+              <input
+                id="cvrNumber"
+                v-model="cvrNumber"
+                name="cvrNumber"
+                type="text"
+                class="w-full bg-theme-soft border border-theme-border rounded-xl p-2 text-theme-heading placeholder-theme-muted focus:outline-none focus:ring-2 focus:ring-theme-accent focus:border-theme-accent"
+                placeholder="CVR-nummer"
+              />
+            </div>
+
+            <div>
+              <label for="eanNumber" class="block text-sm font-medium mb-1"> EAN-nummer </label>
+              <input
+                id="eanNumber"
+                v-model="eanNumber"
+                name="eanNumber"
+                type="text"
+                class="w-full bg-theme-soft border border-theme-border rounded-xl p-2 text-theme-heading placeholder-theme-muted focus:outline-none focus:ring-2 focus:ring-theme-accent focus:border-theme-accent"
+                placeholder="EAN-nummer"
               />
             </div>
           </div>

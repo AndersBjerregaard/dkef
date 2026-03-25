@@ -3,6 +3,7 @@ using Dkef.Contracts;
 using Dkef.Domain;
 using Dkef.Repositories;
 using Dkef.Services.Interfaces;
+
 using Ganss.Xss;
 
 using Microsoft.AspNetCore.Authorization;
@@ -192,6 +193,12 @@ public class AuthController(
             Email = dto.Email,
             Name = sanitizer.Sanitize(dto.Name),
             PrimarySection = dto.PrimarySection,
+            SecondarySection= dto.SecondarySection,
+            Title = sanitizer.Sanitize(dto.Title),
+            Address = sanitizer.Sanitize(dto.Address),
+            ZIP = sanitizer.Sanitize(dto.ZIP),
+            City = sanitizer.Sanitize(dto.City),
+            PrivatePhoneNumber = sanitizer.Sanitize(dto.PrivatePhoneNumber),
             EmploymentStatus = sanitizer.Sanitize(dto.EmploymentStatus),
             MagazineDelivery = sanitizer.Sanitize(dto.MagazineDelivery),
             Subscription = sanitizer.Sanitize(dto.Subscription),
@@ -199,7 +206,10 @@ public class AuthController(
             CompanyAddress = sanitizer.Sanitize(dto.CompanyAddress),
             CompanyZIP = sanitizer.Sanitize(dto.CompanyZIP),
             CompanyCity = sanitizer.Sanitize(dto.CompanyCity),
-            CompanyPhone = sanitizer.Sanitize(dto.CompanyPhone)
+            CompanyPhone = sanitizer.Sanitize(dto.CompanyPhone),
+            CVRNumber = sanitizer.Sanitize(dto.CVRNumber),
+            EANNumber = sanitizer.Sanitize(dto.EANNumber),
+            EnrollmentDate = DateTime.UtcNow
         };
 
         // Create user with password using UserManager
