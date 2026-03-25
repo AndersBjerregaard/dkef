@@ -11,7 +11,7 @@ import {
   DialogPanel,
   DialogTitle,
 } from '@headlessui/vue'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useAuthStore } from '@/stores/authStore'
 import { useThemeStore } from '@/stores/themeStore'
 
@@ -23,6 +23,18 @@ const password = ref('')
 const loginError = ref('')
 const isLoggingIn = ref(false)
 const router = useRouter()
+
+const firstName = computed(() => {
+  if (!authStore) {
+    return ''
+  }
+  if (!authStore.user) {
+    return ''
+  }
+  // Extract first name from full name
+  const fullName = authStore.user.name
+  return fullName.split(' ')[0]
+})
 
 function closeModal() {
   isOpen.value = false
@@ -142,9 +154,7 @@ async function goto(view: string) {
               </button>
             </div>
             <div class="p-1 flex items-center gap-3" v-else>
-              <span class="text-theme-accent font-medium text-sm"
-                >Hej, {{ authStore.user?.name }}</span
-              >
+              <span class="text-theme-accent font-medium text-sm">Hej, {{ firstName }}</span>
               <button
                 class="rounded-lg bg-theme-mute h-10 px-4 cursor-pointer text-theme-text hover:bg-theme-mute hover:text-theme-accent transition-colors text-sm font-medium"
                 @click="handleLogout"
