@@ -8,10 +8,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AngleSharp" Version="1.4.0" />
     <PackageReference Include="AutoMapper" Version="16.1.1" />
     <PackageReference Include="Azure.Identity" Version="1.19.0" />
     <PackageReference Include="Bogus" Version="35.6.2" />
-    <PackageReference Include="HtmlSanitizer" Version="9.0.892" />
+    <PackageReference Include="HtmlSanitizer" Version="9.1.893-beta" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.9" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.9" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.1" />
@@ -27,6 +28,7 @@
     <PackageReference Include="Minio" Version="6.0.1" />
     <PackageReference Include="Minio.AspNetCore" Version="6.0.1" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
+    <PackageReference Include="PreMailer.Net" Version="2.7.2" />
     <PackageReference Include="Scalar.AspNetCore" Version="2.0.0" />
     <PackageReference Include="Serilog" Version="4.3.0" />
     <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />

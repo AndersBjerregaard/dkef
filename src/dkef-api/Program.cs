@@ -18,6 +18,7 @@ using Dkef.Services.Interfaces;
 using Ganss.Xss;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -274,16 +275,23 @@ try
     builder.Services.AddScoped<ImageCleanupService>();
 
     bool useSmtp = bool.Parse(builder.Configuration["UseSmtp"] ?? "false");
+    builder.Services.AddOptions<MailConfiguration>()
+        .BindConfiguration("MailConfiguration")
+        .ValidateDataAnnotations()
+        .ValidateOnStart();
+    builder.Services.AddTransient<HtmlRenderer>(x =>
+    {
+        var loggerFactory = x.GetService<ILoggerFactory>()!;
+        return new(x, loggerFactory);
+    });
+    builder.Services.AddTransient<IRazorRenderer, RazorRenderer>();
     if (useSmtp)
     {
+        Log.Information("Using production email service");
         builder.Services.AddScoped<IEmailService, MicrosoftGraphEmailService>();
     }
     else
     {
-        builder.Services.AddOptions<MailConfiguration>()
-            .BindConfiguration("MailConfiguration")
-            .ValidateDataAnnotations()
-            .ValidateOnStart();
         builder.Services.AddSingleton<IEmailService, DevelopmentEmailService>();
     }
 
