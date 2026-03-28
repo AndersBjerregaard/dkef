@@ -36,16 +36,18 @@
                         Oplysninger på det nye medlem fremgår nedenfor.
                     </p>
 
-                    <!-- Sender details -->
+                    <!-- Personal Information Section -->
                     <div class="info-grid">
+                        <!-- Name (required) -->
                         <div class="info-row">
                             <div class="info-icon">👤</div>
                             <div class="info-content">
                                 <p class="info-label">Navn</p>
-                                <p class="info-value">@FullName</p>
+                                <p class="info-value">@Name</p>
                             </div>
                         </div>
 
+                        <!-- Email (required) -->
                         <div class="info-row">
                             <div class="info-icon">✉️</div>
                             <div class="info-content">
@@ -54,14 +56,218 @@
                             </div>
                         </div>
 
+                        <!-- Phone (optional) -->
+                        @if (!string.IsNullOrWhiteSpace(Phone))
+                        {
+                            <div class="info-row">
+                                <div class="info-icon">📞</div>
+                                <div class="info-content">
+                                    <p class="info-label">Telefonnummer</p>
+                                    <p class="info-value">@Phone</p>
+                                </div>
+                            </div>
+                        }
+
+                        <!-- Title (optional) -->
+                        @if (!string.IsNullOrWhiteSpace(Title))
+                        {
+                            <div class="info-row">
+                                <div class="info-icon">💼</div>
+                                <div class="info-content">
+                                    <p class="info-label">Titel</p>
+                                    <p class="info-value">@Title</p>
+                                </div>
+                            </div>
+                        }
+
+                        <!-- Employment Status (optional) -->
+                        @if (!string.IsNullOrWhiteSpace(EmploymentStatus))
+                        {
+                            <div class="info-row">
+                                <div class="info-icon">👨‍💼</div>
+                                <div class="info-content">
+                                    <p class="info-label">Ansættelsesstatus</p>
+                                    <p class="info-value">@EmploymentStatus</p>
+                                </div>
+                            </div>
+                        }
+
+                        <!-- Primary Section (required) -->
+                        @if (PrimarySection != null)
+                        {
+                            <div class="info-row">
+                                <div class="info-icon">⭐</div>
+                                <div class="info-content">
+                                    <p class="info-label">Primær sektion</p>
+                                    <p class="info-value">@PrimarySection</p>
+                                </div>
+                            </div>
+                        }
+
+                        <!-- Secondary Section (optional) -->
+                        @if (SecondarySection.HasValue)
+                        {
+                            <div class="info-row">
+                                <div class="info-icon">✓</div>
+                                <div class="info-content">
+                                    <p class="info-label">Sekundær sektion</p>
+                                    <p class="info-value">@SecondarySection</p>
+                                </div>
+                            </div>
+                        }
+
+                        <!-- Magazine Delivery (required) -->
                         <div class="info-row">
-                            <div class="info-icon">📞</div>
+                            <div class="info-icon">📰</div>
                             <div class="info-content">
-                                <p class="info-label">Telefonnummer</p>
-                                <p class="info-value">@Phone</p>
+                                <p class="info-label">Magasinlevering</p>
+                                <p class="info-value">@MagazineDelivery</p>
+                            </div>
+                        </div>
+
+                        <!-- Subscription (required) -->
+                        <div class="info-row">
+                            <div class="info-icon">🔔</div>
+                            <div class="info-content">
+                                <p class="info-label">Abonnement</p>
+                                <p class="info-value">@Subscription</p>
                             </div>
                         </div>
                     </div>
+
+                    <!-- Address Section -->
+                    @if (!string.IsNullOrWhiteSpace(Address) ||
+                         !string.IsNullOrWhiteSpace(ZIP) ||
+                         !string.IsNullOrWhiteSpace(City))
+                    {
+                        <div class="divider"></div>
+                        <p class="section-title">📍 Adresseoplysninger</p>
+                        <div class="info-grid">
+                            @if (!string.IsNullOrWhiteSpace(Address))
+                            {
+                                <div class="info-row">
+                                    <div class="info-icon">🏠</div>
+                                    <div class="info-content">
+                                        <p class="info-label">Adresse</p>
+                                        <p class="info-value">@Address</p>
+                                    </div>
+                                </div>
+                            }
+
+                            @if (!string.IsNullOrWhiteSpace(ZIP))
+                            {
+                                <div class="info-row">
+                                    <div class="info-icon">📮</div>
+                                    <div class="info-content">
+                                        <p class="info-label">Postnummer</p>
+                                        <p class="info-value">@ZIP</p>
+                                    </div>
+                                </div>
+                            }
+
+                            @if (!string.IsNullOrWhiteSpace(City))
+                            {
+                                <div class="info-row">
+                                    <div class="info-icon">🏙️</div>
+                                    <div class="info-content">
+                                        <p class="info-label">By</p>
+                                        <p class="info-value">@City</p>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+
+                    <!-- Company Information Section -->
+                    @if (!string.IsNullOrWhiteSpace(CompanyName) ||
+                         !string.IsNullOrWhiteSpace(CompanyAddress) ||
+                         !string.IsNullOrWhiteSpace(CompanyZIP) ||
+                         !string.IsNullOrWhiteSpace(CompanyCity) ||
+                         !string.IsNullOrWhiteSpace(CompanyPhone) ||
+                         !string.IsNullOrWhiteSpace(CVRNumber) ||
+                         !string.IsNullOrWhiteSpace(EANNumber))
+                    {
+                        <div class="divider"></div>
+                        <p class="section-title">🏢 Virksomhedsoplysninger</p>
+                        <div class="info-grid">
+                            @if (!string.IsNullOrWhiteSpace(CompanyName))
+                            {
+                                <div class="info-row">
+                                    <div class="info-icon">🏭</div>
+                                    <div class="info-content">
+                                        <p class="info-label">Virksomhedsnavn</p>
+                                        <p class="info-value">@CompanyName</p>
+                                    </div>
+                                </div>
+                            }
+
+                            @if (!string.IsNullOrWhiteSpace(CompanyAddress))
+                            {
+                                <div class="info-row">
+                                    <div class="info-icon">🏠</div>
+                                    <div class="info-content">
+                                        <p class="info-label">Virksomhedsadresse</p>
+                                        <p class="info-value">@CompanyAddress</p>
+                                    </div>
+                                </div>
+                            }
+
+                            @if (!string.IsNullOrWhiteSpace(CompanyZIP))
+                            {
+                                <div class="info-row">
+                                    <div class="info-icon">📮</div>
+                                    <div class="info-content">
+                                        <p class="info-label">Postnummer (virksomhed)</p>
+                                        <p class="info-value">@CompanyZIP</p>
+                                    </div>
+                                </div>
+                            }
+
+                            @if (!string.IsNullOrWhiteSpace(CompanyCity))
+                            {
+                                <div class="info-row">
+                                    <div class="info-icon">🏙️</div>
+                                    <div class="info-content">
+                                        <p class="info-label">By (virksomhed)</p>
+                                        <p class="info-value">@CompanyCity</p>
+                                    </div>
+                                </div>
+                            }
+
+                            @if (!string.IsNullOrWhiteSpace(CompanyPhone))
+                            {
+                                <div class="info-row">
+                                    <div class="info-icon">📞</div>
+                                    <div class="info-content">
+                                        <p class="info-label">Telefonnummer (virksomhed)</p>
+                                        <p class="info-value">@CompanyPhone</p>
+                                    </div>
+                                </div>
+                            }
+
+                            @if (!string.IsNullOrWhiteSpace(CVRNumber))
+                            {
+                                <div class="info-row">
+                                    <div class="info-icon">🔢</div>
+                                    <div class="info-content">
+                                        <p class="info-label">CVR-nummer</p>
+                                        <p class="info-value">@CVRNumber</p>
+                                    </div>
+                                </div>
+                            }
+
+                            @if (!string.IsNullOrWhiteSpace(EANNumber))
+                            {
+                                <div class="info-row">
+                                    <div class="info-icon">🔢</div>
+                                    <div class="info-content">
+                                        <p class="info-label">EAN-nummer</p>
+                                        <p class="info-value">@EANNumber</p>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
 
                     <div class="divider"></div>
 
@@ -96,7 +302,7 @@
     /// Full name of the new member
     /// </summary>
     [Parameter]
-    public string FullName { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
 
     /// <summary>
     /// Email address of the new member
@@ -109,6 +315,102 @@
     /// </summary>
     [Parameter]
     public string Phone { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Job title of the new member
+    /// </summary>
+    [Parameter]
+    public string Title { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Employment status of the new member
+    /// </summary>
+    [Parameter]
+    public string EmploymentStatus { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Street address of the new member
+    /// </summary>
+    [Parameter]
+    public string Address { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Postal code of the new member
+    /// </summary>
+    [Parameter]
+    public string ZIP { get; set; } = string.Empty;
+
+    /// <summary>
+    /// City of the new member
+    /// </summary>
+    [Parameter]
+    public string City { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Primary section of the new member
+    /// </summary>
+    [Parameter]
+    public Dkef.Domain.Section? PrimarySection { get; set; }
+
+    /// <summary>
+    /// Secondary section of the new member (optional)
+    /// </summary>
+    [Parameter]
+    public Dkef.Domain.Section? SecondarySection { get; set; }
+
+    /// <summary>
+    /// Magazine delivery preference
+    /// </summary>
+    [Parameter]
+    public string MagazineDelivery { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Subscription preference
+    /// </summary>
+    [Parameter]
+    public string Subscription { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Company name (if applicable)
+    /// </summary>
+    [Parameter]
+    public string CompanyName { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Company street address (if applicable)
+    /// </summary>
+    [Parameter]
+    public string CompanyAddress { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Company postal code (if applicable)
+    /// </summary>
+    [Parameter]
+    public string CompanyZIP { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Company city (if applicable)
+    /// </summary>
+    [Parameter]
+    public string CompanyCity { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Company phone number (if applicable)
+    /// </summary>
+    [Parameter]
+    public string CompanyPhone { get; set; } = string.Empty;
+
+    /// <summary>
+    /// CVR number of the company (if applicable)
+    /// </summary>
+    [Parameter]
+    public string CVRNumber { get; set; } = string.Empty;
+
+    /// <summary>
+    /// EAN number of the company (if applicable)
+    /// </summary>
+    [Parameter]
+    public string EANNumber { get; set; } = string.Empty;
 
     /// <summary>
     /// Timestamp when the registration was received

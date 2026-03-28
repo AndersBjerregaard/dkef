@@ -91,17 +91,17 @@ try
     var dbConString = builder.Configuration.GetConnectionString("PostgresDb");
 
     // Contexts
-    builder.Services.AddDbContext<ContactContext>(options => options.UseNpgsql(dbConString));
+    builder.Services.AddDbContext<ContactsContext>(options => options.UseNpgsql(dbConString));
     builder.Services.AddDbContext<AspNetRolesContext>(options => options.UseNpgsql(dbConString));
     builder.Services.AddDbContext<EventsContext>(options => options.UseNpgsql(dbConString));
     builder.Services.AddDbContext<NewsContext>(options => options.UseNpgsql(dbConString));
     builder.Services.AddDbContext<GeneralAssemblyContext>(options => options.UseNpgsql(dbConString));
     builder.Services.AddDbContext<ForgotPasswordContext>(options => options.UseNpgsql(dbConString));
     builder.Services.AddDbContext<ChangeEmailContext>(options => options.UseNpgsql(dbConString));
-    builder.Services.AddDbContext<RefreshTokenContext>(options => options.UseNpgsql(dbConString));
+    builder.Services.AddDbContext<RefreshTokensContext>(options => options.UseNpgsql(dbConString));
 
     builder.Services.AddTransient<DbSet<Contact>>(x =>
-        x.GetRequiredService<ContactContext>()
+        x.GetRequiredService<ContactsContext>()
         .Contacts);
     builder.Services.AddTransient<DbSet<Event>>(x =>
         x.GetRequiredService<EventsContext>()
@@ -152,7 +152,7 @@ try
         // Configure token provider settings
         options.Tokens.PasswordResetTokenProvider = "DatabaseTokenProvider";
     })
-        .AddEntityFrameworkStores<ContactContext>()
+        .AddEntityFrameworkStores<ContactsContext>()
         .AddDefaultTokenProviders()
         .AddTokenProvider<DatabaseTokenProvider>("DatabaseTokenProvider");
 
@@ -327,7 +327,7 @@ try
     using (var scope = app.Services.CreateScope())
     {
         Log.Information("Migrating database...");
-        var contactContext = scope.ServiceProvider.GetService<ContactContext>();
+        var contactContext = scope.ServiceProvider.GetService<ContactsContext>();
         contactContext!.Database.Migrate();
         var aspNetRolesContext = scope.ServiceProvider.GetService<AspNetRolesContext>();
         aspNetRolesContext!.Database.Migrate();
@@ -341,7 +341,7 @@ try
         forgotPasswordContext!.Database.Migrate();
         var changeEmailContext = scope.ServiceProvider.GetService<ChangeEmailContext>();
         changeEmailContext!.Database.Migrate();
-        var refreshTokenContext = scope.ServiceProvider.GetService<RefreshTokenContext>();
+        var refreshTokenContext = scope.ServiceProvider.GetService<RefreshTokensContext>();
         refreshTokenContext!.Database.Migrate();
         // if (app.Environment.IsDevelopment()) {
         //     await ContactContext.SeedAsync(context);

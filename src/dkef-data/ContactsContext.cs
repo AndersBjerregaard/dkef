@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Dkef.Data;
 
-public class ContactContext : IdentityDbContext<Contact>
+public class ContactsContext : IdentityDbContext<Contact>
 {
 
     public DbSet<Contact> Contacts { get; set; }

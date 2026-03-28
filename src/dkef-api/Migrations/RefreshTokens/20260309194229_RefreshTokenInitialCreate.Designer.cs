@@ -14,7 +14,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace dkef_api.Migrations.RefreshToken
 {
-    [DbContext(typeof(RefreshTokenContext))]
+    [DbContext(typeof(RefreshTokensContext))]
     [Migration("20260309194229_RefreshTokenInitialCreate")]
     partial class InitialCreate
     {

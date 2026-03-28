@@ -230,7 +230,23 @@ public class AuthController(
         var newMemberRegistered = new NewMemberRegistered(
             FullName: contact.Name,
             Email: contact.Email,
-            Phone: contact.PhoneNumber ?? ""
+            PrimarySection: contact.PrimarySection.Value,
+            Phone: contact.PhoneNumber,
+            Title: contact.Title,
+            EmploymentStatus: contact.EmploymentStatus,
+            Address: contact.Address,
+            ZIP: contact.ZIP,
+            City: contact.City,
+            SecondarySection: contact.SecondarySection,
+            MagazineDelivery: contact.MagazineDelivery,
+            Subscription: contact.Subscription,
+            CompanyName: contact.CompanyName,
+            CompanyAddress: contact.CompanyAddress,
+            CompanyZIP: contact.CompanyZIP,
+            CompanyCity: contact.CompanyCity,
+            CompanyPhone: contact.CompanyPhone,
+            CVRNumber: contact.CVRNumber,
+            EAANNumber: contact.EANNumber
         );
 
         // Don't await email task - fire and forget

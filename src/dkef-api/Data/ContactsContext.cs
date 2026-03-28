@@ -8,19 +8,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Dkef.Data;
 
-public class ContactContext : IdentityDbContext<Contact>
+public class ContactsContext(DbContextOptions<ContactsContext> options) : IdentityDbContext<Contact>(options)
 {
 
-    public ContactContext(DbContextOptions<ContactContext> options) : base(options)
-    {
-    }
-
     public DbSet<Contact> Contacts { get; set; }
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-
-    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -28,33 +19,9 @@ public class ContactContext : IdentityDbContext<Contact>
         base.OnModelCreating(modelBuilder); // IMPORTANT: must call base method to let Identity set up its own tables
 
         modelBuilder.Entity<Contact>().HasKey(t => t.Id);
-
-        modelBuilder.Entity<IdentityUserRole<string>>()
-            .HasOne<IdentityUser>()
-            .WithMany()
-            .HasForeignKey(ur => ur.UserId)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<IdentityUserClaim<string>>()
-            .HasOne<IdentityUser>()
-            .WithMany()
-            .HasForeignKey(uc => uc.UserId)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<IdentityUserLogin<string>>()
-            .HasOne<IdentityUser>()
-            .WithMany()
-            .HasForeignKey(ul => ul.UserId)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<IdentityUserToken<string>>()
-            .HasOne<IdentityUser>()
-            .WithMany()
-            .HasForeignKey(ut => ut.UserId)
-            .OnDelete(DeleteBehavior.Cascade);
     }
 
-    public static async Task SeedAsync(ContactContext context)
+    public static async Task SeedAsync(ContactsContext context)
     {
 
         var faker = new Faker<Contact>().UseSeed(69)

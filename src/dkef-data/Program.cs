@@ -19,7 +19,7 @@ if (input is null ||
 
 Console.WriteLine("Connecting to database...");
 
-using var db = new ContactContext();
+using var db = new ContactsContext();
 
 if (input.Equals("dinero", StringComparison.OrdinalIgnoreCase))
 {

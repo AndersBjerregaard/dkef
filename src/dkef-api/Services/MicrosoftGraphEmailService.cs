@@ -105,6 +105,22 @@ public sealed class MicrosoftGraphEmailService(
             { "FullName", request.FullName },
             { "Email", request.Email },
             { "Phone", request.Phone },
+            { "Title", request.Title },
+            { "EmploymentStatus", request.EmploymentStatus },
+            { "Address", request.Address },
+            { "ZIP", request.ZIP },
+            { "City", request.City },
+            { "PrimarySection", request.PrimarySection },
+            { "SecondarySection", request.SecondarySection },
+            { "MagazineDelivery", request.MagazineDelivery },
+            { "Subscription", request.Subscription },
+            { "CompanyName", request.CompanyName },
+            { "CompanyAddress", request.CompanyAddress },
+            { "CompanyZIP", request.CompanyZIP },
+            { "CompanyCity", request.CompanyCity },
+            { "CompanyPhone", request.CompanyPhone },
+            { "CVRNumber", request.CVRNumber },
+            { "EANNumber", request.EAANNumber },
             { "ReceivedAt", DateTime.UtcNow.ToString("f") }
         };
         string rawHtml = await razorRenderer.RenderAsync<NewMember>(parameters);

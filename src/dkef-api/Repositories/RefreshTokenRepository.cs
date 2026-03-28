@@ -1,10 +1,11 @@
 using Dkef.Data;
 using Dkef.Domain;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace Dkef.Repositories;
 
-public sealed class RefreshTokenRepository(RefreshTokenContext _context)
+public sealed class RefreshTokenRepository(RefreshTokensContext _context)
 {
     public async Task<RefreshToken> CreateAsync(RefreshToken refreshToken)
     {
@@ -41,12 +42,12 @@ public sealed class RefreshTokenRepository(RefreshTokenContext _context)
     {
         var existing = await _context.RefreshTokens.FirstOrDefaultAsync(x => x.Id == id)
             ?? throw new KeyNotFoundException($"No refresh token found with the id {id}");
-        
+
         if (existing.IsRevoked)
         {
             throw new InvalidOperationException("This refresh token has already been revoked.");
         }
-        
+
         existing.IsRevoked = true;
         existing.RevokedAt = DateTime.UtcNow;
         await _context.SaveChangesAsync();
@@ -56,12 +57,12 @@ public sealed class RefreshTokenRepository(RefreshTokenContext _context)
     {
         var existing = await _context.RefreshTokens.FirstOrDefaultAsync(x => x.Token == token)
             ?? throw new KeyNotFoundException($"No refresh token found with the provided token");
-        
+
         if (existing.IsRevoked)
         {
             throw new InvalidOperationException("This refresh token has already been revoked.");
         }
-        
+
         existing.IsRevoked = true;
         existing.RevokedAt = DateTime.UtcNow;
         await _context.SaveChangesAsync();

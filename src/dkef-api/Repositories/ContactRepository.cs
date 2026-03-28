@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Dkef.Repositories;
 
-public class ContactRepository(ContactContext _context, IMapper _mapper) : IContactRepository
+public class ContactRepository(ContactsContext _context, IMapper _mapper) : IContactRepository
 {
     public async Task<ContactListDto> CreateAsync(Contact dto)
     {
@@ -75,7 +75,7 @@ public class ContactRepository(ContactContext _context, IMapper _mapper) : ICont
         return new DomainCollection<ContactListDto>(contacts, totalItems);
     }
 
-    public async Task SeedAsync() => await ContactContext.SeedAsync(_context);
+    public async Task SeedAsync() => await ContactsContext.SeedAsync(_context);
 
     public async Task<ContactListDto?> GetByEmailAsync(string email)
     {
