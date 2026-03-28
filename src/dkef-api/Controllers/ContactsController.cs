@@ -1,9 +1,11 @@
 using Dkef.Contracts;
+using Dkef.Domain;
 using Dkef.Repositories;
 
 using Ganss.Xss;
 
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 using ILogger = Serilog.ILogger;
@@ -13,14 +15,18 @@ namespace Dkef.Controllers;
 [ApiController]
 [Route("[controller]")]
 [Authorize(Roles = "Admin")]
-public class ContactsController(IContactRepository _repository, HtmlSanitizer _sanitizer, ILogger _logger) : ControllerBase
+public class ContactsController(
+    IContactRepository repository,
+    UserManager<Contact> userManager,
+    HtmlSanitizer sanitizer,
+    ILogger logger) : ControllerBase
 {
 
     [HttpGet]
     public async Task<IActionResult> GetMultiple([FromQuery] int take = 20, [FromQuery] int skip = 0)
     {
         if (take > 200) take = 200;
-        return Ok(await _repository.GetMultipleListAsync(take, skip));
+        return Ok(await repository.GetMultipleListAsync(take, skip));
     }
 
     [HttpGet]
@@ -31,7 +37,7 @@ public class ContactsController(IContactRepository _repository, HtmlSanitizer _s
         {
             return BadRequest($"Could not parse {id} as a guid");
         }
-        var contact = await _repository.GetByIdAsync(parsedId);
+        var contact = await repository.GetByIdAsync(parsedId);
         return contact is not null ? Ok(contact) : NotFound();
     }
 
@@ -44,9 +50,9 @@ public class ContactsController(IContactRepository _repository, HtmlSanitizer _s
             return BadRequest($"Could not parse {id} as a guid");
         }
 
-        dto.Sanitize(_sanitizer);
+        dto.Sanitize(sanitizer);
 
-        var updatedContact = await _repository.UpdateAsync(parsedId, dto);
+        var updatedContact = await repository.UpdateAsync(parsedId, dto);
 
         return Ok(updatedContact);
     }
@@ -60,7 +66,14 @@ public class ContactsController(IContactRepository _repository, HtmlSanitizer _s
             return BadRequest($"Could not parse {id} as a guid");
         }
 
-        await _repository.DeleteAsync(parsedId);
+        var contact = await userManager.FindByIdAsync(id.ToString());
+
+        if (contact is null)
+        {
+            return NotFound();
+        }
+
+        await userManager.DeleteAsync(contact);
 
         return NoContent();
     }
@@ -82,9 +95,9 @@ public class ContactsController(IContactRepository _repository, HtmlSanitizer _s
     [Route("seed")]
     public async Task<IActionResult> Seed()
     {
-        _logger.Information("Seeding...");
+        logger.Information("Seeding...");
 
-        await _repository.SeedAsync();
+        await repository.SeedAsync();
 
         return Ok();
     }
