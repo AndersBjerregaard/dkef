@@ -92,6 +92,7 @@ try
 
     // Contexts
     builder.Services.AddDbContext<ContactContext>(options => options.UseNpgsql(dbConString));
+    builder.Services.AddDbContext<AspNetRolesContext>(options => options.UseNpgsql(dbConString));
     builder.Services.AddDbContext<EventsContext>(options => options.UseNpgsql(dbConString));
     builder.Services.AddDbContext<NewsContext>(options => options.UseNpgsql(dbConString));
     builder.Services.AddDbContext<GeneralAssemblyContext>(options => options.UseNpgsql(dbConString));
@@ -292,6 +293,7 @@ try
     }
     else
     {
+        Log.Information("Using development email service");
         builder.Services.AddSingleton<IEmailService, DevelopmentEmailService>();
     }
 
@@ -327,6 +329,8 @@ try
         Log.Information("Migrating database...");
         var contactContext = scope.ServiceProvider.GetService<ContactContext>();
         contactContext!.Database.Migrate();
+        var aspNetRolesContext = scope.ServiceProvider.GetService<AspNetRolesContext>();
+        aspNetRolesContext!.Database.Migrate();
         var eventsContext = scope.ServiceProvider.GetService<EventsContext>();
         eventsContext!.Database.Migrate();
         var newsContext = scope.ServiceProvider.GetService<NewsContext>();

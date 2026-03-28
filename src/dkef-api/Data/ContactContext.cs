@@ -28,6 +28,30 @@ public class ContactContext : IdentityDbContext<Contact>
         base.OnModelCreating(modelBuilder); // IMPORTANT: must call base method to let Identity set up its own tables
 
         modelBuilder.Entity<Contact>().HasKey(t => t.Id);
+
+        modelBuilder.Entity<IdentityUserRole<string>>()
+            .HasOne<IdentityUser>()
+            .WithMany()
+            .HasForeignKey(ur => ur.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<IdentityUserClaim<string>>()
+            .HasOne<IdentityUser>()
+            .WithMany()
+            .HasForeignKey(uc => uc.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<IdentityUserLogin<string>>()
+            .HasOne<IdentityUser>()
+            .WithMany()
+            .HasForeignKey(ul => ul.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<IdentityUserToken<string>>()
+            .HasOne<IdentityUser>()
+            .WithMany()
+            .HasForeignKey(ut => ut.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 
     public static async Task SeedAsync(ContactContext context)
