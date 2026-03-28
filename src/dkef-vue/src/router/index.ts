@@ -96,6 +96,16 @@ const router = createRouter({
       name: 'revoke-change-email',
       component: () => import('@/views/RevokeChangeEmailView.vue'),
     },
+    {
+      path: '/statutes',
+      name: 'statutes',
+      component: () => import('@/views/StatutesView.vue'),
+    },
+    {
+      path: '/privacy-policy',
+      name: 'privacy-policy',
+      component: () => import('@/views/PrivacyPolicyView.vue'),
+    },
   ],
 })
 

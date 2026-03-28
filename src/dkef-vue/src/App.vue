@@ -493,11 +493,13 @@ async function goto(view: string) {
                 </button>
                 <button
                   class="block text-sm text-theme-text hover:text-theme-accent cursor-pointer pb-2 transition-colors"
+                  @click="goto('statutes')"
                 >
                   Vedtægter
                 </button>
                 <button
                   class="block text-sm text-theme-text hover:text-theme-accent cursor-pointer pb-2 transition-colors"
+                  @click="goto('privacy-policy')"
                 >
                   Databeskyttelse
                 </button>
