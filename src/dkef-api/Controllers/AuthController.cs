@@ -47,7 +47,8 @@ public class AuthController(
             ChangeLink: resetUrl
         );
 
-        await emailService.SendResetPasswordAsync(resetRequest);
+        // Don't await email task - fire and forget
+        _ = emailService.SendResetPasswordAsync(resetRequest);
 
         return Ok();
     }
@@ -232,7 +233,8 @@ public class AuthController(
             Phone: contact.PhoneNumber ?? ""
         );
 
-        await emailService.SendNewMemberRegisteredAsync(newMemberRegistered);
+        // Don't await email task - fire and forget
+        _ = emailService.SendNewMemberRegisteredAsync(newMemberRegistered);
 
         // Generate JWT token and refresh token for the newly registered user
         var tokens = await jwtService.GenerateTokensAsync(contact);

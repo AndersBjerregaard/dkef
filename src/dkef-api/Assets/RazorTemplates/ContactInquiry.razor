@@ -1,0 +1,127 @@
+@namespace Dkef.Assets.RazorTemplates
+@using Dkef.Assets.RazorTemplates.Shared
+@* ContactInquiry.razor - Email template for contact inquiries *@
+
+<!doctype html>
+<html lang="da">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Ny henvendelse — DKEF</title>
+    <EmailBaseStyles />
+  </head>
+
+  <body>
+    <div class="email-outer">
+      <div class="email-card">
+
+        <!-- Header -->
+        <div class="email-header">
+          <p class="org-label">Elektroteknisk Forening</p>
+          <h1>Ny henvendelse modtaget</h1>
+          <p class="subtitle">En bruger har sendt en besked via kontaktformularen</p>
+        </div>
+
+        <!-- Amber accent bar -->
+        <div class="accent-bar"></div>
+
+        <!-- Body -->
+        <div class="email-body">
+
+          <p class="intro-text">
+            Hej,<br /><br />
+            Du har modtaget en ny henvendelse via kontaktformularen på
+            <strong style="color: #f1f5f9;">dkef.dk</strong>. Oplysningerne fra afsenderen
+            fremgår nedenfor.
+          </p>
+
+          <!-- Sender details -->
+          <div class="info-grid">
+
+            <div class="info-row">
+              <div class="info-icon">👤</div>
+              <div class="info-content">
+                <p class="info-label">Navn</p>
+                <p class="info-value">@SenderName</p>
+              </div>
+            </div>
+
+            <div class="info-row">
+              <div class="info-icon">✉️</div>
+              <div class="info-content">
+                <p class="info-label">E-mailadresse</p>
+                <p class="info-value">
+                  <a href="mailto:@SenderEmail"
+                     style="color: #fbbf24; text-decoration: none;">
+                    @SenderEmail
+                  </a>
+                </p>
+              </div>
+            </div>
+
+            <div class="info-row">
+              <div class="info-icon">📞</div>
+              <div class="info-content">
+                <p class="info-label">Telefonnummer</p>
+                <p class="info-value">@SenderPhone</p>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Message -->
+          <div class="message-section">
+            <p class="message-section-label">Besked</p>
+            <div class="message-box">@Message</div>
+          </div>
+
+          <!-- Reply CTA -->
+          <div class="cta-section">
+            <a class="cta-button" href="mailto:@SenderEmail">
+              Svar på henvendelse
+            </a>
+          </div>
+
+          <div class="divider"></div>
+
+          <!-- Metadata -->
+          <div class="meta-strip">
+            <strong>Tidspunkt:</strong> @ReceivedAt<br />
+            <strong>Kilde:</strong> Kontaktformularen på dkef.dk
+          </div>
+
+        </div>
+
+        <!-- Footer -->
+        <div class="email-footer">
+          <p class="footer-org">DKEF</p>
+          <p class="footer-address">
+            Elleholmvej 28C, 5250 Odense SV<br />
+            <a href="mailto:info@dkef.dk">info@dkef.dk</a>
+            &nbsp;·&nbsp;
+            <a href="tel:+4542577069">+45 42 57 70 69</a>
+          </p>
+          <p class="footer-note">
+            Denne e-mail er automatisk genereret af systemet på dkef.dk og er kun
+            beregnet til sekretærens brug.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </body>
+</html>
+
+@code {
+    [Parameter]
+    public string SenderName { get; set; } = string.Empty;
+    [Parameter]
+    public string SenderEmail { get; set; } = string.Empty;
+    [Parameter]
+    public string SenderPhone { get; set; } = string.Empty;
+    [Parameter]
+    public string Message { get; set; } = string.Empty;
+    [Parameter]
+    public string ReceivedAt { get; set; } = string.Empty;
+}

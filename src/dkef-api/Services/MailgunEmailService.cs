@@ -17,7 +17,7 @@ public sealed class MailgunEmailService(
     Serilog.ILogger logger
 ) : IEmailService
 {
-    public async ValueTask SendContactInquiryAsync(InformationMessage message)
+    public async Task SendContactInquiryAsync(InformationMessage message)
     {
         ArgumentNullException.ThrowIfNull(message);
 
@@ -44,7 +44,7 @@ public sealed class MailgunEmailService(
         response.EnsureSuccessStatusCode();
     }
 
-    public async ValueTask SendChangeEmailAsync(ChangeEmailRequest changeEmailRequest)
+    public async Task SendChangeEmailAsync(ChangeEmailRequest changeEmailRequest)
     {
         ArgumentNullException.ThrowIfNull(changeEmailRequest);
 
@@ -101,7 +101,7 @@ public sealed class MailgunEmailService(
         }
     }
 
-    public async ValueTask SendResetPasswordAsync(ResetPasswordRequest resetPasswordRequest)
+    public async Task SendResetPasswordAsync(ResetPasswordRequest resetPasswordRequest)
     {
         ArgumentNullException.ThrowIfNull(resetPasswordRequest);
 
@@ -128,7 +128,7 @@ public sealed class MailgunEmailService(
     }
 
     [Obsolete("Not supported")]
-    public ValueTask SendNewMemberRegisteredAsync(NewMemberRegistered request)
+    public Task SendNewMemberRegisteredAsync(NewMemberRegistered request)
     {
         throw new NotImplementedException();
     }

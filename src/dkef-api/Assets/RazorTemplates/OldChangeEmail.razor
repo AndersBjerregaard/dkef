@@ -1,0 +1,98 @@
+@namespace Dkef.Assets.RazorTemplates
+@using Dkef.Assets.RazorTemplates.Shared
+
+<!doctype html>
+<html lang="da">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <title>Ændring af Email</title>
+        <EmailBaseStyles />
+    </head>
+
+    <body>
+        <div class="email-outer">
+            <div class="email-card">
+                <!-- Header -->
+                <div class="email-header">
+                    <p class="org-label">Elektroteknisk Forening</p>
+                    <h1>
+                        Sikkerhedsunderning: Din
+                        <strong>dkef.dk</strong> medlemskonto e-mail adresse er
+                        ved at blive ændret
+                    </h1>
+                </div>
+
+                <!-- Amber accent bar -->
+                <div class="accent-bar"></div>
+
+                <!-- Body -->
+                <div class="email-body">
+                    <p class="intro-text">
+                        Hej, @Name<br /><br />
+                        Vi ville gøre dig opmærksom på at der er blevet gjort en
+                        handling for at ændre e-mail adressen for din
+                        <strong>dkef.dk</strong> medlemskonto til
+                        <i>@NewEmail</i><br /><br />
+                        <strong
+                            >Hvis det var dig der foretog denne ændring:</strong
+                        >
+                        Ingen yderligere handling er påkrævet fra denne e-mail
+                        indbakke. Du behøver blot at følge instrukserne der er
+                        sendt til din nye e-mail adresse.<br /><br />
+                        <strong
+                            >DET IKKE var dig der foretog denne ændring:</strong
+                        >
+                        Din konto er muligvis kompromitteret. Venligst klik på
+                        knappen forneden omgående for at annullere denne
+                        hadnling og sikre din konto:
+                    </p>
+
+                    <!-- Confirm CTA -->
+                    <div class="cta-section">
+                        <a class="cta-button" href="@RevokeLink">
+                            Annuller Handling & Sikr Min Konto
+                        </a>
+                    </div>
+
+                    <!-- Security Concerns -->
+                    <p class="intro-text">
+                        For din egen sikkerhed anbefaler vi også at ændre din
+                        adgangskode.<br />
+                    </p>
+
+                    <div class="divider"></div>
+
+                    <!-- Metadata -->
+                    <div class="meta-strip">
+                        <strong>Tidspunkt:</strong> @ReceivedAt<br />
+                        <strong>Kilde:</strong> dkef.dk
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <div class="email-footer">
+                    <p class="footer-org">DKEF</p>
+                    <p class="footer-address">
+                        Elleholmvej 28C, 5250 Odense SV<br />
+                        <a href="mailto:info@dkef.dk">info@dkef.dk</a>
+                        &nbsp;·&nbsp;
+                        <a href="tel:+4542577069">+45 42 57 70 69</a>
+                    </p>
+                    <p class="footer-note">
+                        Denne e-mail er automatisk genereret af systemet på
+                        dkef.dk og kan ikke besvares.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
+
+@code {
+    [Parameter] public string Name { get; set; } = string.Empty;
+    [Parameter] public string NewEmail { get; set; } = string.Empty;
+    [Parameter] public string RevokeLink { get; set; } = string.Empty;
+    [Parameter] public string ReceivedAt { get; set; } = string.Empty;
+}

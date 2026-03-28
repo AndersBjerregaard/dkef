@@ -184,7 +184,8 @@ public sealed class ProfileController(
             RevokeLink: revokeLink
         );
 
-        await emailService.SendChangeEmailAsync(changeEmailRequest);
+        // Don't await email task - fire and forget
+        _ = emailService.SendChangeEmailAsync(changeEmailRequest);
 
         return Ok();
     }

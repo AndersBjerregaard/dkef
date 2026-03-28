@@ -15,7 +15,7 @@ public sealed class DevelopmentEmailService(
 {
     private readonly MailConfiguration _mailConfiguration = mailConfigurationOptions.Value;
 
-    public ValueTask SendContactInquiryAsync(InformationMessage informationMessage)
+    public Task SendContactInquiryAsync(InformationMessage informationMessage)
     {
         ArgumentNullException.ThrowIfNull(informationMessage);
 
@@ -29,10 +29,10 @@ public sealed class DevelopmentEmailService(
             informationMessageJson
         );
 
-        return ValueTask.CompletedTask;
+        return Task.CompletedTask;
     }
 
-    public ValueTask SendChangeEmailAsync(ChangeEmailRequest changeEmailRequest)
+    public Task SendChangeEmailAsync(ChangeEmailRequest changeEmailRequest)
     {
         ArgumentNullException.ThrowIfNull(changeEmailRequest);
 
@@ -57,10 +57,10 @@ public sealed class DevelopmentEmailService(
         );
 
 
-        return ValueTask.CompletedTask;
+        return Task.CompletedTask;
     }
 
-    public ValueTask SendResetPasswordAsync(ResetPasswordRequest request)
+    public Task SendResetPasswordAsync(ResetPasswordRequest request)
     {
         ArgumentNullException.ThrowIfNull(request);
 
@@ -74,10 +74,10 @@ public sealed class DevelopmentEmailService(
             resetPasswordJson
         );
 
-        return ValueTask.CompletedTask;
+        return Task.CompletedTask;
     }
 
-    public ValueTask SendNewMemberRegisteredAsync(NewMemberRegistered request)
+    public Task SendNewMemberRegisteredAsync(NewMemberRegistered request)
     {
         ArgumentNullException.ThrowIfNull(request);
 
@@ -91,6 +91,6 @@ public sealed class DevelopmentEmailService(
             newMemberJson
         );
 
-        return ValueTask.CompletedTask;
+        return Task.CompletedTask;
     }
 }

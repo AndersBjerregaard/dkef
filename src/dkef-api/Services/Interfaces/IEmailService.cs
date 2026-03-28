@@ -4,8 +4,8 @@ namespace Dkef.Services.Interfaces;
 
 public interface IEmailService
 {
-    ValueTask SendContactInquiryAsync(InformationMessage message);
-    ValueTask SendChangeEmailAsync(ChangeEmailRequest request);
-    ValueTask SendResetPasswordAsync(ResetPasswordRequest request);
-    ValueTask SendNewMemberRegisteredAsync(NewMemberRegistered request);
+    Task SendContactInquiryAsync(InformationMessage message);
+    Task SendChangeEmailAsync(ChangeEmailRequest request);
+    Task SendResetPasswordAsync(ResetPasswordRequest request);
+    Task SendNewMemberRegisteredAsync(NewMemberRegistered request);
 }

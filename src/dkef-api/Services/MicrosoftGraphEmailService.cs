@@ -24,49 +24,155 @@ public sealed class MicrosoftGraphEmailService(
 {
     private readonly MailConfiguration _mailConfiguration = mailConfigurationOptions.Value;
 
-    public ValueTask SendChangeEmailAsync(ChangeEmailRequest request)
-    {
-        throw new NotImplementedException();
-    }
-
-    public ValueTask SendContactInquiryAsync(InformationMessage message)
-    {
-        throw new NotImplementedException();
-    }
-
-    public async ValueTask SendNewMemberRegisteredAsync(NewMemberRegistered request)
+    public async Task SendChangeEmailAsync(ChangeEmailRequest request)
     {
         ArgumentNullException.ThrowIfNull(request);
 
-        logger.Information("Rendering 'NewMemberRegistered' razor template...");
-        string rawHtml = await razorRenderer.RenderAsync<NewMember>(new Dictionary<string, object?>
+        string receivedAt = DateTime.UtcNow.ToString("f");
+
+        Dictionary<string, object?> newEmailParameters = new()
+        {
+            { "Name", request.Name },
+            { "ConfirmLink", request.ConfirmLink },
+            { "ReceivedAt", receivedAt }
+        };
+
+        string newEmailRawHtml = await razorRenderer.RenderAsync<Dkef.Assets.RazorTemplates.ChangeEmail>(newEmailParameters);
+        string newEmailResultHtml = InlineCss(newEmailRawHtml);
+
+        Dictionary<string, object?> oldEmailParameters = new()
+        {
+            { "Name", request.Name },
+            { "NewEmail", request.NewEmail },
+            { "RevokeLink", request.RevokeLink },
+            { "ReceivedAt", receivedAt }
+        };
+
+        string oldEmailRawHtml = await razorRenderer.RenderAsync<Dkef.Assets.RazorTemplates.OldChangeEmail>(oldEmailParameters);
+        string oldEmailResulthtml = InlineCss(oldEmailRawHtml);
+
+        try
+        {
+            await SendEmailAsync(newEmailResultHtml, "Bekræft ny e-mail", request.NewEmail);
+        }
+        catch (Exception ex)
+        {
+            logger.Error(ex, "Failed to send change email.");
+        }
+
+        try
+        {
+            await SendEmailAsync(oldEmailResulthtml, "Ændring af e-mail", request.OldEmail);
+        }
+        catch (Exception ex)
+        {
+            logger.Error(ex, "Failed to send old change email.");
+        }
+    }
+
+    public async Task SendContactInquiryAsync(InformationMessage message)
+    {
+        ArgumentNullException.ThrowIfNull(message);
+
+        Dictionary<string, object?> parameters = new()
+        {
+            { "SenderName", message.Name },
+            { "SenderEmail", message.Email},
+            { "SenderPhone", message.Phone},
+            { "Message", message.Message },
+            { "ReceivedAt", DateTime.UtcNow.ToString("f") }
+        };
+        string rawHtml = await razorRenderer.RenderAsync<ContactInquiry>(parameters);
+
+        string resultHtml = InlineCss(rawHtml);
+
+        try
+        {
+            await SendEmailAsync(resultHtml, "Ny henvendelse", _mailConfiguration.To);
+        }
+        catch (Exception ex)
+        {
+            logger.Error(ex, "Failed to send contact inquiry email.");
+        }
+    }
+
+    public async Task SendNewMemberRegisteredAsync(NewMemberRegistered request)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+
+        Dictionary<string, object?> parameters = new()
         {
             { "FullName", request.FullName },
             { "Email", request.Email },
             { "Phone", request.Phone },
             { "ReceivedAt", DateTime.UtcNow.ToString("f") }
-        });
+        };
+        string rawHtml = await razorRenderer.RenderAsync<NewMember>(parameters);
 
-        logger.Information("Inlining css...");
-        InlineResult inlineResult = PreMailer.Net.PreMailer.MoveCssInline(rawHtml);
+        string resultHtml = InlineCss(rawHtml);
+
+        try
+        {
+            await SendEmailAsync(resultHtml, "Nyt medlem registreret", _mailConfiguration.To);
+        }
+        catch (Exception exception)
+        {
+            logger.Error(exception, "Failed to send email.");
+        }
+    }
+
+    public async Task SendResetPasswordAsync(ResetPasswordRequest request)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+
+        Dictionary<string, object?> parameters = new()
+        {
+            { "Name", request.Name },
+            { "ChangeLink", request.ChangeLink },
+            { "ReceivedAt", DateTime.UtcNow.ToString("f") }
+        };
+
+        string rawHtml = await razorRenderer.RenderAsync<ResetPassword>(parameters);
+
+        string resultHtml = InlineCss(rawHtml);
+
+        try
+        {
+            await SendEmailAsync(resultHtml, "Nyt medlem registreret", request.Email);
+        }
+        catch (Exception exception)
+        {
+            logger.Error(exception, "Failed to send reset password email.");
+        }
+    }
+
+    private string InlineCss(string rawHtml)
+    {
+
+        PreMailer.Net.PreMailer preMailer = new(rawHtml);
+
+        InlineResult inlineResult = preMailer.MoveCssInline();
 
         foreach (string warning in inlineResult.Warnings)
         {
             logger.Warning(warning);
         }
 
-        string resultHtml = inlineResult.Html;
+        return inlineResult.Html;
+    }
 
+    private async Task SendEmailAsync(string resultHtml, string subject, string toEmail)
+    {
         var message = new Message
         {
-            Subject = "Nyt medlem registreret",
+            Subject = subject,
             Body = new ItemBody
             {
                 ContentType = BodyType.Html,
                 Content = resultHtml
             },
             ToRecipients = [
-                new Recipient { EmailAddress = new EmailAddress { Address = _mailConfiguration.To }}
+                new Recipient { EmailAddress = new EmailAddress { Address = toEmail }}
             ]
         };
 
@@ -75,12 +181,7 @@ public sealed class MicrosoftGraphEmailService(
             Message = message
         };
 
-        logger.Information("Sending email...");
+        logger.Information("Sending email with subject {0} to {1}", subject, toEmail);
         await graphServiceClient.Users[_mailConfiguration.Sender].SendMail.PostAsync(mailRequest);
-    }
-
-    public ValueTask SendResetPasswordAsync(ResetPasswordRequest request)
-    {
-        throw new NotImplementedException();
     }
 }

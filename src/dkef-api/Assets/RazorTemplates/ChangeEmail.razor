@@ -1,0 +1,90 @@
+@namespace Dkef.Assets.RazorTemplates
+@using Dkef.Assets.RazorTemplates.Shared
+
+<!doctype html>
+<html lang="da">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <title>Ændring af Email</title>
+        <EmailBaseStyles />
+    </head>
+
+    <body>
+        <div class="email-outer">
+            <div class="email-card">
+                <!-- Header -->
+                <div class="email-header">
+                    <p class="org-label">Elektroteknisk Forening</p>
+                    <h1>
+                        Bekræft din nye e-mail adresse til Elektroteknisk
+                        Forening
+                    </h1>
+                </div>
+
+                <!-- Amber accent bar -->
+                <div class="accent-bar"></div>
+
+                <!-- Body -->
+                <div class="email-body">
+                    <p class="intro-text">
+                        Hej, @Name<br /><br />
+                        Du har anmodet om at ændre din e-mail addresse
+                        associeret med din
+                        <strong style="color: #f1f5f9">dkef.dk</strong>
+                        medlemskonto. For at gennemføre processen og opdatere
+                        dine oplysninger, klik venligst på knappen nedenfor.
+                    </p>
+
+                    <!-- Confirm CTA -->
+                    <div class="cta-section">
+                        <a class="cta-button" href="@ConfirmLink">
+                            Bekræft Ny E-Mail Adresse
+                        </a>
+                    </div>
+
+                    <!-- Security Concerns -->
+                    <p class="intro-text">
+                        Efter bekræftelse, vil du kunne bruge denne e-mail
+                        adresse til at logge ind på din
+                        <strong style="color: #f1f5f9">dkef.dk</strong>
+                        medlemskonto.<br />
+                        <strong>Vigtigt:</strong> Dette link vil kun være
+                        gyldigt i 24 timer. Hvis du ikke har anmodet om ændring,
+                        kan du ignorere denne besked.<br />
+                    </p>
+
+                    <div class="divider"></div>
+
+                    <!-- Metadata -->
+                    <div class="meta-strip">
+                        <strong>Tidspunkt:</strong> @ReceivedAt<br />
+                        <strong>Kilde:</strong> Medlemsportalen på dkef.dk
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <div class="email-footer">
+                    <p class="footer-org">DKEF</p>
+                    <p class="footer-address">
+                        Elleholmvej 28C, 5250 Odense SV<br />
+                        <a href="mailto:info@dkef.dk">info@dkef.dk</a>
+                        &nbsp;·&nbsp;
+                        <a href="tel:+4542577069">+45 42 57 70 69</a>
+                    </p>
+                    <p class="footer-note">
+                        Denne e-mail er automatisk genereret af systemet på
+                        dkef.dk og kan ikke besvares.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
+
+@code {
+    [Parameter] public string Name { get; set; } = string.Empty;
+    [Parameter] public string ConfirmLink { get; set; } = string.Empty;
+    [Parameter] public string ReceivedAt { get; set; } = string.Empty;
+}
