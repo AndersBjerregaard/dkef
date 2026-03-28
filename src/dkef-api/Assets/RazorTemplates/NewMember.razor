@@ -99,7 +99,7 @@
                                 <div class="info-icon">⭐</div>
                                 <div class="info-content">
                                     <p class="info-label">Primær sektion</p>
-                                    <p class="info-value">@PrimarySection</p>
+                                    <p class="info-value">@GetEnumMemberValue(PrimarySection.Value)</p>
                                 </div>
                             </div>
                         }
@@ -111,7 +111,7 @@
                                 <div class="info-icon">✓</div>
                                 <div class="info-content">
                                     <p class="info-label">Sekundær sektion</p>
-                                    <p class="info-value">@SecondarySection</p>
+                                    <p class="info-value">@GetEnumMemberValue(SecondarySection.Value)</p>
                                 </div>
                             </div>
                         }
@@ -417,4 +417,21 @@
     /// </summary>
     [Parameter]
     public string ReceivedAt { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Gets the EnumMember value for a Section enum value
+    /// </summary>
+    /// <param name="section">The Section enum value</param>
+    /// <returns>The EnumMember Value attribute, or the enum name if not found</returns>
+    private string GetEnumMemberValue(Dkef.Domain.Section section)
+    {
+        var fieldInfo = section.GetType().GetField(section.ToString());
+        if (fieldInfo == null)
+            return section.ToString();
+
+        var enumMemberAttr = fieldInfo.GetCustomAttributes(typeof(System.Runtime.Serialization.EnumMemberAttribute), false)
+            .FirstOrDefault() as System.Runtime.Serialization.EnumMemberAttribute;
+
+        return enumMemberAttr?.Value ?? section.ToString();
+    }
 }

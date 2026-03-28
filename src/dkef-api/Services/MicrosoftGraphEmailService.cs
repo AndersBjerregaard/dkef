@@ -102,7 +102,7 @@ public sealed class MicrosoftGraphEmailService(
 
         Dictionary<string, object?> parameters = new()
         {
-            { "FullName", request.FullName },
+            { "Name", request.FullName },
             { "Email", request.Email },
             { "Phone", request.Phone },
             { "Title", request.Title },
