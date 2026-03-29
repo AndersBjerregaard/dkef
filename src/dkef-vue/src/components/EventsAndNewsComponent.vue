@@ -357,13 +357,13 @@ function validateFields(): boolean {
   if (itemDescription.value === '') return false
 
   if (createType.value === 'event' || createType.value === 'general-assembly') {
-    if (itemFile.value === null) return false
     if (itemSection.value === '') return false
     if (itemAddress.value === '') return false
     if (itemDate.value === '') return false
   }
 
-  // News: file, section and author are all optional
+  // Image is optional for all types (event, news, general-assembly)
+  // Section and author are optional for news only
   return true
 }
 
@@ -409,11 +409,15 @@ async function createItem() {
 }
 
 async function createEvent() {
-  const guid: string = uuidv4()
-  const presignedUrlResponse: AxiosResponse<string> = await apiservice.get<string>(
-    urlservice.getEventPresignedUrl(guid),
-  )
-  await uploadFile(presignedUrlResponse.data, itemFile.value!)
+  let thumbnailId: string | undefined = undefined
+
+  if (itemFile.value !== null) {
+    thumbnailId = uuidv4()
+    const presignedUrlResponse: AxiosResponse<string> = await apiservice.get<string>(
+      urlservice.getEventPresignedUrl(thumbnailId),
+    )
+    await uploadFile(presignedUrlResponse.data, itemFile.value)
+  }
 
   const newEvent: EventDto = {
     title: itemTitle.value,
@@ -421,7 +425,7 @@ async function createEvent() {
     address: itemAddress.value,
     dateTime: itemDate.value,
     description: itemDescription.value,
-    thumbnailId: guid,
+    ...(thumbnailId && { thumbnailId }),
   }
   await apiservice.post<PublishedEvent>(urlservice.postEvent(), newEvent)
 }
@@ -447,11 +451,15 @@ async function createNews() {
 }
 
 async function createGeneralAssembly() {
-  const guid: string = uuidv4()
-  const presignedUrlResponse: AxiosResponse<string> = await apiservice.get<string>(
-    urlservice.getGeneralAssemblyPresignedUrl(guid),
-  )
-  await uploadFile(presignedUrlResponse.data, itemFile.value!)
+  let thumbnailId: string | undefined = undefined
+
+  if (itemFile.value !== null) {
+    thumbnailId = uuidv4()
+    const presignedUrlResponse: AxiosResponse<string> = await apiservice.get<string>(
+      urlservice.getGeneralAssemblyPresignedUrl(thumbnailId),
+    )
+    await uploadFile(presignedUrlResponse.data, itemFile.value)
+  }
 
   const newAssembly: GeneralAssemblyDto = {
     title: itemTitle.value,
@@ -459,7 +467,7 @@ async function createGeneralAssembly() {
     address: itemAddress.value,
     dateTime: itemDate.value,
     description: itemDescription.value,
-    thumbnailId: guid,
+    ...(thumbnailId && { thumbnailId }),
   }
   await apiservice.post<PublishedGeneralAssembly>(urlservice.postGeneralAssembly(), newAssembly)
 }

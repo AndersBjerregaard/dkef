@@ -28,7 +28,7 @@ const dateTime = computed(() => {
         <img
           class="h-full w-full object-cover"
           :src="props.publishedEvent?.thumbnailUrl"
-          alt="event picture"
+          alt="Arrangement"
         />
       </div>
 

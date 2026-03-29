@@ -233,7 +233,8 @@ try
             cfg.CreateMap<Contact, ContactListDto>();
             cfg.CreateMap<Event, Event>();
             cfg.CreateMap<EventDto, Event>()
-                .ForMember(dest => dest.ThumbnailUrl, opt => opt.MapFrom(src => $"{thumbnailPrefix}/events/{src.ThumbnailId}"))
+                .ForMember(dest => dest.ThumbnailUrl, opt => opt.MapFrom(src =>
+                    string.IsNullOrWhiteSpace(src.ThumbnailId) ? string.Empty : $"{thumbnailPrefix}/events/{src.ThumbnailId}"))
                 .ForMember(dest => dest.DateTime, opt => opt.MapFrom(src => DateTime.Parse(src.DateTime, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal).ToUniversalTime()));
             cfg.CreateMap<News, News>();
             cfg.CreateMap<NewsDto, News>()
@@ -241,7 +242,8 @@ try
                     string.IsNullOrWhiteSpace(src.ThumbnailId) ? string.Empty : $"{thumbnailPrefix}/news/{src.ThumbnailId}"));
             cfg.CreateMap<GeneralAssembly, GeneralAssembly>();
             cfg.CreateMap<GeneralAssemblyDto, GeneralAssembly>()
-                .ForMember(dest => dest.ThumbnailUrl, opt => opt.MapFrom(src => $"{thumbnailPrefix}/general-assemblies/{src.ThumbnailId}"))
+                .ForMember(dest => dest.ThumbnailUrl, opt => opt.MapFrom(src =>
+                    string.IsNullOrWhiteSpace(src.ThumbnailId) ? string.Empty : $"{thumbnailPrefix}/general-assemblies/{src.ThumbnailId}"))
                 .ForMember(dest => dest.DateTime, opt => opt.MapFrom(src => DateTime.Parse(src.DateTime, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal).ToUniversalTime()));
             cfg.CreateMap<InformationDto, InformationMessage>();
             // Optionally call 'cfg.MapMailgunContracts();' to map Mailgun contract types

@@ -1,5 +1,7 @@
 using System.ComponentModel.DataAnnotations;
+
 using Dkef.Contracts.Validation;
+
 using Ganss.Xss;
 
 namespace Dkef.Contracts;
@@ -17,8 +19,7 @@ public class EventDto : PostObject
     public string DateTime { get; set; } = string.Empty;
     [Required(AllowEmptyStrings = false, ErrorMessage = "Description is required.")]
     public string Description { get; set; } = string.Empty;
-    [Required(AllowEmptyStrings = false, ErrorMessage = "ThumbnailId is required.")]
-    [GuidValidation(ErrorMessage = "ThumbnailId must be a valid GUID.")]
+    [GuidValidation(AllowEmpty = true, ErrorMessage = "ThumbnailId must be a valid GUID.")]
     public string ThumbnailId { get; set; } = string.Empty;
 
     public override void Sanitize(HtmlSanitizer sanitizer)

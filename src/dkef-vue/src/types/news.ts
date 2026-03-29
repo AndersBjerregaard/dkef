@@ -3,7 +3,7 @@ export interface NewsDto {
   section: string
   author: string
   description: string
-  thumbnailId: string
+  thumbnailId?: string
 }
 
 export interface PublishedNews {

@@ -4,7 +4,7 @@ export interface GeneralAssemblyDto {
   address: string
   dateTime: string
   description: string
-  thumbnailId: string
+  thumbnailId?: string
 }
 
 export interface PublishedGeneralAssembly {

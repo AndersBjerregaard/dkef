@@ -30,7 +30,7 @@ const dateTime = computed(() => {
         <img
           class="h-full w-full object-cover"
           :src="props.publishedGeneralAssembly?.thumbnailUrl"
-          alt="general assembly picture"
+          alt="Generalforsamling"
         />
       </div>
 

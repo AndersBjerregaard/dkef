@@ -26,7 +26,7 @@ const publishedAt = computed(() => {
           v-if="props.publishedNews?.thumbnailUrl"
           class="h-full w-full object-cover"
           :src="props.publishedNews?.thumbnailUrl"
-          alt="news picture"
+          alt="Nyhed"
         />
         <div v-else class="h-full w-full flex items-center justify-center">
           <span class="text-theme-muted text-sm">Ingen billede</span>
