@@ -128,13 +128,69 @@ async function goto(view: string) {
               </RouterLink>
             </div>
             <div class="p-1">
-              <RouterLink to="/about">
-                <button
-                  class="rounded-lg bg-theme-mute h-10 px-4 cursor-pointer text-theme-text hover:bg-theme-mute hover:text-theme-accent transition-colors text-sm font-medium"
+              <Menu as="div" class="relative inline-block text-left" v-slot="{ open }">
+                <div>
+                  <MenuButton
+                    class="rounded-lg bg-theme-mute h-10 px-4 cursor-pointer text-theme-text hover:bg-theme-mute hover:text-theme-accent transition-colors text-sm font-medium flex items-center gap-2"
+                  >
+                    Om foreningen
+                    <svg
+                      :class="['w-4 h-4 transition-transform duration-200', { 'rotate-180': open }]"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M19 14l-7 7m0 0l-7-7m7 7V3"
+                      />
+                    </svg>
+                  </MenuButton>
+                </div>
+                <transition
+                  enter-active-class="transition ease-out duration-100"
+                  enter-from-class="transform opacity-0 scale-95"
+                  enter-to-class="transform opacity-100 scale-100"
+                  leave-active-class="transition ease-in duration-75"
+                  leave-from-class="transform opacity-100 scale-100"
+                  leave-to-class="transform opacity-0 scale-95"
                 >
-                  Om foreningen
-                </button>
-              </RouterLink>
+                  <MenuItems
+                    class="absolute left-0 z-10 mt-2 w-56 origin-top-left rounded-lg bg-theme-bg shadow-lg ring-1 ring-theme-border focus:outline-none"
+                  >
+                    <div class="px-1 py-1">
+                      <MenuItem v-slot="{ active, close }">
+                        <RouterLink to="/about">
+                          <button
+                            :class="[
+                              active ? 'bg-theme-border text-theme-accent' : 'text-theme-text',
+                              'group flex w-full items-center rounded-lg px-2 py-2 text-sm cursor-pointer transition-colors',
+                            ]"
+                            @click="close"
+                          >
+                            Om foreningen
+                          </button>
+                        </RouterLink>
+                      </MenuItem>
+                      <MenuItem v-slot="{ active, close }">
+                        <RouterLink to="/the-boards">
+                          <button
+                            :class="[
+                              active ? 'bg-theme-border text-theme-accent' : 'text-theme-text',
+                              'group flex w-full items-center rounded-lg px-2 py-2 text-sm cursor-pointer transition-colors',
+                            ]"
+                            @click="close"
+                          >
+                            Bestyrelserne
+                          </button>
+                        </RouterLink>
+                      </MenuItem>
+                    </div>
+                  </MenuItems>
+                </transition>
+              </Menu>
             </div>
             <div class="p-1">
               <RouterLink to="/contact">
@@ -377,6 +433,19 @@ async function goto(view: string) {
                             @click="close"
                           >
                             Om foreningen
+                          </button>
+                        </RouterLink>
+                      </MenuItem>
+                      <MenuItem v-slot="{ active, close }">
+                        <RouterLink to="/the-boards">
+                          <button
+                            :class="[
+                              active ? 'bg-theme-border text-theme-accent' : 'text-theme-text',
+                              'group flex w-full items-center rounded-lg px-2 py-2 text-sm cursor-pointer transition-colors',
+                            ]"
+                            @click="close"
+                          >
+                            Bestyrelserne
                           </button>
                         </RouterLink>
                       </MenuItem>

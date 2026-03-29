@@ -29,19 +29,34 @@ public class ContactRepository(ContactsContext _context, IMapper _mapper) : ICon
         return hit is null ? null! : ContactListDto.FromContact(_mapper, hit);
     }
 
-    public async Task<DomainCollection<ContactListDto>> GetMultipleAsync(int take = 10, int skip = 0)
+    public async Task<DomainCollection<ContactListDto>> GetMultipleAsync(uint take = 10, uint skip = 0)
     {
         var query = _context.Contacts.AsNoTracking()
             .OrderBy(x => x.Id);
         return await GetMultipleAsync(query, take, skip);
     }
 
-    public async Task<DomainCollection<ContactListDto>> GetMultipleAsync(IOrderedQueryable<Contact> orderBy, int take = 10, int skip = 0)
+    public async Task<DomainCollection<ContactListDto>> GetMultipleAsync(IOrderedQueryable<Contact> orderBy, uint take = 10, uint skip = 0)
     {
         var totalItems = await _context.Contacts.CountAsync();
         var contacts = await orderBy
-            .Skip(skip)
-            .Take(take)
+            .Skip((int)skip)
+            .Take((int)take)
+            .Select(x => ContactListDto.FromContact(_mapper, x))
+            .ToListAsync();
+        return new DomainCollection<ContactListDto>(contacts, totalItems);
+    }
+
+    public async Task<DomainCollection<ContactListDto>> GetMultipleAsync(
+        IQueryable<Contact> query,
+        uint take = 10,
+        uint skip = 0)
+    {
+        var totalItems = await query.CountAsync();
+        var contacts = await query
+            .OrderBy(x => x.Id)
+            .Skip((int)skip)
+            .Take((int)take)
             .Select(x => ContactListDto.FromContact(_mapper, x))
             .ToListAsync();
         return new DomainCollection<ContactListDto>(contacts, totalItems);
@@ -63,13 +78,21 @@ public class ContactRepository(ContactsContext _context, IMapper _mapper) : ICon
         return dtoUpdated;
     }
 
-    public async Task<DomainCollection<ContactListDto>> GetMultipleListAsync(int take = 10, int skip = 0)
+    public async Task<DomainCollection<ContactListDto>> GetMultipleListAsync(
+        uint take = 10,
+        uint skip = 0,
+        MemberType? memberType = null)
     {
+        if (memberType is not null)
+        {
+            var query = _context.Contacts.AsNoTracking().Where(x => x.MemberType == memberType.Value);
+            return await GetMultipleAsync(query, take, skip);
+        }
         var totalItems = await _context.Contacts.CountAsync();
         var contacts = await _context.Contacts.AsNoTracking()
             .OrderBy(x => x.Id)
-            .Skip(skip)
-            .Take(take)
+            .Skip((int)skip)
+            .Take((int)take)
             .Select(x => ContactListDto.FromContact(_mapper, x))
             .ToListAsync();
         return new DomainCollection<ContactListDto>(contacts, totalItems);

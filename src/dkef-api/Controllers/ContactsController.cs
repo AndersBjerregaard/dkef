@@ -23,9 +23,19 @@ public class ContactsController(
 {
 
     [HttpGet]
-    public async Task<IActionResult> GetMultiple([FromQuery] int take = 20, [FromQuery] int skip = 0)
+    public async Task<IActionResult> GetMultiple(
+        [FromQuery] uint take = 20,
+        [FromQuery] uint skip = 0,
+        [FromQuery] uint? memberType = null)
     {
         if (take > 200) take = 200;
+
+        if (memberType.HasValue &&
+            Enum.TryParse(memberType.ToString(), out MemberType parsedMemberType))
+        {
+            return Ok(await repository.GetMultipleListAsync(take, skip, parsedMemberType));
+        }
+
         return Ok(await repository.GetMultipleListAsync(take, skip));
     }
 

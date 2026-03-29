@@ -81,7 +81,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <main class="py-12">
+  <main class="py-24">
     <div class="flex justify-center items-center mb-8">
       <h1 class="text-4xl">Bestyrelsen</h1>
     </div>
@@ -93,7 +93,7 @@ onMounted(() => {
           v-for="section in activeSections"
           :key="section"
           @click="scrollToSection(section)"
-          class="px-4 py-2 bg-theme-accent text-white rounded-lg hover:bg-opacity-80 transition-all font-medium text-sm"
+          class="inline-flex justify-center rounded-md border border-transparent bg-amber-600 text-navy-950 px-4 py-2 font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-theme-accent focus-visible:ring-offset-2 shadow-lg shadow-amber-600/20 transition-colors cursor-pointer hover:bg-amber-500"
         >
           {{ SECTION_DISPLAY_MAP[section] }}
         </button>
