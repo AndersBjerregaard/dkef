@@ -494,7 +494,7 @@ async function goto(view: string) {
                           ]"
                           @click="handleLogout"
                         >
-                          Log ud ({{ authStore.user?.name }})
+                          Log ud
                         </button>
                       </MenuItem>
                     </div>
