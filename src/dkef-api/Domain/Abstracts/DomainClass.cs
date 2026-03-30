@@ -1,4 +1,4 @@
-namespace Dkef.Domain;
+namespace Dkef.Domain.Abstracts;
 
 public abstract class DomainClass
 {

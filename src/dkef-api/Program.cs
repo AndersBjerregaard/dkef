@@ -93,25 +93,10 @@ try
     // Contexts
     builder.Services.AddDbContext<ContactsContext>(options => options.UseNpgsql(dbConString));
     builder.Services.AddDbContext<AspNetRolesContext>(options => options.UseNpgsql(dbConString));
-    builder.Services.AddDbContext<EventsContext>(options => options.UseNpgsql(dbConString));
-    builder.Services.AddDbContext<NewsContext>(options => options.UseNpgsql(dbConString));
-    builder.Services.AddDbContext<GeneralAssemblyContext>(options => options.UseNpgsql(dbConString));
+    builder.Services.AddDbContext<ContentsContext>(options => options.UseNpgsql(dbConString));
     builder.Services.AddDbContext<ForgotPasswordContext>(options => options.UseNpgsql(dbConString));
     builder.Services.AddDbContext<ChangeEmailContext>(options => options.UseNpgsql(dbConString));
     builder.Services.AddDbContext<RefreshTokensContext>(options => options.UseNpgsql(dbConString));
-
-    builder.Services.AddTransient<DbSet<Contact>>(x =>
-        x.GetRequiredService<ContactsContext>()
-        .Contacts);
-    builder.Services.AddTransient<DbSet<Event>>(x =>
-        x.GetRequiredService<EventsContext>()
-        .Events);
-    builder.Services.AddTransient<DbSet<News>>(x =>
-        x.GetRequiredService<NewsContext>()
-        .News);
-    builder.Services.AddTransient<DbSet<GeneralAssembly>>(x =>
-        x.GetRequiredService<GeneralAssemblyContext>()
-        .GeneralAssemblies);
 
     // Microsoft Entra ID
     builder.Services.AddOptions<AzureAdSettings>()
@@ -265,9 +250,6 @@ try
 
     // Repositories
     builder.Services.AddScoped<IContactRepository, ContactRepository>();
-    builder.Services.AddScoped<IEventsRepository, EventsRepository>();
-    builder.Services.AddScoped<INewsRepository, NewsRepository>();
-    builder.Services.AddScoped<IGeneralAssemblyRepository, GeneralAssemblyRepository>();
     builder.Services.AddScoped<ForgotPasswordRepository>();
     builder.Services.AddScoped<IChangeEmailRepository, ChangeEmailRepository>();
     builder.Services.AddScoped<RefreshTokenRepository>();
@@ -333,12 +315,8 @@ try
         contactContext!.Database.Migrate();
         var aspNetRolesContext = scope.ServiceProvider.GetService<AspNetRolesContext>();
         aspNetRolesContext!.Database.Migrate();
-        var eventsContext = scope.ServiceProvider.GetService<EventsContext>();
-        eventsContext!.Database.Migrate();
-        var newsContext = scope.ServiceProvider.GetService<NewsContext>();
-        newsContext!.Database.Migrate();
-        var generalAssemblyContext = scope.ServiceProvider.GetService<GeneralAssemblyContext>();
-        generalAssemblyContext!.Database.Migrate();
+        var contentsContext = scope.ServiceProvider.GetService<ContentsContext>();
+        contentsContext!.Database.Migrate();
         var forgotPasswordContext = scope.ServiceProvider.GetService<ForgotPasswordContext>();
         forgotPasswordContext!.Database.Migrate();
         var changeEmailContext = scope.ServiceProvider.GetService<ChangeEmailContext>();

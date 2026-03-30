@@ -2,7 +2,7 @@ using System.Collections.Concurrent;
 using System.Reflection;
 
 using Dkef.Attributes;
-using Dkef.Domain;
+using Dkef.Domain.Abstracts;
 
 namespace Dkef.Configuration;
 

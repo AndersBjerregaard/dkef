@@ -1,12 +1,14 @@
 using Dkef.Configuration;
-using Dkef.Domain;
+
 using System.Linq.Dynamic.Core;
 
 using Microsoft.EntityFrameworkCore;
 
 namespace Dkef.Services;
 
-public sealed class QueryableService<TEntity>(DbSet<TEntity> _table, SortablePropertyConfig _sortConfig) where TEntity : class
+public sealed class QueryableService<TEntity>(
+    DbSet<TEntity> table,
+    SortablePropertyConfig sortConfig) where TEntity : class
 {
     public IOrderedQueryable<TEntity> GetQuery(string orderBy, string order)
     {
@@ -14,11 +16,11 @@ public sealed class QueryableService<TEntity>(DbSet<TEntity> _table, SortablePro
         {
             throw new InvalidOperationException("Can only order by ascending or descending");
         }
-        if (!_sortConfig.IsPropertySortable<TEntity>(orderBy))
+        if (!sortConfig.IsPropertySortable<TEntity>(orderBy))
         {
             throw new InvalidOperationException($"Type {typeof(TEntity).Name} does not support ordering by {orderBy}");
         }
-        IQueryable<TEntity> query = _table.AsNoTracking();
+        IQueryable<TEntity> query = table.AsNoTracking();
         return query.OrderBy($"{orderBy} {order}");
     }
 }
