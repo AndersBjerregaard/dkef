@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Dkef.Repositories;
 
-public class GeneralAssemblyRepository(GeneralAssemblyContext context, IMapper mapper, IBucketService bucketService) : IGeneralAssemblyRepository
+public class GeneralAssemblyRepository(GeneralAssemblyContext context, IMapper mapper, IBucketService bucketService, IAttachmentsRepository attachmentsRepository) : IGeneralAssemblyRepository
 {
     public async Task<GeneralAssembly> CreateAsync(GeneralAssembly dto)
     {
@@ -20,6 +20,9 @@ public class GeneralAssemblyRepository(GeneralAssemblyContext context, IMapper m
 
     public async Task<bool> DeleteAsync(Guid id)
     {
+        // Delete all attachments for this general assembly
+        await attachmentsRepository.DeleteByEntityIdAsync(id);
+
         // Fetch the existing general assembly to get its thumbnail before deletion
         var existing = await context.GeneralAssemblies.FirstOrDefaultAsync(x => x.Id == id);
         if (existing?.ThumbnailUrl != null)

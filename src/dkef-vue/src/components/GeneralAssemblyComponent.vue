@@ -36,10 +36,18 @@ const dateTime = computed(() => {
 
       <!-- Content -->
       <div class="flex flex-col flex-1 p-4 gap-2">
-        <!-- Type badge -->
-        <span class="text-xs font-semibold uppercase tracking-wide text-theme-accent"
-          >Generalforsamling</span
-        >
+         <!-- Type badge and attachments count -->
+         <div class="flex items-center justify-between">
+           <span class="text-xs font-semibold uppercase tracking-wide text-theme-accent"
+             >Generalforsamling</span
+           >
+           <span
+             v-if="props.publishedGeneralAssembly?.attachments?.length"
+             class="text-xs font-semibold bg-orange-600 text-white px-2 py-1 rounded"
+           >
+             📎 {{ props.publishedGeneralAssembly.attachments.length }}
+           </span>
+         </div>
 
         <!-- Section -->
         <p class="text-xs text-theme-text line-clamp-1">

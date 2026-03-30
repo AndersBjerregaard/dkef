@@ -1,9 +1,12 @@
+import type { AttachmentDto } from './attachments'
+
 export interface NewsDto {
   title: string
   section: string
   author: string
   description: string
   thumbnailId?: string
+  attachments?: AttachmentDto[]
 }
 
 export interface PublishedNews {
@@ -15,6 +18,7 @@ export interface PublishedNews {
   thumbnailUrl: string
   publishedAt: string
   createdAt: string
+  attachments: AttachmentDto[]
 }
 
 export interface NewsCollection {

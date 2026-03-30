@@ -1,0 +1,227 @@
+================================================================================
+  DKEF BACKEND CODEBASE EXPLORATION - EXECUTIVE SUMMARY
+================================================================================
+
+EXPLORED: src/dkef-api/ (ASP.NET Core Web API)
+FILES REVIEWED: 35+ C# and TypeScript files
+FOCUS AREAS: File storage, DTOs, Controllers, Database structure
+
+================================================================================
+1. FILE STORAGE (MinIO/S3)
+================================================================================
+
+ARCHITECTURE:
+  - MinIO (S3-compatible object storage)
+  - 3 separate buckets: "events", "news", "general-assemblies"
+  - Server: src/dkef-api/Services/MinioBucketService.cs
+  - Interface: IBucketService.cs
+
+PRESIGNED URLS:
+  ✓ Generated via BucketController endpoints (/bucket/{type}/{id})
+  ✓ PUT-only (upload), 1-hour expiry
+  ✓ HMAC-SHA256 signed by MinIO
+  ✓ Public-read bucket policy on creation
+  ✓ HTTPS rewriting support for TLS-terminating proxies
+
+IMAGE LIFECYCLE:
+  ✓ Upload: Direct to MinIO via presigned URL (client-side)
+  ✓ Storage: GUID as object name
+  ✓ Update: Old image deleted on thumbnail change (fire-and-forget)
+  ✓ Delete: Old image cleaned up when entity deleted (non-blocking)
+  ✓ Cleanup: ImageCleanupService removes orphaned images
+
+CONFIGURATION:
+  - ConnectionStrings:Minio (public endpoint)
+  - ConnectionStrings:MinioInternal (optional cluster endpoint)
+  - Minio:PublicEndpoint (optional custom domain)
+  - Minio:AccessKey, SecretKey, Secure
+
+================================================================================
+2. DATA TRANSFER OBJECTS & DOMAIN MODELS
+================================================================================
+
+EVENT:
+  DTO:    Title* Section* Address* DateTime* Description* ThumbnailId(opt)
+  Domain: [above] + ThumbnailUrl + CreatedAt
+  File:   EventDto.cs, Event.cs
+
+NEWS:
+  DTO:    Title* Section(opt) Author(opt) Description* ThumbnailId(opt)
+  Domain: [above] + ThumbnailUrl + PublishedAt + CreatedAt
+  File:   NewsDto.cs, News.cs
+
+GENERAL_ASSEMBLY:
+  DTO:    Title* Section* Address* DateTime* Description* ThumbnailId(opt)
+  Domain: [above] + ThumbnailUrl + CreatedAt
+  File:   GeneralAssemblyDto.cs, GeneralAssembly.cs
+
+COMMON PATTERNS:
+  ✓ All DTOs inherit PostObject (enforces Sanitize method)
+  ✓ All domains inherit DomainClass (provides Guid Id)
+  ✓ ThumbnailId (GUID string) maps to ThumbnailUrl (full URL) via AutoMapper
+  ✓ All timestamps UTC, stored as "timestamp with time zone"
+  ✓ String properties default to string.Empty (never null)
+  * = Required, (opt) = Optional
+
+================================================================================
+3. API CONTROLLERS
+================================================================================
+
+ENDPOINTS (All three entities follow identical pattern):
+
+  EventsController (/events):
+    GET    /events                 → List (paginated, sortable)
+    GET    /events/{id}            → Get single
+    POST   /events                 → Create [Admin]
+    PUT    /events/{id}            → Update [Admin]
+    DELETE /events/{id}            → Delete [Admin]
+
+  NewsController (/news):
+    [Same pattern]
+
+  GeneralAssembliesController (/general-assemblies):
+    [Same pattern]
+
+CONTROLLER FEATURES:
+  ✓ Pagination: take (max 50), skip (default 0)
+  ✓ Sorting: orderBy, order (asc/desc)
+  ✓ HTML sanitization on POST/PUT
+  ✓ GUID validation on path parameters
+  ✓ 404 on entity not found
+  ✓ 400 on invalid input
+  ✓ Fire-and-forget image cleanup on delete
+
+AUTHORIZATION:
+  ✓ GET endpoints: Public
+  ✓ POST/PUT/DELETE: Admin role required
+  ✓ JWT Bearer token validation
+
+================================================================================
+4. DATABASE STRUCTURE
+================================================================================
+
+PROVIDER: PostgreSQL 14+
+
+DBCONTEXTS (Independent, separate migrations):
+  ✓ EventsContext        → Events table
+  ✓ NewsContext          → News table
+  ✓ GeneralAssemblyContext → GeneralAssemblies table
+  ✓ ContactsContext      → Contacts table (Identity)
+  ✓ ForgotPasswordContext
+  ✓ ChangeEmailContext
+  ✓ RefreshTokensContext
+  ✓ AspNetRolesContext
+
+SCHEMA (All three entities):
+  Id (UUID, PK)
+  Title (text, NOT NULL)
+  Section (text, NOT NULL) [News: optional]
+  Address (text) [Events/GA only]
+  DateTime (timestamp TZ) [Events/GA only]
+  Description (text, NOT NULL)
+  ThumbnailUrl (text, NOT NULL)
+  CreatedAt (timestamp TZ, NOT NULL)
+  PublishedAt (timestamp TZ) [News only]
+
+MIGRATIONS:
+  ✓ Events:  20260309194134_EventsInitialCreate
+  ✓ News:    20260309194136_NewsInitialCreate
+  ✓ GA:      20260309194134_GeneralAssemblyInitialCreate
+  ✓ Auto-applied at startup (Program.cs, lines 328-351)
+
+================================================================================
+5. FRONTEND-BACKEND INTEGRATION
+================================================================================
+
+FILE UPLOAD WORKFLOW:
+  1. Frontend generates UUID (uuid v4)
+  2. Requests presigned URL: GET /bucket/{type}/{uuid}
+  3. Uploads file to MinIO: PUT {presignedUrl} with file
+  4. Updates entity: POST/PUT /events with dto.thumbnailId=uuid
+
+COMPONENTS:
+  ✓ EditEventModal.vue          → Upload & update event
+  ✓ EditNewsModal.vue           → Upload & update news
+  ✓ EditGeneralAssemblyModal.vue → Upload & update GA
+
+FEATURES:
+  ✓ File input with accept="image/*"
+  ✓ Empty file validation (size === 0)
+  ✓ Error handling & user feedback
+  ✓ Extract GUID from existing URL
+  ✓ Optional file replacement
+
+URL SERVICE (src/dkef-vue/src/services/urlservice.ts):
+  getEventPresignedUrl(guid)          → /bucket/events/{guid}
+  getNewsPresignedUrl(guid)           → /bucket/news/{guid}
+  getGeneralAssemblyPresignedUrl(guid) → /bucket/general-assemblies/{guid}
+
+================================================================================
+6. FILE VALIDATION & SECURITY
+================================================================================
+
+BACKEND VALIDATION:
+  ✓ GuidValidationAttribute → Validates ThumbnailId format
+  ✓ DateTimeValidationAttribute → Validates DateTime format
+  ✓ [Required] attributes → Enforce non-empty fields
+  ✓ HtmlSanitizer (Ganss.Xss) → Applied to all string fields
+  ✗ No explicit file size limits
+
+FRONTEND VALIDATION:
+  ✓ Required field checks (trim.length > 0)
+  ✓ Empty file rejection (size === 0)
+  ✓ MIME type filtering (accept="image/*")
+  ✗ No max file size validation visible
+
+PRESIGNED URL SECURITY:
+  ✓ HMAC-SHA256 signed
+  ✓ 1-hour expiry
+  ✓ PUT-only scope
+  ✓ Public-read bucket policy
+
+RECOMMENDATION: Add explicit file size limits
+
+================================================================================
+7. DESIGN PATTERNS & ARCHITECTURE
+================================================================================
+
+REPOSITORY PATTERN:
+  Base:  IRepository<T, Y> where T=domain, Y=DTO
+  Methods: GetByIdAsync, GetMultipleAsync, CreateAsync, UpdateAsync, DeleteAsync
+  Impls: EventsRepository, NewsRepository, GeneralAssemblyRepository
+
+PAGINATION:
+  Type: DomainCollection<T> { Collection: IEnumerable<T>, Total: int }
+  Usage: Skip-based pagination with item count
+
+SORTING:
+  Attribute: [Sortable] on DateTime/CreatedAt/PublishedAt
+  Service: QueryableService<T> generates dynamic LINQ expressions
+
+MAPPER:
+  Library: AutoMapper
+  Config: Program.cs lines 226-251
+  Key mapping: ThumbnailId → ThumbnailUrl (URL construction)
+
+IMAGE CLEANUP:
+  Pattern: Fire-and-forget async (non-blocking)
+  Execution: ConfigureAwait(false) with no await
+  On Update: Delete old image if changed
+  On Delete: Delete associated image
+  Guarantee: Never blocks entity operations
+
+================================================================================
+8. KEY FILES REFERENCE
+================================================================================
+
+FILE STORAGE:
+  - MinioBucketService.cs
+  - IBucketService.cs
+  - BucketController.cs
+  - ImageCleanupService.cs
+  - ImageCleanupController.cs
+
+DTOs:
+  - EventDto.cs, NewsDto.cs, GeneralAssemblyDto.cs
+  - PostObject.cs (base)
+  - Validatio

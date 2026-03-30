@@ -21,6 +21,7 @@ public class GeneralAssemblyDto : PostObject
     public string Description { get; set; } = string.Empty;
     [GuidValidation(AllowEmpty = true, ErrorMessage = "ThumbnailId must be a valid GUID.")]
     public string ThumbnailId { get; set; } = string.Empty;
+    public ICollection<AttachmentDto> Attachments { get; set; } = [];
 
     public override void Sanitize(HtmlSanitizer sanitizer)
     {

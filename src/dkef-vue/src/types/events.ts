@@ -1,3 +1,5 @@
+import type { AttachmentDto } from './attachments'
+
 export interface EventDto {
   title: string
   section: string
@@ -5,6 +7,7 @@ export interface EventDto {
   dateTime: string
   description: string
   thumbnailId?: string
+  attachments?: AttachmentDto[]
 }
 
 /**
@@ -16,6 +19,7 @@ export interface EventDto {
  * @prop description: string
  * @prop thumbnailUrl: string
  * @prop createdAt: string
+ * @prop attachments: AttachmentDto[]
  */
 export interface PublishedEvent {
   id: string
@@ -26,6 +30,7 @@ export interface PublishedEvent {
   description: string
   thumbnailUrl: string
   createdAt: string
+  attachments: AttachmentDto[]
 }
 
 export interface EventsCollection {

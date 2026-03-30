@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Dkef.Repositories;
 
-public class EventsRepository(EventsContext context, IMapper mapper, IBucketService bucketService) : IEventsRepository
+public class EventsRepository(EventsContext context, IMapper mapper, IBucketService bucketService, IAttachmentsRepository attachmentsRepository) : IEventsRepository
 {
     public async Task<Event> CreateAsync(Event dto)
     {
@@ -20,6 +20,9 @@ public class EventsRepository(EventsContext context, IMapper mapper, IBucketServ
 
     public async Task<bool> DeleteAsync(Guid id)
     {
+        // Delete all attachments for this event
+        await attachmentsRepository.DeleteByEntityIdAsync(id);
+
         // Fetch the existing event to get its thumbnail before deletion
         var existing = await context.Events.FirstOrDefaultAsync(x => x.Id == id);
         if (existing?.ThumbnailUrl != null)

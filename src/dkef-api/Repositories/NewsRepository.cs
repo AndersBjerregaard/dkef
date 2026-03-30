@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Dkef.Repositories;
 
-public class NewsRepository(NewsContext context, IMapper mapper, IBucketService bucketService) : INewsRepository
+public class NewsRepository(NewsContext context, IMapper mapper, IBucketService bucketService, IAttachmentsRepository attachmentsRepository) : INewsRepository
 {
     public async Task<News> CreateAsync(News dto)
     {
@@ -20,6 +20,9 @@ public class NewsRepository(NewsContext context, IMapper mapper, IBucketService 
 
     public async Task<bool> DeleteAsync(Guid id)
     {
+        // Delete all attachments for this news item
+        await attachmentsRepository.DeleteByEntityIdAsync(id);
+
         // Fetch the existing news item to get its thumbnail before deletion
         var existing = await context.News.FirstOrDefaultAsync(x => x.Id == id);
         if (existing?.ThumbnailUrl != null)

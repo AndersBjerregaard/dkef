@@ -18,6 +18,7 @@ import type {
   GeneralAssemblyCollection,
 } from '@/types/generalAssembly'
 import type { FeedItem, FeedResponse } from '@/types/feed'
+import type { AttachmentDto } from '@/types/attachments'
 import { useFeedStore } from '@/stores/feedStore'
 import { useAuthStore } from '@/stores/authStore'
 
@@ -69,6 +70,10 @@ const itemAuthor: Ref<string> = ref('')
 
 const fileUploadError: Ref<boolean> = ref(false)
 const submitError: Ref<boolean> = ref(false)
+
+// Attachments
+const itemAttachments: Ref<File[]> = ref([])
+const attachmentValidationError: Ref<string> = ref('')
 
 // Flat list in server sort order
 const displayedItems = computed<FeedItem[]>(() => {
@@ -341,6 +346,65 @@ function handleFileUpload(event: Event) {
   }
 }
 
+function handleAttachmentUpload(event: Event) {
+  submitError.value = false
+  attachmentValidationError.value = ''
+
+  const input = event.target as HTMLInputElement
+  if (!input.files || input.files.length === 0) {
+    itemAttachments.value = []
+    return
+  }
+
+  const maxFileSize = 100 * 1024 * 1024 // 100 MB
+  const maxFileCount = 3
+  const allowedMimeTypes = new Set([
+    'application/pdf',
+    'application/msword',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    'application/vnd.ms-excel',
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    'text/plain',
+    'text/csv',
+    'application/vnd.ms-powerpoint',
+    'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+  ])
+
+  const newFiles: File[] = []
+
+  for (let i = 0; i < input.files.length; i++) {
+    const file = input.files[i]
+
+    if (file.size === 0) {
+      attachmentValidationError.value = `Fil "${file.name}" kan ikke være tom.`
+      return
+    }
+
+    if (file.size > maxFileSize) {
+      attachmentValidationError.value = `Fil "${file.name}" er for stor. Maksimal filstørrelse er 100 MB.`
+      return
+    }
+
+    if (!allowedMimeTypes.has(file.type)) {
+      attachmentValidationError.value = `Filtype "${file.type}" er ikke tilladt for "${file.name}". Tilladte typer: PDF, Word, Excel, TXT, CSV, PowerPoint.`
+      return
+    }
+
+    newFiles.push(file)
+  }
+
+  if (itemAttachments.value.length + newFiles.length > maxFileCount) {
+    attachmentValidationError.value = `Du kan maksimalt vedlægge ${maxFileCount} filer. Du har valgt ${itemAttachments.value.length + newFiles.length}.`
+    return
+  }
+
+  itemAttachments.value = [...itemAttachments.value, ...newFiles]
+}
+
+function removeAttachment(index: number) {
+  itemAttachments.value.splice(index, 1)
+}
+
 function resetFields() {
   createType.value = 'event'
   itemTitle.value = ''
@@ -350,6 +414,8 @@ function resetFields() {
   itemAddress.value = ''
   itemDate.value = ''
   itemAuthor.value = ''
+  itemAttachments.value = []
+  attachmentValidationError.value = ''
 }
 
 function validateFields(): boolean {
@@ -419,6 +485,26 @@ async function createEvent() {
     await uploadFile(presignedUrlResponse.data, itemFile.value)
   }
 
+  // Upload attachments
+  const attachments: AttachmentDto[] = []
+  for (const file of itemAttachments.value) {
+    const fileId = uuidv4()
+    const presignedUrlResponse: AxiosResponse<string> = await apiservice.get<string>(
+      urlservice.getEventAttachmentPresignedUrl(fileId),
+    )
+    await uploadFile(presignedUrlResponse.data, file)
+
+    attachments.push({
+      id: '',
+      fileName: file.name,
+      fileId,
+      fileSizeBytes: file.size,
+      mimeType: file.type || 'application/octet-stream',
+      createdAt: new Date().toISOString(),
+      originalFileName: file.name,
+    })
+  }
+
   const newEvent: EventDto = {
     title: itemTitle.value,
     section: itemSection.value,
@@ -426,6 +512,7 @@ async function createEvent() {
     dateTime: itemDate.value,
     description: itemDescription.value,
     ...(thumbnailId && { thumbnailId }),
+    attachments,
   }
   await apiservice.post<PublishedEvent>(urlservice.postEvent(), newEvent)
 }
@@ -440,12 +527,32 @@ async function createNews() {
     await uploadFile(presignedUrlResponse.data, itemFile.value)
   }
 
+  // Upload attachments
+  const attachments: AttachmentDto[] = []
+  for (const file of itemAttachments.value) {
+    const fileId = uuidv4()
+    const presignedUrlResponse: AxiosResponse<string> = await apiservice.get<string>(
+      urlservice.getNewsAttachmentPresignedUrl(fileId),
+    )
+    await uploadFile(presignedUrlResponse.data, file)
+
+    attachments.push({
+      fileName: file.name,
+      fileId,
+      fileSizeBytes: file.size,
+      mimeType: file.type || 'application/octet-stream',
+      createdAt: new Date().toISOString(),
+      originalFileName: file.name,
+    })
+  }
+
   const newNews: NewsDto = {
     title: itemTitle.value,
     section: itemSection.value,
     author: itemAuthor.value,
     description: itemDescription.value,
     thumbnailId,
+    attachments,
   }
   await apiservice.post<PublishedNews>(urlservice.postNews(), newNews)
 }
@@ -461,6 +568,26 @@ async function createGeneralAssembly() {
     await uploadFile(presignedUrlResponse.data, itemFile.value)
   }
 
+  // Upload attachments
+  const attachments: AttachmentDto[] = []
+  for (const file of itemAttachments.value) {
+    const fileId = uuidv4()
+    const presignedUrlResponse: AxiosResponse<string> = await apiservice.get<string>(
+      urlservice.getGeneralAssemblyAttachmentPresignedUrl(fileId),
+    )
+    await uploadFile(presignedUrlResponse.data, file)
+
+    attachments.push({
+      id: '',
+      fileName: file.name,
+      fileId,
+      fileSizeBytes: file.size,
+      mimeType: file.type || 'application/octet-stream',
+      createdAt: new Date().toISOString(),
+      originalFileName: file.name,
+    })
+  }
+
   const newAssembly: GeneralAssemblyDto = {
     title: itemTitle.value,
     section: itemSection.value,
@@ -468,6 +595,7 @@ async function createGeneralAssembly() {
     dateTime: itemDate.value,
     description: itemDescription.value,
     ...(thumbnailId && { thumbnailId }),
+    attachments,
   }
   await apiservice.post<PublishedGeneralAssembly>(urlservice.postGeneralAssembly(), newAssembly)
 }
@@ -621,6 +749,7 @@ const submitLabel = computed(() => {
               description: item.description,
               thumbnailUrl: item.thumbnailUrl,
               createdAt: item.createdAt,
+              attachments: [],
             }"
           />
           <NewsComponent
@@ -634,6 +763,7 @@ const submitLabel = computed(() => {
               thumbnailUrl: item.thumbnailUrl,
               publishedAt: item.publishedAt ?? '',
               createdAt: item.createdAt,
+              attachments: [],
             }"
           />
           <GeneralAssemblyComponent
@@ -647,6 +777,7 @@ const submitLabel = computed(() => {
               description: item.description,
               thumbnailUrl: item.thumbnailUrl,
               createdAt: item.createdAt,
+              attachments: [],
             }"
           />
         </template>
@@ -840,8 +971,52 @@ const submitLabel = computed(() => {
           />
         </div>
 
+        <!-- Attachments upload -->
+        <div class="pb-4">
+          <label for="attachments_input">Vedlegg (valgfri) - Maks 3 filer, 100 MB hver</label>
+          <br />
+          <input
+            class="w-full bg-theme-soft border border-theme-border rounded-xl p-2 cursor-pointer hover:bg-theme-mute focus:outline-none focus:ring-2 focus:ring-theme-accent"
+            id="attachments_input"
+            type="file"
+            multiple
+            accept=".pdf,.doc,.docx,.xls,.xlsx,.txt,.csv,.ppt,.pptx"
+            @change="handleAttachmentUpload"
+            :disabled="isLoading"
+          />
+        </div>
+
+        <!-- Display selected attachments -->
+        <div v-if="itemAttachments.length > 0" class="pb-4">
+          <p class="text-sm font-medium pb-2">Valgte vedlegg ({{ itemAttachments.length }}/3):</p>
+          <div class="space-y-2">
+            <div
+              v-for="(file, index) in itemAttachments"
+              :key="index"
+              class="flex justify-between items-center bg-theme-soft border border-theme-border rounded-lg p-2"
+            >
+              <div class="flex-1">
+                <p class="text-sm truncate">{{ file.name }}</p>
+                <p class="text-xs text-gray-500">{{ (file.size / 1024 / 1024).toFixed(2) }} MB</p>
+              </div>
+              <button
+                type="button"
+                @click="removeAttachment(index)"
+                :disabled="isLoading"
+                class="ml-2 px-2 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600 disabled:opacity-50"
+              >
+                Fjern
+              </button>
+            </div>
+          </div>
+        </div>
+
         <div v-show="fileUploadError" class="pb-4 text-red-400">
           <span>Kan ikke uploade en fil med filstørrelse på 0 bytes!</span>
+        </div>
+
+        <div v-show="attachmentValidationError" class="pb-4 text-red-400">
+          <span>{{ attachmentValidationError }}</span>
         </div>
 
         <div v-show="submitError" class="pb-4 text-red-400">

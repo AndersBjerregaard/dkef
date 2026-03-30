@@ -1,3 +1,5 @@
+import type { AttachmentDto } from './attachments'
+
 export interface GeneralAssemblyDto {
   title: string
   section: string
@@ -5,6 +7,7 @@ export interface GeneralAssemblyDto {
   dateTime: string
   description: string
   thumbnailId?: string
+  attachments?: AttachmentDto[]
 }
 
 export interface PublishedGeneralAssembly {
@@ -16,6 +19,7 @@ export interface PublishedGeneralAssembly {
   description: string
   thumbnailUrl: string
   createdAt: string
+  attachments: AttachmentDto[]
 }
 
 export interface GeneralAssemblyCollection {

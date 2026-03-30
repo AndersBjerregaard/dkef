@@ -99,6 +99,7 @@ try
     builder.Services.AddDbContext<ForgotPasswordContext>(options => options.UseNpgsql(dbConString));
     builder.Services.AddDbContext<ChangeEmailContext>(options => options.UseNpgsql(dbConString));
     builder.Services.AddDbContext<RefreshTokensContext>(options => options.UseNpgsql(dbConString));
+    builder.Services.AddDbContext<AttachmentsContext>(options => options.UseNpgsql(dbConString));
 
     builder.Services.AddTransient<DbSet<Contact>>(x =>
         x.GetRequiredService<ContactsContext>()
@@ -236,6 +237,8 @@ try
                 .ForMember(dest => dest.ThumbnailUrl, opt => opt.MapFrom(src =>
                     string.IsNullOrWhiteSpace(src.ThumbnailId) ? string.Empty : $"{thumbnailPrefix}/events/{src.ThumbnailId}"))
                 .ForMember(dest => dest.DateTime, opt => opt.MapFrom(src => DateTime.Parse(src.DateTime, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal).ToUniversalTime()));
+            cfg.CreateMap<Attachment, AttachmentDto>();
+            cfg.CreateMap<AttachmentDto, Attachment>();
             cfg.CreateMap<News, News>();
             cfg.CreateMap<NewsDto, News>()
                 .ForMember(dest => dest.ThumbnailUrl, opt => opt.MapFrom(src =>
@@ -271,11 +274,14 @@ try
     builder.Services.AddScoped<ForgotPasswordRepository>();
     builder.Services.AddScoped<IChangeEmailRepository, ChangeEmailRepository>();
     builder.Services.AddScoped<RefreshTokenRepository>();
+     // AttachmentsRepository
+    builder.Services.AddScoped<IAttachmentsRepository, AttachmentsRepository>();
 
     // Services
     builder.Services.AddSingleton<IBucketService, MinioBucketService>(); // Same lifetime scope as the IMinioClient
     builder.Services.AddScoped<IJwtService, JwtService>();
     builder.Services.AddScoped<ImageCleanupService>();
+    builder.Services.AddScoped<IAttachmentValidationService, AttachmentValidationService>();
 
     bool useSmtp = bool.Parse(builder.Configuration["UseSmtp"] ?? "false");
     builder.Services.AddOptions<MailConfiguration>()
@@ -343,12 +349,14 @@ try
         forgotPasswordContext!.Database.Migrate();
         var changeEmailContext = scope.ServiceProvider.GetService<ChangeEmailContext>();
         changeEmailContext!.Database.Migrate();
-        var refreshTokenContext = scope.ServiceProvider.GetService<RefreshTokensContext>();
-        refreshTokenContext!.Database.Migrate();
-        // if (app.Environment.IsDevelopment()) {
-        //     await ContactContext.SeedAsync(context);
-        // }
-    }
+         var refreshTokenContext = scope.ServiceProvider.GetService<RefreshTokensContext>();
+         refreshTokenContext!.Database.Migrate();
+         var attachmentsContext = scope.ServiceProvider.GetService<AttachmentsContext>();
+         attachmentsContext!.Database.Migrate();
+         // if (app.Environment.IsDevelopment()) {
+         //     await ContactContext.SeedAsync(context);
+         // }
+     }
 
     // Configure the HTTP request pipeline.
     if (app.Environment.IsDevelopment())

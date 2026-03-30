@@ -218,6 +218,115 @@ function postContactMessage() {
   }
 }
 
+// Attachment endpoints
+function postEventAttachment(entityId: string) {
+  switch (mode) {
+    case 'Development':
+      throw 'Unimplemented!'
+    default:
+      return `/attachments/events/${entityId}`
+  }
+}
+
+function deleteEventAttachment(entityId: string, attachmentId: string) {
+  switch (mode) {
+    case 'Development':
+      throw 'Unimplemented!'
+    default:
+      return `/attachments/events/${entityId}/${attachmentId}`
+  }
+}
+
+function getEventAttachments(entityId: string) {
+  switch (mode) {
+    case 'Development':
+      throw 'Unimplemented!'
+    default:
+      return `/attachments/events/${entityId}`
+  }
+}
+
+function getEventAttachmentPresignedUrl(fileId: string) {
+  switch (mode) {
+    case 'Development':
+      throw 'Unimplemented!'
+    default:
+      return `/attachments/presigned/events/${fileId}`
+  }
+}
+
+function postNewsAttachment(entityId: string) {
+  switch (mode) {
+    case 'Development':
+      throw 'Unimplemented!'
+    default:
+      return `/attachments/news/${entityId}`
+  }
+}
+
+function deleteNewsAttachment(entityId: string, attachmentId: string) {
+  switch (mode) {
+    case 'Development':
+      throw 'Unimplemented!'
+    default:
+      return `/attachments/news/${entityId}/${attachmentId}`
+  }
+}
+
+function getNewsAttachments(entityId: string) {
+  switch (mode) {
+    case 'Development':
+      throw 'Unimplemented!'
+    default:
+      return `/attachments/news/${entityId}`
+  }
+}
+
+function getNewsAttachmentPresignedUrl(fileId: string) {
+  switch (mode) {
+    case 'Development':
+      throw 'Unimplemented!'
+    default:
+      return `/attachments/presigned/news/${fileId}`
+  }
+}
+
+function postGeneralAssemblyAttachment(entityId: string) {
+  switch (mode) {
+    case 'Development':
+      throw 'Unimplemented!'
+    default:
+      return `/attachments/general-assemblies/${entityId}`
+  }
+}
+
+function deleteGeneralAssemblyAttachment(entityId: string, attachmentId: string) {
+  switch (mode) {
+    case 'Development':
+      throw 'Unimplemented!'
+    default:
+      return `/attachments/general-assemblies/${entityId}/${attachmentId}`
+  }
+}
+
+function getGeneralAssemblyAttachments(entityId: string) {
+  switch (mode) {
+    case 'Development':
+      throw 'Unimplemented!'
+    default:
+      return `/attachments/general-assemblies/${entityId}`
+  }
+}
+
+function getGeneralAssemblyAttachmentPresignedUrl(fileId: string) {
+  switch (mode) {
+    case 'Development':
+      throw 'Unimplemented!'
+    default:
+      return `/attachments/presigned/general-assemblies/${fileId}`
+  }
+}
+
 export default {
   getContacts,
   updateContact,
@@ -243,4 +352,16 @@ export default {
   getGeneralAssembly,
   getFeed,
   postContactMessage,
+  postEventAttachment,
+  deleteEventAttachment,
+  getEventAttachments,
+  getEventAttachmentPresignedUrl,
+  postNewsAttachment,
+  deleteNewsAttachment,
+  getNewsAttachments,
+  getNewsAttachmentPresignedUrl,
+  postGeneralAssemblyAttachment,
+  deleteGeneralAssemblyAttachment,
+  getGeneralAssemblyAttachments,
+  getGeneralAssemblyAttachmentPresignedUrl,
 }

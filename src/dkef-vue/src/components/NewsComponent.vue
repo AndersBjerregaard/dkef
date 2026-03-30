@@ -35,8 +35,16 @@ const publishedAt = computed(() => {
 
       <!-- Content -->
       <div class="flex flex-col flex-1 p-4 gap-2">
-        <!-- Type badge -->
-        <span class="text-xs font-semibold uppercase tracking-wide text-emerald-400">Nyhed</span>
+       <!-- Type badge and attachments count -->
+         <div class="flex items-center justify-between">
+           <span class="text-xs font-semibold uppercase tracking-wide text-emerald-400">Nyhed</span>
+           <span
+             v-if="props.publishedNews?.attachments?.length"
+             class="text-xs font-semibold bg-orange-600 text-white px-2 py-1 rounded"
+           >
+             📎 {{ props.publishedNews.attachments.length }}
+           </span>
+         </div>
 
         <!-- Section -->
         <p class="text-xs text-theme-text line-clamp-1">{{ props.publishedNews?.section }}</p>
