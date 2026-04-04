@@ -22,7 +22,6 @@ const newsStore = useNewsStore()
 
 const itemTitle: Ref<string> = ref('')
 const itemSection: Ref<string> = ref('')
-const itemAuthor: Ref<string> = ref('')
 const itemDescription: Ref<string> = ref('')
 const itemFile: Ref<File | null> = ref(null)
 
@@ -33,7 +32,6 @@ const submitError: Ref<string | null> = ref(null)
 function populateFields() {
   itemTitle.value = props.news.title
   itemSection.value = props.news.section
-  itemAuthor.value = props.news.author
   itemDescription.value = props.news.description
   itemFile.value = null
   fileUploadError.value = false
@@ -108,7 +106,6 @@ async function saveNews() {
     const dto: NewsDto = {
       title: itemTitle.value,
       section: itemSection.value,
-      author: itemAuthor.value,
       description: itemDescription.value,
       thumbnailId,
     }
@@ -143,7 +140,7 @@ async function saveNews() {
         />
       </div>
 
-      <!-- Section and Author (optional) -->
+      <!-- Section (optional) -->
       <div class="flex gap-4 pb-4">
         <div class="flex-1">
           <label for="edit_news_section">Sektion (valgfri)</label>
@@ -154,18 +151,6 @@ async function saveNews() {
             type="text"
             placeholder="Sektion"
             v-model="itemSection"
-            :disabled="isLoading"
-          />
-        </div>
-        <div class="flex-1">
-          <label for="edit_news_author">Forfatter (valgfri)</label>
-          <br />
-          <input
-            id="edit_news_author"
-            class="w-full bg-theme-soft border border-theme-border rounded-xl p-2 text-theme-heading placeholder-theme-muted focus:outline-none focus:ring-2 focus:ring-theme-accent focus:border-theme-accent"
-            type="text"
-            placeholder="Forfatter"
-            v-model="itemAuthor"
             :disabled="isLoading"
           />
         </div>

@@ -1,7 +1,7 @@
 export interface NewsDto {
   title: string
   section: string
-  author: string
+  dateTime: string
   description: string
   thumbnailId?: string
 }
@@ -10,10 +10,9 @@ export interface PublishedNews {
   id: string
   title: string
   section: string
-  author: string
   description: string
   thumbnailUrl: string
-  publishedAt: string
+  dateTime: string
   createdAt: string
 }
 

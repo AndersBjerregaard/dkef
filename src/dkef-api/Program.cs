@@ -11,6 +11,7 @@ using Dkef.Configuration;
 using Dkef.Contracts;
 using Dkef.Data;
 using Dkef.Domain;
+using Dkef.Domain.Abstracts;
 using Dkef.Repositories;
 using Dkef.Services;
 using Dkef.Services.Interfaces;
@@ -97,6 +98,23 @@ try
     builder.Services.AddDbContext<ForgotPasswordContext>(options => options.UseNpgsql(dbConString));
     builder.Services.AddDbContext<ChangeEmailContext>(options => options.UseNpgsql(dbConString));
     builder.Services.AddDbContext<RefreshTokensContext>(options => options.UseNpgsql(dbConString));
+
+    // Add DbSets for QueryableService.cs
+    builder.Services.AddTransient<DbSet<Contact>>(x =>
+        x.GetRequiredService<ContactsContext>()
+        .Contacts);
+    builder.Services.AddTransient<DbSet<Event>>(x =>
+        x.GetRequiredService<ContentsContext>()
+        .Events);
+    builder.Services.AddTransient<DbSet<News>>(x =>
+        x.GetRequiredService<ContentsContext>()
+        .News);
+    builder.Services.AddTransient<DbSet<GeneralAssembly>>(x =>
+        x.GetRequiredService<ContentsContext>()
+        .GeneralAssemblies);
+    builder.Services.AddTransient<DbSet<BaseContent>>(x =>
+        x.GetRequiredService<ContentsContext>()
+        .Contents);
 
     // Microsoft Entra ID
     builder.Services.AddOptions<AzureAdSettings>()
@@ -224,7 +242,8 @@ try
             cfg.CreateMap<News, News>();
             cfg.CreateMap<NewsDto, News>()
                 .ForMember(dest => dest.ThumbnailUrl, opt => opt.MapFrom(src =>
-                    string.IsNullOrWhiteSpace(src.ThumbnailId) ? string.Empty : $"{thumbnailPrefix}/news/{src.ThumbnailId}"));
+                    string.IsNullOrWhiteSpace(src.ThumbnailId) ? string.Empty : $"{thumbnailPrefix}/news/{src.ThumbnailId}"))
+                .ForMember(dest => dest.DateTime, opt => opt.MapFrom(src => DateTime.UtcNow));
             cfg.CreateMap<GeneralAssembly, GeneralAssembly>();
             cfg.CreateMap<GeneralAssemblyDto, GeneralAssembly>()
                 .ForMember(dest => dest.ThumbnailUrl, opt => opt.MapFrom(src =>
@@ -253,6 +272,7 @@ try
     builder.Services.AddScoped<ForgotPasswordRepository>();
     builder.Services.AddScoped<IChangeEmailRepository, ChangeEmailRepository>();
     builder.Services.AddScoped<RefreshTokenRepository>();
+    builder.Services.AddScoped<ContentRepository>();
 
     // Services
     builder.Services.AddSingleton<IBucketService, MinioBucketService>(); // Same lifetime scope as the IMinioClient
@@ -283,6 +303,7 @@ try
 
     // Security
     builder.Services.AddSingleton<HtmlSanitizer>(x => new());
+    builder.Services.AddTransient<QueryableService<BaseContent>>();
     builder.Services.AddTransient<QueryableService<Event>>();
     builder.Services.AddTransient<QueryableService<News>>();
     builder.Services.AddTransient<QueryableService<GeneralAssembly>>();
@@ -355,8 +376,6 @@ try
     app.MapControllers();
 
     app.Run();
-
-    app.Logger.LogInformation("Web application ready");
 }
 catch (System.Exception ex)
 {

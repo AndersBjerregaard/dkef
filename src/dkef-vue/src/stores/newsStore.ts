@@ -24,7 +24,7 @@ export const useNewsStore = defineStore('news', () => {
         {
           params: {
             take: 3,
-            orderBy: 'publishedAt',
+            orderBy: 'DateTime',
             order: 'desc',
           },
         },

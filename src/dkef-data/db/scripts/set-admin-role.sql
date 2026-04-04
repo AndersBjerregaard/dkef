@@ -10,7 +10,7 @@ ON CONFLICT DO NOTHING;
 -- Step 2: Assign the Admin role to a specific user
 -- Replace 'user@example.com' with the actual email of the user you want to make admin
 INSERT INTO "AspNetUserRoles" ("UserId", "RoleId")
-SELECT 
+SELECT
     u."Id" as "UserId",
     r."Id" as "RoleId"
 FROM "AspNetUsers" u
@@ -21,7 +21,7 @@ ON CONFLICT DO NOTHING;
 
 -- Alternative: If you know the user ID directly
 -- INSERT INTO "AspNetUserRoles" ("UserId", "RoleId")
--- SELECT 
+-- SELECT
 --     'USER_ID_HERE' as "UserId",
 --     r."Id" as "RoleId"
 -- FROM "AspNetRoles" r
@@ -29,10 +29,9 @@ ON CONFLICT DO NOTHING;
 -- ON CONFLICT DO NOTHING;
 
 -- Verification Query: Check which users have the Admin role
-SELECT 
+SELECT
     u."Email",
-    u."FirstName",
-    u."LastName",
+    u."Name",
     r."Name" as "Role"
 FROM "AspNetUsers" u
 INNER JOIN "AspNetUserRoles" ur ON u."Id" = ur."UserId"

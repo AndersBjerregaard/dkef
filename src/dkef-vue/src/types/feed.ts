@@ -6,12 +6,9 @@ export interface FeedItem {
   description: string
   thumbnailUrl: string
   createdAt: string
+  dateTime?: string
   // Event + GeneralAssembly specific
   address?: string
-  dateTime?: string
-  // News specific
-  author?: string
-  publishedAt?: string
 }
 
 export interface FeedCollection {

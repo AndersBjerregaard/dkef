@@ -11,6 +11,7 @@ namespace Dkef.Domain.Abstracts;
 /// </summary>
 public abstract class BaseContent : DomainClass
 {
+    public abstract string Kind { get; }
     public string Title { get; set; } = string.Empty;
     public string Section { get; set; } = string.Empty;
     [Sortable]

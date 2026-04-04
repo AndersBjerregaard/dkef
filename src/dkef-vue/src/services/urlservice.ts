@@ -52,7 +52,7 @@ function postEvent() {
     case 'Development':
       throw 'Unimplemented!'
     default:
-      return `/events`
+      return `/contents/events`
   }
 }
 
@@ -61,7 +61,7 @@ function updateEvent(guid: string) {
     case 'Development':
       throw 'Unimplemented!'
     default:
-      return `/events/${guid}`
+      return `/contents/events/${guid}`
   }
 }
 
@@ -70,7 +70,7 @@ function deleteEvent(guid: string) {
     case 'Development':
       throw 'Unimplemented!'
     default:
-      return `/events/${guid}`
+      return `/contents/events/${guid}`
   }
 }
 
@@ -79,7 +79,7 @@ function getEvents() {
     case 'Development':
       throw 'Unimplemented!'
     default:
-      return `/events`
+      return `/contents/events`
   }
 }
 
@@ -88,7 +88,7 @@ function getEvent(guid: string) {
     case 'Development':
       throw 'Unimplemented!'
     default:
-      return `/events/${guid}`
+      return `/contents/events/${guid}`
   }
 }
 
@@ -106,7 +106,7 @@ function postNews() {
     case 'Development':
       throw 'Unimplemented!'
     default:
-      return `/news`
+      return `/contents/news`
   }
 }
 
@@ -115,7 +115,7 @@ function updateNews(guid: string) {
     case 'Development':
       throw 'Unimplemented!'
     default:
-      return `/news/${guid}`
+      return `/contents/news/${guid}`
   }
 }
 
@@ -124,7 +124,7 @@ function deleteNews(guid: string) {
     case 'Development':
       throw 'Unimplemented!'
     default:
-      return `/news/${guid}`
+      return `/contents/news/${guid}`
   }
 }
 
@@ -133,7 +133,7 @@ function getNews() {
     case 'Development':
       throw 'Unimplemented!'
     default:
-      return `/news`
+      return `/contents/news`
   }
 }
 
@@ -142,7 +142,7 @@ function getNewsItem(guid: string) {
     case 'Development':
       throw 'Unimplemented!'
     default:
-      return `/news/${guid}`
+      return `/contents/news/${guid}`
   }
 }
 
@@ -160,7 +160,7 @@ function postGeneralAssembly() {
     case 'Development':
       throw 'Unimplemented!'
     default:
-      return `/general-assemblies`
+      return `/contents/general-assemblies`
   }
 }
 
@@ -169,7 +169,7 @@ function updateGeneralAssembly(guid: string) {
     case 'Development':
       throw 'Unimplemented!'
     default:
-      return `/general-assemblies/${guid}`
+      return `/contents/general-assemblies/${guid}`
   }
 }
 
@@ -178,7 +178,7 @@ function deleteGeneralAssembly(guid: string) {
     case 'Development':
       throw 'Unimplemented!'
     default:
-      return `/general-assemblies/${guid}`
+      return `/contents/general-assemblies/${guid}`
   }
 }
 
@@ -187,7 +187,7 @@ function getGeneralAssemblies() {
     case 'Development':
       throw 'Unimplemented!'
     default:
-      return `/general-assemblies`
+      return `/contents/general-assemblies`
   }
 }
 
@@ -196,7 +196,7 @@ function getGeneralAssembly(guid: string) {
     case 'Development':
       throw 'Unimplemented!'
     default:
-      return `/general-assemblies/${guid}`
+      return `/contents/general-assemblies/${guid}`
   }
 }
 
@@ -205,7 +205,7 @@ function getFeed() {
     case 'Development':
       throw 'Unimplemented!'
     default:
-      return `/feed`
+      return `/contents`
   }
 }
 

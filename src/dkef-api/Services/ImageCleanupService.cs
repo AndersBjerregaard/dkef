@@ -1,5 +1,7 @@
 using Dkef.Data;
+
 using Microsoft.EntityFrameworkCore;
+
 using Minio;
 using Minio.DataModel.Args;
 
@@ -12,9 +14,7 @@ namespace Dkef.Services;
 /// </summary>
 public class ImageCleanupService(
     IMinioClient minioClient,
-    EventsContext eventsContext,
-    NewsContext newsContext,
-    GeneralAssemblyContext generalAssemblyContext)
+    ContentsContext contentsContext)
 {
     /// <summary>
     /// Scans all image buckets and deletes orphaned images.
@@ -25,11 +25,11 @@ public class ImageCleanupService(
         var result = new ImageCleanupResult();
 
         // Cleanup events bucket
-        var events = await eventsContext.Events
+        var events = await contentsContext.Events
             .AsNoTracking()
             .Where(e => !string.IsNullOrEmpty(e.ThumbnailUrl))
             .ToListAsync(ct);
-        
+
         var eventsResult = await CleanupBucketAsync("events", "Events",
             () => events
                 .Select(e => ExtractGuidFromUrl(e.ThumbnailUrl))
@@ -40,11 +40,11 @@ public class ImageCleanupService(
         result.BucketResults.Add(eventsResult);
 
         // Cleanup news bucket
-        var news = await newsContext.News
+        var news = await contentsContext.News
             .AsNoTracking()
             .Where(n => !string.IsNullOrEmpty(n.ThumbnailUrl))
             .ToListAsync(ct);
-        
+
         var newsResult = await CleanupBucketAsync("news", "News",
             () => news
                 .Select(n => ExtractGuidFromUrl(n.ThumbnailUrl))
@@ -55,11 +55,11 @@ public class ImageCleanupService(
         result.BucketResults.Add(newsResult);
 
         // Cleanup general-assemblies bucket
-        var generalAssemblies = await generalAssemblyContext.GeneralAssemblies
+        var generalAssemblies = await contentsContext.GeneralAssemblies
             .AsNoTracking()
             .Where(ga => !string.IsNullOrEmpty(ga.ThumbnailUrl))
             .ToListAsync(ct);
-        
+
         var gaResult = await CleanupBucketAsync("general-assemblies", "General Assemblies",
             () => generalAssemblies
                 .Select(ga => ExtractGuidFromUrl(ga.ThumbnailUrl))

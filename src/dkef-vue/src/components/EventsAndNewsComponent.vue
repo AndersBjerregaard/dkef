@@ -64,9 +64,6 @@ const itemSection: Ref<string> = ref('')
 const itemAddress: Ref<string> = ref('')
 const itemDate: Ref<string> = ref('')
 
-// News-specific fields
-const itemAuthor: Ref<string> = ref('')
-
 const fileUploadError: Ref<boolean> = ref(false)
 const submitError: Ref<boolean> = ref(false)
 
@@ -94,8 +91,7 @@ const displayedItems = computed<FeedItem[]>(() => {
         description: n.description,
         thumbnailUrl: n.thumbnailUrl,
         createdAt: n.createdAt,
-        author: n.author,
-        publishedAt: n.publishedAt,
+        dateTime: n.dateTime,
       }))
     case 'general-assemblies':
       return filteredAssemblies.value.map((g) => ({
@@ -201,7 +197,12 @@ async function fetchFiltered(filter: FilterType, page: number = 1) {
     try {
       const skip = (page - 1) * pageSize
       const response = await apiservice.get<FeedResponse>(urlservice.getFeed(), {
-        params: { take: pageSize, skip },
+        params: {
+          take: pageSize,
+          skip,
+          orderBy: 'DateTime',
+          order: 'desc',
+        },
         skipAuth: true,
       })
       feedStore.items = response.data.collection
@@ -237,7 +238,7 @@ async function fetchFiltered(filter: FilterType, page: number = 1) {
         params: {
           take: pageSize,
           skip,
-          orderBy: 'PublishedAt',
+          orderBy: 'DateTime',
           order: 'desc',
         },
         skipAuth: true,
@@ -349,7 +350,6 @@ function resetFields() {
   itemSection.value = ''
   itemAddress.value = ''
   itemDate.value = ''
-  itemAuthor.value = ''
 }
 
 function validateFields(): boolean {
@@ -363,7 +363,7 @@ function validateFields(): boolean {
   }
 
   // Image is optional for all types (event, news, general-assembly)
-  // Section and author are optional for news only
+  // Section is optional for news only
   return true
 }
 
@@ -431,7 +431,8 @@ async function createEvent() {
 }
 
 async function createNews() {
-  let thumbnailId = ''
+  let thumbnailId: string | undefined = undefined
+
   if (itemFile.value !== null) {
     thumbnailId = uuidv4()
     const presignedUrlResponse: AxiosResponse<string> = await apiservice.get<string>(
@@ -443,9 +444,8 @@ async function createNews() {
   const newNews: NewsDto = {
     title: itemTitle.value,
     section: itemSection.value,
-    author: itemAuthor.value,
     description: itemDescription.value,
-    thumbnailId,
+    ...(thumbnailId && { thumbnailId }),
   }
   await apiservice.post<PublishedNews>(urlservice.postNews(), newNews)
 }
@@ -629,10 +629,9 @@ const submitLabel = computed(() => {
               id: item.id,
               title: item.title,
               section: item.section,
-              author: item.author ?? '',
               description: item.description,
               thumbnailUrl: item.thumbnailUrl,
-              publishedAt: item.publishedAt ?? '',
+              dateTime: item.dateTime ?? '',
               createdAt: item.createdAt,
             }"
           />
@@ -780,7 +779,7 @@ const submitLabel = computed(() => {
           </div>
         </template>
 
-        <!-- News-specific optional fields -->
+        <!-- News-specific fields -->
         <template v-if="createType === 'news'">
           <div class="flex gap-4 pb-4">
             <div class="flex-1">
@@ -792,19 +791,6 @@ const submitLabel = computed(() => {
                 placeholder="Sektion"
                 type="text"
                 v-model="itemSection"
-                @keypress="handleFieldChange"
-                :disabled="isLoading"
-              />
-            </div>
-            <div class="flex-1">
-              <label for="author_input">Forfatter (valgfri)</label>
-              <br />
-              <input
-                class="w-full bg-theme-soft border border-theme-border rounded-xl p-2 focus:outline-none focus:ring-2 focus:ring-theme-accent"
-                id="author_input"
-                placeholder="Forfatter"
-                type="text"
-                v-model="itemAuthor"
                 @keypress="handleFieldChange"
                 :disabled="isLoading"
               />

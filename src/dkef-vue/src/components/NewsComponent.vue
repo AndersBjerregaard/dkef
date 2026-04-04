@@ -5,8 +5,8 @@ import { computed } from 'vue'
 
 const props = defineProps<{ publishedNews: PublishedNews }>()
 
-const publishedAt = computed(() => {
-  const date = new Date(props.publishedNews?.publishedAt)
+const displayDateTime = computed(() => {
+  const date = new Date(props.publishedNews?.dateTime)
   return new Intl.DateTimeFormat(undefined, {
     year: 'numeric',
     month: 'long',
@@ -48,22 +48,6 @@ const publishedAt = computed(() => {
 
         <!-- Metadata -->
         <div class="mt-auto flex flex-col gap-1 text-sm text-theme-text">
-          <div class="flex items-center gap-1 h-10 overflow-hidden">
-            <svg
-              class="h-4 w-4 shrink-0 text-theme-muted"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-              />
-            </svg>
-            <span class="line-clamp-1">{{ props.publishedNews?.author }}</span>
-          </div>
           <div class="flex items-center gap-1">
             <svg
               class="h-4 w-4 shrink-0 text-theme-muted"
@@ -78,7 +62,7 @@ const publishedAt = computed(() => {
                 d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
               />
             </svg>
-            <span class="line-clamp-1">{{ publishedAt }}</span>
+            <span class="line-clamp-1">{{ displayDateTime }}</span>
           </div>
         </div>
       </div>

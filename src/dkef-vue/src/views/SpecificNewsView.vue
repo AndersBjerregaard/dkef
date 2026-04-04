@@ -21,10 +21,10 @@ const currentNews = computed<PublishedNews | undefined>(() => newsStore.getNewsB
 const isEditOpen = ref(false)
 const isDeleteOpen = ref(false)
 
-const publishedAt = computed(() => {
+const displayDateTime = computed(() => {
   const item = currentNews.value
   if (item === undefined) return ''
-  const date = new Date(item.publishedAt)
+  const date = new Date(item.dateTime)
   return new Intl.DateTimeFormat(undefined, {
     year: 'numeric',
     month: 'long',
@@ -102,11 +102,8 @@ onMounted(async () => {
           <div v-if="currentNews.section" class="pb-4">
             <h2>{{ currentNews.section }}</h2>
           </div>
-          <div v-if="currentNews.author" class="pb-4">
-            <h2>{{ currentNews.author }}</h2>
-          </div>
           <div class="pb-4">
-            <h2>{{ publishedAt }}</h2>
+            <h2>{{ displayDateTime }}</h2>
           </div>
         </div>
         <div v-if="currentNews.thumbnailUrl" class="flex items-center justify-center h-full">
