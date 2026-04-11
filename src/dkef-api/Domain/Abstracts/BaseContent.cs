@@ -19,5 +19,6 @@ public abstract class BaseContent : DomainClass
     public string Description { get; set; } = string.Empty;
     public string ThumbnailUrl { get; set; } = string.Empty;
     [Sortable]
-    public DateTime CreatedAt { get; set; } = DateTime.MinValue;
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public IEnumerable<string> Attachments { get; set; } = [];
 }

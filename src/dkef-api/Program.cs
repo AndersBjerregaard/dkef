@@ -218,13 +218,13 @@ try
     // (e.g. https://storage.andersbjerregaard.com in k8s). Falls back to the internal
     // connection string so local/Docker behaviour is unchanged.
     var minioPublicEndpoint = builder.Configuration.GetSection("Minio")["PublicEndpoint"];
-    var thumbnailHttpProtocol = string.IsNullOrWhiteSpace(minioPublicEndpoint)
+    var minioHttpProtocol = string.IsNullOrWhiteSpace(minioPublicEndpoint)
         ? (minioSecure ? "https" : "http")
         : "https";
-    var thumbnailBase = string.IsNullOrWhiteSpace(minioPublicEndpoint)
+    var minioBase = string.IsNullOrWhiteSpace(minioPublicEndpoint)
         ? minioConString
         : minioPublicEndpoint;
-    var thumbnailPrefix = $"{thumbnailHttpProtocol}://{thumbnailBase}";
+    var contentPrefix = $"{minioHttpProtocol}://{minioBase}";
 
     builder.Services.AddSingleton<IMapper>(sp =>
     {
@@ -237,17 +237,38 @@ try
             cfg.CreateMap<Event, Event>();
             cfg.CreateMap<EventDto, Event>()
                 .ForMember(dest => dest.ThumbnailUrl, opt => opt.MapFrom(src =>
-                    string.IsNullOrWhiteSpace(src.ThumbnailId) ? string.Empty : $"{thumbnailPrefix}/events/{src.ThumbnailId}"))
+                    string.IsNullOrWhiteSpace(src.ThumbnailId) ? string.Empty : $"{contentPrefix}/events/{src.ThumbnailId}"))
+                .ForMember(dest => dest.Attachments, opt => opt.MapFrom(src =>
+                    src.AttachmentIds == null
+                        ? new List<string>()
+                        : src.AttachmentIds.Select(id => string.IsNullOrWhiteSpace(id)
+                            ? string.Empty
+                            : $"{contentPrefix}/attachments/{id}"
+                )))
                 .ForMember(dest => dest.DateTime, opt => opt.MapFrom(src => DateTime.Parse(src.DateTime, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal).ToUniversalTime()));
             cfg.CreateMap<News, News>();
             cfg.CreateMap<NewsDto, News>()
                 .ForMember(dest => dest.ThumbnailUrl, opt => opt.MapFrom(src =>
-                    string.IsNullOrWhiteSpace(src.ThumbnailId) ? string.Empty : $"{thumbnailPrefix}/news/{src.ThumbnailId}"))
+                    string.IsNullOrWhiteSpace(src.ThumbnailId) ? string.Empty : $"{contentPrefix}/news/{src.ThumbnailId}"))
+                .ForMember(dest => dest.Attachments, opt => opt.MapFrom(src =>
+                    src.AttachmentIds == null
+                        ? new List<string>()
+                        : src.AttachmentIds.Select(id => string.IsNullOrWhiteSpace(id)
+                            ? string.Empty
+                            : $"{contentPrefix}/attachments/{id}"
+                )))
                 .ForMember(dest => dest.DateTime, opt => opt.MapFrom(src => DateTime.UtcNow));
             cfg.CreateMap<GeneralAssembly, GeneralAssembly>();
             cfg.CreateMap<GeneralAssemblyDto, GeneralAssembly>()
                 .ForMember(dest => dest.ThumbnailUrl, opt => opt.MapFrom(src =>
-                    string.IsNullOrWhiteSpace(src.ThumbnailId) ? string.Empty : $"{thumbnailPrefix}/general-assemblies/{src.ThumbnailId}"))
+                    string.IsNullOrWhiteSpace(src.ThumbnailId) ? string.Empty : $"{contentPrefix}/general-assemblies/{src.ThumbnailId}"))
+                .ForMember(dest => dest.Attachments, opt => opt.MapFrom(src =>
+                    src.AttachmentIds == null
+                        ? new List<string>()
+                        : src.AttachmentIds.Select(id => string.IsNullOrWhiteSpace(id)
+                            ? string.Empty
+                            : $"{contentPrefix}/attachments/{id}"
+                )))
                 .ForMember(dest => dest.DateTime, opt => opt.MapFrom(src => DateTime.Parse(src.DateTime, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal).ToUniversalTime()));
             cfg.CreateMap<InformationDto, InformationMessage>();
             // Optionally call 'cfg.MapMailgunContracts();' to map Mailgun contract types
