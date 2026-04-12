@@ -5,6 +5,10 @@ import axios, {
   AxiosError,
 } from 'axios'
 import { useAuthStore } from '@/stores/authStore'
+import { useRouter } from 'vue-router'
+import { toast } from 'vue-sonner'
+
+const router = useRouter()
 
 export interface ApiRequestConfig extends AxiosRequestConfig {
   skipAuth?: boolean
@@ -113,10 +117,11 @@ axiosInstance.interceptors.response.use(
         )
         // Refresh failed, clear auth and redirect to home page
         authStore?.clearAuth()
-        // Optionally redirect to login page
-        if (typeof window !== 'undefined') {
-          window.location.href = '/'
-        }
+        toast.error('Session Udløbet', {
+          description: 'Du er blevet logget ud på grund af inaktivitet.',
+          duration: 5000,
+        })
+        router.push('/')
         return Promise.reject(refreshError)
       } finally {
         isRefreshing = false

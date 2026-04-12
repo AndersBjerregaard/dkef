@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, type Ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { Toaster, toast } from 'vue-sonner'
-import 'vue-sonner/style.css'
+import { toast } from 'vue-sonner'
 import api from '@/services/apiservice'
 import { useAuthStore } from '@/stores/authStore'
 import type { Contact, UpdateProfileDto, Section } from '@/types/members'
@@ -265,7 +264,6 @@ async function changeEmail() {
 </script>
 
 <template>
-  <Toaster />
   <main class="py-24 px-4 flex justify-center">
     <div class="w-[50%] mx-auto">
       <!-- Header -->

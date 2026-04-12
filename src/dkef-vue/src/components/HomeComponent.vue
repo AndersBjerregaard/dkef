@@ -1,5 +1,4 @@
 <script setup lang="ts">
-// import NewsLetterComponent from './NewsLetterComponent.vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()

@@ -14,6 +14,7 @@ import {
 import { ref, computed } from 'vue'
 import { useAuthStore } from '@/stores/authStore'
 import { useThemeStore } from '@/stores/themeStore'
+import { Toaster } from 'vue-sonner'
 
 const authStore = useAuthStore()
 const themeStore = useThemeStore()
@@ -88,6 +89,7 @@ async function goto(view: string) {
 </script>
 
 <template>
+  <Toaster />
   <header>
     <div>
       <nav class="flex bg-theme-soft border-b border-amber-500/20 p-1 sm:p-4">
