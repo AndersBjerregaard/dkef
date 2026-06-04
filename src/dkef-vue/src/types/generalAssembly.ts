@@ -5,6 +5,7 @@ export interface GeneralAssemblyDto {
   dateTime: string
   description: string
   thumbnailId?: string
+  attachmentIds?: string[]
 }
 
 export interface PublishedGeneralAssembly {
@@ -15,6 +16,7 @@ export interface PublishedGeneralAssembly {
   dateTime: string
   description: string
   thumbnailUrl: string
+  attachmentUrls: string[]
   createdAt: string
 }
 

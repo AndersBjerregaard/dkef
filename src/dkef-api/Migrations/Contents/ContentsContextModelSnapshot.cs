@@ -8,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace dkef_api.Migrations.Contents
+namespace Dkef.Migrations.Contents
 {
     [DbContext(typeof(ContentsContext))]
     partial class ContentsContextModelSnapshot : ModelSnapshot
@@ -28,7 +28,7 @@ namespace dkef_api.Migrations.Contents
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.PrimitiveCollection<string[]>("Attachments")
+                    b.PrimitiveCollection<string[]>("AttachmentUrls")
                         .IsRequired()
                         .HasColumnType("text[]");
 

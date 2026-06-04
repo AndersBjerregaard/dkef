@@ -1,5 +1,7 @@
 // Auth-related type definitions matching backend DTOs
 
+import type { Section } from './members'
+
 export interface LoginDto {
   email: string
   password: string
@@ -34,15 +36,6 @@ export interface User {
   email: string
   name: string
   roles?: string[]
-}
-
-export const enum Section {
-  CopenhagenZealand = 0,
-  Jutland = 1,
-  NorthJutland = 2,
-  SouthJutland = 3,
-  Funen = 4,
-  MainAssociation = 5,
 }
 
 export interface RegisterDto {

@@ -238,7 +238,7 @@ try
             cfg.CreateMap<EventDto, Event>()
                 .ForMember(dest => dest.ThumbnailUrl, opt => opt.MapFrom(src =>
                     string.IsNullOrWhiteSpace(src.ThumbnailId) ? string.Empty : $"{contentPrefix}/events/{src.ThumbnailId}"))
-                .ForMember(dest => dest.Attachments, opt => opt.MapFrom(src =>
+                .ForMember(dest => dest.AttachmentUrls, opt => opt.MapFrom(src =>
                     src.AttachmentIds == null
                         ? new List<string>()
                         : src.AttachmentIds.Select(id => string.IsNullOrWhiteSpace(id)
@@ -250,7 +250,7 @@ try
             cfg.CreateMap<NewsDto, News>()
                 .ForMember(dest => dest.ThumbnailUrl, opt => opt.MapFrom(src =>
                     string.IsNullOrWhiteSpace(src.ThumbnailId) ? string.Empty : $"{contentPrefix}/news/{src.ThumbnailId}"))
-                .ForMember(dest => dest.Attachments, opt => opt.MapFrom(src =>
+                .ForMember(dest => dest.AttachmentUrls, opt => opt.MapFrom(src =>
                     src.AttachmentIds == null
                         ? new List<string>()
                         : src.AttachmentIds.Select(id => string.IsNullOrWhiteSpace(id)
@@ -262,7 +262,7 @@ try
             cfg.CreateMap<GeneralAssemblyDto, GeneralAssembly>()
                 .ForMember(dest => dest.ThumbnailUrl, opt => opt.MapFrom(src =>
                     string.IsNullOrWhiteSpace(src.ThumbnailId) ? string.Empty : $"{contentPrefix}/general-assemblies/{src.ThumbnailId}"))
-                .ForMember(dest => dest.Attachments, opt => opt.MapFrom(src =>
+                .ForMember(dest => dest.AttachmentUrls, opt => opt.MapFrom(src =>
                     src.AttachmentIds == null
                         ? new List<string>()
                         : src.AttachmentIds.Select(id => string.IsNullOrWhiteSpace(id)

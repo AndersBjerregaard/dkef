@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from 'uuid'
 import axios from 'axios'
 import type { AxiosResponse } from 'axios'
 import BaseModal from '@/components/BaseModal.vue'
+import AttachmentUploader from '@/components/AttachmentUploader.vue'
 import apiservice from '@/services/apiservice'
 import urlservice from '@/services/urlservice'
 import type { EventDto, PublishedEvent } from '@/types/events'
@@ -28,6 +29,8 @@ const itemAddress: Ref<string> = ref('')
 const itemDate: Ref<string> = ref('')
 const itemDescription: Ref<string> = ref('')
 const itemFile: Ref<File | null> = ref(null)
+const itemAttachmentIds: Ref<string[]> = ref([])
+const attachmentUploaderRef: Ref<InstanceType<typeof AttachmentUploader> | null> = ref(null)
 
 const isLoading: Ref<boolean> = ref(false)
 const fileUploadError: Ref<boolean> = ref(false)
@@ -47,6 +50,7 @@ function populateFields() {
   itemDate.value = toDatetimeLocalString(props.event.dateTime)
   itemDescription.value = props.event.description
   itemFile.value = null
+  itemAttachmentIds.value = [...props.event.attachmentUrls]
   fileUploadError.value = false
   submitError.value = null
 }
@@ -118,6 +122,13 @@ async function saveEvent() {
       thumbnailId = newGuid
     }
 
+    let attachmentIds = itemAttachmentIds.value
+
+    if (attachmentUploaderRef.value) {
+      const newAttachmentIds = await attachmentUploaderRef.value.processNewAttachments()
+      attachmentIds = [...attachmentIds, ...newAttachmentIds]
+    }
+
     const dto: EventDto = {
       title: itemTitle.value,
       section: itemSection.value,
@@ -125,6 +136,7 @@ async function saveEvent() {
       dateTime: itemDate.value,
       description: itemDescription.value,
       thumbnailId,
+      attachmentIds,
     }
 
     await eventStore.updateEvent(props.event.id, dto)
@@ -232,6 +244,16 @@ async function saveEvent() {
       <div v-if="fileUploadError" class="pb-4 text-red-400">
         <span>Kan ikke uploade en fil med filstørrelse på 0 bytes!</span>
       </div>
+
+      <!-- Attachments -->
+      <AttachmentUploader
+        ref="attachmentUploaderRef"
+        :attachment-ids="itemAttachmentIds"
+        :is-loading="isLoading"
+        content-type="events"
+        @update:attachment-ids="(ids) => (itemAttachmentIds = ids)"
+        @error="(msg) => (submitError = msg)"
+      />
 
       <div v-if="submitError" class="pb-4 text-red-400">
         <span>{{ submitError }}</span>

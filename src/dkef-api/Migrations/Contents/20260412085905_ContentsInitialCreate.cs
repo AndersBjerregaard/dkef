@@ -1,10 +1,9 @@
 ﻿using System;
-
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace dkef_api.Migrations.Contents
+namespace Dkef.Migrations.Contents
 {
     /// <inheritdoc />
     public partial class ContentsInitialCreate : Migration
@@ -23,6 +22,7 @@ namespace dkef_api.Migrations.Contents
                     Description = table.Column<string>(type: "text", nullable: false),
                     ThumbnailUrl = table.Column<string>(type: "text", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    AttachmentUrls = table.Column<string[]>(type: "text[]", nullable: false),
                     ContentType = table.Column<string>(type: "character varying(21)", maxLength: 21, nullable: false),
                     Address = table.Column<string>(type: "text", nullable: true)
                 },

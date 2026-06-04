@@ -148,7 +148,7 @@ async function editMember() {
       eanNumber.value = updatedContact.eanNumber
       privatePhoneNumber.value = updatedContact.privatePhoneNumber
       attPerson.value = updatedContact.attPerson
-      enrollmentDate.value = updatedContact.enrollmentDate
+      enrollmentDate.value = updatedContact.enrollmentDate ?? ''
       subscription.value = updatedContact.subscription
       invoiceName2.value = updatedContact.invoiceName2
       companyName.value = updatedContact.companyName
