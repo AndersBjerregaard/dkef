@@ -4,8 +4,7 @@ import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/authStore'
 import type { RegisterDto } from '@/types/auth'
 import { Section, SECTION_DISPLAY_MAP } from '@/types/members'
-import 'vue-sonner/style.css'
-import { Toaster, toast } from 'vue-sonner'
+import { toast } from 'vue-sonner'
 
 const router = useRouter()
 const authStore = useAuthStore()
@@ -111,7 +110,6 @@ async function handleRegister() {
 </script>
 
 <template>
-  <Toaster />
   <div class="flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
     <div class="max-w-md w-full space-y-6">
       <div class="pb-4">

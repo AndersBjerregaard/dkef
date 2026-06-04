@@ -218,6 +218,15 @@ function postContactMessage() {
   }
 }
 
+function getAttachmentPresignedUrl(guid: string) {
+  switch (mode) {
+    case 'Development':
+      throw 'Unimplemented!'
+    default:
+      return `/bucket/attachments/${guid}`
+  }
+}
+
 export default {
   getContacts,
   updateContact,
@@ -243,4 +252,5 @@ export default {
   getGeneralAssembly,
   getFeed,
   postContactMessage,
+  getAttachmentPresignedUrl,
 }

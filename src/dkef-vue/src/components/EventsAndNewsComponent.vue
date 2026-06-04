@@ -5,6 +5,7 @@ import EventComponent from './EventComponent.vue'
 import NewsComponent from './NewsComponent.vue'
 import GeneralAssemblyComponent from './GeneralAssemblyComponent.vue'
 import BaseModal from '@/components/BaseModal.vue'
+import AttachmentUploader from '@/components/AttachmentUploader.vue'
 import { v4 as uuidv4 } from 'uuid'
 import apiservice from '@/services/apiservice'
 import urlservice from '@/services/urlservice'
@@ -59,13 +60,15 @@ const itemTitle: Ref<string> = ref('')
 const itemFile: Ref<File | null> = ref(null)
 const itemDescription: Ref<string> = ref('')
 const itemSection: Ref<string> = ref('')
+const itemAttachmentIds: Ref<string[]> = ref([])
+const attachmentUploaderRef: Ref<InstanceType<typeof AttachmentUploader> | null> = ref(null)
 
 // Event + General Assembly fields
 const itemAddress: Ref<string> = ref('')
 const itemDate: Ref<string> = ref('')
 
 const fileUploadError: Ref<boolean> = ref(false)
-const submitError: Ref<boolean> = ref(false)
+const submitError: Ref<string | boolean> = ref(false)
 
 // Flat list in server sort order
 const displayedItems = computed<FeedItem[]>(() => {
@@ -78,6 +81,7 @@ const displayedItems = computed<FeedItem[]>(() => {
         section: e.section,
         description: e.description,
         thumbnailUrl: e.thumbnailUrl,
+        attachmentUrls: e.attachmentUrls ?? [],
         createdAt: e.createdAt,
         address: e.address,
         dateTime: e.dateTime,
@@ -90,6 +94,7 @@ const displayedItems = computed<FeedItem[]>(() => {
         section: n.section,
         description: n.description,
         thumbnailUrl: n.thumbnailUrl,
+        attachmentUrls: n.attachmentUrls ?? [],
         createdAt: n.createdAt,
         dateTime: n.dateTime,
       }))
@@ -101,6 +106,7 @@ const displayedItems = computed<FeedItem[]>(() => {
         section: g.section,
         description: g.description,
         thumbnailUrl: g.thumbnailUrl,
+        attachmentUrls: g.attachmentUrls ?? [],
         createdAt: g.createdAt,
         address: g.address,
         dateTime: g.dateTime,
@@ -350,6 +356,7 @@ function resetFields() {
   itemSection.value = ''
   itemAddress.value = ''
   itemDate.value = ''
+  itemAttachmentIds.value = []
 }
 
 function validateFields(): boolean {
@@ -419,6 +426,13 @@ async function createEvent() {
     await uploadFile(presignedUrlResponse.data, itemFile.value)
   }
 
+  let attachmentIds = itemAttachmentIds.value
+
+  if (attachmentUploaderRef.value) {
+    const newAttachmentIds = await attachmentUploaderRef.value.processNewAttachments()
+    attachmentIds = [...attachmentIds, ...newAttachmentIds]
+  }
+
   const newEvent: EventDto = {
     title: itemTitle.value,
     section: itemSection.value,
@@ -426,6 +440,7 @@ async function createEvent() {
     dateTime: itemDate.value,
     description: itemDescription.value,
     ...(thumbnailId && { thumbnailId }),
+    ...(attachmentIds.length > 0 && { attachmentIds }),
   }
   await apiservice.post<PublishedEvent>(urlservice.postEvent(), newEvent)
 }
@@ -441,11 +456,20 @@ async function createNews() {
     await uploadFile(presignedUrlResponse.data, itemFile.value)
   }
 
+  let attachmentIds = itemAttachmentIds.value
+
+  if (attachmentUploaderRef.value) {
+    const newAttachmentIds = await attachmentUploaderRef.value.processNewAttachments()
+    attachmentIds = [...attachmentIds, ...newAttachmentIds]
+  }
+
   const newNews: NewsDto = {
     title: itemTitle.value,
     section: itemSection.value,
     description: itemDescription.value,
+    dateTime: new Date().toISOString(),
     ...(thumbnailId && { thumbnailId }),
+    ...(attachmentIds.length > 0 && { attachmentIds }),
   }
   await apiservice.post<PublishedNews>(urlservice.postNews(), newNews)
 }
@@ -461,6 +485,13 @@ async function createGeneralAssembly() {
     await uploadFile(presignedUrlResponse.data, itemFile.value)
   }
 
+  let attachmentIds = itemAttachmentIds.value
+
+  if (attachmentUploaderRef.value) {
+    const newAttachmentIds = await attachmentUploaderRef.value.processNewAttachments()
+    attachmentIds = [...attachmentIds, ...newAttachmentIds]
+  }
+
   const newAssembly: GeneralAssemblyDto = {
     title: itemTitle.value,
     section: itemSection.value,
@@ -468,6 +499,7 @@ async function createGeneralAssembly() {
     dateTime: itemDate.value,
     description: itemDescription.value,
     ...(thumbnailId && { thumbnailId }),
+    ...(attachmentIds.length > 0 && { attachmentIds }),
   }
   await apiservice.post<PublishedGeneralAssembly>(urlservice.postGeneralAssembly(), newAssembly)
 }
@@ -620,6 +652,7 @@ const submitLabel = computed(() => {
               dateTime: item.dateTime ?? '',
               description: item.description,
               thumbnailUrl: item.thumbnailUrl,
+              attachmentUrls: item.attachmentUrls ?? [],
               createdAt: item.createdAt,
             }"
           />
@@ -631,6 +664,7 @@ const submitLabel = computed(() => {
               section: item.section,
               description: item.description,
               thumbnailUrl: item.thumbnailUrl,
+              attachmentUrls: item.attachmentUrls ?? [],
               dateTime: item.dateTime ?? '',
               createdAt: item.createdAt,
             }"
@@ -645,6 +679,7 @@ const submitLabel = computed(() => {
               dateTime: item.dateTime ?? '',
               description: item.description,
               thumbnailUrl: item.thumbnailUrl,
+              attachmentUrls: item.attachmentUrls ?? [],
               createdAt: item.createdAt,
             }"
           />
@@ -829,6 +864,16 @@ const submitLabel = computed(() => {
         <div v-show="fileUploadError" class="pb-4 text-red-400">
           <span>Kan ikke uploade en fil med filstørrelse på 0 bytes!</span>
         </div>
+
+        <!-- Attachments -->
+        <AttachmentUploader
+          ref="attachmentUploaderRef"
+          :attachment-ids="itemAttachmentIds"
+          :is-loading="isLoading"
+          :content-type="createType === 'event' ? 'events' : createType === 'news' ? 'news' : 'general-assemblies'"
+          @update:attachment-ids="(ids) => (itemAttachmentIds = ids)"
+          @error="(msg) => (submitError = msg)"
+        />
 
         <div v-show="submitError" class="pb-4 text-red-400">
           <span>Venligst udfyld alle påkrævede felter</span>

@@ -5,6 +5,7 @@ export interface EventDto {
   dateTime: string
   description: string
   thumbnailId?: string
+  attachmentIds?: string[]
 }
 
 /**
@@ -25,6 +26,7 @@ export interface PublishedEvent {
   dateTime: string
   description: string
   thumbnailUrl: string
+  attachmentUrls: string[]
   createdAt: string
 }
 

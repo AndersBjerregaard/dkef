@@ -6,8 +6,7 @@ import MemberComponent from './MemberComponent.vue'
 import MemberHeaderComponent from './MemberHeaderComponent.vue'
 import { computed, onMounted, onUnmounted, reactive, ref, type ComputedRef, type Ref } from 'vue'
 import type { AxiosResponse } from 'axios'
-import 'vue-sonner/style.css'
-import { Toaster, toast } from 'vue-sonner'
+import { toast } from 'vue-sonner'
 
 const emailsCopied = ref(false)
 
@@ -235,7 +234,6 @@ function sort(by: string, order: Sort): void {
 </script>
 
 <template>
-  <Toaster />
   <div class="pb-20 justify-center items-center text-center">
     <div class="pt-16">
       <h1 class="text-4xl py-8">Alle medlemmer</h1>

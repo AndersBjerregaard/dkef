@@ -4,8 +4,7 @@ import LoadingButton from '@/components/LoadingButton.vue'
 import type { ContactMessageDto } from '@/types/contactMessage'
 import apiservice from '@/services/apiservice'
 import urlservice from '@/services/urlservice'
-import 'vue-sonner/style.css'
-import { Toaster, toast } from 'vue-sonner'
+import { toast } from 'vue-sonner'
 
 const contactName: Ref<string> = ref('')
 const contactPhone: Ref<string> = ref('')
@@ -50,7 +49,6 @@ function clearForm() {
 </script>
 
 <template>
-  <Toaster />
   <form @submit.prevent="submitContactMessage">
     <div class="flex-row h-96">
       <label for="name_input">Navn</label>
