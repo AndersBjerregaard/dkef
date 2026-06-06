@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: dkef-api
-          image: anders97/dkef-api:latest
+          image: anders97/dkef-api:placeholder
           ports:
             - containerPort: 8080
           envFrom:
