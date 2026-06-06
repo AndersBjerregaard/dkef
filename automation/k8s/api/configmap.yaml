@@ -16,5 +16,6 @@ data:
   JwtSettings__ExpiryMinutes: "60"
   Logging__LogLevel__Default: "Information"
   Logging__LogLevel__Microsoft.AspNetCore: "Warning"
-  "Mailgun__BaseUrl": "https://api.mailgun.net"
-  "Mailgun__To": "info@dkef.dk"
+  MailConfiguration__Sender: "info@dkef.dk"
+  MailConfiguration__Domain: "dkef.dk"
+  MailConfiguration__To: "info@dkef.dk"

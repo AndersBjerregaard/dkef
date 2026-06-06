@@ -165,10 +165,10 @@ try
     // Authentication
     JwtConfig jwtConfig = new(
 
-        Key: builder.Configuration.GetSection("JwtSettings")["Key"]!,
-        Issuer: builder.Configuration.GetSection("JwtSettings")["Issuer"]!,
-        Audience: builder.Configuration.GetSection("JwtSettings")["Audience"]!,
-        ExpiryMinutes: int.Parse(builder.Configuration.GetSection("JwtSettings")["ExpiryMinutes"] ?? "60")
+        Key: builder.Configuration.GetSection("JwtSettings")["Key"] ?? throw new KeyNotFoundException("JwtSettings__Key"),
+        Issuer: builder.Configuration.GetSection("JwtSettings")["Issuer"] ?? throw new KeyNotFoundException("JwtSettings_Issuer"),
+        Audience: builder.Configuration.GetSection("JwtSettings")["Audience"] ?? throw new KeyNotFoundException("JwtSettings__Audience"),
+        ExpiryMinutes: int.Parse(builder.Configuration.GetSection("JwtSettings")["ExpiryMinutes"] ?? throw new KeyNotFoundException("JwtSettings_ExpirtyMinutes"))
     );
 
     builder.Services.AddSingleton(jwtConfig);
@@ -197,9 +197,12 @@ try
     builder.Services.AddAuthorization();
 
     // Minio (S3 compatible storage)
-    var minioConString = builder.Configuration.GetConnectionString("Minio");
-    var minioAccessKey = builder.Configuration.GetSection("Minio")["AccessKey"];
-    var minioSecretKey = builder.Configuration.GetSection("Minio")["SecretKey"];
+    var minioConString = builder.Configuration.GetConnectionString("Minio") ??
+        throw new KeyNotFoundException("ConnectionStrings__Minio");
+    var minioAccessKey = builder.Configuration.GetSection("Minio")["AccessKey"] ??
+        throw new KeyNotFoundException("Minio__AccessKey");
+    var minioSecretKey = builder.Configuration.GetSection("Minio")["SecretKey"] ??
+        throw new KeyNotFoundException("Minio__SecretKey");
     var minioSecure = bool.Parse(builder.Configuration.GetSection("Minio")["Secure"]!);
 
     builder.Services.AddMinio(configureClient => configureClient

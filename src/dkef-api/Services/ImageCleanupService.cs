@@ -3,6 +3,8 @@ using Dkef.Data;
 using Microsoft.EntityFrameworkCore;
 
 using Minio;
+using Minio.ApiEndpoints;
+using Minio.DataModel;
 using Minio.DataModel.Args;
 
 namespace Dkef.Services;
@@ -104,11 +106,13 @@ public class ImageCleanupService(
             // MinIO SDK returns an IObservable, so we need to collect items into a list
             var items = new List<Minio.DataModel.Item>();
             var itemsReceived = new TaskCompletionSource<bool>();
+#pragma warning disable CS0618 // Type or member is obsolete
             var subscription = minioClient.ListObjectsAsync(listArgs, ct).Subscribe(
                 onNext: item => items.Add(item),
                 onError: error => itemsReceived.TrySetException(error),
                 onCompleted: () => itemsReceived.TrySetResult(true)
             );
+#pragma warning restore CS0618 // Type or member is obsolete
 
             await itemsReceived.Task;
             subscription?.Dispose();
