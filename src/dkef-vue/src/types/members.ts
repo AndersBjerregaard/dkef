@@ -91,6 +91,27 @@ export interface CreateMemberDto {
   email: string
   name: string
   primarySection: Section
+  address: string
+  city: string
+  zip: string
+  countryCode: string
+  cvrNumber: string
+  eanNumber: string
+  privatePhoneNumber: string
+  attPerson: string
+  enrollmentDate: string | null
+  subscription: string
+  invoiceName2: string
+  companyName: string
+  companyAddress: string
+  companyZip: string
+  companyCity: string
+  companyPhone: string
+  employmentStatus: string
+  secondarySection: Section | null
+  magazineDelivery: string
+  title: string
+  memberType: MemberType
 }
 
 export interface UpdateProfileDto {

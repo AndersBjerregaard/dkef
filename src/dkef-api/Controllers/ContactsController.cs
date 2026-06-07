@@ -70,8 +70,28 @@ public class ContactsController(
             Email = dto.Email,
             Name = dto.Name,
             PrimarySection = dto.PrimarySection,
-            EnrollmentDate = DateTime.UtcNow,
-            EmailConfirmed = true, // Skip email confirmation — admin-created accounts
+            SecondarySection = dto.SecondarySection,
+            Address = dto.Address,
+            City = dto.City,
+            ZIP = dto.ZIP,
+            CountryCode = dto.CountryCode,
+            CVRNumber = dto.CVRNumber,
+            EANNumber = dto.EANNumber,
+            PrivatePhoneNumber = dto.PrivatePhoneNumber,
+            AttPerson = dto.AttPerson,
+            Title = dto.Title,
+            EmploymentStatus = dto.EmploymentStatus,
+            Subscription = dto.Subscription,
+            InvoiceName2 = dto.InvoiceName2,
+            CompanyName = dto.CompanyName,
+            CompanyAddress = dto.CompanyAddress,
+            CompanyZIP = dto.CompanyZip,
+            CompanyCity = dto.CompanyCity,
+            CompanyPhone = dto.CompanyPhone,
+            MagazineDelivery = dto.MagazineDelivery,
+            EnrollmentDate = dto.EnrollmentDate,
+            MemberType = dto.MemberType,
+            EmailConfirmed = true, // skip email confirmation — admin-created accounts
         };
 
         // Generate a cryptographically random temporary password

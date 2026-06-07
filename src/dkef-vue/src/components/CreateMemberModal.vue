@@ -3,7 +3,14 @@ import { ref, type Ref } from 'vue'
 import apiservice from '@/services/apiservice'
 import urlservice from '@/services/urlservice'
 import BaseModal from '@/components/BaseModal.vue'
-import { Section, SECTION_DISPLAY_MAP, type CreateMemberDto, type Contact } from '@/types/members'
+import {
+  Section,
+  SECTION_DISPLAY_MAP,
+  MemberType,
+  MEMBER_TYPE_DISPLAY_MAP,
+  type CreateMemberDto,
+  type Contact,
+} from '@/types/members'
 import { toast } from 'vue-sonner'
 import { AxiosError } from 'axios'
 
@@ -22,6 +29,27 @@ const errorMessage: Ref<string | null> = ref(null)
 const email = ref('')
 const name = ref('')
 const primarySection = ref<Section>(Section.Jutland)
+const secondarySection = ref<Section | null>(null)
+const title = ref('')
+const employmentStatus = ref('')
+const memberType = ref<MemberType>(MemberType.Member)
+const address = ref('')
+const city = ref('')
+const zip = ref('')
+const countryCode = ref('')
+const cvrNumber = ref('')
+const eanNumber = ref('')
+const privatePhoneNumber = ref('')
+const attPerson = ref('')
+const enrollmentDate = ref('')
+const subscription = ref('')
+const invoiceName2 = ref('')
+const companyName = ref('')
+const companyAddress = ref('')
+const companyZip = ref('')
+const companyCity = ref('')
+const companyPhone = ref('')
+const magazineDelivery = ref('')
 
 const emailError = ref('')
 
@@ -42,6 +70,27 @@ function resetForm() {
   email.value = ''
   name.value = ''
   primarySection.value = Section.Jutland
+  secondarySection.value = null
+  title.value = ''
+  employmentStatus.value = ''
+  memberType.value = MemberType.Member
+  address.value = ''
+  city.value = ''
+  zip.value = ''
+  countryCode.value = ''
+  cvrNumber.value = ''
+  eanNumber.value = ''
+  privatePhoneNumber.value = ''
+  attPerson.value = ''
+  enrollmentDate.value = ''
+  subscription.value = ''
+  invoiceName2.value = ''
+  companyName.value = ''
+  companyAddress.value = ''
+  companyZip.value = ''
+  companyCity.value = ''
+  companyPhone.value = ''
+  magazineDelivery.value = ''
   errorMessage.value = null
   emailError.value = ''
 }
@@ -68,6 +117,27 @@ async function createMember() {
       email: email.value,
       name: name.value,
       primarySection: primarySection.value,
+      secondarySection: secondarySection.value,
+      title: title.value,
+      employmentStatus: employmentStatus.value,
+      memberType: memberType.value,
+      address: address.value,
+      city: city.value,
+      zip: zip.value,
+      countryCode: countryCode.value,
+      cvrNumber: cvrNumber.value,
+      eanNumber: eanNumber.value,
+      privatePhoneNumber: privatePhoneNumber.value,
+      attPerson: attPerson.value,
+      enrollmentDate: enrollmentDate.value ? new Date(enrollmentDate.value).toISOString() : null,
+      subscription: subscription.value,
+      invoiceName2: invoiceName2.value,
+      companyName: companyName.value,
+      companyAddress: companyAddress.value,
+      companyZip: companyZip.value,
+      companyCity: companyCity.value,
+      companyPhone: companyPhone.value,
+      magazineDelivery: magazineDelivery.value,
     }
 
     const response = await apiservice.post<Contact>(urlservice.postContact(), dto)
@@ -100,50 +170,341 @@ const sectionOptions = Object.entries(SECTION_DISPLAY_MAP).map(([key, value]) =>
   value: Number(key) as Section,
   label: value,
 }))
+
+const memberTypeOptions = Object.entries(MEMBER_TYPE_DISPLAY_MAP).map(([key, value]) => ({
+  value: Number(key) as MemberType,
+  label: value,
+}))
 </script>
 
 <template>
-  <BaseModal :is-open="isOpen" title="Opret Nyt Medlem" :is-loading="isLoading" @close="closeModal">
+  <BaseModal
+    :is-open="isOpen"
+    title="Opret Nyt Medlem"
+    :is-loading="isLoading"
+    max-width="max-w-5xl"
+    @close="closeModal"
+  >
     <form @submit.prevent="createMember">
       <div class="space-y-4">
-        <div>
-          <label for="email_input" class="block text-sm font-medium">Email</label>
-          <input
-            id="email_input"
-            type="email"
-            v-model="email"
-            class="inputField"
-            :disabled="isLoading"
-            @input="validateEmail(email)"
-          />
-          <p v-if="emailError" class="text-red-500 text-sm mt-1">{{ emailError }}</p>
+        <!-- Basic Information -->
+        <div class="flex gap-4">
+          <div class="w-[30%]">
+            <label for="email_input" class="block text-sm font-medium">Email</label>
+            <input
+              id="email_input"
+              type="email"
+              v-model="email"
+              class="inputField"
+              :disabled="isLoading"
+              @input="validateEmail(email)"
+            />
+            <p v-if="emailError" class="text-red-500 text-sm mt-1">{{ emailError }}</p>
+          </div>
+
+          <div class="w-[30%]">
+            <label for="name_input" class="block text-sm font-medium">Navn</label>
+            <input
+              id="name_input"
+              type="text"
+              v-model="name"
+              class="inputField"
+              :disabled="isLoading"
+            />
+          </div>
+
         </div>
 
-        <div>
-          <label for="name_input" class="block text-sm font-medium">Navn</label>
-          <input
-            id="name_input"
-            type="text"
-            v-model="name"
-            class="inputField"
-            :disabled="isLoading"
-          />
+        <!-- Title, Employment, Member Type -->
+        <div class="flex gap-4">
+          <div class="w-[30%]">
+            <label for="title_input" class="block text-sm font-medium">Titel</label>
+            <input
+              id="title_input"
+              type="text"
+              v-model="title"
+              class="inputField"
+              :disabled="isLoading"
+            />
+          </div>
+
+          <div class="w-[30%]">
+            <label for="employmentStatus_input" class="block text-sm font-medium"
+              >Beskæftigelse</label
+            >
+            <input
+              id="employmentStatus_input"
+              type="text"
+              v-model="employmentStatus"
+              class="inputField"
+              :disabled="isLoading"
+            />
+          </div>
+
+          <div class="w-[30%]">
+            <label for="memberType_input" class="block text-sm font-medium">Medlemstype</label>
+            <select
+              id="memberType_input"
+              v-model.number="memberType"
+              class="inputField"
+              :disabled="isLoading"
+            >
+              <option v-for="opt in memberTypeOptions" :key="opt.value" :value="opt.value">
+                {{ opt.label }}
+              </option>
+            </select>
+          </div>
         </div>
 
-        <div>
-          <label for="primarySection_input" class="block text-sm font-medium">
-            Primær Sektion
-          </label>
-          <select
-            id="primarySection_input"
-            v-model.number="primarySection"
-            class="inputField"
-            :disabled="isLoading"
-          >
-            <option v-for="opt in sectionOptions" :key="opt.value" :value="opt.value">
-              {{ opt.label }}
-            </option>
-          </select>
+        <!-- Primary Section, Secondary Section -->
+        <div class="flex gap-4">
+          <div class="w-[30%]">
+            <label for="primarySection_input" class="block text-sm font-medium">
+              Primær Sektion
+            </label>
+            <select
+              id="primarySection_input"
+              v-model.number="primarySection"
+              class="inputField"
+              :disabled="isLoading"
+            >
+              <option v-for="opt in sectionOptions" :key="opt.value" :value="opt.value">
+                {{ opt.label }}
+              </option>
+            </select>
+          </div>
+
+          <div class="w-[30%]">
+            <label for="secondarySection_input" class="block text-sm font-medium">
+              Sekundær Sektion
+            </label>
+            <select
+              id="secondarySection_input"
+              v-model.number="secondarySection"
+              class="inputField"
+              :disabled="isLoading"
+            >
+              <option :value="null">Ingen</option>
+              <option v-for="opt in sectionOptions" :key="opt.value" :value="opt.value">
+                {{ opt.label }}
+              </option>
+            </select>
+          </div>
+
+          <div class="w-[30%]"></div>
+        </div>
+
+        <!-- Mailing Address -->
+        <div class="flex gap-4">
+          <div class="w-[30%]">
+            <label for="address_input" class="block text-sm font-medium">Vejnavn og nr.</label>
+            <input
+              id="address_input"
+              type="text"
+              v-model="address"
+              class="inputField"
+              :disabled="isLoading"
+            />
+          </div>
+
+          <div class="w-[30%]">
+            <label for="city_input" class="block text-sm font-medium">By</label>
+            <input
+              id="city_input"
+              type="text"
+              v-model="city"
+              class="inputField"
+              :disabled="isLoading"
+            />
+          </div>
+
+          <div class="w-[30%]">
+            <label for="zip_input" class="block text-sm font-medium">Postnummer</label>
+            <input
+              id="zip_input"
+              type="text"
+              v-model="zip"
+              class="inputField"
+              :disabled="isLoading"
+            />
+          </div>
+        </div>
+
+        <!-- Country, Phone, Att Person -->
+        <div class="flex gap-4">
+          <div class="w-[30%]">
+            <label for="countryCode_input" class="block text-sm font-medium">Landekode</label>
+            <input
+              id="countryCode_input"
+              type="text"
+              v-model="countryCode"
+              class="inputField"
+              :disabled="isLoading"
+            />
+          </div>
+
+          <div class="w-[30%]">
+            <label for="privatePhoneNumber_input" class="block text-sm font-medium">Mobil</label>
+            <input
+              id="privatePhoneNumber_input"
+              type="text"
+              v-model="privatePhoneNumber"
+              class="inputField"
+              :disabled="isLoading"
+            />
+          </div>
+
+          <div class="w-[30%]">
+            <label for="attPerson_input" class="block text-sm font-medium">Att. Person</label>
+            <input
+              id="attPerson_input"
+              type="text"
+              v-model="attPerson"
+              class="inputField"
+              :disabled="isLoading"
+            />
+          </div>
+        </div>
+
+        <!-- Enrollment Date, Subscription, Invoice Name -->
+        <div class="flex gap-4">
+          <div class="w-[30%]">
+            <label for="enrollmentDate_input" class="block text-sm font-medium"
+              >Indmeldingsdato</label
+            >
+            <input
+              id="enrollmentDate_input"
+              type="date"
+              v-model="enrollmentDate"
+              class="inputField"
+              :disabled="isLoading"
+            />
+          </div>
+
+          <div class="w-[30%]">
+            <label for="subscription_input" class="block text-sm font-medium">Kontingent</label>
+            <input
+              id="subscription_input"
+              type="text"
+              v-model="subscription"
+              class="inputField"
+              :disabled="isLoading"
+            />
+          </div>
+
+          <div class="w-[30%]">
+            <label for="invoiceName2_input" class="block text-sm font-medium">Faktura navn 2</label>
+            <input
+              id="invoiceName2_input"
+              type="text"
+              v-model="invoiceName2"
+              class="inputField"
+              :disabled="isLoading"
+            />
+          </div>
+        </div>
+
+        <!-- Company Information -->
+        <div class="flex gap-4">
+          <div class="w-[30%]">
+            <label for="companyName_input" class="block text-sm font-medium">Firma navn</label>
+            <input
+              id="companyName_input"
+              type="text"
+              v-model="companyName"
+              class="inputField"
+              :disabled="isLoading"
+            />
+          </div>
+
+          <div class="w-[30%]">
+            <label for="companyAddress_input" class="block text-sm font-medium"
+              >Firma vejnavn og nr.</label
+            >
+            <input
+              id="companyAddress_input"
+              type="text"
+              v-model="companyAddress"
+              class="inputField"
+              :disabled="isLoading"
+            />
+          </div>
+
+          <div class="w-[30%]">
+            <label for="companyCity_input" class="block text-sm font-medium">Firma by</label>
+            <input
+              id="companyCity_input"
+              type="text"
+              v-model="companyCity"
+              class="inputField"
+              :disabled="isLoading"
+            />
+          </div>
+        </div>
+
+        <!-- Company Phone, Zip, CVR/EAN -->
+        <div class="flex gap-4">
+          <div class="w-[30%]">
+            <label for="companyPhone_input" class="block text-sm font-medium">Firma mobil</label>
+            <input
+              id="companyPhone_input"
+              type="text"
+              v-model="companyPhone"
+              class="inputField"
+              :disabled="isLoading"
+            />
+          </div>
+
+          <div class="w-[30%]">
+            <label for="companyZip_input" class="block text-sm font-medium">Firma postnummer</label>
+            <input
+              id="companyZip_input"
+              type="text"
+              v-model="companyZip"
+              class="inputField"
+              :disabled="isLoading"
+            />
+          </div>
+
+          <div class="w-[30%]">
+            <label for="cvrNumber_input" class="block text-sm font-medium">CVR nr.</label>
+            <input
+              id="cvrNumber_input"
+              type="text"
+              v-model="cvrNumber"
+              class="inputField"
+              :disabled="isLoading"
+            />
+          </div>
+        </div>
+
+        <!-- EAN, Magazine Delivery -->
+        <div class="flex gap-4">
+          <div class="w-[30%]">
+            <label for="eanNumber_input" class="block text-sm font-medium">EAN nr.</label>
+            <input
+              id="eanNumber_input"
+              type="text"
+              v-model="eanNumber"
+              class="inputField"
+              :disabled="isLoading"
+            />
+          </div>
+
+          <div class="w-[30%]">
+            <label for="magazineDelivery_input" class="block text-sm font-medium"
+              >Magasin levering</label
+            >
+            <input
+              id="magazineDelivery_input"
+              type="text"
+              v-model="magazineDelivery"
+              class="inputField"
+              :disabled="isLoading"
+            />
+          </div>
+
+          <div class="w-[30%]"></div>
         </div>
 
         <p v-if="errorMessage" class="text-red-500 text-sm">{{ errorMessage }}</p>
