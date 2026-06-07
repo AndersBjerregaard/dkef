@@ -14,7 +14,6 @@ namespace Dkef.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-[Authorize(Roles = "Admin")]
 public class ContactsController(
     IContactRepository repository,
     UserManager<Contact> userManager,
@@ -53,6 +52,7 @@ public class ContactsController(
 
     [HttpPut]
     [Route("{id}")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Update([FromRoute] string id, [FromBody] ContactDto dto)
     {
         if (!Guid.TryParse(id, out var parsedId))
@@ -69,6 +69,7 @@ public class ContactsController(
 
     [HttpDelete]
     [Route("{id}")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Delete([FromRoute] string id)
     {
         if (!Guid.TryParse(id, out var parsedId))
@@ -90,6 +91,7 @@ public class ContactsController(
 
     [HttpGet]
     [Route("{id}/authorize")]
+    [Authorize(Roles = "Admin")]
     public IActionResult AuthorizeEdit([FromRoute] string id)
     {
         if (!Guid.TryParse(id, out _))

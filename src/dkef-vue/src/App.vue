@@ -160,7 +160,7 @@ async function goto(view: string) {
                   leave-to-class="transform opacity-0 scale-95"
                 >
                   <MenuItems
-                    class="absolute left-0 z-10 mt-2 w-56 origin-top-left rounded-lg bg-theme-bg shadow-lg ring-1 ring-theme-border focus:outline-none"
+                    class="absolute left-0 z-10 mt-2 w-56 origin-top-left rounded-lg bg-theme-mute shadow-lg ring-1 ring-theme-border focus:outline-none"
                   >
                     <div class="px-1 py-1">
                       <MenuItem v-slot="{ active, close }">
