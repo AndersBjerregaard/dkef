@@ -77,6 +77,10 @@ async function handleLogin() {
 async function handleLogout() {
   try {
     await authStore.logout()
+    // Redirect to home page if currently viewing a protected page
+    if (router.currentRoute.value.meta.requiresAuth) {
+      await goto('home')
+    }
   } catch (error) {
     console.error('Logout error:', error)
   }
