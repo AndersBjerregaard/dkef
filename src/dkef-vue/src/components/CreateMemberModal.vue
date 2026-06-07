@@ -41,9 +41,7 @@ const cvrNumber = ref('')
 const eanNumber = ref('')
 const privatePhoneNumber = ref('')
 const attPerson = ref('')
-const enrollmentDate = ref('')
 const subscription = ref('')
-const invoiceName2 = ref('')
 const companyName = ref('')
 const companyAddress = ref('')
 const companyZip = ref('')
@@ -69,28 +67,26 @@ function validateEmail(value: string): boolean {
 function resetForm() {
   email.value = ''
   name.value = ''
+  title.value = ''
   primarySection.value = Section.Jutland
   secondarySection.value = null
-  title.value = ''
   employmentStatus.value = ''
-  memberType.value = MemberType.Member
   address.value = ''
   city.value = ''
   zip.value = ''
-  countryCode.value = ''
-  cvrNumber.value = ''
-  eanNumber.value = ''
   privatePhoneNumber.value = ''
-  attPerson.value = ''
-  enrollmentDate.value = ''
-  subscription.value = ''
-  invoiceName2.value = ''
   companyName.value = ''
   companyAddress.value = ''
-  companyZip.value = ''
   companyCity.value = ''
+  companyZip.value = ''
+  cvrNumber.value = ''
   companyPhone.value = ''
   magazineDelivery.value = ''
+  eanNumber.value = ''
+  countryCode.value = ''
+  attPerson.value = ''
+  subscription.value = ''
+  memberType.value = MemberType.Member
   errorMessage.value = null
   emailError.value = ''
 }
@@ -116,28 +112,26 @@ async function createMember() {
     const dto: CreateMemberDto = {
       email: email.value,
       name: name.value,
+      title: title.value,
       primarySection: primarySection.value,
       secondarySection: secondarySection.value,
-      title: title.value,
       employmentStatus: employmentStatus.value,
-      memberType: memberType.value,
       address: address.value,
       city: city.value,
       zip: zip.value,
-      countryCode: countryCode.value,
-      cvrNumber: cvrNumber.value,
-      eanNumber: eanNumber.value,
       privatePhoneNumber: privatePhoneNumber.value,
-      attPerson: attPerson.value,
-      enrollmentDate: enrollmentDate.value ? new Date(enrollmentDate.value).toISOString() : null,
-      subscription: subscription.value,
-      invoiceName2: invoiceName2.value,
       companyName: companyName.value,
       companyAddress: companyAddress.value,
-      companyZip: companyZip.value,
       companyCity: companyCity.value,
+      companyZip: companyZip.value,
+      cvrNumber: cvrNumber.value,
       companyPhone: companyPhone.value,
       magazineDelivery: magazineDelivery.value,
+      eanNumber: eanNumber.value,
+      countryCode: countryCode.value,
+      attPerson: attPerson.value,
+      subscription: subscription.value,
+      memberType: memberType.value,
     }
 
     const response = await apiservice.post<Contact>(urlservice.postContact(), dto)
@@ -187,7 +181,7 @@ const memberTypeOptions = Object.entries(MEMBER_TYPE_DISPLAY_MAP).map(([key, val
   >
     <form @submit.prevent="createMember">
       <div class="space-y-4">
-        <!-- Basic Information -->
+        <!-- Email, Navn, Titel -->
         <div class="flex gap-4">
           <div class="w-[30%]">
             <label for="email_input" class="block text-sm font-medium">Email</label>
@@ -213,10 +207,6 @@ const memberTypeOptions = Object.entries(MEMBER_TYPE_DISPLAY_MAP).map(([key, val
             />
           </div>
 
-        </div>
-
-        <!-- Title, Employment, Member Type -->
-        <div class="flex gap-4">
           <div class="w-[30%]">
             <label for="title_input" class="block text-sm font-medium">Titel</label>
             <input
@@ -227,36 +217,9 @@ const memberTypeOptions = Object.entries(MEMBER_TYPE_DISPLAY_MAP).map(([key, val
               :disabled="isLoading"
             />
           </div>
-
-          <div class="w-[30%]">
-            <label for="employmentStatus_input" class="block text-sm font-medium"
-              >Beskæftigelse</label
-            >
-            <input
-              id="employmentStatus_input"
-              type="text"
-              v-model="employmentStatus"
-              class="inputField"
-              :disabled="isLoading"
-            />
-          </div>
-
-          <div class="w-[30%]">
-            <label for="memberType_input" class="block text-sm font-medium">Medlemstype</label>
-            <select
-              id="memberType_input"
-              v-model.number="memberType"
-              class="inputField"
-              :disabled="isLoading"
-            >
-              <option v-for="opt in memberTypeOptions" :key="opt.value" :value="opt.value">
-                {{ opt.label }}
-              </option>
-            </select>
-          </div>
         </div>
 
-        <!-- Primary Section, Secondary Section -->
+        <!-- Primær Sektion, Sekundær Sektion, Beskæftigelse -->
         <div class="flex gap-4">
           <div class="w-[30%]">
             <label for="primarySection_input" class="block text-sm font-medium">
@@ -291,10 +254,21 @@ const memberTypeOptions = Object.entries(MEMBER_TYPE_DISPLAY_MAP).map(([key, val
             </select>
           </div>
 
-          <div class="w-[30%]"></div>
+          <div class="w-[30%]">
+            <label for="employmentStatus_input" class="block text-sm font-medium"
+              >Beskæftigelse</label
+            >
+            <input
+              id="employmentStatus_input"
+              type="text"
+              v-model="employmentStatus"
+              class="inputField"
+              :disabled="isLoading"
+            />
+          </div>
         </div>
 
-        <!-- Mailing Address -->
+        <!-- Vejnavn og nr., By, Postnummer -->
         <div class="flex gap-4">
           <div class="w-[30%]">
             <label for="address_input" class="block text-sm font-medium">Vejnavn og nr.</label>
@@ -330,19 +304,8 @@ const memberTypeOptions = Object.entries(MEMBER_TYPE_DISPLAY_MAP).map(([key, val
           </div>
         </div>
 
-        <!-- Country, Phone, Att Person -->
+        <!-- Mobil, Firma navn, Firma vejnavn og nr. -->
         <div class="flex gap-4">
-          <div class="w-[30%]">
-            <label for="countryCode_input" class="block text-sm font-medium">Landekode</label>
-            <input
-              id="countryCode_input"
-              type="text"
-              v-model="countryCode"
-              class="inputField"
-              :disabled="isLoading"
-            />
-          </div>
-
           <div class="w-[30%]">
             <label for="privatePhoneNumber_input" class="block text-sm font-medium">Mobil</label>
             <input
@@ -354,58 +317,6 @@ const memberTypeOptions = Object.entries(MEMBER_TYPE_DISPLAY_MAP).map(([key, val
             />
           </div>
 
-          <div class="w-[30%]">
-            <label for="attPerson_input" class="block text-sm font-medium">Att. Person</label>
-            <input
-              id="attPerson_input"
-              type="text"
-              v-model="attPerson"
-              class="inputField"
-              :disabled="isLoading"
-            />
-          </div>
-        </div>
-
-        <!-- Enrollment Date, Subscription, Invoice Name -->
-        <div class="flex gap-4">
-          <div class="w-[30%]">
-            <label for="enrollmentDate_input" class="block text-sm font-medium"
-              >Indmeldingsdato</label
-            >
-            <input
-              id="enrollmentDate_input"
-              type="date"
-              v-model="enrollmentDate"
-              class="inputField"
-              :disabled="isLoading"
-            />
-          </div>
-
-          <div class="w-[30%]">
-            <label for="subscription_input" class="block text-sm font-medium">Kontingent</label>
-            <input
-              id="subscription_input"
-              type="text"
-              v-model="subscription"
-              class="inputField"
-              :disabled="isLoading"
-            />
-          </div>
-
-          <div class="w-[30%]">
-            <label for="invoiceName2_input" class="block text-sm font-medium">Faktura navn 2</label>
-            <input
-              id="invoiceName2_input"
-              type="text"
-              v-model="invoiceName2"
-              class="inputField"
-              :disabled="isLoading"
-            />
-          </div>
-        </div>
-
-        <!-- Company Information -->
-        <div class="flex gap-4">
           <div class="w-[30%]">
             <label for="companyName_input" class="block text-sm font-medium">Firma navn</label>
             <input
@@ -429,27 +340,16 @@ const memberTypeOptions = Object.entries(MEMBER_TYPE_DISPLAY_MAP).map(([key, val
               :disabled="isLoading"
             />
           </div>
+        </div>
 
+        <!-- Firma by, Firma postnummer, CVR nr. -->
+        <div class="flex gap-4">
           <div class="w-[30%]">
             <label for="companyCity_input" class="block text-sm font-medium">Firma by</label>
             <input
               id="companyCity_input"
               type="text"
               v-model="companyCity"
-              class="inputField"
-              :disabled="isLoading"
-            />
-          </div>
-        </div>
-
-        <!-- Company Phone, Zip, CVR/EAN -->
-        <div class="flex gap-4">
-          <div class="w-[30%]">
-            <label for="companyPhone_input" class="block text-sm font-medium">Firma mobil</label>
-            <input
-              id="companyPhone_input"
-              type="text"
-              v-model="companyPhone"
               class="inputField"
               :disabled="isLoading"
             />
@@ -478,14 +378,14 @@ const memberTypeOptions = Object.entries(MEMBER_TYPE_DISPLAY_MAP).map(([key, val
           </div>
         </div>
 
-        <!-- EAN, Magazine Delivery -->
+        <!-- Firma mobil, Magasin levering, EAN nr. -->
         <div class="flex gap-4">
           <div class="w-[30%]">
-            <label for="eanNumber_input" class="block text-sm font-medium">EAN nr.</label>
+            <label for="companyPhone_input" class="block text-sm font-medium">Firma mobil</label>
             <input
-              id="eanNumber_input"
+              id="companyPhone_input"
               type="text"
-              v-model="eanNumber"
+              v-model="companyPhone"
               class="inputField"
               :disabled="isLoading"
             />
@@ -504,7 +404,69 @@ const memberTypeOptions = Object.entries(MEMBER_TYPE_DISPLAY_MAP).map(([key, val
             />
           </div>
 
-          <div class="w-[30%]"></div>
+          <div class="w-[30%]">
+            <label for="eanNumber_input" class="block text-sm font-medium">EAN nr.</label>
+            <input
+              id="eanNumber_input"
+              type="text"
+              v-model="eanNumber"
+              class="inputField"
+              :disabled="isLoading"
+            />
+          </div>
+        </div>
+
+        <!-- Landekode, Att. Person, Kontingent -->
+        <div class="flex gap-4">
+          <div class="w-[30%]">
+            <label for="countryCode_input" class="block text-sm font-medium">Landekode</label>
+            <input
+              id="countryCode_input"
+              type="text"
+              v-model="countryCode"
+              class="inputField"
+              :disabled="isLoading"
+            />
+          </div>
+
+          <div class="w-[30%]">
+            <label for="attPerson_input" class="block text-sm font-medium">Att. Person</label>
+            <input
+              id="attPerson_input"
+              type="text"
+              v-model="attPerson"
+              class="inputField"
+              :disabled="isLoading"
+            />
+          </div>
+
+          <div class="w-[30%]">
+            <label for="subscription_input" class="block text-sm font-medium">Kontingent</label>
+            <input
+              id="subscription_input"
+              type="text"
+              v-model="subscription"
+              class="inputField"
+              :disabled="isLoading"
+            />
+          </div>
+        </div>
+
+        <!-- Medlemstype -->
+        <div class="flex gap-4">
+          <div class="w-[30%]">
+            <label for="memberType_input" class="block text-sm font-medium">Medlemstype</label>
+            <select
+              id="memberType_input"
+              v-model.number="memberType"
+              class="inputField"
+              :disabled="isLoading"
+            >
+              <option v-for="opt in memberTypeOptions" :key="opt.value" :value="opt.value">
+                {{ opt.label }}
+              </option>
+            </select>
+          </div>
         </div>
 
         <p v-if="errorMessage" class="text-red-500 text-sm">{{ errorMessage }}</p>

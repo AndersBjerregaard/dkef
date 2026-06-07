@@ -82,14 +82,13 @@ public class ContactsController(
             Title = dto.Title,
             EmploymentStatus = dto.EmploymentStatus,
             Subscription = dto.Subscription,
-            InvoiceName2 = dto.InvoiceName2,
             CompanyName = dto.CompanyName,
             CompanyAddress = dto.CompanyAddress,
             CompanyZIP = dto.CompanyZip,
             CompanyCity = dto.CompanyCity,
             CompanyPhone = dto.CompanyPhone,
             MagazineDelivery = dto.MagazineDelivery,
-            EnrollmentDate = dto.EnrollmentDate,
+            EnrollmentDate = DateTime.UtcNow,
             MemberType = dto.MemberType,
             EmailConfirmed = true, // skip email confirmation — admin-created accounts
         };

@@ -26,9 +26,7 @@ public class CreateMemberDto : PostObject
     public string EANNumber { get; set; } = string.Empty;
     public string PrivatePhoneNumber { get; set; } = string.Empty;
     public string AttPerson { get; set; } = string.Empty;
-    public DateTime? EnrollmentDate { get; set; }
     public string Subscription { get; set; } = string.Empty;
-    public string InvoiceName2 { get; set; } = string.Empty;
     public string CompanyName { get; set; } = string.Empty;
     public string CompanyAddress { get; set; } = string.Empty;
     public string CompanyZip { get; set; } = string.Empty;
