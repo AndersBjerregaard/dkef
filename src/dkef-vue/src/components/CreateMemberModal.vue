@@ -5,6 +5,7 @@ import urlservice from '@/services/urlservice'
 import BaseModal from '@/components/BaseModal.vue'
 import { Section, SECTION_DISPLAY_MAP, type CreateMemberDto, type Contact } from '@/types/members'
 import { toast } from 'vue-sonner'
+import { AxiosError } from 'axios'
 
 defineProps<{
   isOpen: boolean
@@ -79,12 +80,12 @@ async function createMember() {
       throw 'Unexpected response'
     }
   } catch (error: unknown) {
-    if (error instanceof Error) {
-      const msg = error.message.toLowerCase()
-      if (msg.includes('email already exists') || msg.includes('already exists')) {
+    if (error instanceof AxiosError && typeof error.response?.data === 'string') {
+      const msg = error.response.data.toLowerCase()
+      if (msg.includes('email already exists')) {
         errorMessage.value = 'En bruger med denne email eksisterer allerede'
       } else {
-        errorMessage.value = 'Kunne ikke oprette medlem'
+        errorMessage.value = msg
       }
     } else {
       errorMessage.value = 'Kunne ikke oprette medlem'
