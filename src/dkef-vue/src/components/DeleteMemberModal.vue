@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router'
 import apiservice from '@/services/apiservice'
 import urlservice from '@/services/urlservice'
 import BaseModal from '@/components/BaseModal.vue'
+import { toast } from 'vue-sonner'
 
 const props = defineProps<{
   isOpen: boolean
@@ -25,6 +26,7 @@ async function deleteMember() {
   deleteError.value = null
   try {
     await apiservice.delete(urlservice.deleteContact(props.id))
+    toast.success('Medlem slettet!')
     emit('deleted', props.id)
     await router.push({ name: 'members' })
     emit('close')
