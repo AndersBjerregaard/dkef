@@ -350,7 +350,15 @@ try
 
     var app = builder.Build();
 
-    app.UseSerilogRequestLogging();
+    app.UseSerilogRequestLogging(options => {
+        options.GetLevel = (httpContext, elapsed, ex) => {
+            if (httpContext.Request.Path.StartsWithSegments("/health") &&
+                httpContext.Response.StatusCode == StatusCodes.Status200OK) {
+                return Serilog.Events.LogEventLevel.Verbose;
+            }
+            return Serilog.Events.LogEventLevel.Information;
+        };
+    });
 
     // Database migration
     using (var scope = app.Services.CreateScope())
