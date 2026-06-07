@@ -71,9 +71,7 @@ export interface ContactDto {
   eanNumber: string
   privatePhoneNumber: string
   attPerson: string
-  enrollmentDate: string | null
   subscription: string
-  invoiceName2: string
   companyName: string
   companyAddress: string
   companyZIP: string

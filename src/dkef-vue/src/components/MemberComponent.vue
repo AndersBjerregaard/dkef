@@ -7,18 +7,20 @@ import {
   MemberType,
   MEMBER_TYPE_DISPLAY_MAP,
 } from '@/types/members'
-import { computed, ref } from 'vue'
+import { computed, ref, type Ref } from 'vue'
 import BaseModal from '@/components/BaseModal.vue'
 import LoadingButton from '@/components/LoadingButton.vue'
 import apiservice from '@/services/apiservice'
 import urlservice from '@/services/urlservice'
 import DeleteMemberModal from '@/components/DeleteMemberModal.vue'
+import { AxiosError } from 'axios'
 
 // Modal state
 const isOpen = ref(false)
 const isLoading = ref(false)
 const editState = ref(0) // -1 for error, 0 for none, 1 for update
 const isDeleteOpen = ref(false)
+const errorMessage: Ref<string | null> = ref(null)
 
 const localDateTime = computed(() => {
   const now = new Date()
@@ -71,9 +73,7 @@ const cvrNumber = ref(props.contact?.cvrNumber ?? '') // CVR nr.
 const eanNumber = ref(props.contact?.eanNumber ?? '') // EAN nr.
 const privatePhoneNumber = ref(props.contact?.privatePhoneNumber ?? '') // Mobil
 const attPerson = ref(props.contact?.attPerson ?? '') // Att Person
-const enrollmentDate = ref(props.contact?.enrollmentDate ?? '') // Indmeldingsdato
 const subscription = ref(props.contact?.subscription ?? '') // Kontingent
-const invoiceName2 = ref(props.contact?.invoiceName2 ?? '') // Faktura navn 2
 const companyName = ref(props.contact?.companyName ?? '') // Firma navn
 const companyAddress = ref(props.contact?.companyAddress ?? '') // Firma vejnavn og nr.
 const companyZIP = ref(props.contact?.companyZIP ?? '') // Firma postnummer
@@ -115,9 +115,7 @@ async function editMember() {
       eanNumber: eanNumber.value,
       privatePhoneNumber: privatePhoneNumber.value,
       attPerson: attPerson.value,
-      enrollmentDate: enrollmentDate.value,
       subscription: subscription.value,
-      invoiceName2: invoiceName2.value,
       companyName: companyName.value,
       companyAddress: companyAddress.value,
       companyZIP: companyZIP.value,
@@ -148,9 +146,7 @@ async function editMember() {
       eanNumber.value = updatedContact.eanNumber
       privatePhoneNumber.value = updatedContact.privatePhoneNumber
       attPerson.value = updatedContact.attPerson
-      enrollmentDate.value = updatedContact.enrollmentDate ?? ''
       subscription.value = updatedContact.subscription
-      invoiceName2.value = updatedContact.invoiceName2
       companyName.value = updatedContact.companyName
       companyAddress.value = updatedContact.companyAddress
       companyZIP.value = updatedContact.companyZIP
@@ -167,8 +163,12 @@ async function editMember() {
     } else {
       throw `Unexpected error attempting to update contact information ${response}`
     }
-  } catch (error) {
-    console.error(error)
+  } catch (error: unknown) {
+    if (error instanceof AxiosError && typeof error.response?.data) {
+      const msg = error.response?.data
+      errorMessage.value = msg
+      editState.value = -1
+    }
   } finally {
     isLoading.value = false
   }
@@ -546,8 +546,11 @@ const hasAccess = ref(true)
               Slet
             </button>
           </div>
-          <div v-if="editState != 0" class="w-80 pt-2">
+          <div v-if="editState == 1" class="w-80 pt-2">
             <span class="text-green-600">Opdateret: {{ localDateTime }}</span>
+          </div>
+          <div v-if="editState == -1" class="w-full pt-2 text-red-500 text-sm">
+            <span>{{ errorMessage }}</span>
           </div>
         </div>
         <div class="pt-4 w-full flex justify-end">

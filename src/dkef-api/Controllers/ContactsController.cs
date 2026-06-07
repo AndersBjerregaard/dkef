@@ -130,9 +130,61 @@ public class ContactsController(
 
         dto.Sanitize(sanitizer);
 
-        var updatedContact = await repository.UpdateAsync(parsedId, dto);
+        var contact = await userManager.FindByIdAsync(id);
 
-        return Ok(updatedContact);
+        if (contact is null) {
+            return NotFound();
+        }
+
+        // Update fields
+        contact.Email = dto.Email;
+        contact.UserName = dto.Email;
+        contact.Address = dto.Address;
+        contact.City = dto.City;
+        contact.ZIP = dto.ZIP;
+        contact.CountryCode = dto.CountryCode;
+        contact.CVRNumber = dto.CVRNumber;
+        contact.EANNumber = dto.EANNumber;
+        contact.PrivatePhoneNumber = dto.PrivatePhoneNumber;
+        contact.AttPerson = dto.AttPerson;
+        contact.Subscription = dto.Subscription;
+        contact.CompanyName = dto.CompanyName;
+        contact.CompanyZIP = dto.CompanyZIP;
+        contact.CompanyCity = dto.CompanyCity;
+        contact.CompanyPhone = dto.CompanyPhone;
+        contact.EmploymentStatus = dto.EmploymentStatus;
+        contact.PrimarySection = dto.PrimarySection;
+        contact.SecondarySection = dto.SecondarySection;
+        contact.MagazineDelivery = dto.MagazineDelivery;
+        contact.Title = dto.Title;
+        contact.MemberType = dto.MemberType;
+
+        var identityResult = await userManager.UpdateAsync(contact);
+
+        // Apply roles
+        if (dto.MemberType == MemberType.Member) {
+            await userManager.RemoveFromRolesAsync(
+                contact,
+                [
+                    Dkef.Domain.Roles.BoardMember,
+                    Dkef.Domain.Roles.Admin
+                ]
+            );
+        }
+        if (dto.MemberType == MemberType.BoardMember) {
+            await userManager.RemoveFromRoleAsync(contact, Dkef.Domain.Roles.Admin);
+            await userManager.AddToRoleAsync(contact, Dkef.Domain.Roles.BoardMember);
+        }
+        if (dto.MemberType == MemberType.Admin) {
+            await userManager.RemoveFromRoleAsync(contact, Dkef.Domain.Roles.BoardMember);
+            await userManager.AddToRoleAsync(contact, Dkef.Domain.Roles.Admin);
+        }
+
+        if (!identityResult.Succeeded) {
+            return BadRequest(string.Join(", ", identityResult.Errors.Select(x => x.Description)));
+        }
+
+        return Ok(contact);
     }
 
     [HttpDelete]
