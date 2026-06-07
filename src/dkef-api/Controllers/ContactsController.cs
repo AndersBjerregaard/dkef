@@ -1,3 +1,5 @@
+using System.Security.Cryptography;
+
 using Dkef.Contracts;
 using Dkef.Domain;
 using Dkef.Repositories;
@@ -48,6 +50,53 @@ public class ContactsController(
         }
         var contact = await repository.GetByIdAsync(parsedId);
         return contact is not null ? Ok(contact) : NotFound();
+    }
+
+    [HttpPost]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> Create([FromBody] CreateMemberDto dto)
+    {
+        dto.Sanitize(sanitizer);
+
+        Contact? existing = await userManager.FindByEmailAsync(dto.Email);
+        if (existing is not null)
+        {
+            return BadRequest("A user with this email already exists.");
+        }
+
+        var contact = new Contact
+        {
+            UserName = dto.Email,
+            Email = dto.Email,
+            Name = dto.Name,
+            PrimarySection = dto.PrimarySection,
+            EnrollmentDate = DateTime.UtcNow,
+            EmailConfirmed = true, // Skip email confirmation — admin-created accounts
+        };
+
+        // Generate a cryptographically random temporary password
+        var randomBytes = new byte[24];
+        RandomNumberGenerator.Fill(randomBytes);
+        string temporaryPassword = Convert.ToBase64String(randomBytes);
+
+        IdentityResult result = await userManager.CreateAsync(contact, temporaryPassword);
+
+        if (!result.Succeeded)
+        {
+            logger.Warning("Admin-initiated member creation failed for {Email}: {Errors}",
+                dto.Email, string.Join(", ", result.Errors.Select(e => e.Description)));
+
+            return BadRequest(new
+            {
+                message = "Failed to create user.",
+                errors = result.Errors.Select(e => e.Description)
+            });
+        }
+
+        logger.Information("Admin created new member {Email}", dto.Email);
+
+        var created = await repository.GetByEmailAsync(dto.Email);
+        return CreatedAtAction(nameof(Get), new { id = created!.Id }, created);
     }
 
     [HttpPut]

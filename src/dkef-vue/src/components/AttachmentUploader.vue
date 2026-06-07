@@ -48,7 +48,10 @@ function removeLocalFile(idx: number) {
 }
 
 function removeAttachment(id: string) {
-  emit('update:attachmentIds', props.attachmentIds.filter(aid => aid !== id))
+  emit(
+    'update:attachmentIds',
+    props.attachmentIds.filter((aid) => aid !== id),
+  )
 }
 
 async function uploadFile(url: string, file: File): Promise<void> {

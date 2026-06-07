@@ -7,8 +7,13 @@ import MemberHeaderComponent from './MemberHeaderComponent.vue'
 import { computed, onMounted, onUnmounted, reactive, ref, type ComputedRef, type Ref } from 'vue'
 import type { AxiosResponse } from 'axios'
 import { toast } from 'vue-sonner'
+import { useAuthStore } from '@/stores/authStore'
+import CreateMemberModal from './CreateMemberModal.vue'
+
+const authStore = useAuthStore()
 
 const emailsCopied = ref(false)
+const isCreateOpen = ref(false)
 
 async function copyEmailsToClipboard(): Promise<void> {
   const emails = filteredItems.value.map((contact) => contact.email).join(',')
@@ -258,6 +263,27 @@ function sort(by: string, order: Sort): void {
         v-model="filterString"
       />
       <button
+        v-if="authStore.isAdmin"
+        type="button"
+        @click="isCreateOpen = true"
+        class="flex items-center gap-2 rounded bg-emerald-600 text-white px-4 py-1.5 text-sm font-semibold transition hover:bg-emerald-500 active:bg-emerald-700"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-4 w-4 shrink-0"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <line x1="12" y1="5" x2="12" y2="19" />
+          <line x1="5" y1="12" x2="19" y2="12" />
+        </svg>
+        Opret medlem
+      </button>
+      <button
         @click="copyEmailsToClipboard"
         class="flex items-center gap-2 rounded bg-amber-600 text-navy-950 px-4 py-1.5 text-sm font-semibold transition hover:bg-amber-500 active:bg-amber-700 disabled:opacity-50"
         :disabled="filteredItems.length === 0"
@@ -331,6 +357,17 @@ function sort(by: string, order: Sort): void {
       </div>
     </div>
   </div>
+  <CreateMemberModal
+    :is-open="isCreateOpen"
+    @close="isCreateOpen = false"
+    @member-created="
+      (newContact: Contact) => {
+        items.push(reactive(newContact))
+        fetchedCount = items.length
+        totalCount++
+      }
+    "
+  />
 </template>
 
 <style lang="css" scoped></style>

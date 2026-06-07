@@ -87,6 +87,12 @@ export interface ContactDto {
   memberType: MemberType
 }
 
+export interface CreateMemberDto {
+  email: string
+  name: string
+  primarySection: Section
+}
+
 export interface UpdateProfileDto {
   name: string
   title: string

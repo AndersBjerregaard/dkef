@@ -870,7 +870,13 @@ const submitLabel = computed(() => {
           ref="attachmentUploaderRef"
           :attachment-ids="itemAttachmentIds"
           :is-loading="isLoading"
-          :content-type="createType === 'event' ? 'events' : createType === 'news' ? 'news' : 'general-assemblies'"
+          :content-type="
+            createType === 'event'
+              ? 'events'
+              : createType === 'news'
+                ? 'news'
+                : 'general-assemblies'
+          "
           @update:attachment-ids="(ids) => (itemAttachmentIds = ids)"
           @error="(msg) => (submitError = msg)"
         />

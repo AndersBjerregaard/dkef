@@ -29,6 +29,15 @@ function deleteContact(guid: string) {
   }
 }
 
+function postContact() {
+  switch (mode) {
+    case 'Development':
+      throw 'Unimplemented!'
+    default:
+      return '/contacts'
+  }
+}
+
 function getContactAuthorize(guid: string) {
   switch (mode) {
     case 'Development':
@@ -231,6 +240,7 @@ export default {
   getContacts,
   updateContact,
   deleteContact,
+  postContact,
   getContactAuthorize,
   getEventPresignedUrl,
   postEvent,
