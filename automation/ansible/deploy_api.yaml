@@ -1,0 +1,9 @@
+- name: Deploy api kubernetes manifest in KinD cluster with Kubectl
+  hosts: hosts
+
+  vars_files:
+    - vars/secrets.yaml
+
+  roles:
+    - role: deploy_api_k8s
+      tags: deploy_api_k8s
