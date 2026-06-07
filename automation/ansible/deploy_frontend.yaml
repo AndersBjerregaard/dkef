@@ -1,0 +1,6 @@
+- name: Deploy api kubernetes manifest in KinD cluster with Kubectl
+  hosts: hosts
+
+  roles:
+    - role: deploy_frontend_k8s
+      tags: deploy_frontend_k8s
