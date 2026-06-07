@@ -22,24 +22,6 @@ services:
     networks:
       - dkef-network
 
-  pgadmin:
-    image: dpage/pgadmin4:9
-    container_name: pgadmin1
-    restart: on-failure
-    environment:
-      - PGADMIN_DEFAULT_EMAIL=don-sbn@hotmail.com
-      - PGADMIN_DEFAULT_PASSWORD=mysecretpassword
-      - PGADMIN_LISTEN_PORT=80
-    ports:
-      - 8080:80
-    volumes:
-      - ./config/pgpassfile:/pgadmin4/pgpassfile
-      - ./config/servers.json:/pgadmin4/servers.json
-    depends_on:
-      - db
-    networks:
-      - dkef-network
-
   minio:
     image: quay.io/minio/minio:RELEASE.2025-09-07T16-13-09Z
     container_name: minio1
