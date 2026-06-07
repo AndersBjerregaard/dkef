@@ -231,7 +231,7 @@ async function goto(view: string) {
             </div>
             <!-- Member Portal -->
             <div class="p-1" v-if="authStore.isAuthenticated">
-              <RouterLink to="/member-portal">
+              <RouterLink to="/change-profile">
                 <button
                   class="rounded-lg bg-theme-mute h-10 px-4 cursor-pointer text-theme-text hover:bg-theme-mute hover:text-theme-accent transition-colors text-sm font-medium"
                 >
@@ -465,7 +465,7 @@ async function goto(view: string) {
                         </RouterLink>
                       </MenuItem>
                       <MenuItem v-if="authStore.isAuthenticated" v-slot="{ active, close }">
-                        <RouterLink to="/member-portal">
+                        <RouterLink to="/change-profile">
                           <button
                             :class="[
                               active ? 'bg-theme-border text-theme-accent' : 'text-theme-text',
