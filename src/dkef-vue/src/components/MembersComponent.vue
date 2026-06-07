@@ -266,7 +266,7 @@ function sort(by: string, order: Sort): void {
         v-if="authStore.isAdmin"
         type="button"
         @click="isCreateOpen = true"
-        class="flex items-center gap-2 rounded bg-emerald-600 text-white px-4 py-1.5 text-sm font-semibold transition hover:bg-emerald-500 active:bg-emerald-700"
+        class="flex cursor-pointer items-center gap-2 rounded bg-emerald-600 text-white px-4 py-1.5 text-sm font-semibold transition hover:bg-emerald-500 active:bg-emerald-700"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -285,7 +285,7 @@ function sort(by: string, order: Sort): void {
       </button>
       <button
         @click="copyEmailsToClipboard"
-        class="flex items-center gap-2 rounded bg-amber-600 text-navy-950 px-4 py-1.5 text-sm font-semibold transition hover:bg-amber-500 active:bg-amber-700 disabled:opacity-50"
+        class="flex cursor-pointer items-center gap-2 rounded bg-amber-600 text-navy-950 px-4 py-1.5 text-sm font-semibold transition hover:bg-amber-500 active:bg-amber-700 disabled:opacity-50"
         :disabled="filteredItems.length === 0"
         :title="emailsCopied ? 'Kopieret!' : `Kopiér ${filteredItems.length} email-adresser`"
       >
