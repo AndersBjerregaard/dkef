@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
+import MigrationBanner from '@/components/MigrationBanner.vue'
 
 const router = useRouter()
 
@@ -15,6 +16,9 @@ async function register() {
 </script>
 
 <template>
+  <!-- Migration Banner -->
+  <MigrationBanner />
+
   <!-- Hero -->
   <div class="py-12 sm:py-20 px-4">
     <div class="flex flex-col md:flex-row justify-center items-center gap-x-12">
