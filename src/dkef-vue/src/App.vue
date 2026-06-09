@@ -106,7 +106,7 @@ async function goto(view: string) {
         <!-- Inline buttons (visible on larger screens ) -->
         <div class="hidden lg:flex lg:w-full">
           <div class="flex p-4 w-full justify-end items-center gap-1">
-            <div class="p-1" v-if="authStore.isAdmin">
+            <div class="p-1" v-if="authStore.isBoardMember || authStore.isAdmin">
               <RouterLink to="/members">
                 <button
                   class="rounded-lg bg-theme-mute h-10 px-4 cursor-pointer text-theme-text hover:bg-theme-mute hover:text-theme-accent transition-colors text-sm font-medium"
@@ -390,7 +390,7 @@ async function goto(view: string) {
                     class="absolute right-0 top-full mt-2 w-56 origin-top-right divide-y divide-theme-border rounded-xl bg-theme-mute border border-theme-border shadow-2xl ring-1 ring-black/20 focus:outline-none z-50"
                   >
                     <div class="px-1 py-1">
-                      <MenuItem v-if="authStore.isAdmin" v-slot="{ active, close }">
+                      <MenuItem v-if="authStore.isBoardMember || authStore.isAdmin" v-slot="{ active, close }">
                         <RouterLink to="/members">
                           <button
                             :class="[

@@ -22,8 +22,12 @@ export const useAuthStore = defineStore(
 
     // Computed
     const isAuthenticated = computed(() => !!accessToken.value && !!user.value)
+    const isBoardMember = computed(() => {
+      return isAuthenticated.value && !!user.value?.roles?.includes('Board Member')
+    })
+
     const isAdmin = computed(() => {
-      return isAuthenticated.value && user.value?.roles?.includes('Admin')
+      return isAuthenticated.value && !!user.value?.roles?.includes('Admin')
     })
 
     // Actions
@@ -172,6 +176,7 @@ export const useAuthStore = defineStore(
       user,
       // Computed
       isAuthenticated,
+      isBoardMember,
       isAdmin,
       // Actions
       login,
