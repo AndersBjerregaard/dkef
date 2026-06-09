@@ -154,7 +154,7 @@ public sealed class MicrosoftGraphEmailService(
 
         try
         {
-            await SendEmailAsync(resultHtml, "Nyt medlem registreret", request.Email);
+            await SendEmailAsync(resultHtml, "Glemt Adgangskode", request.Email);
         }
         catch (Exception exception)
         {
