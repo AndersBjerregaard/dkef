@@ -7,17 +7,17 @@ metadata:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
     nginx.ingress.kubernetes.io/enable-cors: "true"
-    nginx.ingress.kubernetes.io/cors-allow-origin: "https://andersbjerregaard.com"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "https://dkef.dk"
     nginx.ingress.kubernetes.io/cors-allow-methods: "GET, PUT, OPTIONS"
     nginx.ingress.kubernetes.io/cors-allow-headers: "*"
 spec:
   ingressClassName: nginx
   tls:
     - hosts:
-        - storage.andersbjerregaard.com
+        - storage.dkef.dk
       secretName: minio-tls
   rules:
-    - host: storage.andersbjerregaard.com
+    - host: storage.dkef.dk
       http:
         paths:
           - path: /

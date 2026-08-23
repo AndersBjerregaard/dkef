@@ -10,10 +10,10 @@ spec:
   ingressClassName: nginx
   tls:
     - hosts:
-        - andersbjerregaard.com
+        - dkef.dk
       secretName: dkef-frontend-tls
   rules:
-    - host: andersbjerregaard.com
+    - host: dkef.dk
       http:
         paths:
           - path: /
