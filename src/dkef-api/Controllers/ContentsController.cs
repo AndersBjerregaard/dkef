@@ -26,6 +26,22 @@ public class ContentsController(
     Serilog.ILogger logger
 ) : ControllerBase
 {
+    private static bool TryParseTimeframe(string timeframe, out bool isUpcoming)
+    {
+        switch (timeframe.ToLowerInvariant())
+        {
+            case "upcoming":
+                isUpcoming = true;
+                return true;
+            case "past":
+                isUpcoming = false;
+                return true;
+            default:
+                isUpcoming = false;
+                return false;
+        }
+    }
+
     [HttpGet]
     public async Task<IActionResult> GetMultipleContents(
         [FromQuery] int take = 10,
@@ -69,7 +85,8 @@ public class ContentsController(
         [FromQuery] int take = 10,
         [FromQuery] int skip = 0,
         [FromQuery] string orderBy = "Id",
-        [FromQuery] string sortOrder = "asc"
+        [FromQuery] string sortOrder = "asc",
+        [FromQuery] string timeframe = "all"
     )
     {
         if (take > 50)
@@ -81,7 +98,21 @@ public class ContentsController(
         IOrderedQueryable<Event> orderExpression = eventQueryableService
             .GetQuery(orderBy, sortOrder);
 
-        DomainCollection<Event> result = await repository.GetMultiple(orderExpression, take, skip);
+        IQueryable<Event> query = orderExpression;
+        if (!string.Equals(timeframe, "all", StringComparison.OrdinalIgnoreCase))
+        {
+            if (!TryParseTimeframe(timeframe, out var isUpcoming))
+            {
+                return BadRequest("Invalid timeframe. Use 'all', 'upcoming', or 'past'.");
+            }
+
+            var now = DateTime.UtcNow;
+            query = isUpcoming
+                ? query.Where(item => item.DateTime >= now)
+                : query.Where(item => item.DateTime < now);
+        }
+
+        DomainCollection<Event> result = await repository.GetMultiple(query, take, skip);
 
         return Ok(result);
     }
@@ -205,7 +236,8 @@ public class ContentsController(
         [FromQuery] int take = 10,
         [FromQuery] int skip = 0,
         [FromQuery] string orderBy = "Id",
-        [FromQuery] string sortOrder = "asc"
+        [FromQuery] string sortOrder = "asc",
+        [FromQuery] string timeframe = "all"
     )
     {
         if (take > 50)
@@ -217,7 +249,21 @@ public class ContentsController(
         IOrderedQueryable<GeneralAssembly> orderExpression = generalAssemblyQueryableService
             .GetQuery(orderBy, sortOrder);
 
-        DomainCollection<GeneralAssembly> result = await repository.GetMultiple(orderExpression, take, skip);
+        IQueryable<GeneralAssembly> query = orderExpression;
+        if (!string.Equals(timeframe, "all", StringComparison.OrdinalIgnoreCase))
+        {
+            if (!TryParseTimeframe(timeframe, out var isUpcoming))
+            {
+                return BadRequest("Invalid timeframe. Use 'all', 'upcoming', or 'past'.");
+            }
+
+            var now = DateTime.UtcNow;
+            query = isUpcoming
+                ? query.Where(item => item.DateTime >= now)
+                : query.Where(item => item.DateTime < now);
+        }
+
+        DomainCollection<GeneralAssembly> result = await repository.GetMultiple(query, take, skip);
 
         return Ok(result);
     }

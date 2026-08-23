@@ -27,8 +27,9 @@ export const useGeneralAssemblyStore = defineStore('generalAssembly', () => {
         await apiservice.get<GeneralAssemblyCollection>(urlservice.getGeneralAssemblies(), {
           params: {
             take: 3,
-            orderBy: 'dateTime',
-            order: 'desc',
+            orderBy: 'DateTime',
+            sortOrder: 'asc',
+            timeframe: 'upcoming',
           },
         })
       const items: PublishedGeneralAssembly[] = response.data.collection
