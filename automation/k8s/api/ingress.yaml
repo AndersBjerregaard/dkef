@@ -10,10 +10,10 @@ spec:
   ingressClassName: nginx
   tls:
     - hosts:
-        - api.andersbjerregaard.com
+        - api.dkef.dk
       secretName: dkef-api-tls
   rules:
-    - host: api.andersbjerregaard.com
+    - host: api.dkef.dk
       http:
         paths:
           - path: /
