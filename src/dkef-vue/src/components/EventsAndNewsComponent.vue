@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, type Ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import EventComponent from './EventComponent.vue'
-import NewsComponent from './NewsComponent.vue'
-import GeneralAssemblyComponent from './GeneralAssemblyComponent.vue'
+import FeedItemCard from '@/components/FeedItemCard.vue'
 import BaseModal from '@/components/BaseModal.vue'
 import AttachmentUploader from '@/components/AttachmentUploader.vue'
 import { v4 as uuidv4 } from 'uuid'
@@ -24,6 +22,7 @@ import { useAuthStore } from '@/stores/authStore'
 
 type FilterType = 'all' | 'events' | 'news' | 'general-assemblies'
 type CreateType = 'event' | 'news' | 'general-assembly'
+type TimeframeType = 'upcoming' | 'past'
 
 const feedStore = useFeedStore()
 const authStore = useAuthStore()
@@ -33,7 +32,30 @@ const route = useRoute()
 const isFetching = ref(true)
 const isFilterFetching = ref(false)
 const activeFilter = ref<FilterType>('all')
+const activeTimeframe = ref<TimeframeType>('upcoming')
 const pageSize = 9
+
+const now = () => new Date()
+
+function parseDateValue(value?: string): Date | null {
+  if (!value) return null
+  const parsed = new Date(value)
+  return Number.isNaN(parsed.getTime()) ? null : parsed
+}
+
+function isUpcoming(dateValue?: string): boolean {
+  const parsed = parseDateValue(dateValue)
+  if (!parsed) return false
+  return parsed.getTime() >= now().getTime()
+}
+
+function isEventLikeItem(item: FeedItem): boolean {
+  return item.kind === 'event' || item.kind === 'general-assembly'
+}
+
+function supportsTimeframe(filter: FilterType): boolean {
+  return filter === 'events' || filter === 'general-assemblies'
+}
 
 // Pagination state per filter type
 const currentPageAll = ref(1)
@@ -112,9 +134,19 @@ const displayedItems = computed<FeedItem[]>(() => {
         dateTime: g.dateTime,
       }))
     default:
-      return feedStore.items
+      return []
   }
 })
+
+const shouldShowTimeframeFilter = computed(() => supportsTimeframe(activeFilter.value))
+
+const allNewsItems = computed(() => feedStore.items.filter((item) => item.kind === 'news'))
+const allUpcomingEventItems = computed(() =>
+  feedStore.items.filter((item) => isEventLikeItem(item) && isUpcoming(item.dateTime)),
+)
+const allPastEventItems = computed(() =>
+  feedStore.items.filter((item) => isEventLikeItem(item) && !isUpcoming(item.dateTime)),
+)
 
 const isAnyFetching = computed(
   () => isFetching.value || feedStore.isFetching || isFilterFetching.value,
@@ -197,7 +229,13 @@ const pageNumbers = computed(() => {
   return [...new Set(pages)]
 })
 
-async function fetchFiltered(filter: FilterType, page: number = 1) {
+async function fetchFiltered(
+  filter: FilterType,
+  page: number = 1,
+  timeframe: TimeframeType = activeTimeframe.value,
+) {
+  const eventSortOrder = timeframe === 'upcoming' ? 'asc' : 'desc'
+
   if (filter === 'all') {
     isFilterFetching.value = true
     try {
@@ -207,7 +245,7 @@ async function fetchFiltered(filter: FilterType, page: number = 1) {
           take: pageSize,
           skip,
           orderBy: 'DateTime',
-          order: 'desc',
+          sortOrder: 'desc',
         },
         skipAuth: true,
       })
@@ -232,7 +270,8 @@ async function fetchFiltered(filter: FilterType, page: number = 1) {
           take: pageSize,
           skip,
           orderBy: 'DateTime',
-          order: 'desc',
+          sortOrder: eventSortOrder,
+          timeframe,
         },
         skipAuth: true,
       })
@@ -245,7 +284,7 @@ async function fetchFiltered(filter: FilterType, page: number = 1) {
           take: pageSize,
           skip,
           orderBy: 'DateTime',
-          order: 'desc',
+          sortOrder: 'desc',
         },
         skipAuth: true,
       })
@@ -260,7 +299,8 @@ async function fetchFiltered(filter: FilterType, page: number = 1) {
             take: pageSize,
             skip,
             orderBy: 'DateTime',
-            order: 'desc',
+            sortOrder: eventSortOrder,
+            timeframe,
           },
           skipAuth: true,
         },
@@ -280,8 +320,14 @@ function goToPage(page: number) {
   if (page < 1 || page > totalPages.value) return
 
   const newPage = Math.max(1, Math.min(page, totalPages.value))
-  router.push({ query: { filter: activeFilter.value, page: newPage } })
-  fetchFiltered(activeFilter.value, newPage)
+  router.push({
+    query: {
+      filter: activeFilter.value,
+      page: newPage,
+      ...(supportsTimeframe(activeFilter.value) && { timeframe: activeTimeframe.value }),
+    },
+  })
+  fetchFiltered(activeFilter.value, newPage, activeTimeframe.value)
   window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 
@@ -300,12 +346,17 @@ function previousPage() {
 onMounted(async () => {
   const filter = (route.query.filter as FilterType) || 'all'
   const page = parseInt(route.query.page as string) || 1
+  const timeframeQuery = route.query.timeframe as TimeframeType | undefined
+
+  if (timeframeQuery === 'past' || timeframeQuery === 'upcoming') {
+    activeTimeframe.value = timeframeQuery
+  }
 
   activeFilter.value = filter
   isFetching.value = true
 
   try {
-    await fetchFiltered(filter, page)
+    await fetchFiltered(filter, page, activeTimeframe.value)
   } finally {
     isFetching.value = false
   }
@@ -313,8 +364,29 @@ onMounted(async () => {
 
 function setFilter(filter: FilterType) {
   activeFilter.value = filter
-  router.push({ query: { filter, page: 1 } })
-  fetchFiltered(filter, 1)
+  router.push({
+    query: {
+      filter,
+      page: 1,
+      ...(supportsTimeframe(filter) && { timeframe: activeTimeframe.value }),
+    },
+  })
+  fetchFiltered(filter, 1, activeTimeframe.value)
+  window.scrollTo({ top: 0, behavior: 'smooth' })
+}
+
+function setTimeframe(timeframe: TimeframeType) {
+  if (activeTimeframe.value === timeframe) return
+
+  activeTimeframe.value = timeframe
+  router.push({
+    query: {
+      filter: activeFilter.value,
+      page: 1,
+      ...(supportsTimeframe(activeFilter.value) && { timeframe }),
+    },
+  })
+  fetchFiltered(activeFilter.value, 1, timeframe)
   window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 
@@ -592,7 +664,39 @@ const submitLabel = computed(() => {
     </div>
 
     <div class="flex justify-center items-center">
-      <h2 class="text-2xl pb-4">Seneste arrangementer og nyheder:</h2>
+      <h2 class="text-2xl pb-4">Hold dig opdateret</h2>
+    </div>
+
+    <div class="flex justify-center items-center pb-6 text-sm px-4">
+      <span class="text-theme-text text-center max-w-4xl">
+        Arrangementer og generalforsamlinger vises efter om de er kommende eller tidligere.
+        Nyheder vises altid som seneste først.
+      </span>
+    </div>
+
+    <div v-if="shouldShowTimeframeFilter" class="flex justify-center items-center pb-8 gap-4">
+      <button
+        class="flex justify-center rounded-lg h-10 py-2 px-6 cursor-pointer text-sm sm:text-base transition-colors font-medium"
+        :class="
+          activeTimeframe === 'upcoming'
+            ? 'bg-amber-600 text-navy-950'
+            : 'bg-theme-mute text-theme-heading hover:bg-theme-border hover:text-theme-accent'
+        "
+        @click="setTimeframe('upcoming')"
+      >
+        Kommende
+      </button>
+      <button
+        class="flex justify-center rounded-lg h-10 py-2 px-6 cursor-pointer text-sm sm:text-base transition-colors font-medium"
+        :class="
+          activeTimeframe === 'past'
+            ? 'bg-amber-600 text-navy-950'
+            : 'bg-theme-mute text-theme-heading hover:bg-theme-border hover:text-theme-accent'
+        "
+        @click="setTimeframe('past')"
+      >
+        Tidligere
+      </button>
     </div>
 
     <!-- Page info -->
@@ -601,11 +705,11 @@ const submitLabel = computed(() => {
         Side {{ getCurrentPage }} af {{ totalPages }}
         {{
           activeFilter === 'events'
-            ? `(${totalEvents} arrangementer)`
+            ? `(${totalEvents} ${activeTimeframe === 'upcoming' ? 'kommende' : 'tidligere'} arrangementer)`
             : activeFilter === 'news'
               ? `(${totalNews} nyheder)`
               : activeFilter === 'general-assemblies'
-                ? `(${totalAssemblies} generalforsamlinger)`
+                ? `(${totalAssemblies} ${activeTimeframe === 'upcoming' ? 'kommende' : 'tidligere'} generalforsamlinger)`
                 : `(${feedStore.total} emner)`
         }}
       </span>
@@ -638,52 +742,73 @@ const submitLabel = computed(() => {
 
     <!-- Items grid -->
     <div class="flex justify-center items-center" v-else>
+      <div v-if="activeFilter === 'all'" class="w-full max-w-5xl mx-auto px-4 space-y-10">
+        <section class="space-y-4">
+          <div>
+            <h3 class="text-xl font-semibold text-theme-heading">Kommende arrangementer</h3>
+            <p class="text-sm text-theme-text">
+              Her vises arrangementer og generalforsamlinger, som endnu ikke er afholdt.
+            </p>
+          </div>
+          <div
+            v-if="allUpcomingEventItems.length > 0"
+            class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 auto-rows-fr gap-6"
+          >
+            <FeedItemCard
+              v-for="item in allUpcomingEventItems"
+              :key="`${item.kind}-${item.id}`"
+              :item="item"
+            />
+          </div>
+          <p v-else class="text-theme-text text-sm">Der er ingen kommende arrangementer lige nu.</p>
+        </section>
+
+        <section class="space-y-4">
+          <div>
+            <h3 class="text-xl font-semibold text-theme-heading">Seneste nyheder</h3>
+            <p class="text-sm text-theme-text">
+              Nyheder vises altid efter seneste publiceringstidspunkt.
+            </p>
+          </div>
+          <div
+            v-if="allNewsItems.length > 0"
+            class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 auto-rows-fr gap-6"
+          >
+            <FeedItemCard
+              v-for="item in allNewsItems"
+              :key="`${item.kind}-${item.id}`"
+              :item="item"
+            />
+          </div>
+          <p v-else class="text-theme-text text-sm">Der er ingen nyheder endnu.</p>
+        </section>
+
+        <section class="space-y-4">
+          <div>
+            <h3 class="text-xl font-semibold text-theme-heading">Tidligere arrangementer</h3>
+            <p class="text-sm text-theme-text">
+              Her vises arrangementer og generalforsamlinger, som allerede er afholdt.
+            </p>
+          </div>
+          <div
+            v-if="allPastEventItems.length > 0"
+            class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 auto-rows-fr gap-6"
+          >
+            <FeedItemCard
+              v-for="item in allPastEventItems"
+              :key="`${item.kind}-${item.id}`"
+              :item="item"
+            />
+          </div>
+          <p v-else class="text-theme-text text-sm">Der er ingen tidligere arrangementer endnu.</p>
+        </section>
+      </div>
+
       <div
+        v-else
         class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 auto-rows-fr gap-6 px-4 max-w-5xl mx-auto w-full"
       >
-        <template v-for="item in displayedItems" :key="item.id">
-          <EventComponent
-            v-if="item.kind === 'event'"
-            :published-event="{
-              id: item.id,
-              title: item.title,
-              section: item.section,
-              address: item.address ?? '',
-              dateTime: item.dateTime ?? '',
-              description: item.description,
-              thumbnailUrl: item.thumbnailUrl,
-              attachmentUrls: item.attachmentUrls ?? [],
-              createdAt: item.createdAt,
-            }"
-          />
-          <NewsComponent
-            v-else-if="item.kind === 'news'"
-            :published-news="{
-              id: item.id,
-              title: item.title,
-              section: item.section,
-              description: item.description,
-              thumbnailUrl: item.thumbnailUrl,
-              attachmentUrls: item.attachmentUrls ?? [],
-              dateTime: item.dateTime ?? '',
-              createdAt: item.createdAt,
-            }"
-          />
-          <GeneralAssemblyComponent
-            v-else-if="item.kind === 'general-assembly'"
-            :published-general-assembly="{
-              id: item.id,
-              title: item.title,
-              section: item.section,
-              address: item.address ?? '',
-              dateTime: item.dateTime ?? '',
-              description: item.description,
-              thumbnailUrl: item.thumbnailUrl,
-              attachmentUrls: item.attachmentUrls ?? [],
-              createdAt: item.createdAt,
-            }"
-          />
-        </template>
+        <FeedItemCard v-for="item in displayedItems" :key="`${item.kind}-${item.id}`" :item="item" />
       </div>
     </div>
     <!-- Pagination controls -->

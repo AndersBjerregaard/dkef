@@ -43,8 +43,9 @@ export const useEventStore = defineStore<'event', EventState, EventGetters, Even
           await apiservice.get<EventsCollection>(urlservice.getEvents(), {
             params: {
               take: 3,
-              orderBy: 'dateTime',
-              order: 'desc',
+              orderBy: 'DateTime',
+              sortOrder: 'asc',
+              timeframe: 'upcoming',
             },
           })
         const events: PublishedEvent[] = response.data.collection

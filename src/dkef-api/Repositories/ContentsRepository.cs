@@ -21,13 +21,13 @@ public sealed class ContentRepository(
         => await context.FindAsync<TContent>(id);
 
     public async Task<DomainCollection<BaseContent>> GetMultiple(
-        IOrderedQueryable<BaseContent> orderExpression,
+        IQueryable<BaseContent> query,
         int take = 10,
         int skip = 0
     )
     {
-        var totalItems = await context.Contents.CountAsync();
-        var contents = await orderExpression
+        var totalItems = await query.CountAsync();
+        var contents = await query
             .Skip(skip)
             .Take(take)
             .ToListAsync();
@@ -35,13 +35,13 @@ public sealed class ContentRepository(
     }
 
     public async Task<DomainCollection<TContent>> GetMultiple<TContent>(
-        IOrderedQueryable<TContent> orderExpression,
+        IQueryable<TContent> query,
         int take = 10,
         int skip = 0
     ) where TContent : BaseContent
     {
-        var totalItems = await context.Set<TContent>().CountAsync();
-        var contents = await orderExpression
+        var totalItems = await query.CountAsync();
+        var contents = await query
             .Skip(skip)
             .Take(take)
             .ToListAsync();
