@@ -2,10 +2,9 @@
 
 ## Supplementary Context
 
-Detailed per-package context is available in subdirectory `.opencode/AGENTS.md` files.
-For frontend tasks, read `src/dkef-vue/.opencode/AGENTS.md` (components, views, stores, routing, theming, URL service).
-For backend tasks, read `src/dkef-api/.opencode/AGENTS.md` (controllers, domain models, DTOs, repositories, services, DbContexts).
-These files are also loaded automatically via `.opencode/opencode.json`.
+Detailed per-package context is available in subdirectory `AGENTS.md` files.
+For frontend tasks, read `src/dkef-vue/AGENTS.md` (components, views, stores, routing, theming, URL service).
+For backend tasks, read `src/dkef-api/AGENTS.md` (controllers, domain models, DTOs, repositories, services, DbContexts).
 
 ---
 
