@@ -236,6 +236,15 @@ function getAttachmentPresignedUrl(guid: string) {
   }
 }
 
+function getNexiPocSession() {
+  switch (mode) {
+    case 'Development':
+      return '/payments/nexi/poc-session'
+    default:
+      return '/payments/nexi/poc-session'
+  }
+}
+
 export default {
   getContacts,
   updateContact,
@@ -263,4 +272,5 @@ export default {
   getFeed,
   postContactMessage,
   getAttachmentPresignedUrl,
+  getNexiPocSession,
 }
