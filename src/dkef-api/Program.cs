@@ -279,6 +279,16 @@ try
     });
 
     // HttpClients
+    builder.Services.AddOptions<NexiCheckoutConfig>()
+        .Bind(builder.Configuration.GetSection("NexiCheckout"))
+        .ValidateDataAnnotations()
+        .ValidateOnStart();
+    builder.Services.AddHttpClient("NexiCheckoutClient", (serviceProvider, client) =>
+    {
+        var nexiCheckoutConfig = serviceProvider.GetRequiredService<IOptions<NexiCheckoutConfig>>().Value;
+        client.BaseAddress = new Uri(nexiCheckoutConfig.ApiBaseUrl);
+        client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+    });
 
     // Repositories
     builder.Services.AddScoped<IContactRepository, ContactRepository>();
