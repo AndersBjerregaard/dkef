@@ -274,22 +274,11 @@ try
                 )))
                 .ForMember(dest => dest.DateTime, opt => opt.MapFrom(src => DateTime.Parse(src.DateTime, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal).ToUniversalTime()));
             cfg.CreateMap<InformationDto, InformationMessage>();
-            // Optionally call 'cfg.MapMailgunContracts();' to map Mailgun contract types
         }, loggerFactory).CreateMapper();
         return mapper;
     });
 
     // HttpClients
-
-    // Uncomment to add Mailgun client
-    // var mailgunApikey = builder.Configuration.GetSection("Mailgun")["ApiKey"] ?? throw new KeyNotFoundException("Mailgun__ApiKey");
-    // var mailgunBaseUrl = builder.Configuration.GetSection("Mailgun")["BaseUrl"] ?? throw new KeyNotFoundException("Mailgun__BaseUrl");
-    // var mailgunAuth = Convert.ToBase64String(Encoding.ASCII.GetBytes($"api:{mailgunApikey}"));
-    // builder.Services.AddHttpClient("Mailgun", client =>
-    // {
-    //     client.BaseAddress = new Uri(mailgunBaseUrl);
-    //     client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", mailgunAuth);
-    // });
 
     // Repositories
     builder.Services.AddScoped<IContactRepository, ContactRepository>();
@@ -335,14 +324,6 @@ try
 
     // Configuration
     builder.Services.AddSingleton<SortablePropertyConfig>(x => new(Assembly.GetExecutingAssembly()));
-
-    // Uncommnet below to add Mailgun configuration
-    // var mailgunDomain = builder.Configuration.GetSection("Mailgun")["Domain"] ?? throw new KeyNotFoundException("Mailgun__Domain");
-    // var mailgunTo = builder.Configuration.GetSection("Mailgun")["To"] ?? throw new KeyNotFoundException("Mailgun__To");
-    // builder.Services.AddSingleton<MailgunConfiguration>(x => new(
-    //     Domain: mailgunDomain,
-    //     To: mailgunTo
-    // ));
 
     string issuer = builder.Configuration.GetSection("JwtSettings")["Issuer"]!;
     string audience = builder.Configuration.GetSection("JwtSettings")["Audience"]!;
