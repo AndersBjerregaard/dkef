@@ -1,4 +1,4 @@
-- name: Deploy api kubernetes manifest in KinD cluster with Kubectl
+- name: Deploy frontend kubernetes manifest in KinD cluster with Kubectl
   hosts: hosts
 
   roles:
