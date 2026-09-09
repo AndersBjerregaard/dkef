@@ -22,49 +22,45 @@ docker buildx version
 
 ---
 
-## Multi-architecture builds (`linux/amd64` + `linux/arm64`)
+## Docker image builds (`linux/amd64`)
 
-Cross-platform images are built with **Docker Buildx** and **QEMU**.
+Production images are built for `linux/amd64`.
 
-### 1. Install QEMU (one-time setup)
-
-```sh
-docker run --privileged --rm tonistiigi/binfmt --install all
-```
-
-### 2. Create (or reuse) a Buildx builder
+### 1. Create (or reuse) a Buildx builder
 
 ```sh
-docker buildx create --name multiarch-builder --driver docker-container --use
+docker buildx create --name amd64-builder --driver docker-container --use
 docker buildx inspect --bootstrap
 ```
 
-### 3. Build and push `dkef-api`
+### 2. Build and push `dkef-api`
 
 ```sh
 docker buildx build \
-  --platform linux/amd64,linux/arm64 \
+  --platform linux/amd64 \
+  --tag <your-dockerhub-username>/dkef-api:<version> \
   --tag <your-dockerhub-username>/dkef-api:latest \
   --push \
   ./dkef-api
 ```
 
-### 4. Build and push `dkef-frontend`
+### 3. Build and push `dkef-frontend`
 
 ```sh
 docker buildx build \
-  --platform linux/amd64,linux/arm64 \
+  --platform linux/amd64 \
+  --tag <your-dockerhub-username>/dkef-frontend:<version> \
   --tag <your-dockerhub-username>/dkef-frontend:latest \
   --push \
   ./dkef-vue
 ```
 
-> **Note:** `--push` uploads the multi-arch manifest directly to the registry.  
+> **Note:** `--push` uploads the image directly to the registry.  
 > To inspect the result locally without pushing, replace `--push` with `--load` (single platform only) or `--output type=oci,dest=image.tar`.
 
-### 5. Verify the manifest
+### 4. Verify the published image
 
-After pushing, confirm both architectures are present:
+After pushing, inspect the tag metadata:
 
 ```sh
 docker buildx imagetools inspect <your-dockerhub-username>/dkef-api:latest
@@ -75,8 +71,23 @@ docker buildx imagetools inspect <your-dockerhub-username>/dkef-frontend:latest
 
 ## CI/CD (GitHub Actions)
 
-Multi-arch builds are automated via `.github/workflows/build.yml` and triggered manually (`workflow_dispatch`).  
-The workflow uses `docker/setup-qemu-action` and `docker/setup-buildx-action`, then builds and pushes both images to Docker Hub for `linux/amd64` and `linux/arm64`.
+Builds are automated via `.github/workflows/build.yml` and support both tag-based releases and manual dispatch.
+
+- **Architecture:** `linux/amd64` only
+- **Independent versioning:** backend and frontend are released separately
+- **Release tags:**
+  - API: `api-vMAJOR.MINOR.PATCH` (example: `api-v0.17.0`)
+  - Frontend: `frontend-vMAJOR.MINOR.PATCH` (example: `frontend-v0.17.0`)
+
+Each release publishes this tag structure for the relevant image:
+
+- `<MAJOR>.<MINOR>.<PATCH>` (example: `0.17.0`)
+- `<MAJOR>.<MINOR>` (example: `0.17`)
+- `<MAJOR>` (example: `0`)
+- `latest`
+- `sha-<shortsha>`
+
+`workflow_dispatch` can also build `api`, `frontend`, or `both` by providing semver values in the workflow inputs.
 
 Required repository secrets / variables:
 
