@@ -1,12 +1,13 @@
 # !Important! caveat for `bun` users
 
-Since `bun` version 1.3, `bun` loads `.env` files from the working directory.
+`bun` version 1.3.* loads `.env` files from the working directory.
 Overwriting any vite specific environment or mode.
-Meaning that if you run `bun run staging` with a `bun` version of 1.3 or above, you will get unintended results:
+Meaning that if you run `bun run staging` with a `bun` version of 1.3.*, you will get unintended results:
 Actually loading the `.env.development` rather than `.env.staging`.
 A workaround this current issue is to avoid using `package.json` scripts when working with vite modes.
 For example, the direct alternative to the `package.json` script '`bun run staging`' is
 `bun --env-file=.env.staging vite --mode staging`.
+This is not an issue with a `bun` version of 1.4.* or above.
 
 # tailwindvue
 
