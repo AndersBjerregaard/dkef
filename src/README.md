@@ -1,6 +1,6 @@
 # dkef — Docker Build Guide
 
-This directory contains the two application Dockerfiles and the Compose file used for local development.
+This directory contains the two application Dockerfiles.
 
 | Image | Context | Dockerfile |
 |---|---|---|
@@ -18,31 +18,6 @@ Verify Buildx is available:
 
 ```sh
 docker buildx version
-```
-
----
-
-## Local development (single architecture)
-
-Start all services (API, frontend, PostgreSQL, pgAdmin, MinIO) with Docker Compose:
-
-```sh
-# from src/
-docker compose up
-```
-
-| Service | URL |
-|---|---|
-| Frontend | http://localhost:5173 |
-| API | http://localhost:5275 |
-| pgAdmin | http://localhost:8080 |
-| MinIO console | http://localhost:9001 |
-| MinIO S3 endpoint | http://localhost:9000 |
-
-To rebuild images before starting:
-
-```sh
-docker compose up --build
 ```
 
 ---
