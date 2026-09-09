@@ -69,9 +69,11 @@ docker buildx imagetools inspect <your-dockerhub-username>/dkef-frontend:latest
 
 ---
 
-## CI/CD (GitHub Actions)
+## CI image publishing (GitHub Actions)
 
 Builds are automated via `.github/workflows/build.yml` and support both tag-based releases and manual dispatch.
+
+This workflow publishes Docker images only. It does **not** deploy to production.
 
 - **Architecture:** `linux/amd64` only
 - **Independent versioning:** backend and frontend are released separately
@@ -95,6 +97,47 @@ Required repository secrets / variables:
 |---|---|---|
 | `DOCKERHUB_USERNAME` | Variable | Docker Hub username |
 | `DOCKERHUB_TOKEN` | Secret | Docker Hub access token |
+
+> **Token lifecycle note:** `DOCKERHUB_TOKEN` currently has a 1-year lifetime.
+> Developers should periodically verify the expiration date and renew/rotate the token
+> before it expires to avoid failed release builds.
+
+---
+
+## Production release (manual Ansible rollout)
+
+After a new image is published, production rollout is performed manually from a developer
+machine using Ansible playbooks in `automation/ansible`.
+
+From `automation/ansible/`:
+
+```sh
+# Deploy newest API image
+ansible-playbook -i inventory.ini site.yaml -K --tags api_k8s
+
+# Deploy newest frontend image
+ansible-playbook -i inventory.ini site.yaml -K --tags frontend_k8s
+
+# Deploy both
+ansible-playbook -i inventory.ini site.yaml -K --tags api_k8s,frontend_k8s
+```
+
+At deploy time, Ansible resolves Docker Hub `latest` to an immutable digest and applies that
+digest to the Kubernetes deployment.
+
+---
+
+## Release runbook
+
+1. Publish image(s) through `.github/workflows/build.yml` (tag push or `workflow_dispatch`).
+2. Confirm image tags exist in Docker Hub (`<version>`, `<major.minor>`, `<major>`, `latest`, `sha-*`).
+3. Run manual Ansible rollout from a developer machine (`api_k8s`, `frontend_k8s`, or both).
+4. Verify running image digest in cluster, for example:
+
+```sh
+kubectl get pod -l app=dkef-api -o jsonpath='{.items[0].spec.containers[0].image}'
+kubectl get pod -l app=dkef-frontend -o jsonpath='{.items[0].spec.containers[0].image}'
+```
 
 ---
 

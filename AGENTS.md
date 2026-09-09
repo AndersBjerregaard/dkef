@@ -28,5 +28,6 @@ Use this file for repo-level guardrails; for implementation details read the pac
 
 ## CI/build facts worth knowing
 
-- `.github/workflows/build.yml` is manual (`workflow_dispatch`) and builds/pushes multi-arch (`linux/amd64`, `linux/arm64`) Docker images for API and frontend.
+- `.github/workflows/build.yml` supports release tag pushes and manual runs (`workflow_dispatch`), and builds/pushes `linux/amd64` Docker images for API and frontend.
+- Workflow publishes images only; production rollout is manual via `automation/ansible`.
 - Frontend Docker build depends on `ARG BUILD_MODE` and runs `bun run build:${BUILD_MODE}` (`docker` and `k8s` modes are expected).
