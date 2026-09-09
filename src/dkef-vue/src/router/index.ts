@@ -111,6 +111,11 @@ const router = createRouter({
       name: 'the-boards',
       component: () => import('@/views/TheBoardsView.vue'),
     },
+    {
+      path: '/payment',
+      name: 'payment',
+      component: () => import('@/views/PaymentView.vue'),
+    },
   ],
 })
 
