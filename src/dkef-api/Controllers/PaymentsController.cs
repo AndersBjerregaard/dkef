@@ -3,6 +3,7 @@ using System.Text.Json;
 
 using Dkef.Configuration;
 using Dkef.Contracts;
+using Dkef.Contracts.Nexi;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -25,38 +26,7 @@ public sealed class PaymentsController(
     {
         var checkoutUrl = $"{hostConfig.Audience}/payment";
 
-        var payload = new
-        {
-            order = new
-            {
-                items = new[]
-                {
-                    new
-                    {
-                        reference = "POC-MEDLEM-2026",
-                        name = "DKEF demo kontingent",
-                        quantity = 1,
-                        unit = "stk",
-                        unitPrice = 100000000,
-                        taxRate = 2500,
-                        taxAmount = 25000000,
-                        grossTotalAmount = 100000000,
-                        netTotalAmount = 75000000
-                    }
-                },
-                amount = 100000000,
-                currency = _nexiCheckoutConfig.Currency,
-                reference = "DKEF-POC-ORDER"
-            },
-            checkout = new
-            {
-                integrationType = "EmbeddedCheckout",
-                url = checkoutUrl,
-                termsUrl = _nexiCheckoutConfig.TermsUrl,
-                _nexiCheckoutConfig.MerchantTermsUrl,
-                charge = false
-            }
-        };
+        var payload = BuildPocCreatePaymentRequest(checkoutUrl);
 
         var request = new HttpRequestMessage(HttpMethod.Post, "/v1/payments")
         {
@@ -112,5 +82,49 @@ public sealed class PaymentsController(
             CheckoutJsUrl = _nexiCheckoutConfig.CheckoutJsUrl,
             Language = _nexiCheckoutConfig.Language
         });
+    }
+
+    private NexiCreatePaymentRequest BuildPocCreatePaymentRequest(string checkoutUrl)
+    {
+        var items = new List<NexiOrderItem>
+        {
+            new()
+            {
+                Reference = "POC-MEDLEM-2026",
+                Name = "DKEF demo kontingent",
+                Quantity = 1,
+                Unit = "stk",
+                UnitPrice = 75000000,
+                TaxRate = 2500,
+                TaxAmount = 25000000,
+                GrossTotalAmount = 100000000,
+                NetTotalAmount = 75000000
+            }
+        };
+
+        var amount = items.Sum(item => item.GrossTotalAmount);
+        if (amount <= 0)
+        {
+            throw new InvalidOperationException("Nexi order amount must be higher than 0.");
+        }
+
+        return new NexiCreatePaymentRequest
+        {
+            Order = new NexiOrder
+            {
+                Items = items,
+                Amount = amount,
+                Currency = _nexiCheckoutConfig.Currency,
+                Reference = "DKEF-POC-ORDER"
+            },
+            Checkout = new NexiCheckout
+            {
+                IntegrationType = "EmbeddedCheckout",
+                Url = checkoutUrl,
+                TermsUrl = _nexiCheckoutConfig.TermsUrl,
+                MerchantTermsUrl = _nexiCheckoutConfig.MerchantTermsUrl,
+                Charge = false
+            }
+        };
     }
 }
