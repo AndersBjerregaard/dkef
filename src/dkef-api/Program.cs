@@ -248,6 +248,16 @@ try
                             ? string.Empty
                             : $"{contentPrefix}/attachments/{id}"
                 )))
+                .ForMember(dest => dest.AttachmentFileNames, opt => opt.MapFrom(src =>
+                    src.AttachmentIds == null
+                        ? new List<string>()
+                        : src.AttachmentIds.Select((_, index) =>
+                            src.AttachmentFileNames != null
+                            && index < src.AttachmentFileNames.Length
+                            && !string.IsNullOrWhiteSpace(src.AttachmentFileNames[index])
+                                ? src.AttachmentFileNames[index]
+                                : string.Empty
+                )))
                 .ForMember(dest => dest.DateTime, opt => opt.MapFrom(src => DateTime.Parse(src.DateTime, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal).ToUniversalTime()));
             cfg.CreateMap<News, News>();
             cfg.CreateMap<NewsDto, News>()
@@ -260,6 +270,16 @@ try
                             ? string.Empty
                             : $"{contentPrefix}/attachments/{id}"
                 )))
+                .ForMember(dest => dest.AttachmentFileNames, opt => opt.MapFrom(src =>
+                    src.AttachmentIds == null
+                        ? new List<string>()
+                        : src.AttachmentIds.Select((_, index) =>
+                            src.AttachmentFileNames != null
+                            && index < src.AttachmentFileNames.Length
+                            && !string.IsNullOrWhiteSpace(src.AttachmentFileNames[index])
+                                ? src.AttachmentFileNames[index]
+                                : string.Empty
+                )))
                 .ForMember(dest => dest.DateTime, opt => opt.MapFrom(src => DateTime.UtcNow));
             cfg.CreateMap<GeneralAssembly, GeneralAssembly>();
             cfg.CreateMap<GeneralAssemblyDto, GeneralAssembly>()
@@ -271,6 +291,16 @@ try
                         : src.AttachmentIds.Select(id => string.IsNullOrWhiteSpace(id)
                             ? string.Empty
                             : $"{contentPrefix}/attachments/{id}"
+                )))
+                .ForMember(dest => dest.AttachmentFileNames, opt => opt.MapFrom(src =>
+                    src.AttachmentIds == null
+                        ? new List<string>()
+                        : src.AttachmentIds.Select((_, index) =>
+                            src.AttachmentFileNames != null
+                            && index < src.AttachmentFileNames.Length
+                            && !string.IsNullOrWhiteSpace(src.AttachmentFileNames[index])
+                                ? src.AttachmentFileNames[index]
+                                : string.Empty
                 )))
                 .ForMember(dest => dest.DateTime, opt => opt.MapFrom(src => DateTime.Parse(src.DateTime, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal).ToUniversalTime()));
             cfg.CreateMap<InformationDto, InformationMessage>();

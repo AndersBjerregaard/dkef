@@ -8,6 +8,8 @@ import AttachmentUploader from '@/components/AttachmentUploader.vue'
 import apiservice from '@/services/apiservice'
 import urlservice from '@/services/urlservice'
 import type { NewsDto, PublishedNews } from '@/types/news'
+import type { AttachmentItem } from '@/types/attachments'
+import { toAttachmentItems } from '@/utils/attachments'
 import { useNewsStore } from '@/stores/newsStore'
 
 const props = defineProps<{
@@ -25,7 +27,7 @@ const itemTitle: Ref<string> = ref('')
 const itemSection: Ref<string> = ref('')
 const itemDescription: Ref<string> = ref('')
 const itemFile: Ref<File | null> = ref(null)
-const itemAttachmentIds: Ref<string[]> = ref([])
+const itemAttachments: Ref<AttachmentItem[]> = ref([])
 const attachmentUploaderRef: Ref<InstanceType<typeof AttachmentUploader> | null> = ref(null)
 
 const isLoading: Ref<boolean> = ref(false)
@@ -37,7 +39,7 @@ function populateFields() {
   itemSection.value = props.news.section
   itemDescription.value = props.news.description
   itemFile.value = null
-  itemAttachmentIds.value = [...props.news.attachmentUrls]
+  itemAttachments.value = toAttachmentItems(props.news.attachmentUrls, props.news.attachmentFileNames)
   fileUploadError.value = false
   submitError.value = null
 }
@@ -107,11 +109,11 @@ async function saveNews() {
       thumbnailId = newGuid
     }
 
-    let attachmentIds = itemAttachmentIds.value
+    let attachments = itemAttachments.value
 
     if (attachmentUploaderRef.value) {
-      const newAttachmentIds = await attachmentUploaderRef.value.processNewAttachments()
-      attachmentIds = [...attachmentIds, ...newAttachmentIds]
+      const newAttachments = await attachmentUploaderRef.value.processNewAttachments()
+      attachments = [...attachments, ...newAttachments]
     }
 
     const dto: NewsDto = {
@@ -119,7 +121,8 @@ async function saveNews() {
       section: itemSection.value,
       description: itemDescription.value,
       thumbnailId,
-      attachmentIds,
+      attachmentIds: attachments.map((attachment) => attachment.id),
+      attachmentFileNames: attachments.map((attachment) => attachment.fileName),
       dateTime: props.news.dateTime,
     }
 
@@ -203,10 +206,10 @@ async function saveNews() {
       <!-- Attachments -->
       <AttachmentUploader
         ref="attachmentUploaderRef"
-        :attachment-ids="itemAttachmentIds"
+        :attachments="itemAttachments"
         :is-loading="isLoading"
         content-type="news"
-        @update:attachment-ids="(ids) => (itemAttachmentIds = ids)"
+        @update:attachments="(attachments) => (itemAttachments = attachments)"
         @error="(msg) => (submitError = msg)"
       />
 

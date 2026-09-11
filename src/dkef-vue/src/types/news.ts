@@ -5,6 +5,7 @@ export interface NewsDto {
   description: string
   thumbnailId?: string
   attachmentIds?: string[]
+  attachmentFileNames?: string[]
 }
 
 export interface PublishedNews {
@@ -14,6 +15,7 @@ export interface PublishedNews {
   description: string
   thumbnailUrl: string
   attachmentUrls: string[]
+  attachmentFileNames?: string[]
   dateTime: string
   createdAt: string
 }

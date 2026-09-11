@@ -129,6 +129,24 @@ onMounted(async () => {
         <div class="whitespace-pre-wrap">
           {{ currentEvent.description }}
         </div>
+        <div v-if="currentEvent.attachmentUrls.length > 0" class="pt-8">
+          <h3 class="text-2xl pb-3">Vedhæftninger</h3>
+          <ul class="space-y-2">
+            <li
+              v-for="(attachmentUrl, index) in currentEvent.attachmentUrls"
+              :key="`${attachmentUrl}-${index}`"
+            >
+              <a
+                :href="attachmentUrl"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="underline break-all text-theme-heading hover:text-theme-accent transition-colors"
+              >
+                {{ currentEvent.attachmentFileNames?.[index] || `Vedhæftning ${index + 1}` }}
+              </a>
+            </li>
+          </ul>
+        </div>
       </div>
 
       <!-- Not Found -->

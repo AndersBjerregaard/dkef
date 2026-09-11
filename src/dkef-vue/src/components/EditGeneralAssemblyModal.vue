@@ -8,6 +8,8 @@ import AttachmentUploader from '@/components/AttachmentUploader.vue'
 import apiservice from '@/services/apiservice'
 import urlservice from '@/services/urlservice'
 import type { GeneralAssemblyDto, PublishedGeneralAssembly } from '@/types/generalAssembly'
+import type { AttachmentItem } from '@/types/attachments'
+import { toAttachmentItems } from '@/utils/attachments'
 import { useGeneralAssemblyStore } from '@/stores/generalAssemblyStore'
 import { useThemeStore } from '@/stores/themeStore'
 
@@ -29,7 +31,7 @@ const itemAddress: Ref<string> = ref('')
 const itemDate: Ref<string> = ref('')
 const itemDescription: Ref<string> = ref('')
 const itemFile: Ref<File | null> = ref(null)
-const itemAttachmentIds: Ref<string[]> = ref([])
+const itemAttachments: Ref<AttachmentItem[]> = ref([])
 const attachmentUploaderRef: Ref<InstanceType<typeof AttachmentUploader> | null> = ref(null)
 
 const isLoading: Ref<boolean> = ref(false)
@@ -50,7 +52,10 @@ function populateFields() {
   itemDate.value = toDatetimeLocalString(props.assembly.dateTime)
   itemDescription.value = props.assembly.description
   itemFile.value = null
-  itemAttachmentIds.value = [...props.assembly.attachmentUrls]
+  itemAttachments.value = toAttachmentItems(
+    props.assembly.attachmentUrls,
+    props.assembly.attachmentFileNames,
+  )
   fileUploadError.value = false
   submitError.value = null
 }
@@ -122,11 +127,11 @@ async function saveAssembly() {
       thumbnailId = newGuid
     }
 
-    let attachmentIds = itemAttachmentIds.value
+    let attachments = itemAttachments.value
 
     if (attachmentUploaderRef.value) {
-      const newAttachmentIds = await attachmentUploaderRef.value.processNewAttachments()
-      attachmentIds = [...attachmentIds, ...newAttachmentIds]
+      const newAttachments = await attachmentUploaderRef.value.processNewAttachments()
+      attachments = [...attachments, ...newAttachments]
     }
 
     const dto: GeneralAssemblyDto = {
@@ -136,7 +141,8 @@ async function saveAssembly() {
       dateTime: itemDate.value,
       description: itemDescription.value,
       thumbnailId,
-      attachmentIds,
+      attachmentIds: attachments.map((attachment) => attachment.id),
+      attachmentFileNames: attachments.map((attachment) => attachment.fileName),
     }
 
     await generalAssemblyStore.updateGeneralAssembly(props.assembly.id, dto)
@@ -248,10 +254,10 @@ async function saveAssembly() {
       <!-- Attachments -->
       <AttachmentUploader
         ref="attachmentUploaderRef"
-        :attachment-ids="itemAttachmentIds"
+        :attachments="itemAttachments"
         :is-loading="isLoading"
         content-type="general-assemblies"
-        @update:attachment-ids="(ids) => (itemAttachmentIds = ids)"
+        @update:attachments="(attachments) => (itemAttachments = attachments)"
         @error="(msg) => (submitError = msg)"
       />
 

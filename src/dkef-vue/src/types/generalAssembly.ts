@@ -6,6 +6,7 @@ export interface GeneralAssemblyDto {
   description: string
   thumbnailId?: string
   attachmentIds?: string[]
+  attachmentFileNames?: string[]
 }
 
 export interface PublishedGeneralAssembly {
@@ -17,6 +18,7 @@ export interface PublishedGeneralAssembly {
   description: string
   thumbnailUrl: string
   attachmentUrls: string[]
+  attachmentFileNames?: string[]
   createdAt: string
 }
 

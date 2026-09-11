@@ -5,15 +5,16 @@ import axios from 'axios'
 import type { AxiosResponse } from 'axios'
 import apiservice from '@/services/apiservice'
 import urlservice from '@/services/urlservice'
+import type { AttachmentItem } from '@/types/attachments'
 
 const props = defineProps<{
-  attachmentIds: string[]
+  attachments: AttachmentItem[]
   isLoading: boolean
   contentType: 'events' | 'news' | 'general-assemblies'
 }>()
 
 const emit = defineEmits<{
-  (e: 'update:attachmentIds', ids: string[]): void
+  (e: 'update:attachments', attachments: AttachmentItem[]): void
   (e: 'error', msg: string): void
 }>()
 
@@ -21,9 +22,9 @@ const attachmentFiles: Ref<File[]> = ref([])
 const uploadErrors: Ref<string[]> = ref([])
 
 const displayAttachments = computed(() => {
-  return props.attachmentIds.map((id, idx) => ({
-    id,
-    name: `Attachment ${idx + 1}`,
+  return props.attachments.map((attachment, idx) => ({
+    id: attachment.id,
+    name: attachment.fileName || `Vedhæftning ${idx + 1}`,
   }))
 })
 
@@ -48,10 +49,7 @@ function removeLocalFile(idx: number) {
 }
 
 function removeAttachment(id: string) {
-  emit(
-    'update:attachmentIds',
-    props.attachmentIds.filter((aid) => aid !== id),
-  )
+  emit('update:attachments', props.attachments.filter((attachment) => attachment.id !== id))
 }
 
 async function uploadFile(url: string, file: File): Promise<void> {
@@ -59,8 +57,8 @@ async function uploadFile(url: string, file: File): Promise<void> {
   await axiosInstance.put(url, file, { headers: { 'Content-Type': file.type } })
 }
 
-async function processNewAttachments(): Promise<string[]> {
-  const newIds: string[] = []
+async function processNewAttachments(): Promise<AttachmentItem[]> {
+  const newAttachments: AttachmentItem[] = []
   for (const file of attachmentFiles.value) {
     try {
       const newGuid = uuidv4()
@@ -68,7 +66,10 @@ async function processNewAttachments(): Promise<string[]> {
         urlservice.getAttachmentPresignedUrl(newGuid),
       )
       await uploadFile(presignedUrlResponse.data, file)
-      newIds.push(newGuid)
+      newAttachments.push({
+        id: newGuid,
+        fileName: file.name,
+      })
     } catch (err: unknown) {
       const axiosError = err as { response?: { data?: { message?: string } }; message?: string }
       emit(
@@ -78,11 +79,11 @@ async function processNewAttachments(): Promise<string[]> {
     }
   }
   attachmentFiles.value = []
-  return newIds
+  return newAttachments
 }
 
 watch(
-  () => props.attachmentIds,
+  () => props.attachments,
   () => {
     uploadErrors.value = []
   },

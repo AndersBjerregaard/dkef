@@ -23,6 +23,7 @@ public class GeneralAssemblyDto : PostObject
     public string ThumbnailId { get; set; } = string.Empty;
     [GuidArrayValidation(AllowEmpty = true)]
     public string[] AttachmentIds { get; set; } = [];
+    public string[] AttachmentFileNames { get; set; } = [];
 
     public override void Sanitize(HtmlSanitizer sanitizer)
     {
@@ -30,5 +31,6 @@ public class GeneralAssemblyDto : PostObject
         Section = sanitizer.Sanitize(Section);
         Address = sanitizer.Sanitize(Address);
         Description = sanitizer.Sanitize(Description);
+        AttachmentFileNames = AttachmentFileNames.Select(fileName => sanitizer.Sanitize(fileName)).ToArray();
     }
 }

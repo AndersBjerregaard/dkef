@@ -18,6 +18,7 @@ public class NewsDto : PostObject
     public string ThumbnailId { get; set; } = string.Empty;
     [GuidArrayValidation(AllowEmpty = true)]
     public string[] AttachmentIds { get; set; } = [];
+    public string[] AttachmentFileNames { get; set; } = [];
 
     public override void Sanitize(HtmlSanitizer sanitizer)
     {
@@ -25,5 +26,6 @@ public class NewsDto : PostObject
         Section = sanitizer.Sanitize(Section);
         Author = sanitizer.Sanitize(Author);
         Description = sanitizer.Sanitize(Description);
+        AttachmentFileNames = AttachmentFileNames.Select(fileName => sanitizer.Sanitize(fileName)).ToArray();
     }
 }

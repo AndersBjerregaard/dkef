@@ -6,6 +6,7 @@ export interface EventDto {
   description: string
   thumbnailId?: string
   attachmentIds?: string[]
+  attachmentFileNames?: string[]
 }
 
 /**
@@ -27,6 +28,7 @@ export interface PublishedEvent {
   description: string
   thumbnailUrl: string
   attachmentUrls: string[]
+  attachmentFileNames?: string[]
   createdAt: string
 }
 

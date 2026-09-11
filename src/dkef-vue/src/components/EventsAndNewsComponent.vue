@@ -17,6 +17,7 @@ import type {
   GeneralAssemblyCollection,
 } from '@/types/generalAssembly'
 import type { FeedItem, FeedResponse } from '@/types/feed'
+import type { AttachmentItem } from '@/types/attachments'
 import { useFeedStore } from '@/stores/feedStore'
 import { useAuthStore } from '@/stores/authStore'
 
@@ -82,7 +83,7 @@ const itemTitle: Ref<string> = ref('')
 const itemFile: Ref<File | null> = ref(null)
 const itemDescription: Ref<string> = ref('')
 const itemSection: Ref<string> = ref('')
-const itemAttachmentIds: Ref<string[]> = ref([])
+const itemAttachments: Ref<AttachmentItem[]> = ref([])
 const attachmentUploaderRef: Ref<InstanceType<typeof AttachmentUploader> | null> = ref(null)
 
 // Event + General Assembly fields
@@ -104,6 +105,7 @@ const displayedItems = computed<FeedItem[]>(() => {
         description: e.description,
         thumbnailUrl: e.thumbnailUrl,
         attachmentUrls: e.attachmentUrls ?? [],
+        attachmentFileNames: e.attachmentFileNames ?? [],
         createdAt: e.createdAt,
         address: e.address,
         dateTime: e.dateTime,
@@ -117,6 +119,7 @@ const displayedItems = computed<FeedItem[]>(() => {
         description: n.description,
         thumbnailUrl: n.thumbnailUrl,
         attachmentUrls: n.attachmentUrls ?? [],
+        attachmentFileNames: n.attachmentFileNames ?? [],
         createdAt: n.createdAt,
         dateTime: n.dateTime,
       }))
@@ -129,6 +132,7 @@ const displayedItems = computed<FeedItem[]>(() => {
         description: g.description,
         thumbnailUrl: g.thumbnailUrl,
         attachmentUrls: g.attachmentUrls ?? [],
+        attachmentFileNames: g.attachmentFileNames ?? [],
         createdAt: g.createdAt,
         address: g.address,
         dateTime: g.dateTime,
@@ -428,7 +432,7 @@ function resetFields() {
   itemSection.value = ''
   itemAddress.value = ''
   itemDate.value = ''
-  itemAttachmentIds.value = []
+  itemAttachments.value = []
 }
 
 function validateFields(): boolean {
@@ -498,11 +502,11 @@ async function createEvent() {
     await uploadFile(presignedUrlResponse.data, itemFile.value)
   }
 
-  let attachmentIds = itemAttachmentIds.value
+  let attachments = itemAttachments.value
 
   if (attachmentUploaderRef.value) {
-    const newAttachmentIds = await attachmentUploaderRef.value.processNewAttachments()
-    attachmentIds = [...attachmentIds, ...newAttachmentIds]
+    const newAttachments = await attachmentUploaderRef.value.processNewAttachments()
+    attachments = [...attachments, ...newAttachments]
   }
 
   const newEvent: EventDto = {
@@ -512,7 +516,10 @@ async function createEvent() {
     dateTime: itemDate.value,
     description: itemDescription.value,
     ...(thumbnailId && { thumbnailId }),
-    ...(attachmentIds.length > 0 && { attachmentIds }),
+    ...(attachments.length > 0 && {
+      attachmentIds: attachments.map((attachment) => attachment.id),
+      attachmentFileNames: attachments.map((attachment) => attachment.fileName),
+    }),
   }
   await apiservice.post<PublishedEvent>(urlservice.postEvent(), newEvent)
 }
@@ -528,11 +535,11 @@ async function createNews() {
     await uploadFile(presignedUrlResponse.data, itemFile.value)
   }
 
-  let attachmentIds = itemAttachmentIds.value
+  let attachments = itemAttachments.value
 
   if (attachmentUploaderRef.value) {
-    const newAttachmentIds = await attachmentUploaderRef.value.processNewAttachments()
-    attachmentIds = [...attachmentIds, ...newAttachmentIds]
+    const newAttachments = await attachmentUploaderRef.value.processNewAttachments()
+    attachments = [...attachments, ...newAttachments]
   }
 
   const newNews: NewsDto = {
@@ -541,7 +548,10 @@ async function createNews() {
     description: itemDescription.value,
     dateTime: new Date().toISOString(),
     ...(thumbnailId && { thumbnailId }),
-    ...(attachmentIds.length > 0 && { attachmentIds }),
+    ...(attachments.length > 0 && {
+      attachmentIds: attachments.map((attachment) => attachment.id),
+      attachmentFileNames: attachments.map((attachment) => attachment.fileName),
+    }),
   }
   await apiservice.post<PublishedNews>(urlservice.postNews(), newNews)
 }
@@ -557,11 +567,11 @@ async function createGeneralAssembly() {
     await uploadFile(presignedUrlResponse.data, itemFile.value)
   }
 
-  let attachmentIds = itemAttachmentIds.value
+  let attachments = itemAttachments.value
 
   if (attachmentUploaderRef.value) {
-    const newAttachmentIds = await attachmentUploaderRef.value.processNewAttachments()
-    attachmentIds = [...attachmentIds, ...newAttachmentIds]
+    const newAttachments = await attachmentUploaderRef.value.processNewAttachments()
+    attachments = [...attachments, ...newAttachments]
   }
 
   const newAssembly: GeneralAssemblyDto = {
@@ -571,7 +581,10 @@ async function createGeneralAssembly() {
     dateTime: itemDate.value,
     description: itemDescription.value,
     ...(thumbnailId && { thumbnailId }),
-    ...(attachmentIds.length > 0 && { attachmentIds }),
+    ...(attachments.length > 0 && {
+      attachmentIds: attachments.map((attachment) => attachment.id),
+      attachmentFileNames: attachments.map((attachment) => attachment.fileName),
+    }),
   }
   await apiservice.post<PublishedGeneralAssembly>(urlservice.postGeneralAssembly(), newAssembly)
 }
@@ -993,7 +1006,7 @@ const submitLabel = computed(() => {
         <!-- Attachments -->
         <AttachmentUploader
           ref="attachmentUploaderRef"
-          :attachment-ids="itemAttachmentIds"
+          :attachments="itemAttachments"
           :is-loading="isLoading"
           :content-type="
             createType === 'event'
@@ -1002,7 +1015,7 @@ const submitLabel = computed(() => {
                 ? 'news'
                 : 'general-assemblies'
           "
-          @update:attachment-ids="(ids) => (itemAttachmentIds = ids)"
+          @update:attachments="(attachments) => (itemAttachments = attachments)"
           @error="(msg) => (submitError = msg)"
         />
 

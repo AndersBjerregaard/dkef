@@ -6,6 +6,7 @@ export interface FeedItem {
   description: string
   thumbnailUrl: string
   attachmentUrls: string[]
+  attachmentFileNames?: string[]
   createdAt: string
   dateTime?: string
   // Event + GeneralAssembly specific

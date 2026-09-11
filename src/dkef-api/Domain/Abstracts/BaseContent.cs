@@ -21,4 +21,5 @@ public abstract class BaseContent : DomainClass
     [Sortable]
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public IEnumerable<string> AttachmentUrls { get; set; } = [];
+    public IEnumerable<string> AttachmentFileNames { get; set; } = [];
 }
