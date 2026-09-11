@@ -79,7 +79,7 @@ function deleteEvent(guid: string) {
     case 'Development':
       throw 'Unimplemented!'
     default:
-      return `/contents/events/${guid}`
+      return `/contents/${guid}`
   }
 }
 
@@ -133,7 +133,7 @@ function deleteNews(guid: string) {
     case 'Development':
       throw 'Unimplemented!'
     default:
-      return `/contents/news/${guid}`
+      return `/contents/${guid}`
   }
 }
 
@@ -187,7 +187,7 @@ function deleteGeneralAssembly(guid: string) {
     case 'Development':
       throw 'Unimplemented!'
     default:
-      return `/contents/general-assemblies/${guid}`
+      return `/contents/${guid}`
   }
 }
 
