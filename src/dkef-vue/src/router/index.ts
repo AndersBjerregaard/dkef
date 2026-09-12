@@ -115,15 +115,22 @@ const router = createRouter({
 })
 
 // Navigation guard for authentication
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   const authStore = useAuthStore()
+  await authStore.initializeSession()
+
   const requiresAuth = to.matched.some((record) => record.meta.requiresAuth)
   const guestOnly = to.matched.some((record) => record.meta.guest)
 
-  if (requiresAuth && !authStore.isAuthenticated) {
-    // Redirect to login if route requires auth and user is not authenticated
-    next({ name: 'login', query: { redirect: to.fullPath } })
-  } else if (guestOnly && authStore.isAuthenticated) {
+  if (requiresAuth) {
+    const isValidSession = await authStore.ensureValidSession({ notifyOnExpiry: true })
+    if (!isValidSession) {
+      next({ name: 'home', query: { login: '1', redirect: to.fullPath } })
+      return
+    }
+  }
+
+  if (guestOnly && authStore.isAuthenticated) {
     // Redirect to home if route is for guests only and user is authenticated
     next({ name: 'home' })
   } else {

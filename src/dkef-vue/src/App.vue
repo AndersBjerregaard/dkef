@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { RouterView, RouterLink, useRouter } from 'vue-router'
+import { RouterView, RouterLink, useRouter, useRoute } from 'vue-router'
 import {
   Menu,
   MenuButton,
@@ -11,7 +11,7 @@ import {
   DialogPanel,
   DialogTitle,
 } from '@headlessui/vue'
-import { ref, computed } from 'vue'
+import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
 import { useAuthStore } from '@/stores/authStore'
 import { useThemeStore } from '@/stores/themeStore'
 import { Toaster } from 'vue-sonner'
@@ -24,6 +24,9 @@ const password = ref('')
 const loginError = ref('')
 const isLoggingIn = ref(false)
 const router = useRouter()
+const route = useRoute()
+
+type PromptLoginEvent = CustomEvent<{ redirectPath?: string }>
 
 const firstName = computed(() => {
   if (!authStore) {
@@ -44,8 +47,39 @@ function closeModal() {
   password.value = ''
 }
 
+function clearLoginPromptQuery() {
+  if (!route.query.login && !route.query.redirect) {
+    return
+  }
+
+  const { login, redirect, ...rest } = route.query
+  void login
+  void redirect
+  void router.replace({ query: rest })
+}
+
+function dismissLoginModal() {
+  closeModal()
+  clearLoginPromptQuery()
+}
+
 function openModal() {
   isOpen.value = true
+}
+
+async function promptLoginModal(redirectPath?: string) {
+  const query: Record<string, string> = { login: '1' }
+
+  if (redirectPath && redirectPath !== '/') {
+    query.redirect = redirectPath
+  }
+
+  if (route.name === 'home') {
+    await router.replace({ name: 'home', query: { ...route.query, ...query } })
+    return
+  }
+
+  await router.push({ name: 'home', query })
 }
 
 async function handleLogin() {
@@ -62,7 +96,14 @@ async function handleLogin() {
       email: email.value,
       password: password.value,
     })
+
+    const redirectTarget = typeof route.query.redirect === 'string' ? route.query.redirect : null
     closeModal()
+    clearLoginPromptQuery()
+
+    if (redirectTarget) {
+      await router.push(redirectTarget)
+    }
   } catch (error: unknown) {
     const errorMessage =
       error && typeof error === 'object' && 'response' in error
@@ -90,6 +131,59 @@ async function goto(view: string) {
   await router.push({ name: view })
   window.scrollTo({ top: 0, behavior: 'smooth' })
 }
+
+async function validateSessionAfterFocus() {
+  if (!authStore.isAuthReady || !authStore.accessToken) {
+    return
+  }
+
+  const valid = await authStore.ensureValidSession({ notifyOnExpiry: true })
+  if (valid) {
+    return
+  }
+
+  const redirectPath = router.currentRoute.value.meta.requiresAuth
+    ? router.currentRoute.value.fullPath
+    : undefined
+  await promptLoginModal(redirectPath)
+}
+
+function handleVisibilityChange() {
+  if (document.visibilityState === 'visible') {
+    void validateSessionAfterFocus()
+  }
+}
+
+function handleWindowFocus() {
+  void validateSessionAfterFocus()
+}
+
+function handlePromptLogin(event: Event) {
+  const promptEvent = event as PromptLoginEvent
+  void promptLoginModal(promptEvent.detail?.redirectPath)
+}
+
+watch(
+  () => route.query.login,
+  (shouldOpenLogin) => {
+    if (shouldOpenLogin === '1') {
+      openModal()
+    }
+  },
+  { immediate: true },
+)
+
+onMounted(() => {
+  window.addEventListener('focus', handleWindowFocus)
+  document.addEventListener('visibilitychange', handleVisibilityChange)
+  window.addEventListener('auth:prompt-login', handlePromptLogin as EventListener)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('focus', handleWindowFocus)
+  document.removeEventListener('visibilitychange', handleVisibilityChange)
+  window.removeEventListener('auth:prompt-login', handlePromptLogin as EventListener)
+})
 </script>
 
 <template>
@@ -207,7 +301,7 @@ async function goto(view: string) {
                 </button>
               </RouterLink>
             </div>
-            <div class="p-1" v-if="!authStore.isAuthenticated">
+            <div class="p-1" v-if="authStore.isAuthReady && !authStore.isAuthenticated">
               <button
                 class="rounded-lg bg-amber-600 h-10 px-4 cursor-pointer text-navy-950 font-semibold hover:bg-amber-500 active:bg-amber-700 transition-colors text-sm shadow-lg shadow-amber-600/20"
                 @click="openModal"
@@ -215,7 +309,7 @@ async function goto(view: string) {
                 Log på
               </button>
             </div>
-            <div class="p-1 flex items-center gap-3" v-else>
+            <div class="p-1 flex items-center gap-3" v-else-if="authStore.isAuthReady">
               <span class="text-theme-accent font-medium text-sm">Hej, {{ firstName }}</span>
               <button
                 class="rounded-lg bg-theme-mute h-10 px-4 cursor-pointer text-theme-text hover:bg-theme-mute hover:text-theme-accent transition-colors text-sm font-medium"
@@ -224,7 +318,16 @@ async function goto(view: string) {
                 Log ud
               </button>
             </div>
-            <div class="p-1" v-if="!authStore.isAuthenticated">
+            <div class="p-1" v-else>
+              <div
+                class="rounded-lg bg-theme-mute border border-theme-border h-10 px-4 text-theme-muted text-sm font-medium flex items-center gap-2 min-w-24"
+                aria-live="polite"
+              >
+                <span class="h-3.5 w-3.5 border-2 border-theme-border border-t-theme-accent rounded-full animate-spin"></span>
+                Indlæser
+              </div>
+            </div>
+            <div class="p-1" v-if="authStore.isAuthReady && !authStore.isAuthenticated">
               <RouterLink to="/register">
                 <button
                   class="rounded-lg border border-amber-500/40 h-10 px-4 cursor-pointer text-theme-accent hover:bg-amber-500/10 transition-colors text-sm font-medium"
@@ -233,8 +336,14 @@ async function goto(view: string) {
                 </button>
               </RouterLink>
             </div>
+            <div class="p-1" v-else-if="!authStore.isAuthReady">
+              <div
+                class="rounded-lg border border-theme-border/80 bg-theme-soft h-10 min-w-28 animate-pulse"
+                aria-hidden="true"
+              ></div>
+            </div>
             <!-- Member Portal -->
-            <div class="p-1" v-if="authStore.isAuthenticated">
+            <div class="p-1" v-if="authStore.isAuthReady && authStore.isAuthenticated">
               <RouterLink to="/change-profile">
                 <button
                   class="rounded-lg bg-theme-mute h-10 px-4 cursor-pointer text-theme-text hover:bg-theme-mute hover:text-theme-accent transition-colors text-sm font-medium"
@@ -256,7 +365,7 @@ async function goto(view: string) {
           </div>
         </div>
         <TransitionRoot appear :show="isOpen" as="template">
-          <Dialog as="div" @close="closeModal" class="relative z-10">
+          <Dialog as="div" @close="dismissLoginModal" class="relative z-10">
             <TransitionChild
               as="template"
               enter="duration-300 ease-out"
@@ -322,7 +431,7 @@ async function goto(view: string) {
                       <div class="mb-4 text-right">
                         <RouterLink
                           to="/forgot-password"
-                          @click="closeModal"
+                          @click="dismissLoginModal"
                           class="text-sm text-theme-accent hover:text-amber-300 cursor-pointer"
                         >
                           Glemt adgangskode?
@@ -347,7 +456,7 @@ async function goto(view: string) {
                         <button
                           type="button"
                           class="inline-flex justify-center rounded-lg border border-theme-border bg-theme-soft px-4 py-2 text-sm font-medium text-theme-text hover:bg-theme-mute focus:outline-none focus-visible:ring-2 focus-visible:ring-theme-accent focus-visible:ring-offset-2 focus-visible:ring-offset-theme-mute cursor-pointer transition-colors"
-                          @click="closeModal"
+                          @click="dismissLoginModal"
                         >
                           Annuller
                         </button>
@@ -468,7 +577,7 @@ async function goto(view: string) {
                           </button>
                         </RouterLink>
                       </MenuItem>
-                      <MenuItem v-if="authStore.isAuthenticated" v-slot="{ active, close }">
+                      <MenuItem v-if="authStore.isAuthReady && authStore.isAuthenticated" v-slot="{ active, close }">
                         <RouterLink to="/change-profile">
                           <button
                             :class="[
@@ -481,7 +590,7 @@ async function goto(view: string) {
                           </button>
                         </RouterLink>
                       </MenuItem>
-                      <MenuItem v-if="!authStore.isAuthenticated" v-slot="{ active }">
+                      <MenuItem v-if="authStore.isAuthReady && !authStore.isAuthenticated" v-slot="{ active }">
                         <button
                           :class="[
                             active ? 'bg-amber-500/20 text-theme-accent' : 'text-theme-accent',
@@ -492,7 +601,7 @@ async function goto(view: string) {
                           Log på
                         </button>
                       </MenuItem>
-                      <MenuItem v-else v-slot="{ active }">
+                      <MenuItem v-else-if="authStore.isAuthReady && authStore.isAuthenticated" v-slot="{ active }">
                         <button
                           :class="[
                             active ? 'bg-theme-border text-theme-accent' : 'text-theme-text',
@@ -502,6 +611,12 @@ async function goto(view: string) {
                         >
                           Log ud
                         </button>
+                      </MenuItem>
+                      <MenuItem v-else>
+                        <div class="group flex w-full items-center rounded-lg px-2 py-2 text-sm text-theme-muted gap-2">
+                          <span class="h-3.5 w-3.5 border-2 border-theme-border border-t-theme-accent rounded-full animate-spin"></span>
+                          Indlæser konto...
+                        </div>
                       </MenuItem>
                     </div>
                   </MenuItems>
@@ -586,19 +701,20 @@ async function goto(view: string) {
             <div class="w-48 h-60 p-2">
               <h2 class="text-xl pb-4 text-theme-accent">Medlemmer</h2>
               <button
-                v-if="!authStore.isAuthenticated"
+                v-if="authStore.isAuthReady && !authStore.isAuthenticated"
                 @click="openModal"
                 class="block text-sm text-theme-text hover:text-theme-accent cursor-pointer pb-2 transition-colors"
               >
                 Log på
               </button>
               <button
-                v-else
+                v-else-if="authStore.isAuthReady"
                 @click="handleLogout"
                 class="block text-sm text-theme-text hover:text-theme-accent cursor-pointer pb-2 transition-colors"
               >
                 Log ud
               </button>
+              <p v-else class="block text-sm text-theme-muted pb-2">Indlæser medlemsstatus...</p>
             </div>
           </div>
         </div>

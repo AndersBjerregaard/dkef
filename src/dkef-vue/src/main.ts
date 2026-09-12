@@ -6,6 +6,7 @@ import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 import 'vue-sonner/style.css'
 import App from './App.vue'
 import router from './router'
+import { useAuthStore } from '@/stores/authStore'
 
 const app = createApp(App)
 
@@ -15,4 +16,12 @@ pinia.use(piniaPluginPersistedstate)
 app.use(pinia)
 app.use(router)
 
-app.mount('#app')
+const authStore = useAuthStore(pinia)
+
+async function bootstrap() {
+  await authStore.initializeSession()
+  await router.isReady()
+  app.mount('#app')
+}
+
+void bootstrap()

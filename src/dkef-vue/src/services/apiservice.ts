@@ -5,10 +5,6 @@ import axios, {
   AxiosError,
 } from 'axios'
 import { useAuthStore } from '@/stores/authStore'
-import { useRouter } from 'vue-router'
-import { toast } from 'vue-sonner'
-
-const router = useRouter()
 
 export interface ApiRequestConfig extends AxiosRequestConfig {
   skipAuth?: boolean
@@ -103,6 +99,12 @@ axiosInstance.interceptors.response.use(
 
       try {
         const newAccessToken = await authStore?.refreshAccessToken()
+
+        if (!newAccessToken) {
+          throw new Error('Token refresh failed')
+        }
+
+        await authStore?.fetchUserProfile()
         processQueue(null, newAccessToken)
 
         if (originalRequest.headers && newAccessToken) {
@@ -115,13 +117,16 @@ axiosInstance.interceptors.response.use(
           refreshError instanceof Error ? refreshError : new Error('Token refresh failed'),
           null,
         )
-        // Refresh failed, clear auth and redirect to home page
-        authStore?.clearAuth()
-        toast.error('Session Udløbet', {
-          description: 'Du er blevet logget ud på grund af inaktivitet.',
-          duration: 5000,
-        })
-        router.push('/')
+
+        authStore?.handleSessionExpired(true)
+        window.dispatchEvent(
+          new CustomEvent<{ redirectPath?: string }>('auth:prompt-login', {
+            detail: {
+              redirectPath: window.location.pathname + window.location.search,
+            },
+          }),
+        )
+
         return Promise.reject(refreshError)
       } finally {
         isRefreshing = false

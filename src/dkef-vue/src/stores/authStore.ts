@@ -1,6 +1,7 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import api from '@/services/apiservice'
+import { toast } from 'vue-sonner'
 
 import type {
   LoginDto,
@@ -19,6 +20,11 @@ export const useAuthStore = defineStore(
     const accessToken = ref<string | null>(null)
     const refreshToken = ref<string | null>(null)
     const user = ref<User | null>(null)
+    const isAuthReady = ref(false)
+    const hasShownSessionExpiryToast = ref(false)
+
+    let initializationPromise: Promise<void> | null = null
+    let sessionValidationPromise: Promise<boolean> | null = null
 
     // Computed
     const isAuthenticated = computed(() => !!accessToken.value && !!user.value)
@@ -37,6 +43,7 @@ export const useAuthStore = defineStore(
         setTokens(response.data.accessToken, response.data.refreshToken)
         // Decode user info from token or fetch user profile
         await fetchUserProfile()
+        hasShownSessionExpiryToast.value = false
       } catch (error) {
         clearAuth()
         throw error
@@ -52,6 +59,7 @@ export const useAuthStore = defineStore(
           email: registrationData.email,
           name: registrationData.name,
         }
+        hasShownSessionExpiryToast.value = false
       } catch (error) {
         clearAuth()
         throw error
@@ -69,6 +77,7 @@ export const useAuthStore = defineStore(
         }
       }
       clearAuth()
+      hasShownSessionExpiryToast.value = false
     }
 
     async function refreshAccessToken(): Promise<string> {
@@ -76,16 +85,86 @@ export const useAuthStore = defineStore(
         throw new Error('No refresh token available')
       }
 
-      try {
-        const response = await api.post<TokenResponse>('/auth/refresh', {
-          refreshToken: refreshToken.value,
-        })
-        setTokens(response.data.accessToken, response.data.refreshToken)
-        return response.data.accessToken
-      } catch (error) {
-        clearAuth()
-        throw error
+      const response = await api.post<TokenResponse>('/auth/refresh', {
+        refreshToken: refreshToken.value,
+      })
+      setTokens(response.data.accessToken, response.data.refreshToken)
+      return response.data.accessToken
+    }
+
+    async function initializeSession(): Promise<void> {
+
+      if (initializationPromise) {
+        return initializationPromise
       }
+
+      initializationPromise = (async () => {
+        try {
+          if (!accessToken.value && !refreshToken.value) {
+            clearAuth()
+            return
+          }
+
+          await ensureValidSession({ notifyOnExpiry: false })
+        } finally {
+          isAuthReady.value = true
+          initializationPromise = null
+        }
+      })()
+
+      return initializationPromise
+    }
+
+    async function ensureValidSession(options?: { notifyOnExpiry?: boolean }): Promise<boolean> {
+      const notifyOnExpiry = options?.notifyOnExpiry ?? true
+
+      if (!accessToken.value) {
+        if (refreshToken.value) {
+          try {
+            await refreshAccessToken()
+            await fetchUserProfile()
+            hasShownSessionExpiryToast.value = false
+            return true
+          } catch {
+            handleSessionExpired(notifyOnExpiry)
+            return false
+          }
+        }
+
+        return false
+      }
+
+      if (!isTokenExpired(accessToken.value)) {
+        if (!user.value) {
+          await fetchUserProfile()
+        }
+        return true
+      }
+
+      if (!refreshToken.value) {
+        handleSessionExpired(notifyOnExpiry)
+        return false
+      }
+
+      if (sessionValidationPromise) {
+        return sessionValidationPromise
+      }
+
+      sessionValidationPromise = (async () => {
+        try {
+          await refreshAccessToken()
+          await fetchUserProfile()
+          hasShownSessionExpiryToast.value = false
+          return true
+        } catch {
+          handleSessionExpired(notifyOnExpiry)
+          return false
+        } finally {
+          sessionValidationPromise = null
+        }
+      })()
+
+      return sessionValidationPromise
     }
 
     async function forgotPassword(email: string): Promise<void> {
@@ -139,12 +218,42 @@ export const useAuthStore = defineStore(
     function setTokens(access: string, refresh: string): void {
       accessToken.value = access
       refreshToken.value = refresh
+      hasShownSessionExpiryToast.value = false
     }
 
     function clearAuth(): void {
       accessToken.value = null
       refreshToken.value = null
       user.value = null
+    }
+
+    function handleSessionExpired(notify = true): void {
+      clearAuth()
+      if (notify && !hasShownSessionExpiryToast.value) {
+        toast.error('Session udløbet', {
+          description: 'Din session er udløbet. Log ind igen for at fortsætte.',
+          duration: 5000,
+        })
+        hasShownSessionExpiryToast.value = true
+      }
+    }
+
+    function isTokenExpired(token: string): boolean {
+      const payload = parseJwt(token)
+      const exp = payload.exp
+
+      if (typeof exp !== 'number' && typeof exp !== 'string') {
+        return true
+      }
+
+      const parsedExp = typeof exp === 'string' ? Number.parseInt(exp, 10) : exp
+      if (Number.isNaN(parsedExp)) {
+        return true
+      }
+
+      const now = Math.floor(Date.now() / 1000)
+      const skewSeconds = 30
+      return parsedExp <= now + skewSeconds
     }
 
     function parseJwt(token: string): Record<string, unknown> {
@@ -164,16 +273,12 @@ export const useAuthStore = defineStore(
       }
     }
 
-    // Initialize auth state on store creation
-    if (accessToken.value && !user.value) {
-      fetchUserProfile()
-    }
-
     return {
       // State
       accessToken,
       refreshToken,
       user,
+      isAuthReady,
       // Computed
       isAuthenticated,
       isBoardMember,
@@ -186,6 +291,10 @@ export const useAuthStore = defineStore(
       forgotPassword,
       resetPassword,
       changePassword,
+      fetchUserProfile,
+      initializeSession,
+      ensureValidSession,
+      handleSessionExpired,
       setTokens,
       clearAuth,
     }
