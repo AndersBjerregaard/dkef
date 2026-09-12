@@ -94,11 +94,11 @@ public sealed class PaymentsController(
                 Name = "DKEF demo kontingent",
                 Quantity = 1,
                 Unit = "stk",
-                UnitPrice = 75000000,
+                UnitPrice = 52500,
                 TaxRate = 2500,
-                TaxAmount = 25000000,
-                GrossTotalAmount = 100000000,
-                NetTotalAmount = 75000000
+                TaxAmount = 17500,
+                GrossTotalAmount = 70000,
+                NetTotalAmount = 52500
             }
         };
 
