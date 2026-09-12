@@ -105,7 +105,7 @@ export const useAuthStore = defineStore(
             return
           }
 
-          await ensureValidSession({ notifyOnExpiry: false })
+          await ensureValidSession({ notifyOnExpiry: true })
         } finally {
           isAuthReady.value = true
           initializationPromise = null

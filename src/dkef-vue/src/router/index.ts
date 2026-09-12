@@ -117,10 +117,13 @@ const router = createRouter({
 // Navigation guard for authentication
 router.beforeEach(async (to, from, next) => {
   const authStore = useAuthStore()
-  await authStore.initializeSession()
 
   const requiresAuth = to.matched.some((record) => record.meta.requiresAuth)
   const guestOnly = to.matched.some((record) => record.meta.guest)
+
+  if ((requiresAuth || guestOnly) && !authStore.isAuthReady) {
+    await authStore.initializeSession()
+  }
 
   if (requiresAuth) {
     const isValidSession = await authStore.ensureValidSession({ notifyOnExpiry: true })

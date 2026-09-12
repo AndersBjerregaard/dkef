@@ -18,10 +18,8 @@ app.use(router)
 
 const authStore = useAuthStore(pinia)
 
-async function bootstrap() {
-  await authStore.initializeSession()
-  await router.isReady()
-  app.mount('#app')
-}
+app.mount('#app')
 
-void bootstrap()
+void authStore.initializeSession().catch((error: unknown) => {
+  console.error('Failed to initialize auth session:', error)
+})
