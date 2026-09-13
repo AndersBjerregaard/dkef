@@ -99,7 +99,7 @@ async function loadEvent(id: string): Promise<void> {
 }
 
 async function loadMySignUpStatus(): Promise<void> {
-  if (!authStore.isAuthenticated || authStore.isAdmin) {
+  if (!authStore.isAuthenticated) {
     isSignedUp.value = false
     signedUpAt.value = null
     return
@@ -272,7 +272,7 @@ watch(
           </div>
         </div>
 
-        <div v-if="!authStore.isAdmin" class="pb-8">
+        <div class="pb-8">
           <div class="rounded-lg border border-theme-border bg-theme-mute p-4">
             <p class="font-semibold pb-2">Tilmelding</p>
 

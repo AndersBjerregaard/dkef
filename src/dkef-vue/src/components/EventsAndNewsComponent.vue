@@ -952,7 +952,8 @@ const submitLabel = computed(() => {
                 :disabled="isLoading"
               />
             </div>
-            <div class="flex-1">
+            <!-- Sign ups are only available for events -->
+            <div v-if="createType === 'event'" class="flex-1">
               <label for="sign_up_deadline_input">Tilmeldingsfrist (valgfri)</label>
               <br />
               <input
