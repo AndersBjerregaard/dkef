@@ -103,7 +103,7 @@ async function startCheckout() {
     })
 
     checkout.on('payment-completed', (event) => {
-      console.info('Nexi betaling gennemfoert', event)
+      console.info('Nexi betaling gennemført', event)
     })
 
     checkoutInstance.value = checkout

@@ -5,6 +5,7 @@ export interface EventDto {
   dateTime: string
   description: string
   signUpDeadline?: string
+  signUpPriceMinor?: number
   thumbnailId?: string
   attachmentIds?: string[]
   attachmentFileNames?: string[]
@@ -28,6 +29,7 @@ export interface PublishedEvent {
   dateTime: string
   description: string
   signUpDeadline?: string | null
+  signUpPriceMinor?: number | null
   thumbnailUrl: string
   attachmentUrls: string[]
   attachmentFileNames?: string[]

@@ -90,9 +90,32 @@ const attachmentUploaderRef: Ref<InstanceType<typeof AttachmentUploader> | null>
 const itemAddress: Ref<string> = ref('')
 const itemDate: Ref<string> = ref('')
 const itemSignUpDeadline: Ref<string> = ref('')
+const itemSignUpPriceMinor: Ref<string> = ref('')
 
 const fileUploadError: Ref<boolean> = ref(false)
 const submitError: Ref<string | boolean> = ref(false)
+
+function parseKronerInputToMinor(value: string): number | null {
+  const normalized = value.trim().replace(/\s+/g, '').replace(/\./g, '').replace(',', '.')
+  if (normalized === '') {
+    return null
+  }
+
+  if (!/^\d+(\.\d{1,2})?$/.test(normalized)) {
+    return null
+  }
+
+  const parsed = Number(normalized)
+  if (!Number.isFinite(parsed) || parsed < 0) {
+    return null
+  }
+
+  if (!Number.isInteger(parsed)) {
+    return null
+  }
+
+  return Math.trunc(parsed) * 100
+}
 
 // Flat list in server sort order
 const displayedItems = computed<FeedItem[]>(() => {
@@ -434,6 +457,7 @@ function resetFields() {
   itemAddress.value = ''
   itemDate.value = ''
   itemSignUpDeadline.value = ''
+  itemSignUpPriceMinor.value = ''
   itemAttachments.value = []
 }
 
@@ -485,15 +509,24 @@ async function createItem() {
   } catch (err: unknown) {
     const axiosError = err as { response?: { data?: { message?: string } }; message?: string }
     const message =
-      axiosError.response?.data?.message || axiosError.message || 'Fejl ved oprettelse. Prøv igen.'
+      axiosError.response?.data?.message || axiosError.message || (err as string) || 'Fejl ved oprettelse. Prøv igen.'
     console.error(message)
-    submitError.value = true
+    submitError.value = message
   } finally {
     isLoading.value = false
   }
 }
 
 async function createEvent() {
+
+  const signUpPriceMinor =
+    itemSignUpPriceMinor.value === '' ? null : parseKronerInputToMinor(itemSignUpPriceMinor.value)
+
+  if (itemSignUpPriceMinor.value !== '' && signUpPriceMinor === null) {
+    submitError.value = 'Prisen skal være et gyldigt beløb i hele kroner.'
+    throw new Error('Prisen skal være et gyldigt beløb i hele kroner.')
+  }
+
   let thumbnailId: string | undefined = undefined
 
   if (itemFile.value !== null) {
@@ -518,6 +551,7 @@ async function createEvent() {
     dateTime: itemDate.value,
     description: itemDescription.value,
     ...(itemSignUpDeadline.value && { signUpDeadline: itemSignUpDeadline.value }),
+    ...(signUpPriceMinor !== null && { signUpPriceMinor }),
     ...(thumbnailId && { thumbnailId }),
     ...(attachments.length > 0 && {
       attachmentIds: attachments.map((attachment) => attachment.id),
@@ -952,8 +986,13 @@ const submitLabel = computed(() => {
                 :disabled="isLoading"
               />
             </div>
-            <!-- Sign ups are only available for events -->
-            <div v-if="createType === 'event'" class="flex-1">
+          </div>
+        </template>
+
+        <!-- Event-specific fields -->
+        <template v-if="createType === 'event'">
+          <div class="flex gap-4 pb-4">
+            <div class="flex-1">
               <label for="sign_up_deadline_input">Tilmeldingsfrist (valgfri)</label>
               <br />
               <input
@@ -962,6 +1001,20 @@ const submitLabel = computed(() => {
                 type="datetime-local"
                 v-model="itemSignUpDeadline"
                 @click="handleFieldChange"
+                :disabled="isLoading"
+              />
+            </div>
+            <div class="flex-1">
+              <label for="sign_up_price_input">Pris for tilmelding i kr (valgfri, hele kroner)</label>
+              <br />
+              <input
+                class="w-full bg-theme-soft border border-theme-border rounded-xl p-2 focus:outline-none focus:ring-2 focus:ring-theme-accent"
+                id="sign_up_price_input"
+                type="text"
+                inputmode="decimal"
+                placeholder="Fx 500 eller 500,00"
+                v-model="itemSignUpPriceMinor"
+                @input="handleFieldChange"
                 :disabled="isLoading"
               />
             </div>
@@ -1036,7 +1089,7 @@ const submitLabel = computed(() => {
         />
 
         <div v-show="submitError" class="pb-4 text-red-400">
-          <span>Venligst udfyld alle påkrævede felter</span>
+          <span>{{ typeof submitError === 'string' ? submitError : 'Venligst udfyld alle påkrævede felter' }}</span>
         </div>
 
         <div class="mt-4">

@@ -30,6 +30,7 @@ const itemSection: Ref<string> = ref('')
 const itemAddress: Ref<string> = ref('')
 const itemDate: Ref<string> = ref('')
 const itemSignUpDeadline: Ref<string> = ref('')
+const itemSignUpPriceMinor: Ref<string> = ref('')
 const itemDescription: Ref<string> = ref('')
 const itemFile: Ref<File | null> = ref(null)
 const itemAttachments: Ref<AttachmentItem[]> = ref([])
@@ -38,6 +39,28 @@ const attachmentUploaderRef: Ref<InstanceType<typeof AttachmentUploader> | null>
 const isLoading: Ref<boolean> = ref(false)
 const fileUploadError: Ref<boolean> = ref(false)
 const submitError: Ref<string | null> = ref(null)
+
+function parseKronerInputToMinor(value: string): number | null {
+  const normalized = value.trim().replace(/\s+/g, '').replace(/\./g, '').replace(',', '.')
+  if (normalized === '') {
+    return null
+  }
+
+  if (!/^\d+(\.\d{1,2})?$/.test(normalized)) {
+    return null
+  }
+
+  const parsed = Number(normalized)
+  if (!Number.isFinite(parsed) || parsed < 0) {
+    return null
+  }
+
+  if (!Number.isInteger(parsed)) {
+    return null
+  }
+
+  return Math.trunc(parsed) * 100
+}
 
 function toDatetimeLocalString(isoString: string): string {
   if (!isoString) return ''
@@ -54,6 +77,10 @@ function populateFields() {
   itemSignUpDeadline.value = props.event.signUpDeadline
     ? toDatetimeLocalString(props.event.signUpDeadline)
     : ''
+  itemSignUpPriceMinor.value =
+    props.event.signUpPriceMinor === null || props.event.signUpPriceMinor === undefined
+      ? ''
+      : String(Math.trunc(props.event.signUpPriceMinor / 100))
   itemDescription.value = props.event.description
   itemFile.value = null
   itemAttachments.value = toAttachmentItems(
@@ -120,6 +147,15 @@ async function saveEvent() {
 
   isLoading.value = true
   try {
+
+    const signUpPriceMinor =
+      itemSignUpPriceMinor.value === '' ? null : parseKronerInputToMinor(itemSignUpPriceMinor.value)
+
+    if (itemSignUpPriceMinor.value !== '' && signUpPriceMinor === null) {
+      submitError.value = 'Prisen skal være et gyldigt beløb i hele kroner.'
+      return
+    }
+
     let thumbnailId = extractThumbnailId(props.event.thumbnailUrl)
 
     if (itemFile.value !== null) {
@@ -145,6 +181,7 @@ async function saveEvent() {
       dateTime: itemDate.value,
       description: itemDescription.value,
       ...(itemSignUpDeadline.value && { signUpDeadline: itemSignUpDeadline.value }),
+      ...(signUpPriceMinor !== null && { signUpPriceMinor }),
       thumbnailId,
       attachmentIds: attachments.map((attachment) => attachment.id),
       attachmentFileNames: attachments.map((attachment) => attachment.fileName),
@@ -223,6 +260,9 @@ async function saveEvent() {
             :disabled="isLoading"
           />
         </div>
+      </div>
+
+      <div class="flex gap-4 pb-4">
         <div class="flex-1">
           <label for="edit_event_sign_up_deadline">Tilmeldingsfrist (valgfri)</label>
           <br />
@@ -232,6 +272,19 @@ async function saveEvent() {
             :class="{ '[color-scheme:dark]': themeStore.isDark() }"
             type="datetime-local"
             v-model="itemSignUpDeadline"
+            :disabled="isLoading"
+          />
+        </div>
+        <div class="flex-1">
+          <label for="edit_event_sign_up_price">Pris for tilmelding i kr (valgfri)</label>
+          <br />
+          <input
+            id="edit_event_sign_up_price"
+            class="w-full bg-theme-soft border border-theme-border rounded-xl p-2 text-theme-heading placeholder-theme-muted focus:outline-none focus:ring-2 focus:ring-theme-accent focus:border-theme-accent"
+            type="text"
+            inputmode="decimal"
+            placeholder="Fx 500 eller 500,00"
+            v-model="itemSignUpPriceMinor"
             :disabled="isLoading"
           />
         </div>

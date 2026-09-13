@@ -262,6 +262,7 @@ try
                     string.IsNullOrWhiteSpace(src.SignUpDeadline)
                         ? (DateTime?)null
                         : DateTime.Parse(src.SignUpDeadline, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal).ToUniversalTime()))
+                .ForMember(dest => dest.SignUpPriceMinor, opt => opt.MapFrom(src => src.SignUpPriceMinor))
                 .ForMember(dest => dest.DateTime, opt => opt.MapFrom(src => DateTime.Parse(src.DateTime, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal).ToUniversalTime()));
             cfg.CreateMap<News, News>();
             cfg.CreateMap<NewsDto, News>()

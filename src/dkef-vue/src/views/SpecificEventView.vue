@@ -59,6 +59,22 @@ const signUpDeadline = computed(() => {
   }).format(date)
 })
 
+const signUpPriceLabel = computed(() => {
+  const event = currentEvent.value
+  const priceMinor = event?.signUpPriceMinor
+
+  if (priceMinor === null || priceMinor === undefined || priceMinor <= 0) {
+    return 'Gratis'
+  }
+
+  return new Intl.NumberFormat('da-DK', {
+    style: 'currency',
+    currency: 'DKK',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(priceMinor / 100)
+})
+
 const hasEventStarted = computed(() => {
   const event = currentEvent.value
   if (!event) {
@@ -269,6 +285,9 @@ watch(
           </div>
           <div v-if="signUpDeadline" class="pb-4">
             <h2>Tilmeldingsfrist: {{ signUpDeadline }}</h2>
+          </div>
+          <div class="pb-4">
+            <h2>Pris for tilmelding: {{ signUpPriceLabel }}</h2>
           </div>
         </div>
 
