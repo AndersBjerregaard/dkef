@@ -11,6 +11,7 @@ public sealed class ContentsContext(DbContextOptions<ContentsContext> options)
     public DbSet<BaseContent> Contents { get; set; }
     public DbSet<Event> Events { get; set; }
     public DbSet<EventSignUp> EventSignUps { get; set; }
+    public DbSet<EventSignUpPayment> EventSignUpPayments { get; set; }
     public DbSet<News> News { get; set; }
     public DbSet<GeneralAssembly> GeneralAssemblies { get; set; }
 
@@ -36,6 +37,27 @@ public sealed class ContentsContext(DbContextOptions<ContentsContext> options)
 
             entity.HasIndex(x => new { x.EventId, x.ContactId }).IsUnique();
             entity.HasIndex(x => x.ContactId);
+        });
+
+        modelBuilder.Entity<EventSignUpPayment>(entity =>
+        {
+            entity.ToTable("EventSignUpPayments");
+            entity.HasKey(x => x.Id);
+            entity.Property(x => x.ContactId).IsRequired();
+            entity.Property(x => x.PaymentId).IsRequired();
+            entity.Property(x => x.AmountMinor).IsRequired();
+            entity.Property(x => x.Currency).IsRequired();
+            entity.Property(x => x.Status).IsRequired();
+            entity.Property(x => x.CreatedAt).IsRequired();
+            entity.Property(x => x.UpdatedAt).IsRequired();
+
+            entity.HasOne(x => x.Event)
+                .WithMany()
+                .HasForeignKey(x => x.EventId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasIndex(x => x.PaymentId).IsUnique();
+            entity.HasIndex(x => new { x.EventId, x.ContactId, x.Status });
         });
     }
 }
