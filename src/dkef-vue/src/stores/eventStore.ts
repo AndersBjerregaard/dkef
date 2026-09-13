@@ -8,6 +8,7 @@ import type {
   EventsCollection,
   PublishedEvent,
 } from '@/types/events'
+import type { NexiCheckoutSessionDto } from '@/types/payment'
 import urlservice from '@/services/urlservice'
 import type { AxiosResponse } from 'axios'
 
@@ -30,6 +31,8 @@ interface EventActions {
   updateEvent: (id: string, dto: EventDto) => Promise<void>
   deleteEventItem: (id: string) => Promise<void>
   signUpForEvent: (id: string) => Promise<EventSignUpCreateResponse>
+  createPaidEventCheckoutSession: (id: string) => Promise<NexiCheckoutSessionDto>
+  confirmPaidEventPayment: (id: string, paymentId: string) => Promise<EventSignUpCreateResponse>
   fetchMySignUpStatus: (id: string) => Promise<EventSignUpStatus>
   fetchEventSignUps: (id: string) => Promise<EventSignUpsSummary>
 }
@@ -128,6 +131,20 @@ export const useEventStore = defineStore<'event', EventState, EventGetters, Even
       this.error = null
       const response: AxiosResponse<EventSignUpCreateResponse> =
         await apiservice.post<EventSignUpCreateResponse>(urlservice.postEventSignUp(id), {})
+      return response.data
+    },
+    async createPaidEventCheckoutSession(id: string): Promise<NexiCheckoutSessionDto> {
+      this.error = null
+      const response: AxiosResponse<NexiCheckoutSessionDto> =
+        await apiservice.post<NexiCheckoutSessionDto>(urlservice.getNexiEventSession(id), {})
+      return response.data
+    },
+    async confirmPaidEventPayment(id: string, paymentId: string): Promise<EventSignUpCreateResponse> {
+      this.error = null
+      const response: AxiosResponse<EventSignUpCreateResponse> =
+        await apiservice.post<EventSignUpCreateResponse>(urlservice.postNexiEventConfirm(id), {
+          paymentId,
+        })
       return response.data
     },
     async fetchMySignUpStatus(id: string): Promise<EventSignUpStatus> {

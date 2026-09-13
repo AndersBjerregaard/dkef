@@ -272,6 +272,24 @@ function getNexiPocSession() {
   }
 }
 
+function getNexiEventSession(guid: string) {
+  switch (mode) {
+    case 'Development':
+      return `/payments/nexi/events/${guid}/session`
+    default:
+      return `/payments/nexi/events/${guid}/session`
+  }
+}
+
+function postNexiEventConfirm(guid: string) {
+  switch (mode) {
+    case 'Development':
+      return `/payments/nexi/events/${guid}/confirm`
+    default:
+      return `/payments/nexi/events/${guid}/confirm`
+  }
+}
+
 export default {
   getContacts,
   updateContact,
@@ -303,4 +321,6 @@ export default {
   postContactMessage,
   getAttachmentPresignedUrl,
   getNexiPocSession,
+  getNexiEventSession,
+  postNexiEventConfirm,
 }

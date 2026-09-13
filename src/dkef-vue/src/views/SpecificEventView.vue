@@ -2,10 +2,36 @@
 import { useEventStore } from '@/stores/eventStore'
 import { useAuthStore } from '@/stores/authStore'
 import { type EventSignUpListItem, type PublishedEvent } from '@/types/events'
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import EditEventModal from '@/components/EditEventModal.vue'
 import DeleteEventModal from '@/components/DeleteEventModal.vue'
+import BaseModal from '@/components/BaseModal.vue'
 import { toast } from 'vue-sonner'
+import type { NexiCheckoutSessionDto } from '@/types/payment'
+
+interface DibsCheckoutOptions {
+  checkoutKey: string
+  paymentId: string
+  containerId: string
+  language?: string
+  theme?: {
+    buttonRadius?: string
+    primaryColor?: string
+    buttonTextColor?: string
+    fontFamily?: string
+  }
+}
+
+interface DibsCheckout {
+  on: (eventName: string, callback: (payload: unknown) => void) => void
+  cleanup: () => void
+}
+
+interface DibsWindow {
+  Dibs?: {
+    Checkout: new (options: DibsCheckoutOptions) => DibsCheckout
+  }
+}
 
 const props = defineProps({
   id: {
@@ -27,6 +53,15 @@ const isSignUpLoading = ref(false)
 const signUpError = ref<string | null>(null)
 const attendees = ref<EventSignUpListItem[]>([])
 const isAttendeesLoading = ref(false)
+const isCheckoutVisible = ref(false)
+const isCheckoutLoading = ref(false)
+const isConfirmingPayment = ref(false)
+const checkoutPaymentId = ref('')
+const isPaymentCompleted = ref(false)
+const checkoutInstance = ref<DibsCheckout | null>(null)
+const checkoutAutoCloseTimeout = ref<number | null>(null)
+
+const checkoutContainerId = computed(() => `nexi-event-checkout-${props.id}`)
 
 const dateTime = computed(() => {
   const event = currentEvent.value
@@ -96,6 +131,23 @@ const canSignUp = computed(() => {
   return !isSignedUp.value && !hasEventStarted.value && !isSignUpDeadlinePassed.value
 })
 
+const isPaidEvent = computed(() => {
+  const priceMinor = currentEvent.value?.signUpPriceMinor ?? 0
+  return priceMinor > 0
+})
+
+const signUpButtonLabel = computed(() => {
+  if (isSignUpLoading.value || isCheckoutLoading.value || isConfirmingPayment.value) {
+    return isPaidEvent.value ? 'Starter betaling...' : 'Tilmelder...'
+  }
+
+  if (!authStore.isAuthenticated) {
+    return 'Log ind for at tilmelde'
+  }
+
+  return isPaidEvent.value ? 'Gå til betaling' : 'Tilmeld'
+})
+
 const signedUpAtLabel = computed(() => {
   if (!signedUpAt.value) {
     return ''
@@ -157,6 +209,156 @@ function promptLoginForSignUp() {
   )
 }
 
+function getDibsSdkWindow() {
+  return window as unknown as DibsWindow
+}
+
+function cleanupCheckout() {
+  if (!checkoutInstance.value) return
+
+  checkoutInstance.value.cleanup()
+  checkoutInstance.value = null
+}
+
+function clearCheckoutAutoCloseTimeout() {
+  if (checkoutAutoCloseTimeout.value === null) return
+
+  window.clearTimeout(checkoutAutoCloseTimeout.value)
+  checkoutAutoCloseTimeout.value = null
+}
+
+function closeCheckoutModal(options?: { preservePaymentCompleted?: boolean }) {
+  clearCheckoutAutoCloseTimeout()
+  cleanupCheckout()
+  isCheckoutVisible.value = false
+  checkoutPaymentId.value = ''
+
+  if (!options?.preservePaymentCompleted) {
+    isPaymentCompleted.value = false
+  }
+}
+
+async function loadCheckoutScript(checkoutJsUrl: string) {
+  const existingScript = document.querySelector(
+    'script[data-nexi-checkout-script="true"]',
+  ) as HTMLScriptElement | null
+
+  if (existingScript) {
+    if (getDibsSdkWindow().Dibs) return
+
+    await new Promise<void>((resolve, reject) => {
+      existingScript.addEventListener('load', () => resolve(), { once: true })
+      existingScript.addEventListener('error', () => reject(new Error('Kunne ikke indlaese checkout.')), {
+        once: true,
+      })
+    })
+    return
+  }
+
+  await new Promise<void>((resolve, reject) => {
+    const script = document.createElement('script')
+    script.src = checkoutJsUrl
+    script.async = true
+    script.dataset.nexiCheckoutScript = 'true'
+    script.onload = () => resolve()
+    script.onerror = () => reject(new Error('Kunne ikke indlaese checkout.'))
+    document.head.append(script)
+  })
+}
+
+function parseApiError(error: unknown, fallbackMessage: string): string {
+  const errorMessage =
+    error && typeof error === 'object' && 'response' in error
+      ? (error as { response?: { data?: string | { message?: string } } }).response?.data
+      : undefined
+
+  if (typeof errorMessage === 'string') {
+    return errorMessage
+  }
+
+  if (errorMessage && typeof errorMessage === 'object' && 'message' in errorMessage) {
+    const message = errorMessage.message
+    if (typeof message === 'string' && message.trim() !== '') {
+      return message
+    }
+  }
+
+  return fallbackMessage
+}
+
+async function startPaidEventCheckout() {
+  closeCheckoutModal()
+  isCheckoutLoading.value = true
+  signUpError.value = null
+
+  try {
+    const session: NexiCheckoutSessionDto = await eventStore.createPaidEventCheckoutSession(props.id)
+    checkoutPaymentId.value = session.paymentId
+    isCheckoutVisible.value = true
+
+    await nextTick()
+    await loadCheckoutScript(session.checkoutJsUrl)
+
+    const dibs = getDibsSdkWindow().Dibs
+    if (!dibs) {
+      throw new Error('Checkout SDK blev ikke initialiseret korrekt.')
+    }
+
+    cleanupCheckout()
+
+    const checkout = new dibs.Checkout({
+      checkoutKey: session.checkoutKey,
+      paymentId: session.paymentId,
+      containerId: checkoutContainerId.value,
+      language: session.language,
+      theme: {
+        buttonRadius: '10px',
+        primaryColor: '#d97706',
+        buttonTextColor: '#0f172a',
+        fontFamily: 'Lato',
+      },
+    })
+
+    checkout.on('payment-completed', async () => {
+      isConfirmingPayment.value = true
+      signUpError.value = null
+
+      try {
+        const response = await eventStore.confirmPaidEventPayment(props.id, session.paymentId)
+        isSignedUp.value = true
+        signedUpAt.value = response.signedUpAt
+        isPaymentCompleted.value = true
+        toast.success('Betaling gennemført og tilmelding oprettet')
+        await loadAttendees()
+        checkoutAutoCloseTimeout.value = window.setTimeout(() => {
+          closeCheckoutModal({ preservePaymentCompleted: true })
+        }, 1200)
+      } catch (error: unknown) {
+        const parsedError = parseApiError(
+          error,
+          'Betaling blev gennemført, men tilmelding kunne ikke bekræftes endnu.',
+        )
+        signUpError.value = parsedError
+        toast.error('Tilmelding kunne ikke bekræftes', {
+          description: parsedError,
+        })
+      } finally {
+        isConfirmingPayment.value = false
+      }
+    })
+
+    checkoutInstance.value = checkout
+  } catch (error: unknown) {
+    const parsedError = parseApiError(error, 'Kunne ikke starte betaling. Prøv igen.')
+    signUpError.value = parsedError
+    toast.error('Betaling kunne ikke startes', {
+      description: parsedError,
+    })
+  } finally {
+    isCheckoutLoading.value = false
+  }
+}
+
 async function signUpForEvent() {
   signUpError.value = null
   if (!authStore.isAuthenticated) {
@@ -168,6 +370,11 @@ async function signUpForEvent() {
     return
   }
 
+  if (isPaidEvent.value) {
+    await startPaidEventCheckout()
+    return
+  }
+
   isSignUpLoading.value = true
   try {
     const response = await eventStore.signUpForEvent(props.id)
@@ -176,17 +383,7 @@ async function signUpForEvent() {
     toast.success('Du er nu tilmeldt arrangementet')
     await loadAttendees()
   } catch (error: unknown) {
-    const errorMessage =
-      error && typeof error === 'object' && 'response' in error
-        ? (error as { response?: { data?: string | { message?: string } } }).response?.data
-        : undefined
-
-    const parsedError =
-      typeof errorMessage === 'string'
-        ? errorMessage
-        : errorMessage && typeof errorMessage === 'object' && 'message' in errorMessage
-          ? (errorMessage.message as string)
-          : 'Kunne ikke tilmelde arrangementet. Prøv igen.'
+    const parsedError = parseApiError(error, 'Kunne ikke tilmelde arrangementet. Proev igen.')
 
     signUpError.value = parsedError
     toast.error('Tilmelding fejlede', {
@@ -201,6 +398,11 @@ onMounted(async () => {
   await loadEvent(props.id)
   await loadMySignUpStatus()
   await loadAttendees()
+})
+
+onBeforeUnmount(() => {
+  clearCheckoutAutoCloseTimeout()
+  cleanupCheckout()
 })
 
 watch(
@@ -305,26 +507,25 @@ watch(
               Tilmeldingsfristen er udløbet.
             </p>
             <p v-else class="text-theme-text pb-3">
-              Tilmeld dig arrangementet her.
+              {{ isPaidEvent ? 'Gennemfør betaling for at tilmelde dig arrangementet.' : 'Tilmeld dig arrangementet her.' }}
             </p>
 
             <button
               v-if="!isSignedUp"
               type="button"
               class="rounded-lg bg-amber-600 h-11 px-4 cursor-pointer hover:bg-amber-500 active:bg-amber-700 text-navy-950 font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              :disabled="isSignUpLoading || (authStore.isAuthenticated && !canSignUp)"
+              :disabled="isSignUpLoading || isCheckoutLoading || isConfirmingPayment || (authStore.isAuthenticated && !canSignUp)"
               @click="signUpForEvent"
             >
-              {{
-                isSignUpLoading
-                  ? 'Tilmelder...'
-                  : authStore.isAuthenticated
-                    ? 'Tilmeld'
-                    : 'Log ind for at tilmelde'
-              }}
+              {{ signUpButtonLabel }}
             </button>
 
             <p v-if="signUpError" class="text-red-400 pt-3">{{ signUpError }}</p>
+            <p v-if="isConfirmingPayment" class="text-theme-text pt-3">Bekræfter betaling og opretter tilmelding...</p>
+
+            <p v-if="isPaymentCompleted" class="text-emerald-400 pt-3">
+              Betaling registreret. Du er nu tilmeldt arrangementet.
+            </p>
           </div>
         </div>
 
@@ -425,6 +626,27 @@ watch(
     :event="currentEvent"
     @close="isDeleteOpen = false"
   />
+  <BaseModal
+    :is-open="isPaidEvent && isCheckoutVisible"
+    title="Betaling"
+    max-width="max-w-4xl"
+    :is-loading="isCheckoutLoading || isConfirmingPayment"
+    @close="closeCheckoutModal()"
+  >
+    <p class="pb-4 text-theme-text">
+      Gennemfør betalingen for at afslutte tilmeldingen.
+    </p>
+    <div class="rounded-xl border border-theme-border bg-white p-3">
+      <div
+        :id="checkoutContainerId"
+        class="min-h-[640px]"
+      />
+      <p v-if="checkoutPaymentId" class="pt-3 text-xs text-theme-text">
+        Betalings-ID: {{ checkoutPaymentId }}
+      </p>
+    </div>
+    <p v-if="isConfirmingPayment" class="pt-3 text-theme-text">Bekræfter betaling og opretter tilmelding...</p>
+  </BaseModal>
 </template>
 
 <style lang="css" scoped></style>
