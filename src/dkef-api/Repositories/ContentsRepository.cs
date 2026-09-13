@@ -20,6 +20,30 @@ public sealed class ContentRepository(
     public async Task<TContent?> GetByIdAsync<TContent>(Guid id) where TContent : BaseContent
         => await context.FindAsync<TContent>(id);
 
+    public async Task<Event?> GetEventByIdWithSignUpsAsync(Guid eventId)
+        => await context.Events
+            .Include(x => x.SignUps)
+            .FirstOrDefaultAsync(x => x.Id == eventId);
+
+    public async Task<bool> IsContactSignedUpForEventAsync(Guid eventId, string contactId)
+        => await context.EventSignUps.AnyAsync(x => x.EventId == eventId && x.ContactId == contactId);
+
+    public async Task<EventSignUp> CreateEventSignUpAsync(EventSignUp signUp)
+    {
+        context.EventSignUps.Add(signUp);
+        await context.SaveChangesAsync();
+        return signUp;
+    }
+
+    public async Task<int> GetEventSignUpCountAsync(Guid eventId)
+        => await context.EventSignUps.CountAsync(x => x.EventId == eventId);
+
+    public async Task<IReadOnlyList<EventSignUp>> GetEventSignUpsAsync(Guid eventId)
+        => await context.EventSignUps
+            .Where(x => x.EventId == eventId)
+            .OrderBy(x => x.SignedUpAt)
+            .ToListAsync();
+
     public async Task<DomainCollection<BaseContent>> GetMultiple(
         IQueryable<BaseContent> query,
         int take = 10,

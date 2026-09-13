@@ -1,6 +1,13 @@
 import { defineStore } from 'pinia'
 import apiservice from '@/services/apiservice'
-import type { EventDto, EventsCollection, PublishedEvent } from '@/types/events'
+import type {
+  EventDto,
+  EventSignUpCreateResponse,
+  EventSignUpStatus,
+  EventSignUpsSummary,
+  EventsCollection,
+  PublishedEvent,
+} from '@/types/events'
 import urlservice from '@/services/urlservice'
 import type { AxiosResponse } from 'axios'
 
@@ -22,6 +29,9 @@ interface EventActions {
   fetchEvent: (id: string) => Promise<PublishedEvent | undefined>
   updateEvent: (id: string, dto: EventDto) => Promise<void>
   deleteEventItem: (id: string) => Promise<void>
+  signUpForEvent: (id: string) => Promise<EventSignUpCreateResponse>
+  fetchMySignUpStatus: (id: string) => Promise<EventSignUpStatus>
+  fetchEventSignUps: (id: string) => Promise<EventSignUpsSummary>
 }
 
 export const useEventStore = defineStore<'event', EventState, EventGetters, EventActions>('event', {
@@ -113,6 +123,26 @@ export const useEventStore = defineStore<'event', EventState, EventGetters, Even
       } finally {
         this.isFetching = false
       }
+    },
+    async signUpForEvent(id: string): Promise<EventSignUpCreateResponse> {
+      this.error = null
+      const response: AxiosResponse<EventSignUpCreateResponse> =
+        await apiservice.post<EventSignUpCreateResponse>(urlservice.postEventSignUp(id), {})
+      return response.data
+    },
+    async fetchMySignUpStatus(id: string): Promise<EventSignUpStatus> {
+      this.error = null
+      const response: AxiosResponse<EventSignUpStatus> = await apiservice.get<EventSignUpStatus>(
+        urlservice.getMyEventSignUpStatus(id),
+      )
+      return response.data
+    },
+    async fetchEventSignUps(id: string): Promise<EventSignUpsSummary> {
+      this.error = null
+      const response: AxiosResponse<EventSignUpsSummary> = await apiservice.get<EventSignUpsSummary>(
+        urlservice.getEventSignUps(id),
+      )
+      return response.data
     },
   },
 })

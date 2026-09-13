@@ -101,6 +101,33 @@ function getEvent(guid: string) {
   }
 }
 
+function postEventSignUp(guid: string) {
+  switch (mode) {
+    case 'Development':
+      throw 'Unimplemented!'
+    default:
+      return `/contents/events/${guid}/sign-ups`
+  }
+}
+
+function getMyEventSignUpStatus(guid: string) {
+  switch (mode) {
+    case 'Development':
+      throw 'Unimplemented!'
+    default:
+      return `/contents/events/${guid}/sign-ups/me`
+  }
+}
+
+function getEventSignUps(guid: string) {
+  switch (mode) {
+    case 'Development':
+      throw 'Unimplemented!'
+    default:
+      return `/contents/events/${guid}/sign-ups`
+  }
+}
+
 function getNewsPresignedUrl(guid: string) {
   switch (mode) {
     case 'Development':
@@ -257,6 +284,9 @@ export default {
   deleteEvent,
   getEvents,
   getEvent,
+  postEventSignUp,
+  getMyEventSignUpStatus,
+  getEventSignUps,
   getNewsPresignedUrl,
   postNews,
   updateNews,

@@ -89,6 +89,7 @@ const attachmentUploaderRef: Ref<InstanceType<typeof AttachmentUploader> | null>
 // Event + General Assembly fields
 const itemAddress: Ref<string> = ref('')
 const itemDate: Ref<string> = ref('')
+const itemSignUpDeadline: Ref<string> = ref('')
 
 const fileUploadError: Ref<boolean> = ref(false)
 const submitError: Ref<string | boolean> = ref(false)
@@ -432,6 +433,7 @@ function resetFields() {
   itemSection.value = ''
   itemAddress.value = ''
   itemDate.value = ''
+  itemSignUpDeadline.value = ''
   itemAttachments.value = []
 }
 
@@ -515,6 +517,7 @@ async function createEvent() {
     address: itemAddress.value,
     dateTime: itemDate.value,
     description: itemDescription.value,
+    ...(itemSignUpDeadline.value && { signUpDeadline: itemSignUpDeadline.value }),
     ...(thumbnailId && { thumbnailId }),
     ...(attachments.length > 0 && {
       attachmentIds: attachments.map((attachment) => attachment.id),
@@ -945,6 +948,18 @@ const submitLabel = computed(() => {
                 id="date_input"
                 type="datetime-local"
                 v-model="itemDate"
+                @click="handleFieldChange"
+                :disabled="isLoading"
+              />
+            </div>
+            <div class="flex-1">
+              <label for="sign_up_deadline_input">Tilmeldingsfrist (valgfri)</label>
+              <br />
+              <input
+                class="w-full bg-theme-soft border border-theme-border rounded-xl p-2 cursor-pointer focus:outline-none focus:ring-2 focus:ring-theme-accent"
+                id="sign_up_deadline_input"
+                type="datetime-local"
+                v-model="itemSignUpDeadline"
                 @click="handleFieldChange"
                 :disabled="isLoading"
               />

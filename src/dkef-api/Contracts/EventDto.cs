@@ -19,6 +19,8 @@ public class EventDto : PostObject
     public string DateTime { get; set; } = string.Empty;
     [Required(AllowEmptyStrings = false, ErrorMessage = "Description is required.")]
     public string Description { get; set; } = string.Empty;
+    [DateTimeValidation(ErrorMessage = "SignUpDeadline must be a valid date and time string.")]
+    public string? SignUpDeadline { get; set; }
     [GuidValidation(AllowEmpty = true, ErrorMessage = "ThumbnailId must be a valid GUID.")]
     public string ThumbnailId { get; set; } = string.Empty;
     [GuidArrayValidation(AllowEmpty = true)]

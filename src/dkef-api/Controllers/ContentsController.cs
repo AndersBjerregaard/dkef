@@ -3,13 +3,16 @@ using AutoMapper;
 using Dkef.Contracts;
 using Dkef.Domain;
 using Dkef.Domain.Abstracts;
+using Dkef.Extensions;
 using Dkef.Repositories;
 using Dkef.Services;
 
 using Ganss.Xss;
 
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Dkef.Controllers;
 
@@ -23,6 +26,7 @@ public class ContentsController(
     QueryableService<GeneralAssembly> generalAssemblyQueryableService,
     HtmlSanitizer htmlSanitizer,
     IMapper mapper,
+    UserManager<Contact> userManager,
     Serilog.ILogger logger
 ) : ControllerBase
 {
@@ -141,6 +145,131 @@ public class ContentsController(
         }
 
         return Ok(eventEntity);
+    }
+
+    [HttpGet("events/{id}/sign-ups/me")]
+    [Authorize]
+    public async Task<IActionResult> GetMyEventSignUpStatus([FromRoute] Guid id)
+    {
+        string? requestingUserId = User.GetUserId();
+
+        if (string.IsNullOrEmpty(requestingUserId))
+        {
+            throw new InvalidOperationException("User ID is not available.");
+        }
+
+        Event? eventEntity = await repository.GetEventByIdWithSignUpsAsync(id);
+        if (eventEntity is null)
+        {
+            return NotFound();
+        }
+
+        EventSignUp? signUp = eventEntity.SignUps
+            .FirstOrDefault(x => x.ContactId == requestingUserId);
+
+        return Ok(new EventSignUpStatusDto
+        {
+            IsSignedUp = signUp is not null,
+            SignedUpAt = signUp?.SignedUpAt
+        });
+    }
+
+    [HttpPost("events/{id}/sign-ups")]
+    [Authorize]
+    public async Task<IActionResult> SignUpForEvent([FromRoute] Guid id)
+    {
+        string? requestingUserId = User.GetUserId();
+
+        if (string.IsNullOrEmpty(requestingUserId))
+        {
+            throw new InvalidOperationException("User ID is not available.");
+        }
+
+        Event? eventEntity = await repository.GetByIdAsync<Event>(id);
+        if (eventEntity is null)
+        {
+            return NotFound();
+        }
+
+        var now = DateTime.UtcNow;
+
+        if (eventEntity.DateTime <= now)
+        {
+            return BadRequest("Event has already started or ended.");
+        }
+
+        if (eventEntity.SignUpDeadline.HasValue && now > eventEntity.SignUpDeadline.Value)
+        {
+            return BadRequest("Sign-up deadline has passed.");
+        }
+
+        bool alreadySignedUp = await repository.IsContactSignedUpForEventAsync(id, requestingUserId);
+        if (alreadySignedUp)
+        {
+            return Conflict("User is already signed up for this event.");
+        }
+
+        EventSignUp signUp = new()
+        {
+            EventId = id,
+            ContactId = requestingUserId,
+            SignedUpAt = now
+        };
+
+        try
+        {
+            await repository.CreateEventSignUpAsync(signUp);
+        }
+        catch (DbUpdateException ex)
+        {
+            logger.Warning(ex, "Duplicate event sign-up blocked for event {EventId} and user {UserId}", id, requestingUserId);
+            return Conflict("User is already signed up for this event.");
+        }
+
+        return Ok(new EventSignUpCreateResponseDto
+        {
+            EventId = signUp.EventId,
+            ContactId = signUp.ContactId,
+            SignedUpAt = signUp.SignedUpAt
+        });
+    }
+
+    [HttpGet("events/{id}/sign-ups")]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> GetEventSignUps([FromRoute] Guid id)
+    {
+        Event? eventEntity = await repository.GetByIdAsync<Event>(id);
+        if (eventEntity is null)
+        {
+            return NotFound();
+        }
+
+        IReadOnlyList<EventSignUp> signUps = await repository.GetEventSignUpsAsync(id);
+        HashSet<string> contactIds = signUps.Select(x => x.ContactId).ToHashSet();
+        Dictionary<string, Contact> contactsById = await userManager.Users
+            .Where(x => contactIds.Contains(x.Id))
+            .ToDictionaryAsync(x => x.Id);
+
+        List<EventSignUpListItemDto> attendees = signUps
+            .Where(x => contactsById.ContainsKey(x.ContactId))
+            .Select(signUp =>
+            {
+                Contact contact = contactsById[signUp.ContactId];
+                return new EventSignUpListItemDto
+                {
+                    ContactId = contact.Id,
+                    Name = contact.Name,
+                    Email = contact.Email ?? string.Empty,
+                    SignedUpAt = signUp.SignedUpAt
+                };
+            })
+            .ToList();
+
+        return Ok(new EventSignUpsSummaryDto
+        {
+            Total = attendees.Count,
+            Collection = attendees
+        });
     }
 
     [Authorize(Roles = "Admin")]

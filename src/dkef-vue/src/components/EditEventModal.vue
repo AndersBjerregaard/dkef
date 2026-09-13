@@ -29,6 +29,7 @@ const itemTitle: Ref<string> = ref('')
 const itemSection: Ref<string> = ref('')
 const itemAddress: Ref<string> = ref('')
 const itemDate: Ref<string> = ref('')
+const itemSignUpDeadline: Ref<string> = ref('')
 const itemDescription: Ref<string> = ref('')
 const itemFile: Ref<File | null> = ref(null)
 const itemAttachments: Ref<AttachmentItem[]> = ref([])
@@ -50,6 +51,9 @@ function populateFields() {
   itemSection.value = props.event.section
   itemAddress.value = props.event.address
   itemDate.value = toDatetimeLocalString(props.event.dateTime)
+  itemSignUpDeadline.value = props.event.signUpDeadline
+    ? toDatetimeLocalString(props.event.signUpDeadline)
+    : ''
   itemDescription.value = props.event.description
   itemFile.value = null
   itemAttachments.value = toAttachmentItems(
@@ -140,6 +144,7 @@ async function saveEvent() {
       address: itemAddress.value,
       dateTime: itemDate.value,
       description: itemDescription.value,
+      ...(itemSignUpDeadline.value && { signUpDeadline: itemSignUpDeadline.value }),
       thumbnailId,
       attachmentIds: attachments.map((attachment) => attachment.id),
       attachmentFileNames: attachments.map((attachment) => attachment.fileName),
@@ -215,6 +220,18 @@ async function saveEvent() {
             :class="{ '[color-scheme:dark]': themeStore.isDark() }"
             type="datetime-local"
             v-model="itemDate"
+            :disabled="isLoading"
+          />
+        </div>
+        <div class="flex-1">
+          <label for="edit_event_sign_up_deadline">Tilmeldingsfrist (valgfri)</label>
+          <br />
+          <input
+            id="edit_event_sign_up_deadline"
+            class="w-full bg-theme-soft border border-theme-border rounded-xl p-2 text-theme-heading cursor-pointer focus:outline-none focus:ring-2 focus:ring-theme-accent focus:border-theme-accent"
+            :class="{ '[color-scheme:dark]': themeStore.isDark() }"
+            type="datetime-local"
+            v-model="itemSignUpDeadline"
             :disabled="isLoading"
           />
         </div>

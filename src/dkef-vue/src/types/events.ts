@@ -4,6 +4,7 @@ export interface EventDto {
   address: string
   dateTime: string
   description: string
+  signUpDeadline?: string
   thumbnailId?: string
   attachmentIds?: string[]
   attachmentFileNames?: string[]
@@ -26,10 +27,34 @@ export interface PublishedEvent {
   address: string
   dateTime: string
   description: string
+  signUpDeadline?: string | null
   thumbnailUrl: string
   attachmentUrls: string[]
   attachmentFileNames?: string[]
   createdAt: string
+}
+
+export interface EventSignUpStatus {
+  isSignedUp: boolean
+  signedUpAt?: string | null
+}
+
+export interface EventSignUpCreateResponse {
+  eventId: string
+  contactId: string
+  signedUpAt: string
+}
+
+export interface EventSignUpListItem {
+  contactId: string
+  name: string
+  email: string
+  signedUpAt: string
+}
+
+export interface EventSignUpsSummary {
+  total: number
+  collection: EventSignUpListItem[]
 }
 
 export interface EventsCollection {
