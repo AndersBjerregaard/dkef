@@ -1,4 +1,3 @@
-using System.Globalization;
 using System.Net.Http.Headers;
 using System.Reflection;
 using System.Text;
@@ -15,6 +14,7 @@ using Dkef.Domain.Abstracts;
 using Dkef.Repositories;
 using Dkef.Services;
 using Dkef.Services.Interfaces;
+using Dkef.Utilities;
 
 using Ganss.Xss;
 
@@ -258,7 +258,7 @@ try
                                 ? src.AttachmentFileNames[index]
                                 : string.Empty
                 )))
-                .ForMember(dest => dest.DateTime, opt => opt.MapFrom(src => DateTime.Parse(src.DateTime, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal).ToUniversalTime()));
+                .ForMember(dest => dest.DateTime, opt => opt.MapFrom(src => CopenhagenDateTime.ParseToUtc(src.DateTime)));
             cfg.CreateMap<News, News>();
             cfg.CreateMap<NewsDto, News>()
                 .ForMember(dest => dest.ThumbnailUrl, opt => opt.MapFrom(src =>
@@ -302,7 +302,7 @@ try
                                 ? src.AttachmentFileNames[index]
                                 : string.Empty
                 )))
-                .ForMember(dest => dest.DateTime, opt => opt.MapFrom(src => DateTime.Parse(src.DateTime, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal).ToUniversalTime()));
+                .ForMember(dest => dest.DateTime, opt => opt.MapFrom(src => CopenhagenDateTime.ParseToUtc(src.DateTime)));
             cfg.CreateMap<InformationDto, InformationMessage>();
         }, loggerFactory).CreateMapper();
         return mapper;
