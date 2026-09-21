@@ -1,7 +1,13 @@
 <script setup lang="ts">
 import apiservice from '@/services/apiservice'
 import urlservice from '@/services/urlservice'
-import { type ColumnSortState, type Contact, type ContactCollection, Sort } from '@/types/members'
+import {
+  type ColumnSortState,
+  type Contact,
+  type ContactCollection,
+  SECTION_DISPLAY_MAP,
+  Sort,
+} from '@/types/members'
 import MemberComponent from './MemberComponent.vue'
 import MemberHeaderComponent from './MemberHeaderComponent.vue'
 import { computed, onMounted, onUnmounted, reactive, ref, type ComputedRef, type Ref } from 'vue'
@@ -77,6 +83,13 @@ const filteredItems = computed(() => {
   const lowerCaseQuery = filterString.value.toLowerCase()
 
   const filteredContacts = items.filter((contact) => {
+    const primarySectionDisplayName =
+      contact.primarySection !== null ? SECTION_DISPLAY_MAP[contact.primarySection].toLowerCase() : ''
+
+    if (primarySectionDisplayName.includes(lowerCaseQuery)) {
+      return true
+    }
+
     // Iterate over each property of the contact object
     for (const key in contact) {
       // Exclude 'id' property
