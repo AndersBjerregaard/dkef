@@ -26,4 +26,6 @@ public sealed record NexiCheckoutConfig
     public string Language { get; init; } = string.Empty;
     [Required]
     public string Currency { get; init; } = string.Empty;
+    public string WebhookUrl { get; init; } = string.Empty;
+    public string WebhookAuthorization { get; init; } = string.Empty;
 }

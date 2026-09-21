@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace Dkef.Contracts.Nexi;
 
 // API source: https://developer.nexigroup.com/nexi-checkout/en-EU/api/payment-v1/#v1-payments-post
@@ -6,6 +8,8 @@ public sealed record NexiCreatePaymentRequest
 {
     public required NexiOrder Order { get; init; }
     public required NexiCheckout Checkout { get; init; }
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public IReadOnlyList<NexiNotificationWebhook>? Notifications { get; init; }
 }
 
 public sealed record NexiOrder
@@ -36,4 +40,12 @@ public sealed record NexiCheckout
     public required string TermsUrl { get; init; }
     public required string MerchantTermsUrl { get; init; }
     public bool Charge { get; init; }
+}
+
+public sealed record NexiNotificationWebhook
+{
+    public required string EventName { get; init; }
+    public required string Url { get; init; }
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? Authorization { get; init; }
 }

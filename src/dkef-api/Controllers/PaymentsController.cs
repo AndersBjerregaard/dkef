@@ -1,4 +1,6 @@
 using System.Net.Http.Json;
+using System.Security.Cryptography;
+using System.Text;
 using System.Text.Json;
 
 using Dkef.Configuration;
@@ -26,6 +28,23 @@ public sealed class PaymentsController(
 ) : ControllerBase
 {
     private readonly NexiCheckoutConfig _nexiCheckoutConfig = nexiCheckoutConfigOptions.Value;
+
+    private static readonly HashSet<string> CompletedWebhookEvents = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "payment.checkout.completed",
+        "payment.reservation.created",
+        "payment.reservation.created.v2",
+        "payment.charge.created",
+        "payment.charge.created.v2"
+    };
+
+    private static readonly HashSet<string> FailedWebhookEvents = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "payment.reservation.failed",
+        "payment.checkout.expired",
+        "payment.cancel.created",
+        "payment.cancel.created.v2"
+    };
 
     [HttpPost("nexi/poc-session")]
     public async Task<IActionResult> CreateNexiPocSession()
@@ -433,6 +452,144 @@ public sealed class PaymentsController(
         });
     }
 
+    [HttpPost("nexi/webhooks")]
+    [AllowAnonymous]
+    public async Task<IActionResult> ReceiveNexiWebhook()
+    {
+        string body;
+        using (var reader = new StreamReader(Request.Body, Encoding.UTF8))
+        {
+            body = await reader.ReadToEndAsync();
+        }
+
+        if (!IsWebhookAuthorized(Request.Headers.Authorization.ToString()))
+        {
+            logger.Warning("Nexi webhook afvist pga. ugyldig authorization header.");
+            return Unauthorized();
+        }
+
+        if (!TryReadNexiWebhookEnvelope(body, out string eventName, out string paymentId, out int? amountMinor, out string? currency))
+        {
+            logger.Warning("Nexi webhook payload kunne ikke parses. Payload: {Payload}", body);
+            return Ok();
+        }
+
+        EventSignUpPayment? paymentRecord = await contentsContext.EventSignUpPayments
+            .Where(x => x.PaymentId == paymentId)
+            .OrderByDescending(x => x.CreatedAt)
+            .FirstOrDefaultAsync();
+
+        if (paymentRecord is null)
+        {
+            logger.Warning("Nexi webhook modtaget for ukendt paymentId {PaymentId}. Event={EventName}", paymentId, eventName);
+            return Ok();
+        }
+
+        if (amountMinor.HasValue && amountMinor.Value != paymentRecord.AmountMinor)
+        {
+            logger.Warning(
+                "Nexi webhook amount mismatch for payment {PaymentId}. Event={EventName}, Expected={ExpectedAmount}, Received={ReceivedAmount}",
+                paymentId,
+                eventName,
+                paymentRecord.AmountMinor,
+                amountMinor.Value
+            );
+        }
+
+        if (!string.IsNullOrWhiteSpace(currency)
+            && !string.Equals(currency, paymentRecord.Currency, StringComparison.OrdinalIgnoreCase))
+        {
+            logger.Warning(
+                "Nexi webhook currency mismatch for payment {PaymentId}. Event={EventName}, Expected={ExpectedCurrency}, Received={ReceivedCurrency}",
+                paymentId,
+                eventName,
+                paymentRecord.Currency,
+                currency
+            );
+        }
+
+        if (CompletedWebhookEvents.Contains(eventName))
+        {
+            await MarkPaymentCompletedAndEnsureSignup(paymentRecord);
+            return Ok();
+        }
+
+        if (FailedWebhookEvents.Contains(eventName))
+        {
+            await MarkPaymentFailed(paymentRecord);
+            return Ok();
+        }
+
+        logger.Information(
+            "Nexi webhook event {EventName} modtaget for payment {PaymentId} men ignoreret i nuvaerende flow.",
+            eventName,
+            paymentId
+        );
+
+        return Ok();
+    }
+
+    [HttpGet("nexi/events/reconciliation")]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> GetNexiEventReconciliation(
+        [FromQuery] int take = 50,
+        [FromQuery] int skip = 0,
+        [FromQuery] string? status = null
+    )
+    {
+        if (take < 1)
+        {
+            take = 1;
+        }
+
+        if (take > 200)
+        {
+            take = 200;
+        }
+
+        if (skip < 0)
+        {
+            skip = 0;
+        }
+
+        IQueryable<EventSignUpPayment> query = contentsContext.EventSignUpPayments;
+
+        if (!string.IsNullOrWhiteSpace(status))
+        {
+            query = query.Where(x => x.Status == status);
+        }
+
+        var projectedQuery = query
+            .Join(
+                contentsContext.Events,
+                payment => payment.EventId,
+                evt => evt.Id,
+                (payment, evt) => new EventPaymentReconciliationItemDto
+                {
+                    PaymentRecordId = payment.Id,
+                    EventId = payment.EventId,
+                    EventTitle = evt.Title,
+                    ContactId = payment.ContactId,
+                    PaymentId = payment.PaymentId,
+                    AmountMinor = payment.AmountMinor,
+                    Currency = payment.Currency,
+                    Status = payment.Status,
+                    CreatedAt = payment.CreatedAt,
+                    UpdatedAt = payment.UpdatedAt
+                }
+            );
+
+        int total = await projectedQuery.CountAsync();
+        List<EventPaymentReconciliationItemDto> collection = await projectedQuery
+            .OrderByDescending(x => x.UpdatedAt)
+            .ThenByDescending(x => x.CreatedAt)
+            .Skip(skip)
+            .Take(take)
+            .ToListAsync();
+
+        return Ok(new DomainCollection<EventPaymentReconciliationItemDto>(collection, total));
+    }
+
     private NexiCreatePaymentRequest BuildPocCreatePaymentRequest(string checkoutUrl)
     {
         var items = new List<NexiOrderItem>
@@ -508,8 +665,196 @@ public sealed class PaymentsController(
                 TermsUrl = _nexiCheckoutConfig.TermsUrl,
                 MerchantTermsUrl = _nexiCheckoutConfig.MerchantTermsUrl,
                 Charge = false
-            }
+            },
+            Notifications = BuildEventWebhookNotifications()
         };
+    }
+
+    private IReadOnlyList<NexiNotificationWebhook>? BuildEventWebhookNotifications()
+    {
+        if (string.IsNullOrWhiteSpace(_nexiCheckoutConfig.WebhookUrl))
+        {
+            return null;
+        }
+
+        string? authorization = string.IsNullOrWhiteSpace(_nexiCheckoutConfig.WebhookAuthorization)
+            ? null
+            : _nexiCheckoutConfig.WebhookAuthorization;
+
+        return
+        [
+            new NexiNotificationWebhook
+            {
+                EventName = "payment.reservation.created.v2",
+                Url = _nexiCheckoutConfig.WebhookUrl,
+                Authorization = authorization
+            },
+            new NexiNotificationWebhook
+            {
+                EventName = "payment.charge.created.v2",
+                Url = _nexiCheckoutConfig.WebhookUrl,
+                Authorization = authorization
+            },
+            new NexiNotificationWebhook
+            {
+                EventName = "payment.reservation.failed",
+                Url = _nexiCheckoutConfig.WebhookUrl,
+                Authorization = authorization
+            },
+            new NexiNotificationWebhook
+            {
+                EventName = "payment.cancel.created.v2",
+                Url = _nexiCheckoutConfig.WebhookUrl,
+                Authorization = authorization
+            },
+            new NexiNotificationWebhook
+            {
+                EventName = "payment.checkout.completed",
+                Url = _nexiCheckoutConfig.WebhookUrl,
+                Authorization = authorization
+            }
+        ];
+    }
+
+    private bool IsWebhookAuthorized(string? authorizationHeader)
+    {
+        if (string.IsNullOrWhiteSpace(_nexiCheckoutConfig.WebhookAuthorization))
+        {
+            return true;
+        }
+
+        if (string.IsNullOrWhiteSpace(authorizationHeader))
+        {
+            return false;
+        }
+
+        byte[] expected = Encoding.UTF8.GetBytes(_nexiCheckoutConfig.WebhookAuthorization.Trim());
+        byte[] received = Encoding.UTF8.GetBytes(authorizationHeader.Trim());
+
+        return CryptographicOperations.FixedTimeEquals(expected, received);
+    }
+
+    private static bool TryReadNexiWebhookEnvelope(
+        string payload,
+        out string eventName,
+        out string paymentId,
+        out int? amountMinor,
+        out string? currency
+    )
+    {
+        eventName = string.Empty;
+        paymentId = string.Empty;
+        amountMinor = null;
+        currency = null;
+
+        using JsonDocument document = JsonDocument.Parse(payload);
+
+        if (!document.RootElement.TryGetProperty("event", out JsonElement eventElement))
+        {
+            return false;
+        }
+
+        string? parsedEventName = eventElement.GetString();
+        if (string.IsNullOrWhiteSpace(parsedEventName))
+        {
+            return false;
+        }
+
+        if (!document.RootElement.TryGetProperty("data", out JsonElement dataElement))
+        {
+            return false;
+        }
+
+        if (!dataElement.TryGetProperty("paymentId", out JsonElement paymentIdElement))
+        {
+            return false;
+        }
+
+        string? parsedPaymentId = paymentIdElement.GetString();
+        if (string.IsNullOrWhiteSpace(parsedPaymentId))
+        {
+            return false;
+        }
+
+        if (dataElement.TryGetProperty("amount", out JsonElement amountElement))
+        {
+            if (amountElement.TryGetProperty("amount", out JsonElement amountValueElement)
+                && amountValueElement.TryGetInt32(out int parsedAmount))
+            {
+                amountMinor = parsedAmount;
+            }
+
+            if (amountElement.TryGetProperty("currency", out JsonElement currencyElement))
+            {
+                currency = currencyElement.GetString();
+            }
+        }
+
+        eventName = parsedEventName;
+        paymentId = parsedPaymentId;
+        return true;
+    }
+
+    private async Task MarkPaymentCompletedAndEnsureSignup(EventSignUpPayment paymentRecord)
+    {
+        Event? eventEntity = await contentsContext.Events.FindAsync(paymentRecord.EventId);
+        if (eventEntity is null)
+        {
+            logger.Warning("Webhook completion kunne ikke finde event {EventId} for payment {PaymentId}", paymentRecord.EventId, paymentRecord.PaymentId);
+            return;
+        }
+
+        EventSignUp? existingSignUp = await contentsContext.EventSignUps
+            .Where(x => x.EventId == paymentRecord.EventId && x.ContactId == paymentRecord.ContactId)
+            .FirstOrDefaultAsync();
+
+        if (existingSignUp is null)
+        {
+            contentsContext.EventSignUps.Add(new EventSignUp
+            {
+                EventId = paymentRecord.EventId,
+                ContactId = paymentRecord.ContactId,
+                SignedUpAt = DateTime.UtcNow
+            });
+        }
+
+        paymentRecord.Status = PaymentStatus.Completed;
+        paymentRecord.UpdatedAt = DateTime.UtcNow;
+
+        try
+        {
+            await contentsContext.SaveChangesAsync();
+        }
+        catch (DbUpdateException ex)
+        {
+            logger.Warning(
+                ex,
+                "Webhook completion ramte race condition for event {EventId}, user {UserId}, payment {PaymentId}",
+                paymentRecord.EventId,
+                paymentRecord.ContactId,
+                paymentRecord.PaymentId
+            );
+
+            paymentRecord.Status = PaymentStatus.Completed;
+            paymentRecord.UpdatedAt = DateTime.UtcNow;
+            await contentsContext.SaveChangesAsync();
+        }
+    }
+
+    private async Task MarkPaymentFailed(EventSignUpPayment paymentRecord)
+    {
+        if (paymentRecord.Status == PaymentStatus.Completed)
+        {
+            logger.Warning(
+                "Webhook failure-event ignoreret for allerede completed payment {PaymentId}",
+                paymentRecord.PaymentId
+            );
+            return;
+        }
+
+        paymentRecord.Status = PaymentStatus.Failed;
+        paymentRecord.UpdatedAt = DateTime.UtcNow;
+        await contentsContext.SaveChangesAsync();
     }
 
     private static bool TryReadNexiPaymentVerification(
