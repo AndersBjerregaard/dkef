@@ -4,6 +4,8 @@ namespace Dkef.Utilities;
 
 public static class CopenhagenDateTime
 {
+    // Local date strings without an explicit offset are treated as Denmark local time,
+    // so runtime timezone data for Europe/Copenhagen must be present in production containers.
     private static readonly string[] LocalDateTimeFormats =
     [
         "yyyy-MM-ddTHH:mm",

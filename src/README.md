@@ -26,6 +26,16 @@ docker buildx version
 
 Production images are built for `linux/amd64`.
 
+### API timezone dependency (`dkef-api`)
+
+The API parses local date-time input as Denmark local time in
+`src/dkef-api/Utilities/CopenhagenDateTime.cs`, which depends on the
+`Europe/Copenhagen` IANA timezone definition at runtime.
+
+Because the runtime image is Alpine-based, `tzdata` must be installed in
+`src/dkef-api/Dockerfile` (final stage). Removing this package will cause runtime
+failures when validation or mapping triggers timezone resolution.
+
 ### 1. Create (or reuse) a Buildx builder
 
 ```sh
