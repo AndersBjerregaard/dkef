@@ -4,6 +4,19 @@ Use this file for repo-level guardrails; for implementation details read the pac
 - `src/dkef-vue/AGENTS.md`
 - `src/dkef-api/AGENTS.md`
 
+## Agent contribution workflow
+
+Read [contributing.md](contributing.md) before making changes. It defines the goal-driven workflow, tool usage, validation, and human-review handoff.
+
+- Establish the goal, acceptance criteria, and relevant package guidance before editing; keep changes focused and preserve unrelated user work.
+- Never modify, commit to, or push directly to the default branch. Discover the default branch from GitHub rather than assuming its name.
+- Always implement feature requests on a feature branch based on the updated default branch. An existing task branch may be reused if it has the correct base and scope.
+- Validate the affected packages, review the diff, and commit only task-related files. When finished, push the feature branch and open a PR against the default branch for human review; do not merge it yourself.
+- Prefer GitHub MCP for repository operations. If it lacks authorization for an operation, use the authenticated GitHub CLI (`gh`) instead. Neither tool may bypass branch protection or the human-review requirement; report a blocker if both lack access.
+- Use `dotnet`, Bun (instead of Node.js/npm/yarn workflows), `python3` (agent scripting only, not application source), `dotnet ef`, Docker, GitHub CLI, and GitHub MCP as described in the contribution guide.
+- 🚨 Do not run Ansible playbooks directly. Deployment/provisioning is a human-operated handoff, not part of completing a source-code contribution.
+- Confirm local targets before running database-mutating commands or starting the API, which automatically applies migrations. Do not change shared/production data or infrastructure without explicit authorization.
+
 ## Monorepo map
 
 - `src/dkef-vue` - Vue 3 + Vite + Bun frontend
