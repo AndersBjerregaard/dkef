@@ -23,7 +23,7 @@ services:
       - dkef-network
 
   minio:
-    image: quay.io/minio/minio:RELEASE.2025-09-07T16-13-09Z
+    image: anders97/minio-custom:2025-09-07
     container_name: minio1
     restart: on-failure
     ports:
