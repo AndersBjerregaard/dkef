@@ -109,7 +109,7 @@ Created by the `postgres_k8s` Ansible role. Not present in these manifests.
 | Field | Value |
 |---|---|
 | Name | `minio` |
-| Image | `quay.io/minio/minio:RELEASE.2025-09-07T16-13-09Z` |
+| Image | `anders97/minio-custom:2025-09-07` |
 | Replicas | 1 |
 | PVC size | 10Gi (`ReadWriteOnce`) |
 | API port | 9000 |
