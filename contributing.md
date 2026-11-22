@@ -65,7 +65,6 @@ Typical frontend checks, run from `src/dkef-vue`:
 
 ```sh
 bun install
-bun vitest run
 bun lint
 bun run build
 ```
