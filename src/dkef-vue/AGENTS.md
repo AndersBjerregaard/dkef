@@ -35,3 +35,6 @@
 
 - Vitest runs in `jsdom` (`vitest.config.ts`).
 - Only one unit test exists today (`src/components/__tests__/HelloWorld.spec.ts`); most UI/auth behavior is currently verified manually.
+- For frontend behavior changes, use the globally available `playwright-cli` and preinstalled Chromium for focused browser validation alongside build/lint/unit checks. Prefer headless (default; omit `--headed`). Follow [the contribution guide's browser workflow](../../contributing.md#frontend-browser-validation).
+- Run browser commands from the repository root to load `.playwright/cli.config.json`, or pass `--config=../../.playwright/cli.config.json` to `open` from this package. Use a task-specific named session, inspect snapshots/console/requests, check relevant desktop/mobile layouts, and close your session afterward.
+- Confirm local frontend/API targets before browser interaction; development mode's limited mocks cannot validate most API-backed flows. Keep browser output and saved authentication state out of commits, and report validation limitations in the PR.

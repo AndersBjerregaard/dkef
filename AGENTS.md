@@ -14,6 +14,7 @@ Read [contributing.md](contributing.md) before making changes. It defines the go
 - Validate the affected packages, review the diff, and commit only task-related files. When finished, push the feature branch and open a PR against the default branch for human review; do not merge it yourself.
 - Prefer GitHub MCP for repository operations. If it lacks authorization for an operation, use the authenticated GitHub CLI (`gh`) instead. Neither tool may bypass branch protection or the human-review requirement; report a blocker if both lack access.
 - Use `dotnet`, Bun (instead of Node.js/npm/yarn workflows), `python3` (agent scripting only, not application source), `dotnet ef`, Docker, GitHub CLI, and GitHub MCP as described in the contribution guide.
+- Use the globally available `playwright-cli` with the preinstalled Chromium browser for focused frontend validation. Prefer headless (the default); see [the browser validation workflow](contributing.md#frontend-browser-validation) for commands and safety boundaries.
 - 🚨 Do not run Ansible playbooks directly. Deployment/provisioning is a human-operated handoff, not part of completing a source-code contribution.
 - Confirm local targets before running database-mutating commands or starting the API, which automatically applies migrations. Do not change shared/production data or infrastructure without explicit authorization.
 

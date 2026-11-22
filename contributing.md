@@ -37,6 +37,7 @@ These are the tools intended for agent sessions. Check availability, versions, a
 | --- | --- | --- |
 | `dotnet` | Restore, build, test where tests exist, and run the ASP.NET Core API or .NET data utility. | The API targets `net10.0`. API startup automatically applies EF migrations; verify local configuration first. The data utility is interactive and can modify data. |
 | Bun (`bun`) | Frontend dependencies, Vite development/builds, linting, formatting, and Vitest. | Prefer Bun instead of Node.js-based command workflows; do not use npm/yarn or introduce their lockfiles. Preserve the repository's Bun lockfile. |
+| Playwright CLI (`playwright-cli`) | Headless browser automation to validate frontend rendering, navigation, forms, and responsive layouts; inspect snapshots, console output, and network requests. | Globally available in agentic sessions, with Chromium already installed. Use the repository's `.playwright/cli.config.json`; prefer headless (default), not `--headed`. Verify local frontend/API targets before interaction and keep credentials and browser artifacts out of commits. No project dependency or browser installation is needed. |
 | `python3` | Temporary agent scripting, inspection, or automation needed to accomplish the task. | Python is not used in application source. Do not introduce a Python application component, runtime dependency, or source-code implementation. |
 | `dotnet ef` | Inspect EF Core migrations and generate migrations when a schema change requires them. | Specify the context and matching output directory. Review generated migrations and snapshots. Apply migrations only to a confirmed local development database; shared/production changes require explicit authorization. |
 | Ansible (`ansible`, `ansible-playbook`) | Read and edit provisioning/deployment configuration; perform non-deploying static validation when available. | 🚨 Do not run playbooks directly, including with `--check`. Hand execution over to a human; do not treat deployment as contribution validation. |
@@ -70,6 +71,36 @@ bun run build
 ```
 
 Use a targeted Vitest file when appropriate. Linting/formatting commands may modify files: review those changes and avoid unrelated churn.
+
+### Frontend browser validation
+
+Use `playwright-cli` for focused browser checks when frontend changes affect visible behavior. It complements, rather than replaces, builds, linting, and applicable unit tests. The command is globally available and Chromium is preinstalled; check `playwright-cli --version` and `playwright-cli open --help` if needed. Report missing prerequisites instead of installing packages or browsers as part of routine validation.
+
+1. Confirm the frontend environment and API targets are local/disposable before interacting. Development mode supports only limited mock behavior (most endpoints throw `Unimplemented!`); API-backed flows need a confirmed local backend and suitable non-development configuration. Do not switch to shared/staging/production services just to make a check pass. API startup still requires the migration safety checks below.
+2. Start Vite from `src/dkef-vue` in a separate terminal or background process:
+
+   ```sh
+   bun dev --host 127.0.0.1
+   ```
+
+3. Use the actual URL printed by Vite (the port may differ). Run browser commands from the repository root so the CLI loads [`.playwright/cli.config.json`](.playwright/cli.config.json), which selects the installed Chromium browser. When running from `src/dkef-vue`, pass `--config=../../.playwright/cli.config.json` to `open` instead. Use a task-specific session name to avoid interfering with other sessions:
+
+   ```sh
+   playwright-cli -s=frontend-check open http://127.0.0.1:5173
+   playwright-cli -s=frontend-check snapshot
+   playwright-cli -s=frontend-check resize 390 844
+   playwright-cli -s=frontend-check snapshot
+   playwright-cli -s=frontend-check console
+   playwright-cli -s=frontend-check requests
+   playwright-cli -s=frontend-check close
+   ```
+
+   Headless is the default; omit `--headed` unless a visible browser is explicitly needed. Prefer the default in-memory profile rather than attaching to a user's browser or using a persistent profile.
+
+4. Exercise the affected flow with `click`, `fill`, and other commands using element refs from the latest snapshot; refresh the snapshot after navigation or significant UI changes. Check desktop and mobile layouts as relevant, inspect console errors and failed requests, and take a `screenshot` when visual evidence helps review. Record the flow, viewport, result, and any mock/backend limitations in the PR.
+5. Close only the browser session you opened and stop only the dev server you started. Generated snapshots, screenshots, traces, and saved authentication state may contain sensitive data; keep them out of commits. The root `.playwright-cli/` output directory is ignored, but custom output paths or commands run from package directories may write elsewhere—review `git status` before staging. Share only sanitized evidence.
+
+### Backend validation
 
 Typical backend checks, run from `src/dkef-api`:
 
