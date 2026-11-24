@@ -1,6 +1,6 @@
 # 02 — Define the field registry and API contract
 
-**Status:** Implemented; awaiting human review
+**Status:** Implemented and human approved (2026-11-24)
 
 **Depends on:** [01](01-field-inventory.md)
 
@@ -62,6 +62,14 @@ PATCH accepts:
 - [x] `dotnet build`/publish and frontend type-check/build find definitions without repository-root runtime files.
 
 Pass the stable contract and registry accessors to 03–06. If approval in 01 changes any baseline behavior, update this contract before implementing endpoints or clients.
+
+## Human approval record
+
+- Approved by the requesting human on **2026-11-24**.
+- Reviewed implementation: commit `e7a6f33` (`feat: define site-text registry and API contract`).
+- Approval covers item 02's implementation, contract, validation results, and
+  documented handoff. Runtime authorization and concurrent database integration
+  checks remain in 03/04; this approval does not mark those later items complete.
 
 ## Implementation and handoff
 

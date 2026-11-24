@@ -36,7 +36,9 @@ Item 01 is an explicit human approval gate for the inventory and these baseline 
 Item 01's [73-field inventory](field-inventory.md#approval-record) and all baseline
 decisions were approved on 2026-11-24. Item 02 adds matching package-local
 registries, immutable accessors, typed wire contracts, and executable value and
-envelope rules. See its [handoff](02-definitions-and-contract.md#implementation-and-handoff)
+envelope rules. Its implementation at `e7a6f33` was
+[human approved on 2026-11-24](02-definitions-and-contract.md#human-approval-record).
+See its [handoff](02-definitions-and-contract.md#implementation-and-handoff)
 for the contract and validation record. Persistence, HTTP endpoints, frontend
 state/editor, and component bindings remain in 03–09; no editable UI is available yet.
 
@@ -46,6 +48,6 @@ Only deliberately approved plain-text slots in About, Home, and Member Advantage
 
 Use [contributing.md](../../contributing.md), the [frontend guide](../../src/dkef-vue/AGENTS.md), and the [API guide](../../src/dkef-api/AGENTS.md) throughout implementation. Confirm disposable local database targets before applying migrations or starting the API: startup migrates all six contexts. Do not execute Ansible playbooks or deploy.
 
-For the current item 02 handoff, commit the focused source, tests, and documentation
-on the existing feature branch and await human review. Do not push or open a PR,
-as requested. The later completed feature still requires human review.
+Item 02's human approval is recorded; await further instructions before beginning
+the next work item. Keep commits local: do not push or open a PR, as requested.
+The later work items still require their own validation and human review.
