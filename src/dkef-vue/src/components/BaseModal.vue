@@ -67,7 +67,7 @@ const closeModal = () => {
                 @click="closeModal"
                 :disabled="isLoading"
               >
-                <span class="sr-only">Close</span>
+                <span class="sr-only">Luk</span>
                 <svg
                   class="h-6 w-6"
                   fill="none"
