@@ -1,6 +1,6 @@
 # 03 — Add site-text override persistence
 
-**Status:** Implemented; awaiting human review
+**Status:** Implemented and human approved (2026-11-24)
 
 **Depends on:** [02](02-definitions-and-contract.md)
 
@@ -34,6 +34,16 @@ Store overrides in the existing database, independently of event/news/general-as
 Run `dotnet restore` and `dotnet build`. Review migration SQL without applying it to shared resources. Before database tests or API startup, confirm all configured contexts, including optional `appsettings.Local.json`, point to disposable local resources. Verify apply/rollback on that database, uniqueness, optional empty text, audit timestamps/IDs, batch rollback, and concurrent upsert behavior. Use PostgreSQL, not an in-memory provider, for transaction/constraint checks.
 
 Hand the migration and repository API to 04. Record migration/rollback requirements for the later human-operated rollout; do not apply anything to production.
+
+## Human approval record
+
+- Approved by the requesting human on **2026-11-24**.
+- Reviewed implementation: commit `57f2091` (`feat: add transactional site-text persistence`).
+- Approval covers item 03's implementation, PostgreSQL validation, and documented
+  repository and migration/rollback handoff, following clarification of production
+  startup migrations and the repository's transactional upsert design.
+- This approval does not authorize deployment or mark step 04's HTTP endpoints,
+  authorization, error mapping, or public response filtering complete.
 
 ## Implementation and handoff to 04
 
