@@ -1,6 +1,6 @@
 # Site-text editing implementation work items
 
-These work items turn the [design plan](../site-text-editing.md) into an ordered implementation plan. The design remains authoritative. This directory is a planning deliverable, not an implementation or an indication that the proposed editorial choices have been approved.
+These work items turn the [design plan](../site-text-editing.md) into an ordered implementation plan. The design remains authoritative. The numbered items distinguish implemented foundations from later application behavior; the inventory's approval record is authoritative for editorial choices.
 
 ## Execution order
 
@@ -33,12 +33,12 @@ Item 01 is an explicit human approval gate for the inventory and these baseline 
 
 ### Current checkpoint
 
-Item 01's [73-field review inventory](field-inventory.md) is prepared, with exact
-defaults, proposed validation and exclusions, and recorded layout findings.
-**Approval remains pending; 02 is blocked.** Review the inventory's approval
-record, including the responsive-layout follow-up proposal, before adopting any
-of its editorial or implementation choices. No runtime feature is implemented
-at this checkpoint.
+Item 01's [73-field inventory](field-inventory.md#approval-record) and all baseline
+decisions were approved on 2026-11-24. Item 02 adds matching package-local
+registries, immutable accessors, typed wire contracts, and executable value and
+envelope rules. See its [handoff](02-definitions-and-contract.md#implementation-and-handoff)
+for the contract and validation record. Persistence, HTTP endpoints, frontend
+state/editor, and component bindings remain in 03–09; no editable UI is available yet.
 
 ## Scope boundaries and operating rules
 
@@ -46,4 +46,6 @@ Only deliberately approved plain-text slots in About, Home, and Member Advantage
 
 Use [contributing.md](../../contributing.md), the [frontend guide](../../src/dkef-vue/AGENTS.md), and the [API guide](../../src/dkef-api/AGENTS.md) throughout implementation. Confirm disposable local database targets before applying migrations or starting the API: startup migrates all six contexts. Do not execute Ansible playbooks or deploy.
 
-For the current planning task, add and commit only these Markdown files on the existing feature branch, then await instructions. Do not push or open a PR at this checkpoint. The later completed feature still requires the repository's normal human-review handoff.
+For the current item 02 handoff, commit the focused source, tests, and documentation
+on the existing feature branch and await human review. Do not push or open a PR,
+as requested. The later completed feature still requires human review.

@@ -109,7 +109,7 @@ dotnet restore
 dotnet build
 ```
 
-Run applicable .NET tests if test projects exist in the affected area. The API currently has no test project; use focused local API checks when behavior needs runtime verification. Before `dotnet run`, confirm that connection strings and optional `appsettings.Local.json` point to disposable/local development resources, because startup migrates all six EF contexts.
+Run applicable .NET tests in the affected area. Site-text registry/contract tests run from the repository root with `dotnet test tests/dkef-api.Tests/dkef-api.Tests.csproj` without starting the API or accessing a database. Use focused local API checks when behavior needs runtime verification. Before `dotnet run`, confirm that connection strings and optional `appsettings.Local.json` point to disposable/local development resources, because startup migrates all six EF contexts.
 
 When a schema change requires a migration, use an explicit context and output directory, for example from `src/dkef-api`:
 

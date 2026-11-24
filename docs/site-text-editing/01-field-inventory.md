@@ -18,12 +18,12 @@ status, input kinds, numerical limits, format rules, order, and 78 source bindin
 It also records proposed exclusions and baseline decisions, source/default checks,
 and browser review findings at desktop and narrow widths.
 
-**Human approval is still pending.** In particular, About already overflows on
+**Human approval is recorded in the inventory.** In particular, About already overflows on
 narrow screens with its default paragraph, valid long email values overflow, and
 maximum-length unbroken text exposes wrapping limitations on all three pages.
-The inventory proposes follow-up boundaries for 07–09; no layout fixes or later
-feature work are implemented here. Review and record approval/amendments in the
-inventory's [approval record](field-inventory.md#approval-record) before 02 begins.
+The inventory records accepted follow-up boundaries for 07–09; no layout fixes or later
+feature work are implemented here. The inventory's
+[approval record](field-inventory.md#approval-record) accepts all decisions on 2026-11-24.
 
 ## Proposed inventory to review
 
@@ -66,7 +66,7 @@ Do not share Home's three reason cards with longer Member Advantages copy just b
 - [x] Shared membership wording and page-specific wording are explicitly distinguished.
 - [x] Prices, statistics, contact side effects, and nested components have recorded scope decisions.
 - [x] Maximum-length/default wording examples have been visually reviewed in the affected layouts.
-- [ ] A human has approved the inventory and implementation baseline; proposals are not mistaken for approval.
+- [x] A human has approved the inventory and implementation baseline; proposals are not mistaken for approval.
 
 ## Validation and handoff
 

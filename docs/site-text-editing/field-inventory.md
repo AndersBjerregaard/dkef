@@ -1,8 +1,9 @@
-# Editable site-text inventory — review candidate
+# Approved editable site-text inventory
 
-**Approval: pending human review.** Prepared for [work item 01](01-field-inventory.md).
-This is not the runtime registry and does not authorize starting 02. No public text,
-layout, persistence, API, or editor behavior changes in this work item.
+**Approval: accepted on 2026-11-24**, including all baseline and layout follow-up
+decisions; see the [approval record](#approval-record). Prepared for
+[work item 01](01-field-inventory.md); this document is the approved source for
+the package-local registries in 02. Item 01 itself changed no application behavior.
 
 ## Reading the inventory
 
@@ -256,7 +257,8 @@ that work is not accepted, keep the affected slots/limits unresolved rather than
 claiming the existing layout safely supports arbitrary valid input. The reviewed
 spaced samples are illustrative, not exhaustive: long Danish compounds, many LF
 line breaks, and worst-case letter widths require repeat checks after integration.
-No layout changes are authorized by this unapproved recommendation.
+This recommendation was accepted in the approval record below; implementation
+and repeat layout validation remain in 07–09, not 02.
 
 ## Approval record
 

@@ -1,0 +1,202 @@
+[
+  {
+    "name": "Danish and literal comparisons",
+    "input": "text",
+    "format": "plain",
+    "required": true,
+    "maxLength": 40,
+    "value": "Æble & øl: 2 < 3 > 1",
+    "normalized": "Æble & øl: 2 < 3 > 1",
+    "valid": true
+  },
+  {
+    "name": "intentional spaces",
+    "input": "text",
+    "format": "plain",
+    "required": true,
+    "maxLength": 40,
+    "value": "  Hej  verden  ",
+    "normalized": "  Hej  verden  ",
+    "valid": true
+  },
+  {
+    "name": "multiline CRLF and CR",
+    "input": "multiline",
+    "format": "plain",
+    "required": true,
+    "maxLength": 40,
+    "value": "  Første\r\n\rAnden  ",
+    "normalized": "  Første\n\nAnden  ",
+    "valid": true
+  },
+  {
+    "name": "required empty",
+    "input": "text",
+    "format": "plain",
+    "required": true,
+    "maxLength": 40,
+    "value": "",
+    "normalized": "",
+    "valid": false
+  },
+  {
+    "name": "required whitespace union",
+    "input": "multiline",
+    "format": "plain",
+    "required": true,
+    "maxLength": 40,
+    "value": " \t\r\n\u0085\u00a0\ufeff",
+    "normalized": " \t\n\u0085\u00a0\ufeff",
+    "valid": false
+  },
+  {
+    "name": "optional empty is a value",
+    "input": "text",
+    "format": "email",
+    "required": false,
+    "maxLength": 40,
+    "value": "",
+    "normalized": "",
+    "valid": true
+  },
+  {
+    "name": "single line rejects CR",
+    "input": "text",
+    "format": "plain",
+    "required": true,
+    "maxLength": 40,
+    "value": "Hej\rigen",
+    "normalized": "Hej\nigen",
+    "valid": false
+  },
+  {
+    "name": "single line rejects Unicode separator",
+    "input": "text",
+    "format": "plain",
+    "required": true,
+    "maxLength": 40,
+    "value": "Hej\u2028igen",
+    "normalized": "Hej\u2028igen",
+    "valid": false
+  },
+  {
+    "name": "UTF16 boundary",
+    "input": "text",
+    "format": "plain",
+    "required": true,
+    "maxLength": 4,
+    "value": "😀😀",
+    "normalized": "😀😀",
+    "valid": true
+  },
+  {
+    "name": "UTF16 not code points",
+    "input": "text",
+    "format": "plain",
+    "required": true,
+    "maxLength": 3,
+    "value": "😀😀",
+    "normalized": "😀😀",
+    "valid": false
+  },
+  {
+    "name": "raw length before CRLF normalization",
+    "input": "multiline",
+    "format": "plain",
+    "required": true,
+    "maxLength": 3,
+    "value": "A\r\nB",
+    "normalized": "A\nB",
+    "valid": false
+  },
+  {
+    "name": "bare email",
+    "input": "text",
+    "format": "email",
+    "required": true,
+    "maxLength": 80,
+    "value": "info@dkef.dk",
+    "normalized": "info@dkef.dk",
+    "valid": true
+  },
+  {
+    "name": "email follows attribute without dot requirement",
+    "input": "text",
+    "format": "email",
+    "required": true,
+    "maxLength": 80,
+    "value": "info@localhost",
+    "normalized": "info@localhost",
+    "valid": true
+  },
+  {
+    "name": "email prefix",
+    "input": "text",
+    "format": "email",
+    "required": true,
+    "maxLength": 80,
+    "value": "Email: info@dkef.dk",
+    "normalized": "Email: info@dkef.dk",
+    "valid": false
+  },
+  {
+    "name": "email display name",
+    "input": "text",
+    "format": "email",
+    "required": true,
+    "maxLength": 80,
+    "value": "Navn <info@dkef.dk>",
+    "normalized": "Navn <info@dkef.dk>",
+    "valid": false
+  },
+  {
+    "name": "email multiple at signs",
+    "input": "text",
+    "format": "email",
+    "required": true,
+    "maxLength": 80,
+    "value": "a@b@c.dk",
+    "normalized": "a@b@c.dk",
+    "valid": false
+  },
+  {
+    "name": "email whitespace",
+    "input": "text",
+    "format": "email",
+    "required": true,
+    "maxLength": 80,
+    "value": " info@dkef.dk",
+    "normalized": " info@dkef.dk",
+    "valid": false
+  },
+  {
+    "name": "international display phone",
+    "input": "text",
+    "format": "phone",
+    "required": true,
+    "maxLength": 25,
+    "value": "+45 (42) 57-70 69",
+    "normalized": "+45 (42) 57-70 69",
+    "valid": true
+  },
+  {
+    "name": "phone requires digit",
+    "input": "text",
+    "format": "phone",
+    "required": true,
+    "maxLength": 25,
+    "value": "+ () -",
+    "normalized": "+ () -",
+    "valid": false
+  },
+  {
+    "name": "phone display prefix excluded",
+    "input": "text",
+    "format": "phone",
+    "required": true,
+    "maxLength": 25,
+    "value": "Tlf. 42 57 70 69",
+    "normalized": "Tlf. 42 57 70 69",
+    "valid": false
+  }
+]
