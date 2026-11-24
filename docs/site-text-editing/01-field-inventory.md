@@ -1,6 +1,6 @@
 # 01 — Approve the editable-field inventory
 
-**Status:** Not started
+**Status:** Inventory prepared and validated; approved
 
 **Depends on:** None
 
@@ -9,6 +9,21 @@
 ## Goal
 
 Agree exactly which slots administrators may edit before building persistence or forms. Produce a reviewed inventory in this directory; do not expand scope merely because a string appears in a selected component.
+
+## Review deliverable
+
+The [explicit field inventory](field-inventory.md) expands all proposed slots into
+73 named fields, including exact defaults, Danish editor/section labels, required
+status, input kinds, numerical limits, format rules, order, and 78 source bindings.
+It also records proposed exclusions and baseline decisions, source/default checks,
+and browser review findings at desktop and narrow widths.
+
+**Human approval is still pending.** In particular, About already overflows on
+narrow screens with its default paragraph, valid long email values overflow, and
+maximum-length unbroken text exposes wrapping limitations on all three pages.
+The inventory proposes follow-up boundaries for 07–09; no layout fixes or later
+feature work are implemented here. Review and record approval/amendments in the
+inventory's [approval record](field-inventory.md#approval-record) before 02 begins.
 
 ## Proposed inventory to review
 
@@ -46,11 +61,11 @@ Do not share Home's three reason cards with longer Member Advantages copy just b
 
 ## Acceptance criteria
 
-- [ ] Every selected slot has an explicit semantic key, full default, Danish labels, validation, and source location.
-- [ ] Each fixed list entry is individually named; no identifiers depend on array positions or Vue filenames.
-- [ ] Shared membership wording and page-specific wording are explicitly distinguished.
-- [ ] Prices, statistics, contact side effects, and nested components have recorded scope decisions.
-- [ ] Maximum-length/default wording examples have been visually reviewed in the affected layouts.
+- [x] Every selected slot has an explicit semantic key, full default, Danish labels, validation, and source location.
+- [x] Each fixed list entry is individually named; no identifiers depend on array positions or Vue filenames.
+- [x] Shared membership wording and page-specific wording are explicitly distinguished.
+- [x] Prices, statistics, contact side effects, and nested components have recorded scope decisions.
+- [x] Maximum-length/default wording examples have been visually reviewed in the affected layouts.
 - [ ] A human has approved the inventory and implementation baseline; proposals are not mistaken for approval.
 
 ## Validation and handoff

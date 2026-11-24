@@ -31,6 +31,15 @@ Follow the numbered order by default. After 06, the three component integrations
 
 Item 01 is an explicit human approval gate for the inventory and these baseline choices. Document agreed changes before implementing 02; do not silently treat proposals as decisions already made by the user.
 
+### Current checkpoint
+
+Item 01's [73-field review inventory](field-inventory.md) is prepared, with exact
+defaults, proposed validation and exclusions, and recorded layout findings.
+**Approval remains pending; 02 is blocked.** Review the inventory's approval
+record, including the responsive-layout follow-up proposal, before adopting any
+of its editorial or implementation choices. No runtime feature is implemented
+at this checkpoint.
+
 ## Scope boundaries and operating rules
 
 Only deliberately approved plain-text slots in About, Home, and Member Advantages are in scope. Images, layout, list membership/order, routing, business fees, data-derived statistics, nested component forms, drafts, scheduling, and revision history remain unchanged.
