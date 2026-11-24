@@ -63,7 +63,12 @@ axiosInstance.interceptors.request.use(
 axiosInstance.interceptors.response.use(
   (response) => response,
   async (error: AxiosError) => {
-    const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean }
+    const originalRequest = error.config as
+      | (InternalAxiosRequestConfig & { _retry?: boolean; skipAuth?: boolean })
+      | undefined
+
+    // Anonymous reads must never refresh a session or prompt for login.
+    if (!originalRequest || originalRequest.skipAuth) return Promise.reject(error)
 
     // If error is 401 and we haven't retried yet
     if (error.response?.status === 401 && !originalRequest._retry) {
@@ -171,10 +176,19 @@ function del<T = unknown>(url: string, config?: ApiRequestConfig): Promise<Axios
   return axiosInstance.delete(url, config)
 }
 
+function patch<T = unknown>(
+  url: string,
+  data: unknown,
+  config?: ApiRequestConfig,
+): Promise<AxiosResponse<T>> {
+  return axiosInstance.patch(url, data, config)
+}
+
 export default {
   get,
   post,
   put,
+  patch,
   delete: del,
   axiosInstance, // Export instance for direct access if needed
 }
