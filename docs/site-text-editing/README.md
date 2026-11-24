@@ -50,8 +50,14 @@ reading, safe error responses, and real HTTP/PostgreSQL tests. Its implementatio
 at `6a389a0`, including the stream-loop follow-up at `76cad8d`, was
 [human approved on 2026-11-25](04-api.md#human-approval-record). See its
 [handoff](04-api.md#implementation-and-handoff-to-0506) for endpoint behavior,
-response examples, and validation results. Frontend state/editor and component
-bindings remain in 05–09; no editable UI is available yet.
+response examples, and validation results. Item 05 implements the shared,
+non-persisted frontend group cache, fallback defaults, forced editor refresh,
+changed-key saves, and reactive publication with stale-response protection. Its
+implementation at `bc9ee61` was
+[human approved on 2026-11-25](05-frontend-state.md#human-approval-record). See its
+[handoff](05-frontend-state.md#implementation-and-handoff-to-06) for store usage,
+API-client behavior, and validation results. The editor and component bindings
+remain in 06–09; no editable UI is available yet.
 
 ## Scope boundaries and operating rules
 
@@ -59,6 +65,6 @@ Only deliberately approved plain-text slots in About, Home, and Member Advantage
 
 Use [contributing.md](../../contributing.md), the [frontend guide](../../src/dkef-vue/AGENTS.md), and the [API guide](../../src/dkef-api/AGENTS.md) throughout implementation. Confirm disposable local database targets before applying migrations or starting the API: startup migrates all six contexts. Do not execute Ansible playbooks or deploy.
 
-Item 04's human approval is recorded; await further instructions before beginning
-05. Keep commits local: do not push or open a PR, as requested.
+Item 05's human approval is recorded; await further instructions before beginning
+06. Keep commits local: do not push or open a PR, as requested.
 The later work items still require their own validation and human review.

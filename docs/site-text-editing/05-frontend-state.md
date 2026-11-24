@@ -1,6 +1,6 @@
 # 05 — Build the shared frontend text mechanism
 
-**Status:** Implemented; awaiting human review
+**Status:** Implemented and human approved (2026-11-25)
 
 **Depends on:** [02](02-definitions-and-contract.md), [04](04-api.md)
 
@@ -32,6 +32,15 @@ Provide one reactive, in-memory group cache that displays defaults reliably and 
 - [x] The store is not persisted in local/session storage and fetches groups rather than individual fields.
 
 Use Vitest with mocked API responses, including late responses, server-sanitized values, malformed response handling, and load/save rejection. Run frontend type-check/build and relevant tests with Bun. API-backed manual checks need non-mock mode pointed at the approved local API, not shared resources.
+
+## Human approval record
+
+- Approved by the requesting human on **2026-11-25**.
+- Reviewed implementation: commit `bc9ee61` (`feat: add shared frontend site-text state`).
+- Approval covers item 05's shared frontend state, API-client support, validation
+  results, and documented handoff.
+- This approval does not authorize deployment or mark items 06–10's editor,
+  component integrations, or full-feature verification complete.
 
 ## Implementation and handoff to 06
 
@@ -121,4 +130,4 @@ Tooling still emits the existing `module.register()` deprecation and experimenta
 localStorage warnings. No application API startup, database access, migrations,
 Docker changes, deployment, push, or PR creation was performed. The running local
 Docker stack was not needed for this isolated frontend work. Item 06 and page
-integrations remain unimplemented; human approval of this item is still pending.
+integrations remain unimplemented; human approval of this item is recorded above.
