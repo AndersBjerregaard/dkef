@@ -1,6 +1,6 @@
 # 04 — Implement public reads and admin-only updates
 
-**Status:** Implemented; awaiting human review
+**Status:** Implemented and human approved (2026-11-25)
 
 **Depends on:** [02](02-definitions-and-contract.md), [03](03-persistence.md)
 
@@ -35,6 +35,17 @@ Expose the registered text groups through one generic controller, with server-en
 Run backend build/tests. With confirmed disposable local resources only, verify GET/PATCH with no token, invalid token, member, Board Member, and Admin tokens. Include malformed/duplicate JSON keys, unknown groups/keys, a two-field invalid batch, boundary lengths, markup/entity examples, and two concurrent administrators editing overlapping/disjoint keys.
 
 Provide representative responses and Danish validation errors to 05/06. API startup automatically migrates all six contexts; do not start it before checking the targets.
+
+## Human approval record
+
+- Approved by the requesting human on **2026-11-25**.
+- Reviewed implementation: commit `6a389a0` (`feat: expose public and admin site-text API`)
+  and follow-up commit `76cad8d` (`refactor: use explicit site-text stream read condition`).
+- Approval covers item 04's API implementation, validation results, documented
+  handoff, and the requested stream-loop refactor, which preserves bounded reading
+  while replacing `while (true)` with an explicit read-result condition.
+- This approval does not authorize deployment or mark items 05–10's frontend
+  state, editor, component integrations, or full-feature verification complete.
 
 ## Implementation and handoff to 05/06
 
@@ -147,6 +158,7 @@ and its six-context startup migrations were not run.
 | HTTP concurrent first insert / existing overlap / disjoint saves | All three passed, plus three additional focused runs; overlapping writes observed blocked in PostgreSQL while disjoint save completed before first commit |
 | Failure/publication checks | Invalid mixed batch leaves rows unchanged; database constraint failure rolls back an earlier write and returns generic 500; no HTTP success before commit |
 | Cleanup | PostgreSQL query confirmed no generated test databases remained |
+| Stream-loop follow-up (`76cad8d`) | Passed, 86 database-free tests and the focused HTTP/PostgreSQL exact-limit/oversized chunked-body test; temporary database removed |
 | Diff review / `git diff --check` | Passed |
 
 Existing dependency advisories remain for AngleSharp, AutoMapper, HtmlSanitizer,
@@ -154,4 +166,4 @@ Microsoft.AspNetCore.WebUtilities, and Microsoft.OpenApi; no dependency versions
 were changed. No frontend code or visible browser flow changed, so frontend build/
 browser checks were not needed. No application startup, shared/production writes,
 deployment, push, or PR creation was performed. Implementation is committed locally
-for human review, not marked human-approved.
+and human approval is recorded above; later work items remain separate.

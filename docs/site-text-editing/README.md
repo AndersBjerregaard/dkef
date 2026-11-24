@@ -44,8 +44,14 @@ override table/migration and transactional PostgreSQL repository, with opt-in
 database tests. Its implementation at `57f2091` was
 [human approved on 2026-11-24](03-persistence.md#human-approval-record). See its
 [handoff](03-persistence.md#implementation-and-handoff-to-04) for repository usage,
-validation, and migration/rollback requirements. HTTP endpoints, frontend
-state/editor, and component bindings remain in 04–09; no editable UI is available yet.
+validation, and migration/rollback requirements. Item 04 implements anonymous,
+uncached group reads and validated Admin-only atomic updates, with bounded request
+reading, safe error responses, and real HTTP/PostgreSQL tests. Its implementation
+at `6a389a0`, including the stream-loop follow-up at `76cad8d`, was
+[human approved on 2026-11-25](04-api.md#human-approval-record). See its
+[handoff](04-api.md#implementation-and-handoff-to-0506) for endpoint behavior,
+response examples, and validation results. Frontend state/editor and component
+bindings remain in 05–09; no editable UI is available yet.
 
 ## Scope boundaries and operating rules
 
@@ -53,6 +59,6 @@ Only deliberately approved plain-text slots in About, Home, and Member Advantage
 
 Use [contributing.md](../../contributing.md), the [frontend guide](../../src/dkef-vue/AGENTS.md), and the [API guide](../../src/dkef-api/AGENTS.md) throughout implementation. Confirm disposable local database targets before applying migrations or starting the API: startup migrates all six contexts. Do not execute Ansible playbooks or deploy.
 
-Item 03's human approval is recorded; await further instructions before beginning
-04. Keep commits local: do not push or open a PR, as requested.
+Item 04's human approval is recorded; await further instructions before beginning
+05. Keep commits local: do not push or open a PR, as requested.
 The later work items still require their own validation and human review.
