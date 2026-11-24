@@ -7,13 +7,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Dkef.Contracts;
 
-/// <summary>Pure wire-contract checks for reuse by the future controller; no persistence or authorization.</summary>
+/// <summary>Pure wire-contract checks for the controller; no persistence or authorization.</summary>
 public static class SiteTextPatchContract
 {
     public const string RequestErrorKey = "request";
 
     // Six bytes cover a JSON \uXXXX per UTF-16 unit. Reserve envelope/punctuation and bounded whitespace.
-    // Item 04 must enforce this on the stream, not just Content-Length, before buffering/parsing.
+    // The controller enforces this on the stream, not just Content-Length, before buffering/parsing.
     public static long MaxRequestBytes(SiteTextRegistry registry, string group) =>
         1024L + registry.GetFields(group).Values.Sum(field => 6L * (field.Key.Length + field.MaxLength) + 8);
 
