@@ -56,8 +56,11 @@ changed-key saves, and reactive publication with stale-response protection. Its
 implementation at `bc9ee61` was
 [human approved on 2026-11-25](05-frontend-state.md#human-approval-record). See its
 [handoff](05-frontend-state.md#implementation-and-handoff-to-06) for store usage,
-API-client behavior, and validation results. The editor and component bindings
-remain in 06–09; no editable UI is available yet.
+API-client behavior, and validation results. Item 06 now implements the shared
+registry-driven administrator editor; see its [handoff](06-editor.md#implementation-and-handoff-to-0709).
+Item 07 connects all 15 approved About slots and its Admin editing action; see its
+[handoff and validation](07-about.md#implementation-and-handoff). Both implementations
+await human review. Home and Member Advantages bindings remain in 08–09.
 
 ## Scope boundaries and operating rules
 
@@ -65,6 +68,6 @@ Only deliberately approved plain-text slots in About, Home, and Member Advantage
 
 Use [contributing.md](../../contributing.md), the [frontend guide](../../src/dkef-vue/AGENTS.md), and the [API guide](../../src/dkef-api/AGENTS.md) throughout implementation. Confirm disposable local database targets before applying migrations or starting the API: startup migrates all six contexts. Do not execute Ansible playbooks or deploy.
 
-Item 05's human approval is recorded; await further instructions before beginning
-06. Keep commits local: do not push or open a PR, as requested.
+Item 07 is implemented; await further instructions before beginning 08–09.
+Keep commits local: do not push or open a PR, as requested.
 The later work items still require their own validation and human review.
