@@ -182,6 +182,18 @@ describe('site-text definitions', () => {
         value.groups[0].id = 'about\n'
       },
     ],
+    [
+      'oversized group identifier',
+      (value) => {
+        value.groups[0].id = 'a'.repeat(129)
+      },
+    ],
+    [
+      'oversized key identifier',
+      (value) => {
+        value.groups[0].sections[0].fields[0].key = 'a'.repeat(129)
+      },
+    ],
   ]
   it.each(mutations)('rejects %s', (_, mutate) => {
     const copy = JSON.parse(JSON.stringify(document)) as typeof document
@@ -213,6 +225,13 @@ describe('site-text definitions', () => {
       group.sections.forEach((section) => section.fields.reverse())
     })
     expect(createSiteTextRegistry(copy)).toEqual(siteTextRegistry)
+  })
+
+  it('accepts identifiers at the storage bound', () => {
+    const copy = JSON.parse(JSON.stringify(document)) as typeof document
+    copy.groups[0].id = 'a'.repeat(128)
+    copy.groups[0].sections[0].fields[0].key = 'a'.repeat(128)
+    expect(createSiteTextRegistry(copy).groups[0].id).toHaveLength(128)
   })
 })
 

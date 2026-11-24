@@ -7,6 +7,7 @@ import type {
 } from '@/types/siteTexts'
 
 const identifier = /^[a-z][a-z0-9]*(?:[.-][a-z0-9]+)*$/u
+const maxIdentifierLength = 128 // Matches the API registry and SiteTexts identifier columns.
 
 /** Validate unknown JSON, not just its TypeScript shape, then freeze all nested definitions. */
 export function createSiteTextRegistry(document: unknown): SiteTextRegistryDefinition {
@@ -33,7 +34,13 @@ export function createSiteTextRegistry(document: unknown): SiteTextRegistryDefin
     for (const value of values) {
       if (!value || typeof value !== 'object') fail('expected definition')
       const id = value[idKey]
-      if (typeof id !== 'string' || !identifier.test(id) || id.trim() !== id || ids.has(id))
+      if (
+        typeof id !== 'string' ||
+        id.length > maxIdentifierLength ||
+        !identifier.test(id) ||
+        id.trim() !== id ||
+        ids.has(id)
+      )
         fail('invalid or duplicate identifier')
       if (
         !Number.isInteger(value.order) ||

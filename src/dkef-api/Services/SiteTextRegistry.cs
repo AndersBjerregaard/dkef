@@ -11,6 +11,9 @@ namespace Dkef.Services;
 /// <summary>Immutable, package-local definitions. All identifiers use exact ordinal matching.</summary>
 public sealed partial class SiteTextRegistry
 {
+    // Storage bound, not a limit on the number of registered groups or fields.
+    public const int MaxIdentifierLength = 128;
+
     private readonly FrozenDictionary<string, SiteTextGroupDefinition> groups;
     private readonly FrozenDictionary<string, FrozenDictionary<string, SiteTextFieldDefinition>> fields;
     public ImmutableArray<SiteTextGroupDefinition> Groups { get; }
@@ -100,7 +103,8 @@ public sealed partial class SiteTextRegistry
         var orders = new HashSet<int>();
         foreach (var value in values)
         {
-            if (value is null || id(value) is not { } identifier || !Identifier().IsMatch(identifier)
+            if (value is null || id(value) is not { } identifier || identifier.Length > MaxIdentifierLength
+                || !Identifier().IsMatch(identifier)
                 || !ids.Add(identifier) || order(value) < 1 || !orders.Add(order(value)))
                 throw new InvalidOperationException($"Invalid/duplicate identifier or order: {scope}.");
         }

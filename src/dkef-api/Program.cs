@@ -320,6 +320,7 @@ try
     builder.Services.AddScoped<IChangeEmailRepository, ChangeEmailRepository>();
     builder.Services.AddScoped<RefreshTokenRepository>();
     builder.Services.AddScoped<ContentRepository>();
+    builder.Services.AddScoped<SiteTextRepository>();
 
     // Services
     builder.Services.AddSingleton<IBucketService, MinioBucketService>(); // Same lifetime scope as the IMinioClient

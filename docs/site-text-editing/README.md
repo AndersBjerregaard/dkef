@@ -39,8 +39,12 @@ registries, immutable accessors, typed wire contracts, and executable value and
 envelope rules. Its implementation at `e7a6f33` was
 [human approved on 2026-11-24](02-definitions-and-contract.md#human-approval-record).
 See its [handoff](02-definitions-and-contract.md#implementation-and-handoff)
-for the contract and validation record. Persistence, HTTP endpoints, frontend
-state/editor, and component bindings remain in 03–09; no editable UI is available yet.
+for the contract and validation record. Item 03 now implements the separate
+override table/migration and transactional PostgreSQL repository, with opt-in
+database tests; it is awaiting human review. See its
+[handoff](03-persistence.md#implementation-and-handoff-to-04) for repository usage,
+validation, and migration/rollback requirements. HTTP endpoints, frontend
+state/editor, and component bindings remain in 04–09; no editable UI is available yet.
 
 ## Scope boundaries and operating rules
 
@@ -48,6 +52,6 @@ Only deliberately approved plain-text slots in About, Home, and Member Advantage
 
 Use [contributing.md](../../contributing.md), the [frontend guide](../../src/dkef-vue/AGENTS.md), and the [API guide](../../src/dkef-api/AGENTS.md) throughout implementation. Confirm disposable local database targets before applying migrations or starting the API: startup migrates all six contexts. Do not execute Ansible playbooks or deploy.
 
-Item 02's human approval is recorded; await further instructions before beginning
-the next work item. Keep commits local: do not push or open a PR, as requested.
+Item 03 is implemented but not yet human approved; await review and further
+instructions before beginning 04. Keep commits local: do not push or open a PR, as requested.
 The later work items still require their own validation and human review.

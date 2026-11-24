@@ -48,6 +48,8 @@ public class SiteTextRegistryTests
     [InlineData("null")]
     [InlineData("empty")]
     [InlineData("identifier")]
+    [InlineData("group-length")]
+    [InlineData("key-length")]
     public void RejectsInvalidDefinitions(string mutation)
     {
         var root = JsonNode.Parse(Json)!;
@@ -79,6 +81,8 @@ public class SiteTextRegistryTests
             case "null": fields[0] = null; break;
             case "empty": fields.Clear(); break;
             case "identifier": group["id"] = "About"; break;
+            case "group-length": group["id"] = new string('a', SiteTextRegistry.MaxIdentifierLength + 1); break;
+            case "key-length": field["key"] = new string('a', SiteTextRegistry.MaxIdentifierLength + 1); break;
         }
         var error = Assert.Throws<InvalidOperationException>(() => SiteTextRegistry.Parse(root.ToJsonString()));
         Assert.StartsWith("Invalid site-text registry:", error.Message);
@@ -90,6 +94,17 @@ public class SiteTextRegistryTests
     [InlineData("{\"groups\":[],\"groups\":[]}")]
     public void RejectsMalformedOrDuplicateJson(string json) =>
         Assert.Throws<InvalidOperationException>(() => SiteTextRegistry.Parse(json));
+
+    [Fact]
+    public void AcceptsIdentifiersAtStorageBound()
+    {
+        var root = JsonNode.Parse(Json)!;
+        var group = root["groups"]![0]!;
+        var identifier = new string('a', SiteTextRegistry.MaxIdentifierLength);
+        group["id"] = identifier;
+        group["sections"]![0]!["fields"]![0]!["key"] = identifier;
+        Assert.True(SiteTextRegistry.Parse(root.ToJsonString()).GetFields(identifier).ContainsKey(identifier));
+    }
 
     [Fact]
     public void MissingFileFailsClearly() =>
