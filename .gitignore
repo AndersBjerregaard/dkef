@@ -8,3 +8,5 @@ src/dkef-vue/AUTH_IMPLEMENTATION.md
 automation/ansible/vars/secrets.yaml
 automation/ansible/.vault_pass
 **/dinero_contacts.csv
+# Playwright CLI output (may contain credentials)
+.playwright-cli/
