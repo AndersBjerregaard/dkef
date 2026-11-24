@@ -51,11 +51,10 @@ public class SiteTextsController(
             // Do not model-bind a dictionary: it would hide duplicate JSON properties from the parser.
             using var body = new MemoryStream();
             var buffer = new byte[8192];
-            while (true)
+            int read;
+            while ((read = await Request.Body.ReadAsync(
+                buffer.AsMemory(0, (int)Math.Min(buffer.Length, maximum - body.Length + 1)), cancellationToken)) > 0)
             {
-                var count = (int)Math.Min(buffer.Length, maximum - body.Length + 1);
-                var read = await Request.Body.ReadAsync(buffer.AsMemory(0, count), cancellationToken);
-                if (read == 0) break;
                 if (body.Length + read > maximum) return RequestError(StatusCodes.Status413PayloadTooLarge);
                 body.Write(buffer, 0, read);
             }
