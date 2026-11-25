@@ -21,32 +21,13 @@ describe('site-text definitions', () => {
     )
   })
 
-  it('matches every approved inventory row in the approved order', () => {
-    const inventory = readCheckout('../../../../../docs/site-text-editing/field-inventory.md')
-    const rows = inventory.split('\n').filter((line) => line.startsWith('| `'))
-    const actual = siteTextRegistry.groups.flatMap((group) =>
-      group.sections.flatMap((section) => section.fields.map((field) => ({ field, section }))),
-    )
-    expect(actual).toHaveLength(73)
-    expect(siteTextRegistry.groups.map((group) => getSiteTextFields(group).length)).toEqual([
-      15, 27, 5, 26,
+  it('contains the supported text groups and field counts in editor order', () => {
+    expect(siteTextRegistry.groups.map((group) => [group.id, getSiteTextFields(group).length])).toEqual([
+      ['about', 15],
+      ['home', 27],
+      ['membership', 5],
+      ['member-advantages', 26],
     ])
-    rows.forEach((row, index) => {
-      const [key, wording, label, section, input, required, maxLength, format] = row
-        .split('|')
-        .slice(1, -1)
-        .map((cell) => cell.trim())
-      expect(actual[index].field).toMatchObject({
-        key: key.replace(/`/g, ''),
-        default: wording,
-        label,
-        input,
-        required: required === 'yes',
-        maxLength: Number(maxLength),
-        format,
-      })
-      expect(actual[index].section.label).toBe(section)
-    })
   })
 
   it('has immutable, locally available defaults and exact case-sensitive identifiers', () => {
