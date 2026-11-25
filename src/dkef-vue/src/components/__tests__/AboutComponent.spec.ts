@@ -140,7 +140,7 @@ describe('About editable text integration', () => {
       '/src/assets/dkef-sections.png',
       '/src/assets/secretary.jpg',
     ])
-    expect(wrapper.findAll('img')[1].attributes('alt')).toBe('secretary')
+    expect(wrapper.findAll('img')[1].attributes('alt')).toBe('DKEF’s sekretær')
     expect(wrapper.findComponent(ContactFormularComponent).exists()).toBe(true)
     expect(wrapper.findAll('form')).toHaveLength(1)
     expect(wrapper.find('a[href^="mailto:"]').exists()).toBe(false)

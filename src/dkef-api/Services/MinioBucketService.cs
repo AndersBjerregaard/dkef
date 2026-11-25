@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 using Minio;
 using Minio.DataModel.Args;
+using Minio.Exceptions;
 
 namespace Dkef.Services;
 
@@ -30,22 +31,7 @@ public class MinioBucketService(
 
     public async Task<string> GetPresignedUrlAsync(string bucket, string objectName, bool isPublic = false)
     {
-        // Admin operations use the internal client so they reach MinIO directly
-        // without routing through the public ingress (which would deny HEAD/POST requests).
-        var internalClient = BuildInternalClient();
-
-        var beArgs = new BucketExistsArgs().WithBucket(bucket);
-        var found = await internalClient.BucketExistsAsync(beArgs);
-
-        if (!found)
-        {
-            await internalClient.MakeBucketAsync(new MakeBucketArgs().WithBucket(bucket));
-
-            if (isPublic)
-            {
-                await SetPublicReadPolicy(internalClient, bucket);
-            }
-        }
+        await EnsureBucketAsync(bucket, isPublic);
 
         // Presigned URL is generated using the public-facing client so the URL
         // it returns contains the public hostname, making it browser-accessible.
@@ -55,15 +41,36 @@ public class MinioBucketService(
             .WithExpiry(3600); // Expiry in seconds
         var presignedUrl = await _minioClient.PresignedPutObjectAsync(psPutArgs);
 
-        // When an external reverse proxy terminates TLS for the public endpoint but
-        // MinIO itself runs over plain HTTP, the SDK generates an http:// URL — which
-        // browsers block as mixed content when the app is served over HTTPS.
-        // Rewriting the scheme is safe: the HMAC signature covers the path and query,
-        // not the scheme, so MinIO's ingress will accept the request over HTTPS.
+        // TLS may terminate at the public reverse proxy; the signature does not cover the scheme.
         if (!_secure && !string.IsNullOrWhiteSpace(_publicEndpoint))
             presignedUrl = "https" + presignedUrl[4..];
 
         return presignedUrl;
+    }
+
+    public async Task EnsureBucketAsync(string bucket, bool isPublic, CancellationToken ct = default)
+    {
+        // Admin operations use the internal client so they reach MinIO directly
+        // without routing through the public ingress (which would deny HEAD/POST requests).
+        using var internalClient = BuildInternalClient();
+
+        var beArgs = new BucketExistsArgs().WithBucket(bucket);
+        var found = await internalClient.BucketExistsAsync(beArgs, ct);
+
+        if (!found)
+        {
+            try
+            {
+                await internalClient.MakeBucketAsync(new MakeBucketArgs().WithBucket(bucket), ct);
+            }
+            catch (MinioException)
+            {
+                // Another first upload may have created the bucket after our existence check.
+                if (!await internalClient.BucketExistsAsync(beArgs, ct)) throw;
+            }
+        }
+        // Also repairs a prior creation where setting the policy failed.
+        if (isPublic) await SetPublicReadPolicy(internalClient, bucket);
     }
 
     public async Task<bool> DeleteObjectAsync(string bucket, string objectName)

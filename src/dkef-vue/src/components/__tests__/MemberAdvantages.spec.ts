@@ -202,9 +202,13 @@ describe('Member Advantages editable text integration', () => {
     expect(wrapper.findAll('img').map((img) => img.attributes('src'))).toEqual(
       [1, 2, 3, 4, 5].map((n) => `/src/assets/advantages${n}.jpeg`),
     )
-    expect(
-      wrapper.findAll('img').every((img) => img.attributes('alt') === 'member advantages'),
-    ).toBe(true)
+    expect(wrapper.findAll('img').map((img) => img.attributes('alt'))).toEqual([
+      'Fagligt netværk',
+      'Arrangement for medlemmer',
+      'Mentorordning',
+      'Faglig sparring',
+      'Faglig viden og inspiration',
+    ])
     expect(wrapper.findAll('p.flex > span:first-child').map((span) => span.text())).toEqual(
       Array(5).fill('•'),
     )

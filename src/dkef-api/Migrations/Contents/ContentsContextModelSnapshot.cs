@@ -72,6 +72,38 @@ namespace Dkef.Migrations.Contents
                     b.UseTphMappingStrategy();
                 });
 
+            modelBuilder.Entity("Dkef.Domain.SiteImage", b =>
+                {
+                    b.Property<string>("Group")
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
+
+                    b.Property<string>("Slot")
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
+
+                    b.Property<string>("Alt")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)");
+
+                    b.Property<string>("ObjectKey")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("UpdatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Group", "Slot");
+
+                    b.ToTable("SiteImages", (string)null);
+                });
+
             modelBuilder.Entity("Dkef.Domain.SiteText", b =>
                 {
                     b.Property<string>("Group")

@@ -2,6 +2,8 @@
 import { computed, onMounted } from 'vue'
 import ContactFormularComponent from '@/components/ContactFormularComponent.vue'
 import SiteTextEditAction from '@/components/SiteTextEditAction.vue'
+import SiteImage from '@/components/SiteImage.vue'
+import SiteImageEditAction from '@/components/SiteImageEditAction.vue'
 import { useSiteTextStore } from '@/stores/siteTextStore'
 
 const siteTexts = useSiteTextStore()
@@ -15,7 +17,10 @@ onMounted(() => {
 
 <template>
   <div class="about-text py-24">
-    <SiteTextEditAction group="about" />
+    <div class="flex flex-wrap justify-center gap-3 px-4">
+      <SiteTextEditAction group="about" />
+      <SiteImageEditAction group="about" />
+    </div>
     <div class="flex-row">
       <div class="flex justify-center items-center pb-4">
         <h1 class="text-4xl">{{ texts['page.title'] }}</h1>
@@ -38,9 +43,10 @@ onMounted(() => {
           <h2 class="text-xl">{{ texts['sections.title'] }}</h2>
         </div>
         <div class="h-80 bg-theme-mute rounded-xl overflow-hidden">
-          <img
+          <SiteImage
             style="width: 100%; height: 100%; object-fit: contain"
-            src="@/assets/dkef-sections.png"
+            group="about"
+            image-slot="sections"
           />
         </div>
       </div>
@@ -87,10 +93,10 @@ onMounted(() => {
         </div>
         <div class="flex justify-center items-center text-center">
           <div class="h-48 w-48 border-2 border-amber-500/30 rounded-full overflow-hidden">
-            <img
+            <SiteImage
               class="h-full w-full object-cover rounded-full"
-              src="@/assets/secretary.jpg"
-              alt="secretary"
+              group="about"
+              image-slot="secretariat"
             />
           </div>
         </div>
