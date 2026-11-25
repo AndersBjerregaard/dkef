@@ -236,7 +236,20 @@ function getAttachmentPresignedUrl(guid: string) {
   }
 }
 
+function getSiteTexts(group: string) {
+  if (mode === 'Development') {
+    throw new Error('Tekstredigering kræver forbindelse til API’et uden for Development-tilstand.')
+  }
+  return `/SiteTexts/${encodeURIComponent(group)}`
+}
+
+function patchSiteTexts(group: string) {
+  return getSiteTexts(group)
+}
+
 export default {
+  getSiteTexts,
+  patchSiteTexts,
   getContacts,
   updateContact,
   deleteContact,

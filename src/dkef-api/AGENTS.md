@@ -4,7 +4,7 @@
 
 - Restore/build/run: `dotnet restore`, `dotnet build`, `dotnet run`
 - Use launch profile when needed: `dotnet run --launch-profile http` (binds `http://localhost:5275`)
-- There is no test project under `src/dkef-api` right now; verify changes with focused API calls against local run.
+- Site-text registry/contract/controller tests: from the repository root, `dotnet test tests/dkef-api.Tests/dkef-api.Tests.csproj`. By default they do not start the API or access a database. Setting `DKEF_TEST_POSTGRES` opts into isolated local PostgreSQL and real HTTP tests; see [the backend validation guide](../../contributing.md#backend-validation). Runtime checks still require confirmed local targets.
 
 ## Wiring that matters
 

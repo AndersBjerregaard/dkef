@@ -49,6 +49,10 @@ try
     // builder.Configuration.AddJsonFile(path: "appsettings.json", optional: false, reloadOnChange: true);
     builder.Configuration.AddJsonFile(path: "appsettings.Local.json", optional: true, reloadOnChange: true);
 
+    // Validate before configuring external services or applying any database migrations.
+    builder.Services.AddSingleton(SiteTextRegistry.Load(
+        Path.Combine(AppContext.BaseDirectory, "Configuration", "siteTextDefinitions.json")));
+
     builder.Services.AddSerilog((services, lc) => lc
         .ReadFrom.Configuration(builder.Configuration)
         .ReadFrom.Services(services)
@@ -316,6 +320,7 @@ try
     builder.Services.AddScoped<IChangeEmailRepository, ChangeEmailRepository>();
     builder.Services.AddScoped<RefreshTokenRepository>();
     builder.Services.AddScoped<ContentRepository>();
+    builder.Services.AddScoped<SiteTextRepository>();
 
     // Services
     builder.Services.AddSingleton<IBucketService, MinioBucketService>(); // Same lifetime scope as the IMinioClient

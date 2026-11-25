@@ -1,0 +1,895 @@
+{
+  "groups": [
+    {
+      "id": "about",
+      "label": "Om foreningen",
+      "order": 1,
+      "sections": [
+        {
+          "id": "page",
+          "label": "Sidehoved",
+          "order": 1,
+          "fields": [
+            {
+              "key": "page.title",
+              "default": "Om Elektroteknisk forening",
+              "label": "Sideoverskrift",
+              "order": 1,
+              "input": "text",
+              "required": true,
+              "maxLength": 60,
+              "format": "plain"
+            },
+            {
+              "key": "page.subtitle",
+              "default": "Vi sætter strøm til elteknik-branchen",
+              "label": "Underoverskrift",
+              "order": 2,
+              "input": "text",
+              "required": true,
+              "maxLength": 60,
+              "format": "plain"
+            }
+          ]
+        },
+        {
+          "id": "introduction",
+          "label": "Foreningen",
+          "order": 2,
+          "fields": [
+            {
+              "key": "introduction.title",
+              "default": "Om foreningen",
+              "label": "Overskrift om foreningen",
+              "order": 1,
+              "input": "text",
+              "required": true,
+              "maxLength": 60,
+              "format": "plain"
+            },
+            {
+              "key": "introduction.description",
+              "default": "Hos Elektroteknisk forening samler vi elbranchen på tværs af faglige nicher, virksomheder og alle med en interesse for området. Vi er en traditionsrig forening, men vi er samtidig et moderne og dynamisk samlingspunkt, der nysgerrigt opsøger nye indsigter og perspektiver. Vores mål er at give vores medlemmer stærke muligheder for at skabe netværk og udvikle sig fagligt gennem både sparring med branchekollegaer og arrangementer.",
+              "label": "Beskrivelse af foreningen",
+              "order": 2,
+              "input": "multiline",
+              "required": true,
+              "maxLength": 450,
+              "format": "plain"
+            },
+            {
+              "key": "sections.title",
+              "default": "Sektioner",
+              "label": "Overskrift over sektionsbilledet",
+              "order": 3,
+              "input": "text",
+              "required": true,
+              "maxLength": 60,
+              "format": "plain"
+            }
+          ]
+        },
+        {
+          "id": "statistics",
+          "label": "Nøgletal",
+          "order": 3,
+          "fields": [
+            {
+              "key": "statistics.members.label",
+              "default": "Medlemmer",
+              "label": "Etiket for medlemstal",
+              "order": 1,
+              "input": "text",
+              "required": true,
+              "maxLength": 40,
+              "format": "plain"
+            },
+            {
+              "key": "statistics.sections.label",
+              "default": "Sektioner",
+              "label": "Etiket for antal sektioner",
+              "order": 2,
+              "input": "text",
+              "required": true,
+              "maxLength": 40,
+              "format": "plain"
+            },
+            {
+              "key": "statistics.founded.label",
+              "default": "Siden",
+              "label": "Etiket for stiftelsesår",
+              "order": 3,
+              "input": "text",
+              "required": true,
+              "maxLength": 40,
+              "format": "plain"
+            }
+          ]
+        },
+        {
+          "id": "secretariat",
+          "label": "Sekretariat",
+          "order": 4,
+          "fields": [
+            {
+              "key": "secretariat.title",
+              "default": "Sekretariat",
+              "label": "Overskrift for sekretariatet",
+              "order": 1,
+              "input": "text",
+              "required": true,
+              "maxLength": 40,
+              "format": "plain"
+            },
+            {
+              "key": "secretariat.name",
+              "default": "Elektroteknisk forening",
+              "label": "Navn",
+              "order": 2,
+              "input": "text",
+              "required": true,
+              "maxLength": 60,
+              "format": "plain"
+            },
+            {
+              "key": "secretariat.address",
+              "default": "Elleholmvej 28C",
+              "label": "Adresse",
+              "order": 3,
+              "input": "text",
+              "required": true,
+              "maxLength": 60,
+              "format": "plain"
+            },
+            {
+              "key": "secretariat.postal-city",
+              "default": "5250 Odense SV",
+              "label": "Postnummer og by",
+              "order": 4,
+              "input": "text",
+              "required": true,
+              "maxLength": 60,
+              "format": "plain"
+            },
+            {
+              "key": "secretariat.phone",
+              "default": "42 57 70 69",
+              "label": "Telefonnummer",
+              "order": 5,
+              "input": "text",
+              "required": true,
+              "maxLength": 25,
+              "format": "phone"
+            },
+            {
+              "key": "secretariat.email",
+              "default": "info@dkef.dk",
+              "label": "E-mailadresse",
+              "order": 6,
+              "input": "text",
+              "required": true,
+              "maxLength": 80,
+              "format": "email"
+            }
+          ]
+        },
+        {
+          "id": "contact",
+          "label": "Kontakt",
+          "order": 5,
+          "fields": [
+            {
+              "key": "contact.title",
+              "default": "Kontakt os",
+              "label": "Overskrift over kontaktformularen",
+              "order": 1,
+              "input": "text",
+              "required": true,
+              "maxLength": 40,
+              "format": "plain"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "home",
+      "label": "Forside",
+      "order": 2,
+      "sections": [
+        {
+          "id": "hero",
+          "label": "Sidehoved",
+          "order": 1,
+          "fields": [
+            {
+              "key": "hero.eyebrow",
+              "default": "Elektroteknisk forening",
+              "label": "Overlinje",
+              "order": 1,
+              "input": "text",
+              "required": true,
+              "maxLength": 60,
+              "format": "plain"
+            },
+            {
+              "key": "hero.title",
+              "default": "Dit netværk i elbranchen",
+              "label": "Hovedoverskrift",
+              "order": 2,
+              "input": "text",
+              "required": true,
+              "maxLength": 100,
+              "format": "plain"
+            },
+            {
+              "key": "hero.description",
+              "default": "Udvid din faglige horisont, bliv en del af fællesskabet og modtag sparring fra erfarne hænder.",
+              "label": "Introduktion",
+              "order": 3,
+              "input": "multiline",
+              "required": true,
+              "maxLength": 300,
+              "format": "plain"
+            }
+          ]
+        },
+        {
+          "id": "companies",
+          "label": "Medlemsvirksomheder",
+          "order": 2,
+          "fields": [
+            {
+              "key": "companies.title",
+              "default": "Vores medlemsvirksomheder",
+              "label": "Overskrift over medlemsvirksomheder",
+              "order": 1,
+              "input": "text",
+              "required": true,
+              "maxLength": 60,
+              "format": "plain"
+            }
+          ]
+        },
+        {
+          "id": "network",
+          "label": "Netværk",
+          "order": 3,
+          "fields": [
+            {
+              "key": "network.eyebrow",
+              "default": "Netværk",
+              "label": "Overlinje",
+              "order": 1,
+              "input": "text",
+              "required": true,
+              "maxLength": 60,
+              "format": "plain"
+            },
+            {
+              "key": "network.title",
+              "default": "Sparring og relationer på tværs af branchen",
+              "label": "Overskrift",
+              "order": 2,
+              "input": "text",
+              "required": true,
+              "maxLength": 100,
+              "format": "plain"
+            },
+            {
+              "key": "network.description",
+              "default": "Med over 550 medlemmer er du garanteret nye forbindelser og indsigter inden for forskellige eltekniske områder.",
+              "label": "Beskrivelse",
+              "order": 3,
+              "input": "multiline",
+              "required": true,
+              "maxLength": 300,
+              "format": "plain"
+            },
+            {
+              "key": "network.action-label",
+              "default": "Medlemsfordele",
+              "label": "Knaptekst",
+              "order": 4,
+              "input": "text",
+              "required": true,
+              "maxLength": 32,
+              "format": "plain"
+            }
+          ]
+        },
+        {
+          "id": "development",
+          "label": "Faglig udvikling",
+          "order": 4,
+          "fields": [
+            {
+              "key": "development.eyebrow",
+              "default": "Udvikling",
+              "label": "Overlinje",
+              "order": 1,
+              "input": "text",
+              "required": true,
+              "maxLength": 60,
+              "format": "plain"
+            },
+            {
+              "key": "development.title",
+              "default": "Fokus på faglig udvikling",
+              "label": "Overskrift",
+              "order": 2,
+              "input": "text",
+              "required": true,
+              "maxLength": 100,
+              "format": "plain"
+            },
+            {
+              "key": "development.description",
+              "default": "Bliv klogere på de nyeste tendenser og andre specialeområder ved at deltage i arrangementer og virksomhedsbesøg.",
+              "label": "Beskrivelse",
+              "order": 3,
+              "input": "multiline",
+              "required": true,
+              "maxLength": 300,
+              "format": "plain"
+            },
+            {
+              "key": "development.action-label",
+              "default": "Bliv medlem",
+              "label": "Knaptekst",
+              "order": 4,
+              "input": "text",
+              "required": true,
+              "maxLength": 32,
+              "format": "plain"
+            }
+          ]
+        },
+        {
+          "id": "reasons",
+          "label": "Grunde til medlemskab",
+          "order": 5,
+          "fields": [
+            {
+              "key": "reasons.eyebrow",
+              "default": "Hvorfor?",
+              "label": "Overlinje",
+              "order": 1,
+              "input": "text",
+              "required": true,
+              "maxLength": 60,
+              "format": "plain"
+            },
+            {
+              "key": "reasons.title",
+              "default": "3 gode grunde til at være medlem",
+              "label": "Overskrift",
+              "order": 2,
+              "input": "text",
+              "required": true,
+              "maxLength": 100,
+              "format": "plain"
+            },
+            {
+              "key": "reasons.description",
+              "default": "Stadig i tvivl? Lad os lige skitsere, hvad du får ud af et medlemskab.",
+              "label": "Introduktion",
+              "order": 3,
+              "input": "multiline",
+              "required": true,
+              "maxLength": 300,
+              "format": "plain"
+            },
+            {
+              "key": "reasons.action-label",
+              "default": "Bliv medlem",
+              "label": "Knaptekst",
+              "order": 4,
+              "input": "text",
+              "required": true,
+              "maxLength": 32,
+              "format": "plain"
+            },
+            {
+              "key": "reasons.sparring.title",
+              "default": "Sparring",
+              "label": "Overskrift om sparring",
+              "order": 5,
+              "input": "text",
+              "required": true,
+              "maxLength": 60,
+              "format": "plain"
+            },
+            {
+              "key": "reasons.sparring.description",
+              "default": "Diskuter og udveksl ideer med andre",
+              "label": "Beskrivelse af sparring",
+              "order": 6,
+              "input": "multiline",
+              "required": true,
+              "maxLength": 150,
+              "format": "plain"
+            },
+            {
+              "key": "reasons.network.title",
+              "default": "Netværk",
+              "label": "Overskrift om netværk",
+              "order": 7,
+              "input": "text",
+              "required": true,
+              "maxLength": 60,
+              "format": "plain"
+            },
+            {
+              "key": "reasons.network.description",
+              "default": "Få nye forbindelser — og måske venskaber",
+              "label": "Beskrivelse af netværk",
+              "order": 8,
+              "input": "multiline",
+              "required": true,
+              "maxLength": 150,
+              "format": "plain"
+            },
+            {
+              "key": "reasons.development.title",
+              "default": "Faglig udvikling",
+              "label": "Overskrift om faglig udvikling",
+              "order": 9,
+              "input": "text",
+              "required": true,
+              "maxLength": 60,
+              "format": "plain"
+            },
+            {
+              "key": "reasons.development.description",
+              "default": "Styrk kompetencer og opnå ny viden",
+              "label": "Beskrivelse af faglig udvikling",
+              "order": 10,
+              "input": "multiline",
+              "required": true,
+              "maxLength": 150,
+              "format": "plain"
+            }
+          ]
+        },
+        {
+          "id": "plans",
+          "label": "Medlemskab",
+          "order": 6,
+          "fields": [
+            {
+              "key": "plans.title",
+              "default": "Vores medlemstyper",
+              "label": "Overskrift over medlemskort",
+              "order": 1,
+              "input": "text",
+              "required": true,
+              "maxLength": 100,
+              "format": "plain"
+            },
+            {
+              "key": "plan.title",
+              "default": "Bliv medlem",
+              "label": "Overskrift på medlemskort",
+              "order": 2,
+              "input": "text",
+              "required": true,
+              "maxLength": 60,
+              "format": "plain"
+            },
+            {
+              "key": "plan.description",
+              "default": "Giv dig selv de bedste betingelser for et stærkt uddannelsesforløb.",
+              "label": "Beskrivelse på medlemskort",
+              "order": 3,
+              "input": "multiline",
+              "required": true,
+              "maxLength": 200,
+              "format": "plain"
+            },
+            {
+              "key": "plan.activities-description",
+              "default": "Deltag i studieture, del ud af din viden og styrk dit arbejdsnetværk.",
+              "label": "Beskrivelse af aktiviteter",
+              "order": 4,
+              "input": "multiline",
+              "required": true,
+              "maxLength": 200,
+              "format": "plain"
+            },
+            {
+              "key": "plan.action-label",
+              "default": "Bliv medlem",
+              "label": "Knaptekst på medlemskort",
+              "order": 5,
+              "input": "text",
+              "required": true,
+              "maxLength": 32,
+              "format": "plain"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "membership",
+      "label": "Fælles medlemsfordele",
+      "order": 3,
+      "sections": [
+        {
+          "id": "benefits",
+          "label": "Medlemsfordele",
+          "order": 1,
+          "fields": [
+            {
+              "key": "benefits.development",
+              "default": "Faglig udvikling",
+              "label": "Faglig udvikling",
+              "order": 1,
+              "input": "text",
+              "required": true,
+              "maxLength": 60,
+              "format": "plain"
+            },
+            {
+              "key": "benefits.network",
+              "default": "Styrk dit netværk",
+              "label": "Netværk",
+              "order": 2,
+              "input": "text",
+              "required": true,
+              "maxLength": 60,
+              "format": "plain"
+            },
+            {
+              "key": "benefits.mentoring",
+              "default": "Mentorordning",
+              "label": "Mentorordning",
+              "order": 3,
+              "input": "text",
+              "required": true,
+              "maxLength": 60,
+              "format": "plain"
+            },
+            {
+              "key": "benefits.events",
+              "default": "Studieture og arrangementer",
+              "label": "Studieture og arrangementer",
+              "order": 4,
+              "input": "text",
+              "required": true,
+              "maxLength": 60,
+              "format": "plain"
+            },
+            {
+              "key": "benefits.magazine",
+              "default": "Modtag EL + Energi bladet",
+              "label": "Fagblad",
+              "order": 5,
+              "input": "text",
+              "required": true,
+              "maxLength": 60,
+              "format": "plain"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "member-advantages",
+      "label": "Medlemsfordele",
+      "order": 4,
+      "sections": [
+        {
+          "id": "page",
+          "label": "Sidehoved",
+          "order": 1,
+          "fields": [
+            {
+              "key": "page.title",
+              "default": "Medlemsfordele",
+              "label": "Sideoverskrift",
+              "order": 1,
+              "input": "text",
+              "required": true,
+              "maxLength": 100,
+              "format": "plain"
+            }
+          ]
+        },
+        {
+          "id": "introduction",
+          "label": "Introduktion",
+          "order": 2,
+          "fields": [
+            {
+              "key": "introduction.eyebrow",
+              "default": "Medlemskab",
+              "label": "Overlinje",
+              "order": 1,
+              "input": "text",
+              "required": true,
+              "maxLength": 60,
+              "format": "plain"
+            },
+            {
+              "key": "introduction.title",
+              "default": "Bliv medlem af Elektroteknisk forening i dag",
+              "label": "Overskrift",
+              "order": 2,
+              "input": "text",
+              "required": true,
+              "maxLength": 100,
+              "format": "plain"
+            },
+            {
+              "key": "introduction.description",
+              "default": "Udvid dit netværk, opnå nye kompetencer, og accelerér din udvikling som studerende i elbranchen med overskuelige priser",
+              "label": "Beskrivelse",
+              "order": 3,
+              "input": "multiline",
+              "required": true,
+              "maxLength": 300,
+              "format": "plain"
+            },
+            {
+              "key": "introduction.action-label",
+              "default": "Bliv medlem",
+              "label": "Knaptekst",
+              "order": 4,
+              "input": "text",
+              "required": true,
+              "maxLength": 32,
+              "format": "plain"
+            }
+          ]
+        },
+        {
+          "id": "membership",
+          "label": "Medlemskab",
+          "order": 3,
+          "fields": [
+            {
+              "key": "membership.title",
+              "default": "Medlemskab",
+              "label": "Overskrift over medlemsfordele",
+              "order": 1,
+              "input": "text",
+              "required": true,
+              "maxLength": 60,
+              "format": "plain"
+            }
+          ]
+        },
+        {
+          "id": "student-offers",
+          "label": "Studentertilbud",
+          "order": 4,
+          "fields": [
+            {
+              "key": "student-offers.title",
+              "default": "Tilbud til studerende",
+              "label": "Overskrift over studentertilbud",
+              "order": 1,
+              "input": "text",
+              "required": true,
+              "maxLength": 60,
+              "format": "plain"
+            },
+            {
+              "key": "student-offers.mentoring",
+              "default": "Mentorordning",
+              "label": "Mentorordning for studerende",
+              "order": 2,
+              "input": "text",
+              "required": true,
+              "maxLength": 60,
+              "format": "plain"
+            },
+            {
+              "key": "student-offers.network-meetings",
+              "default": "Fagligt aktuelle netværksmøder",
+              "label": "Netværksmøder",
+              "order": 3,
+              "input": "text",
+              "required": true,
+              "maxLength": 60,
+              "format": "plain"
+            },
+            {
+              "key": "student-offers.project-network",
+              "default": "Netværksdatabase til projektskrivning",
+              "label": "Projektnetværk",
+              "order": 4,
+              "input": "text",
+              "required": true,
+              "maxLength": 60,
+              "format": "plain"
+            },
+            {
+              "key": "student-offers.jobs",
+              "default": "Måske det er her du finder dit kommende job",
+              "label": "Jobmuligheder",
+              "order": 5,
+              "input": "text",
+              "required": true,
+              "maxLength": 60,
+              "format": "plain"
+            },
+            {
+              "key": "student-offers.included-benefits",
+              "default": "Inkl. alle fordele som andre medlemmer",
+              "label": "Øvrige medlemsfordele",
+              "order": 6,
+              "input": "text",
+              "required": true,
+              "maxLength": 60,
+              "format": "plain"
+            }
+          ]
+        },
+        {
+          "id": "network",
+          "label": "Netværk",
+          "order": 5,
+          "fields": [
+            {
+              "key": "network.eyebrow",
+              "default": "Netværk",
+              "label": "Overlinje",
+              "order": 1,
+              "input": "text",
+              "required": true,
+              "maxLength": 60,
+              "format": "plain"
+            },
+            {
+              "key": "network.title",
+              "default": "Få adgang til netværksdatabase",
+              "label": "Overskrift",
+              "order": 2,
+              "input": "text",
+              "required": true,
+              "maxLength": 100,
+              "format": "plain"
+            },
+            {
+              "key": "network.description",
+              "default": "Søger du specifikke kompetencer og indsigter i elbranchen? Som medlem i Elektroteknisk forening har du adgang til en komplet oversigt over andre medlemmer, som du kan søge sparring og ekspertise hos.",
+              "label": "Beskrivelse",
+              "order": 3,
+              "input": "multiline",
+              "required": true,
+              "maxLength": 300,
+              "format": "plain"
+            }
+          ]
+        },
+        {
+          "id": "events",
+          "label": "Arrangementer",
+          "order": 6,
+          "fields": [
+            {
+              "key": "events.eyebrow",
+              "default": "Arrangementer",
+              "label": "Overlinje",
+              "order": 1,
+              "input": "text",
+              "required": true,
+              "maxLength": 60,
+              "format": "plain"
+            },
+            {
+              "key": "events.title",
+              "default": "Deltag i arrangementer og studieture",
+              "label": "Overskrift",
+              "order": 2,
+              "input": "text",
+              "required": true,
+              "maxLength": 100,
+              "format": "plain"
+            },
+            {
+              "key": "events.description",
+              "default": "Vil du styrke din faglighed og få et bredt kendskab til elbranchen? I Elektroteknisk forening afholder vi studieture og besøger virksomheder, så du kan udvikle dine kompetencer og opnå ny viden.",
+              "label": "Beskrivelse",
+              "order": 3,
+              "input": "multiline",
+              "required": true,
+              "maxLength": 300,
+              "format": "plain"
+            }
+          ]
+        },
+        {
+          "id": "other-benefits",
+          "label": "Andre fordele",
+          "order": 7,
+          "fields": [
+            {
+              "key": "other-benefits.eyebrow",
+              "default": "Fordele",
+              "label": "Overlinje",
+              "order": 1,
+              "input": "text",
+              "required": true,
+              "maxLength": 60,
+              "format": "plain"
+            },
+            {
+              "key": "other-benefits.title",
+              "default": "Andre gode grunde til at være med i Elektroteknisk forening",
+              "label": "Overskrift",
+              "order": 2,
+              "input": "text",
+              "required": true,
+              "maxLength": 100,
+              "format": "plain"
+            },
+            {
+              "key": "mentoring.title",
+              "default": "Bliv en del af vores mentorordning",
+              "label": "Overskrift om mentorordning",
+              "order": 3,
+              "input": "text",
+              "required": true,
+              "maxLength": 100,
+              "format": "plain"
+            },
+            {
+              "key": "mentoring.description",
+              "default": "Som erfarent medlem i Elektroteknisk forening kan du dele ud af din viden ved at tage en studerende i elbranchen under dine vinger — og som studerende kan du sætte skub på din faglige udvikling med en personlig mentor.",
+              "label": "Beskrivelse af mentorordning",
+              "order": 4,
+              "input": "multiline",
+              "required": true,
+              "maxLength": 300,
+              "format": "plain"
+            },
+            {
+              "key": "sparring.title",
+              "default": "Søg sparring på tværs af branchen",
+              "label": "Overskrift om sparring",
+              "order": 5,
+              "input": "text",
+              "required": true,
+              "maxLength": 100,
+              "format": "plain"
+            },
+            {
+              "key": "sparring.description",
+              "default": "Lad dig inspirere af andre, og lad andre inspirere af dig. Elektroteknisk forening giver dig den ideelle platform til at udveksle og diskutere faglige indsigter med branchekollegaer fordelt over et væld af fagnicher.",
+              "label": "Beskrivelse af sparring",
+              "order": 6,
+              "input": "multiline",
+              "required": true,
+              "maxLength": 300,
+              "format": "plain"
+            },
+            {
+              "key": "magazine.title",
+              "default": "Få gratis abonnement på EL+ENERGI",
+              "label": "Overskrift om fagblad",
+              "order": 7,
+              "input": "text",
+              "required": true,
+              "maxLength": 100,
+              "format": "plain"
+            },
+            {
+              "key": "magazine.description",
+              "default": "Som medlem i Elektroteknisk forening modtager du hvert kvartal gratis den seneste udgave af fagbladet EL+ENERGI hvori du kan finde nyheder og faglige informationer om alt, der rør sig inden for el, energi og installation.",
+              "label": "Beskrivelse af fagblad",
+              "order": 8,
+              "input": "multiline",
+              "required": true,
+              "maxLength": 300,
+              "format": "plain"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

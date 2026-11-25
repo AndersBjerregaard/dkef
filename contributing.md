@@ -109,7 +109,9 @@ dotnet restore
 dotnet build
 ```
 
-Run applicable .NET tests if test projects exist in the affected area. The API currently has no test project; use focused local API checks when behavior needs runtime verification. Before `dotnet run`, confirm that connection strings and optional `appsettings.Local.json` point to disposable/local development resources, because startup migrates all six EF contexts.
+Run applicable .NET tests in the affected area. Site-text registry/contract/controller tests run from the repository root with `dotnet test tests/dkef-api.Tests/dkef-api.Tests.csproj` without starting the API or accessing a database by default. Use focused local API checks when behavior needs runtime verification. Before `dotnet run`, confirm that connection strings and optional `appsettings.Local.json` point to disposable/local development resources, because startup migrates all six EF contexts.
+
+To include the opt-in site-text PostgreSQL and real HTTP tests, first confirm that the Docker context and PostgreSQL instance are local/disposable. Set `DKEF_TEST_POSTGRES` securely to a loopback maintenance connection, for example `Host=127.0.0.1;Port=5432;Database=postgres;Username=<local-role>;Password=<local-password>`, then run the same test command. The role must be able to create/drop test databases; never commit credentials. With Windows-hosted `dotnet.exe` under WSL, also add `DKEF_TEST_POSTGRES` to `WSLENV`. The fixture rejects non-loopback hosts, creates a unique `dkef_site_text_tests_<guid>` database, applies migrations only there, and drops it on teardown. HTTP tests use an ephemeral loopback server; they do not invoke application startup or read application connection settings.
 
 When a schema change requires a migration, use an explicit context and output directory, for example from `src/dkef-api`:
 
