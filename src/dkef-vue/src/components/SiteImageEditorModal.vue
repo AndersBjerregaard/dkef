@@ -60,7 +60,7 @@ watch(
     <p v-if="store.saving[group]" role="status">Gemmer billede…</p>
     <div v-if="error" role="alert" class="pb-4">
       <p>{{ error }}</p>
-      <button type="button" class="underline" @click="load">Prøv igen</button>
+      <button type="button" class="cursor-pointer underline" @click="load">Prøv igen</button>
     </div>
     <p v-if="!auth.isAdmin" role="alert">
       Du skal være logget ind som administrator for at gemme. Dine valgte billeder er bevaret,

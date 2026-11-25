@@ -95,7 +95,7 @@ onBeforeUnmount(clear)
       type="file"
       :accept="siteImageAccept"
       :disabled="busy || !auth.isAdmin"
-      class="block w-full text-sm pb-3"
+      class="block w-full min-w-0 cursor-pointer bg-theme-soft border border-theme-border rounded-xl p-2 mb-3 text-sm text-theme-text hover:bg-theme-mute focus:outline-none focus:ring-2 focus:ring-theme-accent file:mr-3 file:cursor-pointer file:rounded-lg file:border-0 file:bg-theme-mute file:px-3 file:py-2 file:font-semibold file:text-theme-heading disabled:cursor-not-allowed disabled:opacity-50 disabled:file:cursor-not-allowed"
       @change="select"
     />
     <form v-if="file" class="space-y-3" @submit.prevent="save()">
@@ -117,11 +117,16 @@ onBeforeUnmount(clear)
         <button
           type="submit"
           :disabled="busy || !auth.isAdmin || !validAlt"
-          class="rounded border border-theme-border px-3 py-2 disabled:opacity-50"
+          class="cursor-pointer rounded border border-theme-border px-3 py-2 disabled:cursor-not-allowed disabled:opacity-50"
         >
           Gem billede
         </button>
-        <button type="button" :disabled="busy" class="underline" @click="clear()">
+        <button
+          type="button"
+          :disabled="busy"
+          class="cursor-pointer underline disabled:cursor-not-allowed disabled:opacity-50"
+          @click="clear()"
+        >
           Annuller valg
         </button>
       </div>
@@ -131,7 +136,7 @@ onBeforeUnmount(clear)
         v-if="!resetRequested"
         type="button"
         :disabled="busy || !auth.isAdmin"
-        class="underline disabled:opacity-50"
+        class="cursor-pointer underline disabled:cursor-not-allowed disabled:opacity-50"
         @click="resetRequested = true"
       >
         Gendan standardbillede
@@ -142,12 +147,17 @@ onBeforeUnmount(clear)
           <button
             type="button"
             :disabled="busy || !auth.isAdmin"
-            class="underline"
+            class="cursor-pointer underline disabled:cursor-not-allowed disabled:opacity-50"
             @click="save(true)"
           >
             Ja, gendan standardbillede
           </button>
-          <button type="button" :disabled="busy" class="underline" @click="resetRequested = false">
+          <button
+            type="button"
+            :disabled="busy"
+            class="cursor-pointer underline disabled:cursor-not-allowed disabled:opacity-50"
+            @click="resetRequested = false"
+          >
             Annuller
           </button>
         </div>

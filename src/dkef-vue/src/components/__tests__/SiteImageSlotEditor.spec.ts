@@ -5,6 +5,7 @@ import { AxiosHeaders, type AxiosResponse } from 'axios'
 import SiteImageSlotEditor from '../SiteImageSlotEditor.vue'
 import { getSiteImageSlot } from '@/content/siteImages'
 import { useAuthStore } from '@/stores/authStore'
+import { useSiteImageStore } from '@/stores/siteImageStore'
 import apiservice from '@/services/apiservice'
 
 vi.mock('@/services/apiservice', () => ({
@@ -41,6 +42,34 @@ beforeEach(() => {
 afterEach(() => vi.unstubAllGlobals())
 
 describe('image editor draft', () => {
+  it('provides a labelled, visibly styled file picker and disables it while saving', async () => {
+    const wrapper = mount(SiteImageSlotEditor, {
+      props: { group: 'home', slotDefinition: getSiteImageSlot('home', 'hero') },
+    })
+    const picker = wrapper.get<HTMLInputElement>('input[type=file]')
+    expect(wrapper.get('label').attributes('for')).toBe(picker.attributes('id'))
+    expect(picker.classes()).toEqual(
+      expect.arrayContaining(['cursor-pointer', 'border', 'bg-theme-soft', 'file:cursor-pointer']),
+    )
+    expect(picker.element.disabled).toBe(false)
+    let finishSave!: (value: AxiosResponse) => void
+    vi.mocked(apiservice.delete).mockReturnValueOnce(
+      new Promise<AxiosResponse>((resolve) => {
+        finishSave = resolve
+      }),
+    )
+    const saving = useSiteImageStore().change('home', 'hero')
+    await flushPromises()
+    expect(picker.element.disabled).toBe(true)
+    expect(picker.classes()).toContain('disabled:cursor-not-allowed')
+    finishSave(response(null))
+    await saving
+    useAuthStore().user!.roles = ['Member']
+    await flushPromises()
+    expect(picker.element.disabled).toBe(true)
+    wrapper.unmount()
+  })
+
   it('does not upload until save; keeps a failed draft and releases the preview after success', async () => {
     const wrapper = mount(SiteImageSlotEditor, {
       props: { group: 'home', slotDefinition: getSiteImageSlot('home', 'hero') },

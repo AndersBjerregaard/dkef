@@ -12,7 +12,7 @@ const isOpen = ref(false)
   <button
     v-if="auth.isAdmin"
     type="button"
-    class="rounded-lg border border-theme-border bg-theme-soft px-4 py-2 text-theme-heading hover:text-theme-accent focus-visible:ring-2 focus-visible:ring-theme-accent"
+    class="cursor-pointer rounded-lg border border-theme-border bg-theme-soft px-4 py-2 text-theme-heading hover:text-theme-accent focus-visible:ring-2 focus-visible:ring-theme-accent"
     @click="isOpen = true"
   >
     Rediger billeder
