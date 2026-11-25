@@ -7,7 +7,7 @@ import { validateSiteTextValue } from '@/content/siteTextRules'
 import { useAuthStore } from '@/stores/authStore'
 import { useSiteTextStore } from '@/stores/siteTextStore'
 
-const props = defineProps<{ isOpen: boolean; group: string }>()
+const props = defineProps<{ isOpen: boolean; group: string; description?: string }>()
 const emit = defineEmits<{ close: [] }>()
 const auth = useAuthStore()
 const store = useSiteTextStore()
@@ -166,6 +166,7 @@ const fieldId = (key: string) => `${id}-${key}`
       class="space-y-5 text-theme-text"
       @submit.prevent="save"
     >
+      <p v-if="description">{{ description }}</p>
       <p v-if="loading" role="status">Henter tekster…</p>
       <div v-if="loadError" role="alert" class="space-y-2">
         <p>{{ loadError }}</p>

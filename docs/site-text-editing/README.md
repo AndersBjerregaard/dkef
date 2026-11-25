@@ -59,8 +59,10 @@ implementation at `bc9ee61` was
 API-client behavior, and validation results. Item 06 now implements the shared
 registry-driven administrator editor; see its [handoff](06-editor.md#implementation-and-handoff-to-0709).
 Item 07 connects all 15 approved About slots and its Admin editing action; see its
-[handoff and validation](07-about.md#implementation-and-handoff). Both implementations
-await human review. Home and Member Advantages bindings remain in 08–09.
+[handoff and validation](07-about.md#implementation-and-handoff). Item 08 connects
+all 27 Home fields and the five shared membership benefits with separate editing
+actions; see its [handoff and validation](08-home.md#implementation-and-handoff).
+Items 06–08 await human review. Member Advantages bindings remain in 09.
 
 ## Scope boundaries and operating rules
 
@@ -68,6 +70,6 @@ Only deliberately approved plain-text slots in About, Home, and Member Advantage
 
 Use [contributing.md](../../contributing.md), the [frontend guide](../../src/dkef-vue/AGENTS.md), and the [API guide](../../src/dkef-api/AGENTS.md) throughout implementation. Confirm disposable local database targets before applying migrations or starting the API: startup migrates all six contexts. Do not execute Ansible playbooks or deploy.
 
-Item 07 is implemented; await further instructions before beginning 08–09.
+Items 07–08 are implemented; await further instructions before beginning 09.
 Keep commits local: do not push or open a PR, as requested.
 The later work items still require their own validation and human review.
