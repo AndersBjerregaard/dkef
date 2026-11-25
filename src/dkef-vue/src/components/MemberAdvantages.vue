@@ -2,6 +2,8 @@
 import { useRouter } from 'vue-router'
 import { computed, onMounted } from 'vue'
 import SiteTextEditAction from '@/components/SiteTextEditAction.vue'
+import SiteImage from '@/components/SiteImage.vue'
+import SiteImageEditAction from '@/components/SiteImageEditAction.vue'
 import { useSiteTextStore } from '@/stores/siteTextStore'
 
 const router = useRouter()
@@ -29,6 +31,7 @@ async function goto(view: string) {
     </div>
     <div class="flex flex-wrap justify-center gap-3 px-4">
       <SiteTextEditAction group="member-advantages" label="Rediger sidens tekster" />
+      <SiteImageEditAction group="member-advantages" />
       <SiteTextEditAction
         group="membership"
         label="Rediger fælles medlemsfordele"
@@ -123,10 +126,10 @@ async function goto(view: string) {
       </div>
 
       <div class="hidden sm:flex w-96 gap-4 items-start">
-        <img
+        <SiteImage
           class="rounded-xl object-cover w-full"
-          src="@/assets/advantages1.jpeg"
-          alt="member advantages"
+          group="member-advantages"
+          image-slot="network"
         />
       </div>
     </div>
@@ -149,10 +152,10 @@ async function goto(view: string) {
       </div>
 
       <div class="hidden sm:flex w-96 gap-4 items-start">
-        <img
+        <SiteImage
           class="rounded-xl object-cover w-full"
-          src="@/assets/advantages2.jpeg"
-          alt="member advantages"
+          group="member-advantages"
+          image-slot="events"
         />
       </div>
     </div>
@@ -177,10 +180,10 @@ async function goto(view: string) {
           class="w-72 bg-theme-mute rounded-2xl border border-theme-border hover:border-amber-500/40 transition-all duration-300 shadow-lg hover:-translate-y-1 overflow-hidden"
         >
           <div class="h-44 overflow-hidden">
-            <img
+            <SiteImage
               class="w-full h-full object-cover"
-              src="@/assets/advantages3.jpeg"
-              alt="member advantages"
+              group="member-advantages"
+              image-slot="mentoring"
             />
           </div>
           <div class="p-5">
@@ -198,10 +201,10 @@ async function goto(view: string) {
           class="w-72 bg-theme-mute rounded-2xl border border-theme-border hover:border-amber-500/40 transition-all duration-300 shadow-lg hover:-translate-y-1 overflow-hidden"
         >
           <div class="h-44 overflow-hidden">
-            <img
+            <SiteImage
               class="w-full h-full object-cover"
-              src="@/assets/advantages4.jpeg"
-              alt="member advantages"
+              group="member-advantages"
+              image-slot="sparring"
             />
           </div>
           <div class="p-5">
@@ -219,10 +222,10 @@ async function goto(view: string) {
           class="w-72 bg-theme-mute rounded-2xl border border-theme-border hover:border-amber-500/40 transition-all duration-300 shadow-lg hover:-translate-y-1 overflow-hidden"
         >
           <div class="h-44 overflow-hidden">
-            <img
+            <SiteImage
               class="w-full h-full object-cover"
-              src="@/assets/advantages5.jpeg"
-              alt="member advantages"
+              group="member-advantages"
+              image-slot="magazine"
             />
           </div>
           <div class="p-5">

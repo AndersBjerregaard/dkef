@@ -173,7 +173,7 @@ const fieldId = (key: string) => `${id}-${key}`
         <button
           v-if="definition"
           type="button"
-          class="underline focus-visible:ring-2 focus-visible:ring-theme-accent"
+          class="cursor-pointer underline focus-visible:ring-2 focus-visible:ring-theme-accent"
           @click="load"
         >
           Prøv igen
@@ -243,14 +243,14 @@ const fieldId = (key: string) => `${id}-${key}`
         <button
           type="submit"
           :disabled="!canSave"
-          class="rounded-lg border border-theme-border bg-theme-soft px-4 py-2 font-semibold text-theme-heading hover:text-theme-accent focus-visible:ring-2 focus-visible:ring-theme-accent disabled:opacity-50"
+          class="cursor-pointer rounded-lg border border-theme-border bg-theme-soft px-4 py-2 font-semibold text-theme-heading hover:text-theme-accent focus-visible:ring-2 focus-visible:ring-theme-accent disabled:cursor-not-allowed disabled:opacity-50"
         >
           Gem ændringer
         </button>
         <button
           type="button"
           :disabled="saving"
-          class="rounded-lg border border-theme-border px-4 py-2 text-theme-heading hover:text-theme-accent focus-visible:ring-2 focus-visible:ring-theme-accent disabled:opacity-50"
+          class="cursor-pointer rounded-lg border border-theme-border px-4 py-2 text-theme-heading hover:text-theme-accent focus-visible:ring-2 focus-visible:ring-theme-accent disabled:cursor-not-allowed disabled:opacity-50"
           @click="close"
         >
           Annuller

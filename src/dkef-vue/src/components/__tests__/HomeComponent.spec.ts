@@ -205,15 +205,15 @@ describe('Home editable text integration', () => {
     expect(wrapper.text()).toContain('inkl. moms pr. år')
     expect(wrapper.findComponent(MigrationBanner).exists()).toBe(true)
     expect(wrapper.findAll('img').map((img) => img.attributes('alt'))).toEqual([
-      'An electrical mast',
+      'Elmast',
       'CUBIC',
       'LEDVANCE',
       'WEXOE',
       'Schneider',
       'Lauritz Knudsen',
       'Solar',
-      'Man studying',
-      'Corporate woman',
+      'Mand, der studerer',
+      'Kvinde på arbejde',
     ])
     expect(wrapper.findAll('img').map((img) => img.attributes('src'))).toEqual([
       '/src/assets/el-mast.jpeg',

@@ -3,6 +3,8 @@ import { useRouter } from 'vue-router'
 import { computed, onMounted } from 'vue'
 import MigrationBanner from '@/components/MigrationBanner.vue'
 import SiteTextEditAction from '@/components/SiteTextEditAction.vue'
+import SiteImage from '@/components/SiteImage.vue'
+import SiteImageEditAction from '@/components/SiteImageEditAction.vue'
 import { useSiteTextStore } from '@/stores/siteTextStore'
 
 const router = useRouter()
@@ -33,6 +35,7 @@ async function register() {
   <div class="home-text">
     <div class="flex flex-wrap justify-center gap-3 px-4">
       <SiteTextEditAction group="home" label="Rediger forsidens tekster" />
+      <SiteImageEditAction group="home" />
       <SiteTextEditAction
         group="membership"
         label="Rediger fælles medlemsfordele"
@@ -60,7 +63,7 @@ async function register() {
         </div>
 
         <div class="w-full md:w-96 px-2">
-          <img class="rounded-xl w-full" src="@/assets/el-mast.jpeg" alt="An electrical mast" />
+          <SiteImage class="rounded-xl w-full" group="home" image-slot="hero" />
         </div>
       </div>
     </div>
@@ -120,7 +123,7 @@ async function register() {
     <div class="bg-theme-soft border-y border-amber-500/10 px-4 py-12 sm:py-20">
       <div class="flex flex-col md:flex-row justify-center items-center gap-x-12">
         <div class="hidden sm:flex w-full md:w-96 px-2">
-          <img class="rounded-xl w-full" src="@/assets/man-studying.png" alt="Man studying" />
+          <SiteImage class="rounded-xl w-full" group="home" image-slot="network" />
         </div>
 
         <div class="w-full md:w-96 px-2 pb-8 md:pb-0">
@@ -169,7 +172,7 @@ async function register() {
         </div>
 
         <div class="hidden sm:flex w-full md:w-96 px-2">
-          <img class="rounded-xl w-full" src="@/assets/corporate-woman.png" alt="Corporate woman" />
+          <SiteImage class="rounded-xl w-full" group="home" image-slot="development" />
         </div>
       </div>
     </div>

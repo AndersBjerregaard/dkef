@@ -321,11 +321,13 @@ try
     builder.Services.AddScoped<RefreshTokenRepository>();
     builder.Services.AddScoped<ContentRepository>();
     builder.Services.AddScoped<SiteTextRepository>();
+    builder.Services.AddScoped<ISiteImageRepository, SiteImageRepository>();
 
     // Services
     builder.Services.AddSingleton<IBucketService, MinioBucketService>(); // Same lifetime scope as the IMinioClient
     builder.Services.AddScoped<IJwtService, JwtService>();
     builder.Services.AddScoped<ImageCleanupService>();
+    builder.Services.AddScoped<ISiteImageStorage, SiteImageStorage>();
 
     bool useSmtp = bool.Parse(builder.Configuration["UseSmtp"] ?? "false");
     builder.Services.AddOptions<MailConfiguration>()

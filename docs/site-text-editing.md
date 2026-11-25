@@ -15,6 +15,8 @@ When logged in with the `Admin` role, use the relevant **Rediger tekster** actio
 
 Components retain control over layout, images, links, and the number/order of sections and list entries. Text is rendered as plain text, not HTML. Editing displayed prices does not change membership fees or other business rules; statistics values and dynamic event data remain outside the editor. There are no drafts, approval workflows, scheduling, revision history, or reset-to-default action.
 
+Main page images have a separate [administrator image editor](site-image-editing.md); they are not stored or edited as site text.
+
 ## Technical implementation
 
 ### Definitions and frontend

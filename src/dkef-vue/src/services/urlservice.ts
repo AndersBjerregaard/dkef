@@ -247,7 +247,20 @@ function patchSiteTexts(group: string) {
   return getSiteTexts(group)
 }
 
+function getSiteImages(group: string) {
+  if (mode === 'Development') {
+    throw new Error('Billedredigering kræver forbindelse til API’et uden for Development-tilstand.')
+  }
+  return `/SiteImages/${encodeURIComponent(group)}`
+}
+
+function siteImage(group: string, slot: string) {
+  return `${getSiteImages(group)}/${encodeURIComponent(slot)}`
+}
+
 export default {
+  getSiteImages,
+  siteImage,
   getSiteTexts,
   patchSiteTexts,
   getContacts,

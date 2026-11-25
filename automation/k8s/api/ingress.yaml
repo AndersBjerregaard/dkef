@@ -6,6 +6,8 @@ metadata:
     app: dkef-api
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
+    # Site-image uploads allow 5 MiB plus multipart overhead; the API enforces the exact bound.
+    nginx.ingress.kubernetes.io/proxy-body-size: "6m"
 spec:
   ingressClassName: nginx
   tls:
