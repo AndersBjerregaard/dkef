@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, watch, type Ref } from 'vue'
 import { v4 as uuidv4 } from 'uuid'
-import axios from 'axios'
+import { getStorageFileError, STORAGE_UPLOAD_HINT, uploadFile } from '@/utils/storageUploads'
 import type { AxiosResponse } from 'axios'
 import BaseModal from '@/components/BaseModal.vue'
 import AttachmentUploader from '@/components/AttachmentUploader.vue'
@@ -35,7 +35,7 @@ const itemAttachments: Ref<AttachmentItem[]> = ref([])
 const attachmentUploaderRef: Ref<InstanceType<typeof AttachmentUploader> | null> = ref(null)
 
 const isLoading: Ref<boolean> = ref(false)
-const fileUploadError: Ref<boolean> = ref(false)
+const fileUploadError: Ref<string | null> = ref(null)
 const submitError: Ref<string | null> = ref(null)
 
 function toDatetimeLocalString(isoString: string): string {
@@ -56,7 +56,7 @@ function populateFields() {
     props.event.attachmentUrls,
     props.event.attachmentFileNames,
   )
-  fileUploadError.value = false
+  fileUploadError.value = null
   submitError.value = null
 }
 
@@ -69,14 +69,12 @@ watch(
 )
 
 function handleFileUpload(event: Event) {
-  fileUploadError.value = false
+  fileUploadError.value = null
   submitError.value = null
   const input = event.target as HTMLInputElement
   if (input.files && input.files.length > 0) {
     itemFile.value = input.files[0]
-    if (itemFile.value.size === 0) {
-      fileUploadError.value = true
-    }
+    fileUploadError.value = getStorageFileError(itemFile.value)
   } else {
     itemFile.value = null
   }
@@ -89,11 +87,6 @@ function validateFields(): boolean {
   if (itemDate.value === '') return false
   if (itemDescription.value.trim() === '') return false
   return true
-}
-
-async function uploadFile(url: string, file: File): Promise<void> {
-  const axiosInstance = axios.create()
-  await axiosInstance.put(url, file, { headers: { 'Content-Type': file.type } })
 }
 
 function extractThumbnailId(thumbnailUrl: string): string {
@@ -247,8 +240,9 @@ async function saveEvent() {
         />
       </div>
 
-      <div v-if="fileUploadError" class="pb-4 text-red-400">
-        <span>Kan ikke uploade en fil med filstørrelse på 0 bytes!</span>
+      <p class="pb-4 text-sm">{{ STORAGE_UPLOAD_HINT }}</p>
+      <div v-if="fileUploadError" class="pb-4 text-red-400" role="alert">
+        <span>{{ fileUploadError }}</span>
       </div>
 
       <!-- Attachments -->

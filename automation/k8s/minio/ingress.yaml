@@ -6,6 +6,8 @@ metadata:
     app: minio
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
+    # Direct browser uploads (attachments and content images): 20 MiB per file.
+    nginx.ingress.kubernetes.io/proxy-body-size: "20m"
     nginx.ingress.kubernetes.io/enable-cors: "true"
     nginx.ingress.kubernetes.io/cors-allow-origin: "https://dkef.dk"
     nginx.ingress.kubernetes.io/cors-allow-methods: "GET, PUT, OPTIONS"
