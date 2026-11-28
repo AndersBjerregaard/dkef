@@ -144,6 +144,11 @@ Created by the `postgres_k8s` Ansible role. Not present in these manifests.
 | Backend | `minio:9000` |
 | CORS | Enabled for `https://andersbjerregaard.com` — `GET`, `PUT`, `OPTIONS`; all headers |
 | Purpose | Public endpoint for client-side presigned URL uploads from the frontend |
+| Maximum upload body | 20 MiB (`nginx.ingress.kubernetes.io/proxy-body-size: "20m"`), per direct upload |
+
+The frontend checks the same 20 MiB (20,971,520 byte) limit for attachments and event/news/general-assembly images. Administrator site-image replacement uses a separate API route with its existing 5 MiB file limit and 6 MiB API ingress limit. Any additional reverse proxy must allow the applicable upload size.
+
+Deploy the updated MinIO ingress through the human-operated deployment workflow; no application rebuild is required for the ingress change itself. After deployment, verify a PDF above 1 MiB uploads and downloads, and that a file above 20 MiB is rejected. Failed uploads must be retried. Never attach raw presigned URL query strings to diagnostic reports.
 
 ### Secret: `minio-secret`
 

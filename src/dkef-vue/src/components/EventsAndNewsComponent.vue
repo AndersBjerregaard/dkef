@@ -8,7 +8,7 @@ import { v4 as uuidv4 } from 'uuid'
 import apiservice from '@/services/apiservice'
 import urlservice from '@/services/urlservice'
 import type { AxiosResponse } from 'axios'
-import axios from 'axios'
+import { getStorageFileError, STORAGE_UPLOAD_HINT, uploadFile } from '@/utils/storageUploads'
 import { type EventDto, type PublishedEvent, type EventsCollection } from '@/types/events'
 import type { NewsDto, PublishedNews, NewsCollection } from '@/types/news'
 import type {
@@ -90,7 +90,7 @@ const attachmentUploaderRef: Ref<InstanceType<typeof AttachmentUploader> | null>
 const itemAddress: Ref<string> = ref('')
 const itemDate: Ref<string> = ref('')
 
-const fileUploadError: Ref<boolean> = ref(false)
+const fileUploadError: Ref<string | null> = ref(null)
 const submitError: Ref<string | boolean> = ref(false)
 
 // Flat list in server sort order
@@ -403,7 +403,7 @@ function openModal() {
   resetFields()
   isOpen.value = true
   submitError.value = false
-  fileUploadError.value = false
+  fileUploadError.value = null
 }
 
 function handleFieldChange() {
@@ -412,13 +412,11 @@ function handleFieldChange() {
 
 function handleFileUpload(event: Event) {
   submitError.value = false
-  fileUploadError.value = false
+  fileUploadError.value = null
   const input = event.target as HTMLInputElement
   if (input.files && input.files.length > 0) {
     itemFile.value = input.files[0]
-    if (itemFile.value.size === 0) {
-      fileUploadError.value = true
-    }
+    fileUploadError.value = getStorageFileError(itemFile.value)
   } else {
     itemFile.value = null
   }
@@ -450,18 +448,9 @@ function validateFields(): boolean {
   return true
 }
 
-async function uploadFile(url: string, file: File) {
-  const axiosInstance = axios.create()
-  try {
-    await axiosInstance.put(url, file, { headers: { 'Content-Type': file.type } })
-  } catch (error: unknown) {
-    console.error('Error uploading file:', error)
-    throw error
-  }
-}
-
 async function createItem() {
   submitError.value = false
+  if (fileUploadError.value) return
   if (!validateFields()) {
     submitError.value = true
     return
@@ -485,7 +474,7 @@ async function createItem() {
     const message =
       axiosError.response?.data?.message || axiosError.message || 'Fejl ved oprettelse. Prøv igen.'
     console.error(message)
-    submitError.value = true
+    submitError.value = message
   } finally {
     isLoading.value = false
   }
@@ -999,8 +988,9 @@ const submitLabel = computed(() => {
           />
         </div>
 
-        <div v-show="fileUploadError" class="pb-4 text-red-400">
-          <span>Kan ikke uploade en fil med filstørrelse på 0 bytes!</span>
+        <p class="pb-4 text-sm">{{ STORAGE_UPLOAD_HINT }}</p>
+        <div v-show="fileUploadError" class="pb-4 text-red-400" role="alert">
+          <span>{{ fileUploadError }}</span>
         </div>
 
         <!-- Attachments -->
@@ -1019,8 +1009,10 @@ const submitLabel = computed(() => {
           @error="(msg) => (submitError = msg)"
         />
 
-        <div v-show="submitError" class="pb-4 text-red-400">
-          <span>Venligst udfyld alle påkrævede felter</span>
+        <div v-show="submitError" class="pb-4 text-red-400" role="alert">
+          <span>{{
+            typeof submitError === 'string' ? submitError : 'Venligst udfyld alle påkrævede felter'
+          }}</span>
         </div>
 
         <div class="mt-4">

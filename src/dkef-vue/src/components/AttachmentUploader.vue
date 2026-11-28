@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { ref, watch, computed, type Ref } from 'vue'
+import { ref, computed, type Ref } from 'vue'
 import { v4 as uuidv4 } from 'uuid'
-import axios from 'axios'
 import type { AxiosResponse } from 'axios'
 import apiservice from '@/services/apiservice'
 import urlservice from '@/services/urlservice'
 import type { AttachmentItem } from '@/types/attachments'
+import { getStorageFileError, STORAGE_UPLOAD_HINT, uploadFile } from '@/utils/storageUploads'
 
 const props = defineProps<{
   attachments: AttachmentItem[]
@@ -34,8 +34,9 @@ function handleFilesUpload(event: Event) {
   if (input.files) {
     const newFiles = Array.from(input.files)
     for (const file of newFiles) {
-      if (file.size === 0) {
-        uploadErrors.value.push(`"${file.name}": 0 bytes`)
+      const error = getStorageFileError(file)
+      if (error) {
+        uploadErrors.value.push(error)
         continue
       }
       attachmentFiles.value.push(file)
@@ -49,17 +50,16 @@ function removeLocalFile(idx: number) {
 }
 
 function removeAttachment(id: string) {
-  emit('update:attachments', props.attachments.filter((attachment) => attachment.id !== id))
-}
-
-async function uploadFile(url: string, file: File): Promise<void> {
-  const axiosInstance = axios.create()
-  await axiosInstance.put(url, file, { headers: { 'Content-Type': file.type } })
+  emit(
+    'update:attachments',
+    props.attachments.filter((attachment) => attachment.id !== id),
+  )
 }
 
 async function processNewAttachments(): Promise<AttachmentItem[]> {
+  uploadErrors.value = []
   const newAttachments: AttachmentItem[] = []
-  for (const file of attachmentFiles.value) {
+  for (const file of [...attachmentFiles.value]) {
     try {
       const newGuid = uuidv4()
       const presignedUrlResponse: AxiosResponse<string> = await apiservice.get<string>(
@@ -70,24 +70,22 @@ async function processNewAttachments(): Promise<AttachmentItem[]> {
         id: newGuid,
         fileName: file.name,
       })
+      attachmentFiles.value.splice(attachmentFiles.value.indexOf(file), 1)
     } catch (err: unknown) {
-      const axiosError = err as { response?: { data?: { message?: string } }; message?: string }
-      emit(
-        'error',
-        `Failed to upload "${file.name}": ${axiosError.response?.data?.message || axiosError.message}`,
-      )
+      const message =
+        err instanceof Error ? err.message : `"${file.name}": Filen kunne ikke uploades. Prøv igen.`
+      uploadErrors.value = [message]
+      // Preserve completed uploads when a later file fails; retry only pending files.
+      if (newAttachments.length > 0) {
+        emit('update:attachments', [...props.attachments, ...newAttachments])
+      }
+      emit('error', message)
+      throw new Error(message)
     }
   }
   attachmentFiles.value = []
   return newAttachments
 }
-
-watch(
-  () => props.attachments,
-  () => {
-    uploadErrors.value = []
-  },
-)
 
 defineExpose({
   processNewAttachments,
@@ -99,6 +97,7 @@ defineExpose({
     <!-- File input -->
     <div class="pb-4">
       <label for="attachment_files">Vedhæftelser (valgfrit)</label>
+      <p class="text-sm">{{ STORAGE_UPLOAD_HINT }}</p>
       <br />
       <input
         id="attachment_files"
@@ -112,9 +111,9 @@ defineExpose({
     </div>
 
     <!-- Upload errors -->
-    <div v-if="uploadErrors.length > 0" class="pb-4 text-red-400">
+    <div v-if="uploadErrors.length > 0" class="pb-4 text-red-400" role="alert">
       <div v-for="(error, idx) in uploadErrors" :key="idx">
-        <span>Kan ikke uploade fil med 0 bytes: {{ error }}</span>
+        <span>{{ error }}</span>
       </div>
     </div>
 
